@@ -1,0 +1,910 @@
+module.exports = [
+"[project]/src/components/Datatable.jsx [app-ssr] (ecmascript) <export default as Datatable>", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "Datatable",
+    ()=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Datatable$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"]
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Datatable$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/Datatable.jsx [app-ssr] (ecmascript)");
+}),
+"[project]/src/components/Form/index.js [app-ssr] (ecmascript) <export * as Form>", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "Form",
+    ()=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Form$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Form$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/Form/index.js [app-ssr] (ecmascript)");
+}),
+"[project]/src/components/Form/DateRange.jsx [app-ssr] (ecmascript) <export default as DateRangeSelector>", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "DateRangeSelector",
+    ()=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Form$2f$DateRange$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"]
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Form$2f$DateRange$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/components/Form/DateRange.jsx [app-ssr] (ecmascript)");
+}),
+"[project]/src/data/data.json (json)", ((__turbopack_context__) => {
+
+__turbopack_context__.v(JSON.parse("{\"privacy\":\"<p>This privacy policy (“Policy”) is posted by Frequent Research (“we,” “us,” or “Frequent Research Fieldwork Solutions Pvt. Ltd.”), and governs uses of Frequent Research Fieldwork Solution’s main website, located at <a href=\\\"https://www.frequentresearch.com\\\">https://www.frequentresearch.com</a> and including all individual pages or links under that domain (the “Site”). This Policy also governs our collection and use of personal information via the Site or other communications or survey research under the Frequent Research or “Survey Surfing” brand names. We’ve developed this Policy to describe (1) how we collect, use, transfer, and store information of individuals (“you” or “your”); (2) your choices regarding your personal information; and (3) how we ensure your privacy.</p>\\n<p>Please note that other Frequent Research products or services, including but not limited to Frequent Research Fieldwork Solution’s Insights platform and the Turn2Opinion website, may be governed by separate privacy policies. This Policy only applies to the Site, and to the data that we collect through the Site or other Frequent Research or Survey Surfing-branded communications or surveys. It does not apply to any data that we collect via other websites where this Policy is not posted.</p>\\n<p>We make the Site, including this Policy, accessible to individuals with disabilities. If you are having trouble accessing the Site or this Policy, please contact us as provided below.</p>\\n<p>By using the Site or participate in Frequent Research branded or Survey Surfing branded research, you consent to the terms of this Policy, and this Policy forms a binding agreement between you and Frequent Research. If you do not agree with the terms of this Policy, do not use the Site or participate in such research. Continued use of the Site or participation in such research constitutes your freely given, specific, and informed consent and agreement to the terms herein.</p>\\n<h5>Notice to Survey Respondents</h5>\\n<p>You acknowledge and agree that your participation in a survey or other market research program is completely voluntary, and that Frequent Research’s use of your personal information is carried out with your consent. Frequent Research may collect personal information directly from you when you voluntarily provide it to Frequent Research, or Frequent Research may obtain personal information from unrelated parties we collaborate with, including third-party panels who have obtained your consent.</p>\\n<p>You may also provide personal information to Frequent Research via the Survey Surfing website, which respondents may access directly, or via invitations or advertisements on third-party websites. Information provided via Survey Surfing will be used by Frequent Research to direct respondents to third-party surveys, and may in some cases be used to recruit members for Turn2Opinion or any Frequent Research’s proprietary panel.</p>\\n<p>Frequent Research also serves as a platform for panellists who originate from third-party panels with the purpose of sharing consumer opinions and data with Frequent Research’s clients. You acknowledge and agree that in such cases your direct relationship is with the third-party panel, which determines the purposes and means for processing your personal information. In such cases, Frequent Research will only process your personal information at the request of the third-party panel.</p>\\n<p>Any surveys and other market research programs administered by Frequent Research clients, partners or other third parties and the data collected in connection with those surveys and other market research programs are not subject to this Policy. You are strongly encouraged to review and understand the privacy policies of such third parties.</p>\\n<p>By participating in any of our surveys or other market research programs or any of our websites following any notice of a change to this Policy, you freely and specifically give us your consent to collect, use, transfer and disclose your personal information in the manner specified in the then-current Privacy Policy.</p>\\n<h5>Your Personal Information</h5>\\n<p>Frequent Research confirms its privacy and security practices to applicable laws, codes, and regulations, including, without limitation, the General Data Protection Regulation (“GDPR”).</p>\\n<p>As used in this Policy, “personal data” and “personal information” mean information that identifies, relates to, describes, is capable of being associated with, or could reasonably be linked with a particular data subject, consumer, or household. Personal information includes information such as real names, postal addresses, email addresses, and social security numbers.</p>\\n<p>Frequent Research may collect personal information when you voluntarily provide it, or when we receive it from third parties who have secured your consent to share it. Your participation in a survey or other research is voluntary. Surveys and other research administered by Frequent Research’s clients, partners or other third parties and the information collected therein are not subject to this Policy, provided. However, that if Frequent Research collects personal information in connection with a third party’s survey or research, such personal information collection is subject to this Policy.</p>\\n<p>We use your information to operate, evaluate, and improve our business, including for such purposes as developing new products and services, managing our communications, and analysing our products. If you provide us with your name and contact information, we will use this information to answer requests from you, communicate with you regarding any services we are providing to you, inform you about new products and services (unless and until you opt-out of marketing information), and deliver email updates, newsletters, or other communications to which you’ve subscribed. We may also use information derived from cookies, pixels, and other technologies to determine your interests in particular surveys, advertisements, and other communications.</p>\\n<p>Any e-mail communications to you regarding new products and services, or any email updates, newsletters, or other communications to which you’ve subscribed, will contain a link with instructions for how to opt out of future communications of that type.</p>\\n<p>In the previous 12 months, we’ve collected, used, and shared personal information as described below:</p>\\n<h5>Collected Information Sources</h5>\\n<ul>\\n<li>Names, email addresses, phone numbers provided directly via the Site, or direct communications with Frequent Research</li>\\n<li>Log files, including Internet Protocol (IP) address, browser type, ISP, browser language, the date and time of your request, operating system, referring/exiting pages, clickstream data, plug-in etc are collected directly from online users</li>\\n<li>Browsing information, such as date and time you visited our website, number of pages you viewed, time in seconds you spend on each page, and details of the any website you visited before and/or after participation in one of our surveys or other research program are collected from internet cookies attached to users while visiting website.</li>\\n<li>Self-reported demographics (i.e. age, gender, education, etc.) are provided directly via the Site, or direct communications with Frequent Research</li>\\n<li>Self-reported firmographics (i.e. employment-related information such as title and profession etc.) are provided directly via the Site, or direct communications with Frequent Research</li>\\n<li>Self-reported profile information (i.e. political affiliation, technology usage, consumer preferences and ownership etc.) are provided directly via the Site, or direct communications with Frequent Research</li>\\n<li>System Metrics inclusive of survey status (completed survey, terminated etc.) Length of time spent in a survey are collected via internet survey redirection combination</li>\\n</ul>\\n<p>We may combine information that your device transmits, information that you actively submit, and information that we obtain from third party sources, including suppliers of market research sample and data marketing platforms that may direct you to our Site, as well as web publishers, advertisers, and online service providers that may have obtained information from you or your devices via cookies, pixels, and other tracking technologies.</p>\\n<h5>Information Tracking Technologies</h5>\\n<p>We may use or allow third parties to use google analytics on our Site to monitor the effectiveness of survey qualification. Google Analytics are small, graphic images on web pages, web-based documents, or in email messages that allow us or third parties to monitor who is visiting our Site or if an email has been read. Google Analytics collect the IP address of the device where the web beacon is sent, the URL of the page where the web beacon originates, and the time it was viewed. Google Analytics may be linked to your personal information. We may also use third-party devices, services, links, or electronic mail to deliver surveys to you, which may use cookies, Google Analytics, or other technology to collect information about your visits to our Site (or other sites) in order to present surveys that may be of interest to you.</p>\\n<p>We may use a pixel or cookie to examine what is happening on third-party websites, including programs and sites with marketing and advertising partners, to improve the understanding of site traffic and market research effectiveness. Respondents or participants in survey or survey panels that are hosted on, accessed by, or routed through the Site should consult the privacy and other policies of third parties through whom they are providing information.</p>\\n<h5>Use of Cookies</h5>\\n<p>For more information on our use of cookies, read Frequent Research Fieldwork Solution’s Cookie Policy, which is incorporated herein by this reference.</p>\\n<h5>Other Communications from Frequent Research</h5>\\n<p>In addition to contacting individuals who have given us their information, Frequent Research may also contact individuals who have visited the Site or may otherwise have interest in our products and services. All such communications from Frequent Research will include a link allowing you to opt out of future communications. You may also opt out by following the instructions in the “Contacting Frequent Research” section below.</p>\\n<h5>Information Retention and Accuracy</h5>\\n<p>We make efforts to ensure that personal information we receive, process, or maintain is accurate, complete, and reliable. We rely on the accuracy of the information provided directly to us but accept responsibility for the management and confidentiality of the personal information collected. In general, we keep personal information only as long as we need it to provide you the services you requested. We may also process data on behalf of third parties who have engaged us. We keep personal information processed on behalf of third parties for as long as needed to provide services to third party in question. However, we reserve the right to retain personal information for any period required by law or to comply with our legal obligations, resolve disputes, and enforce our agreements.</p>\\n<h5>Protection of Personal Information</h5>\\n<p>Frequent Research uses reasonable security measures in an effort to prevent loss, misuse, and alteration of information under our control. However, we cannot guarantee the security of information on or transmitted via the Internet. We rely on various security procedures and systems to ensure the secure storage and transmission of data, including encryption and authentication technology licensed from third parties, to effect secure transmission of confidential information. Additionally, we have absolutely no control over the security of other sites you might visit, interact with, or do business with.</p>\\n<p>If we learn of a security systems breach, we may attempt to notify you electronically so that you can take appropriate protective steps, by posting a notice on the Site if a security and/or sending an email to you at the email address you have previously provided to us. Depending on where you live, you may have a legal right to receive notice of a security breach in writing. To receive a free written notice of a security breach, or to withdraw your consent from receiving electronic notice, you should notify us.</p>\\n<h5>Choice Regarding Collection, Use & Distribution</h5>\\n<p>You can choose whether your personal information is (i) disclosed to a third party or (ii) used for a purpose that is materially different from the purpose(s) for which it was originally collected or subsequently authorized by the individuals. If you choose to opt out, please contact us via email at Support@frequentresearch.com. In such an event, you will be only able to access public areas of the Site and may be limited in the use of the Site. In certain cases, limiting the use and disclosure of your personal data may impact functionality or prevent the use of Frequent Research products or services.</p>\\n<h5>Third Party Websites and Content</h5>\\n<p>This Policy applies solely to the Site and to Frequent Research Fieldwork Solution’s surveys and research, and not to any other product, service, content, surveys or research of third parties.</p>\\n<p>The Site may also contain other links to external websites, and areas where you can provide information to third parties. These are provided for your convenience only, and we do not have control over the content or privacy and security practices and policies of such third parties or third-party sites. Any personal information you provide in such areas, and on such linked pages, is provided directly to that third party and is subject to that third party’s privacy policy. Please learn about the privacy and security practices and policies of external websites and third-parties before providing them with personal information.</p>\\n<h5>Access and Correction</h5>\\n<p>You may access your information by contacting us at the address below. You have the right to correct, amend, or delete that information where it is inaccurate, or has been processed in violation of the Privacy Shield Principles, except where the burden or expense of providing access would be disproportionate to the risks to the individual’s privacy in the case in question, or where the rights of persons other than the individual would be violated.</p>\\n<p>We maintain processes or mechanisms to allow you to review, update, correct or delete personal information held by us. You may make changes to your account information, access, correct, or delete personal information held by Frequent Research by contacting us at:</p>\\n<p>Frequent Research Fieldwork Solutions</p>\\n<p>Mangolpur Kalan,</p>\\n<p>New Delhi - 110085</p>\\n<p>Email: Support@frequentresearch.com.</p>\\n<p>To protect your privacy and security, Frequent Research may also take reasonable steps to verify your identity before making corrections to or deleting your information. We will respond to your request for access to modify or delete your information within a reasonable timeframe.</p>\\n<h5>Changes to this Privacy Policy</h5>\\n<p>We reserve the right to modify this Policy at any time. If we decide to change our Policy, we will prominently post those changes here and any other place we deem appropriate, so you are always aware of what information we collect, how we use it, and under what circumstances, if any, we disclose it. If we make any material changes, we will notify you either by way of an email or by a notice on this Site. We will use information in accordance with the Policy as it was in effect at the time information was collected.</p>\",\"gdpr\":\"<p>It’s been more than a year since GDPR came into effect. GDPR affects all EU nationals and the companies concerned with them in any way. Since then the way data is collected, stored, processed and analysed has changed a lot, which implies that market research has changed. GDPR survey is all about dealing with one’s personal data such that it doesn’t reveal his/her identity.</p>\\n<p>There are various methods of doing market research and can be broadly classified into quantitative and qualitative methods. Quantitative methods involve statistical methods, surveys, interviews, questionnaires, focus groups, and many more. Qualitative methods rely on subjective data such as expressions, emotions, mannerisms, body language, etc. Now the organizations need to be more careful with not just individual elements of personal data, but even if the combination of those elements can identify an individual. GDPR compliant market research companies will have to be just more careful about how they deal with data.</p>\\n<p>Things to keep in mind while doing GDPR compliant market research</p>\\n<p>In order to comply with GDPR law, organizations must identify how the data they collect fit their business and their research projects.</p>\\n<p>For instance, while storing cookies on the user’s machine, websites must mention the purpose behind them in the download pop-up. Also, websites need to declare at the same time what will the information collected be used for. Say, in case the cookies will be used for sending discounts and offers or marketing emails, it must be declared in the pop-up.</p>\\n<p>Get the consent of your target audience.</p>\\n<p>Say, you are conducting a survey to know the favorite meal of the population aged 27-35. If this survey is a part of the GDPR market research project, you must make sure your email list has people who have shown willingness to be contacted for any opinion or feedback survey. While asking for their consent, you must explicitly mention that they will be contacted for surveys. This means you will not be able to send them marketing emails or newsletters unless they have subscribed to them.</p>\\n<p>While contacting people to gather data, ask questions like,</p>\\n<p>“Are they the right people to contact?”,</p>\\n<p>“Will I get the information I need for my market research?”,</p>\\n<p>“Do I have permission to contact them?”,</p>\\n<p>Keep a link to your data privacy and security policies.</p>\\n<p>When people trust that their personal data is safe and will not be misused by the market research companies, they may not hesitate to share details about them. However, in case though you might not use their personal data, if you are sharing it with any third-party, mention it explicitly.</p>\\n<p>With GDPR market research regulations, companies would also need to stay ethical in terms of what they do with the data. If you are collecting personal data and are keeping it safe at your end, but sharing it with third-party, then you must declare it at the point of data collection as well as on your website. Suppose, if you are running a survey, then you must keep a link to your privacy policies in the invitation email as well as on the website.</p>\\n<p>Let your respondents know for long will you be using the GDPR market research data.</p>\\n<p>Market research methods such as online surveys and questionnaires collect data by asking a set of questions. Once, a good number of responses are received, the data is stored in databases and used to generate various analytics reports. If you let the respondents know that you will be storing data for a fixed duration, it can help you get consent from more people. Once the validity period is over, destroy the data. This helps in protecting data from being accessed by unauthorized use. Also, GDPR allows individuals the right to erase or forget the information collected about them.</p>\\n<p>Few people have concerns about where the data collected about EU nationals will be stored. Storing sensitive data outside the geographical boundaries may not give them enough control over it. Particularly, when data is stored in the cloud where the division of responsibility isn’t clear a few times. It can be a matter of discussion in such cases, as to whether the cloud service provider, vendor partner or the customer will be responsible for the data security and privacy. Because of this ambiguity and susceptibility to security attacks, cloud storage hasn’t been considered to be too safe. However, with the passage of time, the cloud computing model has matured and hence, such fears have dispersed to a great extent. In general, GDPR compliance reinforces the good practice that a market research company should follow. There is nothing to fear if you are handling the data with care!</p>\\n<p>In case you have queries about GDPR compliant market research, get in touch with us at <a href=\\\"mailto:support@turn2opinion.com\\\">support@turn2opinion.com</a>.</p>\",\"terms\":\"<h2>We Value about your Data Privacy</h2>\\n<p>We value and care about the privacy of your personal information and can ensure with our data privacy policy your personal data will be only used for the Market Research purpose only and will be secure and safe with us. Your data will not be shared to any third party vendor and will make sure to limit your sensitive data privacy during data collection in any in-house or third party survey.</p>\\n<p>You would be able to get more opportunities to participate in your preferable survey categories. Your opinion will help our clients to take better decisions for their business and you will be able to earn more and more rewards.</p>\\n<h2>Turn2Opinion General Consent Form</h2>\\n<p>Turn2Opinion and our parent company, Frequent Research Fieldwork Solutions Private Limited, value your data inputs and your data privacy is matters for us. Once you login, Turn2Opinion will collect your personal information and will use your personal data inputs to deliver our research services, websites and applications (collectively, our \\\\\\\"Services\\\\\\\"). This Consent helps you to learn How, What and Why we use your personal data. Our Consent form enables you to describe the access, update or otherwise control of your personal data that we process for our research purposes. Your personal data may include information such as:</p>\\n<ul>\\n<li>Name</li>\\n<li>Location</li>\\n<li>Telephone number</li>\\n<li>Date of birth</li>\\n<li>Email address</li>\\n</ul>\\n<h2>WHAT ADDITIONAL INFORMATION DO WE COLLECT?</h2>\\n<ul>\\n<li>Behaviour Tracking</li>\\n<li>Cookies History</li>\\n</ul>\\n<ul>\\n<li>To activate your account you must accept to the Terms and Conditions and Privacy Notice</li>\\n<li>To have access of more available surveys you must accept to participate in surveys and other market research activities</li>\\n</ul>\",\"faqs\":[{\"que\":\"How do I become a member?\",\"ans\":\"<p>To register on Turn2Opinion, you will be asked to provide some basic questions while creating your account, as well as the option to provide some more in-depth information about yourself in order to participate in our surveys. After completing the signup form, Turn2Opinion panel will sent a confirmation email into your registered email ID in order to confirm the profile validity and finalize your registration process. Alternatively, You may click the link in your email to confirm your registration over panel and to receive the survey access.</p>\"},{\"que\":\"Any hidden charges while registration?\",\"ans\":\"<p>Registration to Turn2Opinion is completely free - you will not be asked for any payment. On the contrary, it is you who earns points that can be exchanged for PayPal, gift vouchers etc., by taking participation in our sponsored surveys.</p>\"},{\"que\":\"Why should I become a member of Turn2Opinion?\",\"ans\":\"<p>Becoming a member, let you take part in surveys on different topics. You can then start to accumulate the rewards after achieving the minimum threshold points. You can redeem for an incentive of your choice from “Redeem Now” button from Dashboard.</p>\"},{\"que\":\"How do I change my email address and password?\",\"ans\":\"<p>Due to security, Turn2Opinion don’t allow to update the email ID for the profile. You may contact support team at <a href='mailto:support@turn2opinion.com'>support@turn2opinion.com</a> for any type of email update request.</p><p>You can change your password after login to the Turn2Opinion Dashboard, Go to “Change Password” section after selecting Settings option in Sidebar.</p>\"},{\"que\":\"How can I edit my personal information?\",\"ans\":\"<p>Turn2Opinion Panel allow all user to change personal information with limited access only. Some of the basic personal information could not updated such as Gender, Age or Date of birth.</p><p>You can update any information from left section profile categories. Update the information and save.</p>\"},{\"que\":\"How can I cancel my account?\",\"ans\":\"<p>Turn2Opinion respect all user data privacy so user can request for Account Deletion.</p><p>For Cancel/Delete your account, User need to login and go to top right my profile section then choose Delete Account.</p><p>After request for deletion, Turn2Opinion will require a user confirmation through registered email ID. User can restore the account within 30 days otherwise all account data will be removed from the Turn2Opinion Database and user need to create a new account for account activation.</p>\"},{\"que\":\"How do I participate in Surveys?\",\"ans\":\"<p>Turn2Opinion always share the survey according to the user preference and input provided by the user. User will get the notification for new surveys by email, dashboard popup information and alert for new surveys.</p><p>All surveys will appear at the dashboard with basic information and proceed by click the “Start Now” button on respective surveys.</p>\"},{\"que\":\"How many points will I earn for my participation?\",\"ans\":\"<p>All reward points depends upon the survey information and these details will always appears to Turn2Opinion dashboard. User can check some basic survey information along with reward point and proceed for the surveys.</p>\"},{\"que\":\"How many surveys will I be invited to?\",\"ans\":\"<p>Turn2Opinion always share the survey according to the user preference and input provided by the user. User will get the notification for new surveys by email, dashboard popup information and alert for new surveys. You can login to your account and you will get the available survey information at the dashboard under “External Survey”.</p><p>Turn2Opinion always encourage you to keep your profile up to date and increase the chance of getting more surveys.</p><p>The number of surveys you receive will vary depending on what personal settings you have and how many surveys are currently available. You can login to your account and under 'Profile' tab, you can select 'Ideal survey frequency' as per your choice. We encourage you to keep your profile up to date and increase the chance of getting more surveys.</p>\"},{\"que\":\"Technical difficulties with a survey, and why does this happen?\",\"ans\":\"<p>One of the major reason behind technical issues is that survey respondents are using a variety of operating systems, browsers, Internet connection types, and hardware, and not all are necessarily compatible with the technology of all surveys that may be available.</p><p>If you encounter a technical difficulty during any survey. Usually, if you wait for a while, and try again later, the problem will be resolved and the survey resumed where the user left otherwise If you are still seeing an error after waiting a while, please report it to support team at <a href='mailto:support@turn2opinion.com'>support@turn2opinion.com</a> along with error information screenshot, if possible. We apologize for any inconvenience caused by technical errors. We will do our best to get them resolved.</p>\"},{\"que\":\"Why does Turn2Opinion ask the same questions in almost every survey?\",\"ans\":\"<p>Turn2Opinion profiling process is continuous. The objective is to have broad and current attributes on each panel member. Our clients makes decisions based on responses from our user in their surveys. Implementing strict quality controls helps us make sure you are part of the target the client is looking for. The questions at the beginning of each survey may seem repetitive but are necessary to ensure the integrity of panellists.</p>\"},{\"que\":\"When I click on the survey link, it says 'Survey is closed'. What does that mean?\",\"ans\":\"<p>From usual experience, Turn2Opinion understand that not everyone has time or opportunity to participate in all the surveys we send out. For one of the instance, user might be on vacation and cannot participate in a specific survey on time.</p><p>Turn2Opinion launch survey to large number of people and it gets closed when desired number of participants have been reached. Thereafter, no more user can participate in the survey. If you get this message, it means Turn2Opinion already have number of participants the survey is looking for.</p><p>User need to keep update and login usually to check the survey offers.</p>\"},{\"que\":\"How will I receive my rewards?\",\"ans\":\"<p>Once the user achieve the minimum threshold and can able to request to redeem earn points.</p><p>The rewards could be in any form i.e. PayPal, Gift Vouchers, Bank Transfer etc., All payment form could be different as per the country law.</p><p>User ensure all of your information is correct to avoid any delays.</p>\"},{\"que\":\"How long will it take to receive my reward once redeemed?\",\"ans\":\"<p>Once the user request for point redemption, Turn2Opinion Support team check the validity of the profile and survey completion then proceed to share the information to accounts department for credit procedure.</p><p>All payment procedure could take up to 2-3 weeks before the transfer is actually executed. This could be due to several other transfers being queued for execution.</p><p>User ensure all of your information is correct to avoid any delays.</p>\"},{\"que\":\"What is done with the information I filled out when signing up?\",\"ans\":\"<p>Turn2Opinion respect the user data privacy policy. Your profile data is stored on our secured server that allows us to call upon those members who match specific criteria to participate in the surveys. This process is completely automated and members are contacted by Turn2Opinion via email to participate in our surveys. All responses are held in aggregate, which means that individual responses are not linked to personally identifiable information. The information you provide will never be sold or used to advertise. You are not responsible for buying any product or service at any time, nor will any company solicit you as a result of joining Turn2Opinion panel.</p>\"},{\"que\":\"Why do you ask questions about age, income and other personal information?\",\"ans\":\"<p>This information is used to match members with specific survey requirements. In some cases, our clients require feedback from people in a certain income bracket or those who have children.</p><p>Please be assured that this information is securely kept and strictly confidential. The more information you provide, the greater are your chances of receiving invitations to surveys you may qualify for, and the more opportunities you may receive to earn rewards. Go through our privacy policy for more details.</p>\"}]}"));}),
+"[project]/src/hooks/useToast.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__
+]);
+function __TURBOPACK__default__export__(detail) {
+    if (!document) return console.log("No Document");
+    if (!detail || !detail.status) return console.log("No Status");
+    document.dispatchEvent(new CustomEvent("toast", {
+        detail
+    }));
+}
+}),
+"[project]/src/hooks/useDebounce.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>useDebounce
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react.js [app-ssr] (ecmascript)");
+;
+function useDebounce(callback, delay = 500, deps = []) {
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        const timeout = setTimeout(()=>{
+            callback();
+        }, delay);
+        return ()=>clearTimeout(timeout);
+    }, [
+        ...deps,
+        delay
+    ]);
+}
+}),
+"[project]/src/hooks/index.js [app-ssr] (ecmascript) <locals>", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$useToast$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/hooks/useToast.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$useDebounce$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/hooks/useDebounce.js [app-ssr] (ecmascript)"); // export {default as useSSE} from "./useSSE";
+;
+;
+}),
+"[project]/src/hooks/useToast.js [app-ssr] (ecmascript) <export default as useToast>", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "useToast",
+    ()=>__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$useToast$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"]
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$useToast$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/hooks/useToast.js [app-ssr] (ecmascript)");
+}),
+"[project]/src/app/member/(member pages)/support/page.jsx [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react-jsx-dev-runtime.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/navigation.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$hook$2d$form$2f$dist$2f$index$2e$esm$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react-hook-form/dist/index.esm.mjs [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Grid$2f$Grid$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Grid$3e$__ = __turbopack_context__.i("[project]/node_modules/@mui/material/esm/Grid/Grid.js [app-ssr] (ecmascript) <export default as Grid>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Tabs$2f$Tabs$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Tabs$3e$__ = __turbopack_context__.i("[project]/node_modules/@mui/material/esm/Tabs/Tabs.js [app-ssr] (ecmascript) <export default as Tabs>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Tab$2f$Tab$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Tab$3e$__ = __turbopack_context__.i("[project]/node_modules/@mui/material/esm/Tab/Tab.js [app-ssr] (ecmascript) <export default as Tab>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Fade$2f$Fade$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Fade$3e$__ = __turbopack_context__.i("[project]/node_modules/@mui/material/esm/Fade/Fade.js [app-ssr] (ecmascript) <export default as Fade>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Chip$2f$Chip$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Chip$3e$__ = __turbopack_context__.i("[project]/node_modules/@mui/material/esm/Chip/Chip.js [app-ssr] (ecmascript) <export default as Chip>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Typography$2f$Typography$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Typography$3e$__ = __turbopack_context__.i("[project]/node_modules/@mui/material/esm/Typography/Typography.js [app-ssr] (ecmascript) <export default as Typography>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Accordion$2f$Accordion$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Accordion$3e$__ = __turbopack_context__.i("[project]/node_modules/@mui/material/esm/Accordion/Accordion.js [app-ssr] (ecmascript) <export default as Accordion>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$AccordionSummary$2f$AccordionSummary$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__AccordionSummary$3e$__ = __turbopack_context__.i("[project]/node_modules/@mui/material/esm/AccordionSummary/AccordionSummary.js [app-ssr] (ecmascript) <export default as AccordionSummary>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$AccordionDetails$2f$AccordionDetails$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__AccordionDetails$3e$__ = __turbopack_context__.i("[project]/node_modules/@mui/material/esm/AccordionDetails/AccordionDetails.js [app-ssr] (ecmascript) <export default as AccordionDetails>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$Context$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/src/Context/index.js [app-ssr] (ecmascript) <locals>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$Context$2f$member$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/Context/member.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$icons$2d$material$2f$esm$2f$ExpandMore$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/@mui/icons-material/esm/ExpandMore.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$index$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/src/components/index.jsx [app-ssr] (ecmascript) <locals>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Datatable$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Datatable$3e$__ = __turbopack_context__.i("[project]/src/components/Datatable.jsx [app-ssr] (ecmascript) <export default as Datatable>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Form$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__Form$3e$__ = __turbopack_context__.i("[project]/src/components/Form/index.js [app-ssr] (ecmascript) <export * as Form>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$SectionTitle$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__SectionTitle$3e$__ = __turbopack_context__.i("[project]/src/components/SectionTitle.jsx [app-ssr] (ecmascript) <export default as SectionTitle>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Form$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/src/components/Form/index.js [app-ssr] (ecmascript) <locals>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Form$2f$DateRange$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__DateRangeSelector$3e$__ = __turbopack_context__.i("[project]/src/components/Form/DateRange.jsx [app-ssr] (ecmascript) <export default as DateRangeSelector>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$util$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/src/util/index.js [app-ssr] (ecmascript) <locals>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$util$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__api$3e$__ = __turbopack_context__.i("[project]/src/util/api.js [app-ssr] (ecmascript) <export default as api>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$util$2f$page$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__Page$3e$__ = __turbopack_context__.i("[project]/src/util/page/index.js [app-ssr] (ecmascript) <export * as Page>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$data$2f$data$2e$json__$28$json$29$__ = __turbopack_context__.i("[project]/src/data/data.json (json)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$locals$3e$__ = __turbopack_context__.i("[project]/src/hooks/index.js [app-ssr] (ecmascript) <locals>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$useToast$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__useToast$3e$__ = __turbopack_context__.i("[project]/src/hooks/useToast.js [app-ssr] (ecmascript) <export default as useToast>");
+"use client";
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+;
+function TabPanel({ children, value, index }) {
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Fade$2f$Fade$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Fade$3e$__["Fade"], {
+        in: value === index,
+        timeout: 1000,
+        unmountOnExit: true,
+        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$util$2f$page$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__Page$3e$__["Page"].Box, {
+            hidden: value !== index,
+            sx: {
+                width: "100%",
+                bgcolor: "white",
+                mb: {
+                    xs: 1,
+                    md: 2
+                }
+            },
+            children: value === index && children
+        }, void 0, false, {
+            fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+            lineNumber: 30,
+            columnNumber: 7
+        }, this)
+    }, void 0, false, {
+        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+        lineNumber: 29,
+        columnNumber: 5
+    }, this);
+}
+function __TURBOPACK__default__export__() {
+    const [activeTab, setActiveTab] = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].useState(0);
+    const tabs = [
+        {
+            label: "F.A.Q.",
+            render: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(FAQ, {}, void 0, false, {
+                fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                lineNumber: 44,
+                columnNumber: 15
+            }, this)
+        },
+        {
+            label: "Contact Support",
+            render: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ContactSupport, {}, void 0, false, {
+                fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                lineNumber: 48,
+                columnNumber: 15
+            }, this)
+        }
+    ];
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Grid$2f$Grid$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Grid$3e$__["Grid"], {
+        size: 12,
+        container: true,
+        px: {
+            xs: 1,
+            md: 2
+        },
+        pt: {
+            xs: 1,
+            md: 2
+        },
+        justifyContent: "center",
+        sx: {
+            bgcolor: (theme)=>theme.palette.page.main
+        },
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Tabs$2f$Tabs$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Tabs$3e$__["Tabs"], {
+                value: activeTab,
+                onChange: (e, v)=>{
+                    setActiveTab(v);
+                },
+                variant: "fullWidth",
+                scrollButtons: "auto",
+                allowScrollButtonsMobile: true,
+                sx: {
+                    width: "100%",
+                    bgcolor: "white",
+                    borderBottom: "3px solid whitesmoke",
+                    "& .MuiTabs-indicator": {
+                        backgroundColor: "secondary.main",
+                        height: "3px"
+                    },
+                    "& .MuiTab-root": {
+                        color: "gray",
+                        fontSize: {
+                            xs: 14,
+                            md: 16
+                        },
+                        fontWeight: 500
+                    },
+                    "& .Mui-selected": {
+                        color: "secondary.main",
+                        fontWeight: 600
+                    }
+                },
+                children: tabs.map((tab)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Tab$2f$Tab$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Tab$3e$__["Tab"], {
+                        label: tab.label
+                    }, tab.label, false, {
+                        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                        lineNumber: 90,
+                        columnNumber: 11
+                    }, this))
+            }, void 0, false, {
+                fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                lineNumber: 61,
+                columnNumber: 7
+            }, this),
+            tabs.map((tab, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(TabPanel, {
+                    value: activeTab,
+                    index: index,
+                    children: tab.render
+                }, tab.label, false, {
+                    fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                    lineNumber: 94,
+                    columnNumber: 9
+                }, this))
+        ]
+    }, void 0, true, {
+        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+        lineNumber: 53,
+        columnNumber: 5
+    }, this);
+}
+function FAQ() {
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Grid$2f$Grid$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Grid$3e$__["Grid"], {
+        size: 12,
+        px: {
+            xs: 0,
+            md: 3
+        },
+        py: 2,
+        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Grid$2f$Grid$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Grid$3e$__["Grid"], {
+            size: 12,
+            container: true,
+            direction: "column",
+            alignItems: "center",
+            sx: {
+                border: `1px solid #e0e0e0`
+            },
+            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Grid$2f$Grid$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Grid$3e$__["Grid"], {
+                size: {
+                    xs: 11,
+                    md: 8
+                },
+                container: true,
+                justifyContent: "center",
+                py: 5,
+                px: 0.5,
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Typography$2f$Typography$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Typography$3e$__["Typography"], {
+                        fontWeight: "bold",
+                        fontSize: "24px",
+                        children: [
+                            "Do You Have",
+                            " ",
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Typography$2f$Typography$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Typography$3e$__["Typography"], {
+                                fontSize: "24px",
+                                component: "span",
+                                color: "primary.main",
+                                fontWeight: "bold",
+                                children: "Any Question?"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                                lineNumber: 121,
+                                columnNumber: 13
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                        lineNumber: 119,
+                        columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Grid$2f$Grid$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Grid$3e$__["Grid"], {
+                        size: 12,
+                        container: true,
+                        direction: "column",
+                        spacing: 2,
+                        mt: 4,
+                        children: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$data$2f$data$2e$json__$28$json$29$__["default"].faqs.slice(3).map((faq, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Accordion$2f$Accordion$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Accordion$3e$__["Accordion"], {
+                                disableGutters: true,
+                                sx: {
+                                    boxShadow: 0,
+                                    bgcolor: "#fff1d9",
+                                    border: `1px solid #ecccafff`,
+                                    p: 1.5,
+                                    borderRadius: 3,
+                                    minHeight: "50px",
+                                    "&:first-of-type": {
+                                        borderTopLeftRadius: 12,
+                                        borderTopRightRadius: 12
+                                    },
+                                    "&:last-of-type": {
+                                        borderBottomLeftRadius: 12,
+                                        borderBottomRightRadius: 12
+                                    }
+                                },
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$AccordionSummary$2f$AccordionSummary$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__AccordionSummary$3e$__["AccordionSummary"], {
+                                        expandIcon: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$icons$2d$material$2f$esm$2f$ExpandMore$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
+                                            sx: {
+                                                color: "black"
+                                            }
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                                            lineNumber: 154,
+                                            columnNumber: 31
+                                        }, void 0),
+                                        sx: {
+                                            borderRadius: 3
+                                        },
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Typography$2f$Typography$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Typography$3e$__["Typography"], {
+                                            fontSize: "18px",
+                                            fontWeight: "500",
+                                            color: "black",
+                                            children: faq.que
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                                            lineNumber: 157,
+                                            columnNumber: 19
+                                        }, this)
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                                        lineNumber: 153,
+                                        columnNumber: 17
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$AccordionDetails$2f$AccordionDetails$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__AccordionDetails$3e$__["AccordionDetails"], {
+                                        sx: {
+                                            bgcolor: "white",
+                                            borderRadius: 2,
+                                            textAlign: "justify",
+                                            fontSize: 15
+                                        },
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            dangerouslySetInnerHTML: {
+                                                __html: faq.ans
+                                            }
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                                            lineNumber: 169,
+                                            columnNumber: 19
+                                        }, this)
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                                        lineNumber: 161,
+                                        columnNumber: 17
+                                    }, this)
+                                ]
+                            }, index, true, {
+                                fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                                lineNumber: 133,
+                                columnNumber: 15
+                            }, this))
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                        lineNumber: 131,
+                        columnNumber: 11
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                lineNumber: 112,
+                columnNumber: 9
+            }, this)
+        }, void 0, false, {
+            fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+            lineNumber: 105,
+            columnNumber: 7
+        }, this)
+    }, void 0, false, {
+        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+        lineNumber: 104,
+        columnNumber: 5
+    }, this);
+}
+function ContactSupport() {
+    const [createTicket, setCreateTicket] = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].useState(false);
+    const [activeTicket, setActiveTicket] = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].useState(true);
+    const [reload, setReload] = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].useState(0);
+    function reloadData() {
+        setReload((reload + 1) % 10);
+    }
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Grid$2f$Grid$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Grid$3e$__["Grid"], {
+        size: 12,
+        px: {
+            xs: 2,
+            md: 3
+        },
+        py: 2,
+        justifyContent: "center",
+        sx: {
+            border: `1px solid #e0e0e0`
+        },
+        children: createTicket ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(CreateTicket, {
+            setCreateTicket: setCreateTicket,
+            setActiveTicket: setActiveTicket,
+            reloadData: reloadData
+        }, void 0, false, {
+            fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+            lineNumber: 196,
+            columnNumber: 9
+        }, this) : activeTicket ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(TicketList, {
+            setCreateTicket: setCreateTicket,
+            reload: reload,
+            setActiveTicket: setActiveTicket
+        }, void 0, false, {
+            fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+            lineNumber: 202,
+            columnNumber: 9
+        }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Grid$2f$Grid$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Grid$3e$__["Grid"], {
+            size: 12,
+            children: [
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Grid$2f$Grid$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Grid$3e$__["Grid"], {
+                    size: 12,
+                    container: true,
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mb: 1,
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$util$2f$page$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__Page$3e$__["Page"].Text, {
+                            sx: {
+                                fontSize: "16px",
+                                display: "inline-block",
+                                fontWeight: "600",
+                                borderBottom: (theme)=>`2px solid ${theme.palette.primary.main}`,
+                                pb: 0.5,
+                                my: 1
+                            },
+                            children: "Support Tickets"
+                        }, void 0, false, {
+                            fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                            lineNumber: 216,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$util$2f$page$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__Page$3e$__["Page"].MuiButton, {
+                            variant: "contained",
+                            color: "secondary",
+                            onClick: ()=>{
+                                setCreateTicket(true);
+                            },
+                            sx: {
+                                fontWeight: "bold"
+                            },
+                            children: "Create Ticket"
+                        }, void 0, false, {
+                            fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                            lineNumber: 229,
+                            columnNumber: 13
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                    lineNumber: 209,
+                    columnNumber: 11
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Grid$2f$Grid$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Grid$3e$__["Grid"], {
+                    container: true,
+                    size: 12,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    p: 2,
+                    mb: 1,
+                    sx: {
+                        minHeight: "300px",
+                        border: (theme)=>`1px solid ${theme.palette.primary.main}`,
+                        borderRadius: 2
+                    },
+                    children: "No Active Support Tickets"
+                }, void 0, false, {
+                    fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                    lineNumber: 242,
+                    columnNumber: 11
+                }, this)
+            ]
+        }, void 0, true, {
+            fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+            lineNumber: 208,
+            columnNumber: 9
+        }, this)
+    }, void 0, false, {
+        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+        lineNumber: 188,
+        columnNumber: 5
+    }, this);
+}
+function TicketList({ setCreateTicket, reload, setActiveTicket }) {
+    const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
+    const [user] = [
+        (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$Context$2f$member$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useMember"])()
+    ];
+    const [dateRange, setDateRange] = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].useState([]);
+    const [data, setData] = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].useState([]);
+    const [ticketStatus, setTicketStatus] = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].useState("all");
+    const [isLoading, setIsLoading] = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].useState(true);
+    __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].useEffect(()=>{
+        if (!user) return;
+        const fetchData = async ()=>{
+            setIsLoading(true);
+            try {
+                const resp = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$util$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__api$3e$__["api"].post(`/api/v1/support`, {
+                    "issueRaisedBy.email": user.mail
+                });
+                if (Array.isArray(resp?.data)) {
+                    setData(resp.data);
+                }
+            } catch (err) {} finally{
+                setIsLoading(false);
+            }
+        };
+        fetchData();
+    }, [
+        user,
+        dateRange,
+        reload
+    ]);
+    __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].useEffect(()=>{
+        if (!isLoading) {
+            setActiveTicket(Array.isArray(data) && data.length > 0);
+        }
+    }, [
+        data,
+        isLoading,
+        setActiveTicket
+    ]);
+    const columns = [
+        {
+            id: "createdAt",
+            label: "Created On",
+            render: (info)=>`${new Date(info.createdAt).relativeTime()} ago`,
+            feature: [
+                "searchable",
+                "sortable",
+                "lockable"
+            ]
+        },
+        {
+            id: "ticketNo",
+            label: "Ticket Number",
+            render: (info)=>info._id,
+            feature: [
+                "sortable",
+                "lockable"
+            ]
+        },
+        {
+            id: "subject",
+            label: "Subject",
+            width: 220,
+            render: (info)=>info.subject,
+            feature: [
+                "sortable",
+                "lockable"
+            ]
+        },
+        {
+            id: "status",
+            label: "Status",
+            render: (info)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Chip$2f$Chip$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Chip$3e$__["Chip"], {
+                    label: info.status,
+                    size: "small",
+                    color: info.status === "closed" ? "error" : "info",
+                    sx: {
+                        fontSize: "12px",
+                        textTransform: "capitalize",
+                        height: 22,
+                        px: 1
+                    }
+                }, void 0, false, {
+                    fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                    lineNumber: 323,
+                    columnNumber: 9
+                }, this),
+            feature: [
+                "filterable",
+                "sortable"
+            ]
+        },
+        {
+            id: "action",
+            label: "Action",
+            width: "200px",
+            render: (info)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    style: {
+                        display: "flex",
+                        gap: "4px"
+                    },
+                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$util$2f$page$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__Page$3e$__["Page"].MuiButton, {
+                        variant: "contained",
+                        color: "secondary",
+                        size: "small",
+                        sx: {
+                            height: 22,
+                            textTransform: "none"
+                        },
+                        onClick: ()=>{
+                            router.push(`./support/open?ticket=${info._id}`);
+                        },
+                        children: "Open"
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                        lineNumber: 348,
+                        columnNumber: 11
+                    }, this)
+                }, void 0, false, {
+                    fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                    lineNumber: 342,
+                    columnNumber: 9
+                }, this)
+        }
+    ];
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Grid$2f$Grid$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Grid$3e$__["Grid"], {
+        size: 12,
+        px: {
+            xs: 2,
+            md: 3
+        },
+        py: 2,
+        justifyContent: "center",
+        sx: {
+            border: `1px solid #e0e0e0`
+        },
+        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Datatable$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Datatable$3e$__["Datatable"], {
+            isLoading: isLoading,
+            pagination: [
+                10,
+                20,
+                50,
+                100
+            ],
+            pageSize: 20,
+            noDataMsg: "No Record Found.",
+            data: data,
+            hideColumnSelector: true,
+            extra: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$util$2f$page$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__Page$3e$__["Page"].Box, {
+                px: {
+                    xs: 0,
+                    md: 2
+                },
+                my: {
+                    xs: 1,
+                    md: 0
+                },
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 1,
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$util$2f$page$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__Page$3e$__["Page"].MuiButton, {
+                        variant: "contained",
+                        color: "secondary",
+                        onClick: ()=>{
+                            setCreateTicket(true);
+                        },
+                        sx: {
+                            height: 30,
+                            fontSize: 12,
+                            textTransform: "none",
+                            py: "5px"
+                        },
+                        children: "Create Ticket"
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                        lineNumber: 390,
+                        columnNumber: 13
+                    }, void 0),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$util$2f$page$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__Page$3e$__["Page"].Select, {
+                        label: "",
+                        value: ticketStatus,
+                        onChange: (e)=>setTicketStatus(e.target.value),
+                        options: [
+                            {
+                                label: "All Tickets",
+                                value: "all"
+                            },
+                            {
+                                label: "Pending Tickets",
+                                value: "pending"
+                            },
+                            {
+                                label: "Closed Tickets",
+                                value: "closed"
+                            }
+                        ],
+                        sx: {
+                            width: "160px",
+                            height: 30,
+                            "& .MuiSelect-select": {
+                                padding: "5px 14px",
+                                height: 30,
+                                fontSize: "12px !important",
+                                fontWeight: "bold"
+                            },
+                            "& .MuiOutlinedInput-root": {
+                                "& fieldset": {
+                                    borderColor: "grey.500"
+                                }
+                            }
+                        }
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                        lineNumber: 405,
+                        columnNumber: 13
+                    }, void 0),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Form$2f$DateRange$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__DateRangeSelector$3e$__["DateRangeSelector"], {
+                        onUpdate: (e)=>{
+                            setDateRange(e.map((d)=>new Date(d.toDate()).toISOString().split("T")[0]));
+                        }
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                        lineNumber: 431,
+                        columnNumber: 13
+                    }, void 0)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                lineNumber: 382,
+                columnNumber: 11
+            }, void 0),
+            title: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$util$2f$page$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__Page$3e$__["Page"].Text, {
+                sx: {
+                    fontSize: "16px",
+                    display: "inline-block",
+                    fontWeight: "600",
+                    borderBottom: (theme)=>`2px solid ${theme.palette.primary.main}`,
+                    pb: 0.5,
+                    my: 1
+                },
+                children: "Support Tickets"
+            }, void 0, false, {
+                fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                lineNumber: 443,
+                columnNumber: 11
+            }, void 0),
+            columns: columns
+        }, void 0, false, {
+            fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+            lineNumber: 374,
+            columnNumber: 7
+        }, this)
+    }, void 0, false, {
+        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+        lineNumber: 367,
+        columnNumber: 5
+    }, this);
+}
+function CreateTicket({ reloadData, setCreateTicket, setActiveTicket }) {
+    const form = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$hook$2d$form$2f$dist$2f$index$2e$esm$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useForm"])({
+        defaultValues: {}
+    });
+    const { control, handleSubmit, watch, setValue, formState: { errors } } = form;
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Grid$2f$Grid$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Grid$3e$__["Grid"], {
+        component: "form",
+        onSubmit: handleSubmit(async (data)=>{
+            let resp = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$util$2f$api$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__api$3e$__["api"].put(`/api/v1/support`, data);
+            (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$useToast$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__useToast$3e$__["useToast"])(resp);
+            if (resp.status === "success") {
+                setCreateTicket(false);
+                setActiveTicket(true);
+                reloadData();
+            }
+        }),
+        container: true,
+        spacing: 2,
+        size: 12,
+        sx: {
+            bgcolor: "white",
+            overflow: "hidden",
+            borderRadius: "10px",
+            boxShadow: 1,
+            pb: 2,
+            my: 1,
+            alignSelf: "flex-start",
+            border: (theme)=>`1px solid #e0e0e0`
+        },
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$SectionTitle$2e$jsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__SectionTitle$3e$__["SectionTitle"], {
+                title: "Create Ticket"
+            }, void 0, false, {
+                fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                lineNumber: 501,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Grid$2f$Grid$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Grid$3e$__["Grid"], {
+                container: true,
+                size: 12,
+                spacing: 1.4,
+                sx: {
+                    px: 2
+                },
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Form$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__Form$3e$__["Form"].Input, {
+                        control: control,
+                        ...form.register("subject"),
+                        label: "Subject"
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                        lineNumber: 504,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Form$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__Form$3e$__["Form"].TextEditor, {
+                        control: control,
+                        name: "description",
+                        label: "Description"
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                        lineNumber: 509,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$Form$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__Form$3e$__["Form"].Upload, {
+                        endpoint: "/api/v1/upload/image",
+                        name: "attachments",
+                        control: control,
+                        form: form,
+                        multiple: true,
+                        accept: "image/jpeg,image/png,image/webp",
+                        hideCaption: true
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                        lineNumber: 514,
+                        columnNumber: 9
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                lineNumber: 503,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$mui$2f$material$2f$esm$2f$Grid$2f$Grid$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Grid$3e$__["Grid"], {
+                container: true,
+                size: 12,
+                sx: {
+                    justifyContent: "flex-end",
+                    mr: 2,
+                    mb: 1
+                },
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$util$2f$page$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__Page$3e$__["Page"].MuiButton, {
+                        onClick: ()=>{
+                            setCreateTicket(false);
+                        },
+                        variant: "outlined",
+                        color: "secondary",
+                        sx: {
+                            fontWeight: "bold"
+                        },
+                        children: "Cancel"
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                        lineNumber: 533,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$util$2f$page$2f$index$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__$2a$__as__Page$3e$__["Page"].MuiButton, {
+                        type: "submit",
+                        variant: "contained",
+                        color: "secondary",
+                        sx: {
+                            fontWeight: "bold"
+                        },
+                        children: "Create"
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                        lineNumber: 545,
+                        columnNumber: 9
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+                lineNumber: 524,
+                columnNumber: 7
+            }, this)
+        ]
+    }, void 0, true, {
+        fileName: "[project]/src/app/member/(member pages)/support/page.jsx",
+        lineNumber: 476,
+        columnNumber: 5
+    }, this);
+}
+}),
+];
+
+//# sourceMappingURL=src_f7093b49._.js.map

@@ -1,0 +1,156 @@
+"use client";
+import React from "react";
+import {
+  AppBar,
+  Toolbar,
+  Box,
+  Avatar,
+  Menu,
+  MenuItem,
+  Typography,
+  Button,
+} from "@mui/material";
+import { useRouter } from "next/navigation";
+import { useMember } from "@/Context";
+import AdminNotification from "./AdminNotification";
+import LoadingOverlay from "@/componentsMHO/LoadingOverlay";
+
+export default function AdminHeader() {
+  const [profileAnchorEl, setProfileAnchorEl] = React.useState(null);
+  const me = useMember();
+  const router = useRouter();
+
+  // if (!me) return <LoadingOverlay />;
+  return (
+    <div>
+      {" "}
+      <AppBar
+        position="fixed"
+        sx={{
+          bgcolor: "#24292e",
+          boxShadow: 3,
+          pt: 1,
+          color: "white",
+          width: "100vw",
+          zIndex: 1201,
+          minHeight: "70px",
+
+          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <Toolbar
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            height: "70px",
+          }}
+        >
+          <Box
+            sx={{ cursor: "pointer" }}
+            onClick={async (e) => {
+              router.push(`/admin/dashboard`);
+            }}
+          >
+            <Box
+              component="img"
+              src="/images/logo/t2o-logo.png"
+              alt="logo"
+              // height="60px"
+              width="180px"
+              sx={{
+                ml: 2,
+                mb: 1,
+                cursor: "pointer",
+                display: { xs: "block", sm: "none" },
+              }}
+              onClick={() => {
+                router.push("/admin/dashboard");
+              }}
+            />{" "}
+            <Box
+              component="img"
+              src="/images/logo/t2o-logo.png"
+              alt="logo"
+              // height="90px"
+              width="225px"
+              sx={{
+                cursor: "pointer",
+                display: { xs: "none", sm: "block" },
+                scale: 1.1,
+              }}
+              onClick={() => {
+                router.push("/admin/dashboard");
+              }}
+            />
+          </Box>
+          <Box
+            display={"flex"}
+            alignItems="center"
+            gap={{ xs: 0, md: 2 }}
+            pb={1}
+          >
+            <AdminNotification />
+
+            <Button
+              onClick={(event) => setProfileAnchorEl(event.currentTarget)}
+              color="inherit"
+              sx={{ textTransform: "none" }}
+            >
+              <Avatar
+                alt="User photo"
+                src={me?.profilePicture ?? ""}
+                sx={{ height: "50px", width: "50px" }}
+              />
+              <Typography fontSize={"16px"} fontWeight={600} ml={1}>
+                {me?.name?.first ?? "User"}
+              </Typography>
+            </Button>
+          </Box>
+        </Toolbar>
+      </AppBar>
+      <Menu
+        anchorEl={profileAnchorEl}
+        open={Boolean(profileAnchorEl)}
+        onClose={() => setProfileAnchorEl(null)}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        PaperProps={{
+          sx: {
+            color: "black",
+            width: 150,
+            color: "white",
+            boxShadow: 24,
+            mt: 1.5,
+            overflow: "visible",
+          },
+        }}
+      >
+        {/* <MenuItem
+          onClick={() => {}}
+          sx={{ gap: 1, color: "black", fontWeight: 500 }}
+        >
+          <i className="icon-user" /> Profile
+        </MenuItem>
+        <MenuItem
+          onClick={() => {}}
+          sx={{ gap: 1, color: "black", fontWeight: 500 }}
+        >
+          <i className="icon-settings" /> Settings
+        </MenuItem> */}
+        <MenuItem
+          onClick={() => {}}
+          sx={{
+            gap: 1,
+            borderTop: "1px solid whitesmoke",
+            color: "black",
+            fontWeight: 500,
+          }}
+        >
+          <i className="icon-power" />
+          Logout
+        </MenuItem>
+      </Menu>
+    </div>
+  );
+}

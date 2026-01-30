@@ -1,0 +1,12 @@
+{
+  "from":"support@frequentresearch.com",
+  "name":"Turn 2 Opinion",
+  "replyTo":"support@frequentresearch.com",
+  "host": "192.168.0.145",
+  "port": 25,
+  "secure": false,
+  "auth": {
+    "user": "support@frequentresearch.com",
+    "pass": "b7xETR0KME2B"
+  }
+}
