@@ -1,27 +1,6 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/admin/(admin pages)/category/page": "app/admin/(admin pages)/category/page.js",
-  "/admin/(admin pages)/chat/page": "app/admin/(admin pages)/chat/page.js",
   "/admin/(admin pages)/dashboard/page": "app/admin/(admin pages)/dashboard/page.js",
   "/admin/(admin pages)/panelists/page": "app/admin/(admin pages)/panelists/page.js",
-  "/admin/(admin pages)/profiles/page": "app/admin/(admin pages)/profiles/page.js",
-  "/admin/(admin pages)/questions/page": "app/admin/(admin pages)/questions/page.js",
-  "/admin/(admin pages)/redemptions/page": "app/admin/(admin pages)/redemptions/page.js",
-  "/admin/(admin pages)/responses/page": "app/admin/(admin pages)/responses/page.js",
-  "/admin/(admin pages)/support/page": "app/admin/(admin pages)/support/page.js",
-  "/admin/(admin pages)/survey/page": "app/admin/(admin pages)/survey/page.js",
-  "/admin/(admin pages)/surveys/page": "app/admin/(admin pages)/surveys/page.js",
-  "/admin/page": "app/admin/page.js",
-  "/auth/terms/page": "app/auth/terms/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/member/(member pages)/dashboard/page": "app/member/(member pages)/dashboard/page.js",
-  "/member/(member pages)/myaccount/page": "app/member/(member pages)/myaccount/page.js",
-  "/member/(member pages)/profiles/page": "app/member/(member pages)/profiles/page.js",
-  "/member/(member pages)/referrals/page": "app/member/(member pages)/referrals/page.js",
-  "/member/(member pages)/rewards/page": "app/member/(member pages)/rewards/page.js",
-  "/member/(member pages)/settings/page": "app/member/(member pages)/settings/page.js",
-  "/member/(member pages)/support/page": "app/member/(member pages)/support/page.js",
-  "/member/(member pages)/surveys/page": "app/member/(member pages)/surveys/page.js",
-  "/page": "app/page.js",
-  "/survey/page": "app/survey/page.js"
+  "/page": "app/page.js"
 }
