@@ -549,32 +549,36 @@ export default function Header({
             },
           }}
         >
+          {user?.navbar?.map((link) => (
           <MenuItem
+            key={link?.text}
             onClick={() => {
               setProfileAnchorEl(null);
-              router.replace("/member/dashboard");
+              router.replace(link?.link ?? "/");
             }}
             sx={{ gap: 1, px: 3, py: 1, color: "black", fontWeight: 500 }}
           >
-            <i className="icon-drawer" /> Dashboard
+            {link?.icon && <i className={link.icon} />}
+            {link?.text}
           </MenuItem>
-          <MenuItem
-            onClick={async () => {
-              setProfileAnchorEl(null);
-              localStorage.removeItem("token");
-              user.Reload();
-            }}
-            sx={{
-              gap: 1,
-              px: 3,
-              py: 1,
-              borderTop: "1px solid whitesmoke",
-              color: "black",
-              fontWeight: 500,
-            }}
-          >
-            <i className="icon-power" /> Logout
-          </MenuItem>
+        ))}
+        <MenuItem
+          onClick={async () => {
+            setProfileAnchorEl(null);
+            user.Logout();
+          }}
+          sx={{
+            gap: 1,
+            px: 3,
+            py: 1,
+            borderTop: "1px solid whitesmoke",
+            color: "black",
+            fontWeight: 500,
+          }}
+        >
+          <i className="icon-power" />
+          Logout
+        </MenuItem>
         </Menu>
         <Drawer
           variant="temporary"

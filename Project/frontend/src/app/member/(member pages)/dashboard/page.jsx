@@ -13,26 +13,26 @@ import { SurveyPoints, CurrentUser } from "@/app/member/components/index";
 export default function page() {
   const user = useMember();
   const router = useRouter();
-  // React.useEffect(() => {
-  //   if (!user) return;
-  //   if (
-  //     user.terms === null ||
-  //     user.terms === undefined ||
-  //     user.terms.length === 0
-  //   ) {
-  //     router.replace("/auth/terms");
-  //   }
-  //   api
-  //     .post(`/api/v1/response`, {
-  //       ["survey.slug"]: "welcome",
-  //       status: "complete",
-  //     })
-  //     .then((resp) => {
-  //       if ("data" in resp && resp.data.length !== 0) return;
-  //       router.replace("/survey?name=welcome");
-  //     });
-  // }, [user]);
-  // if (!user) return <LoadingOverlay />;
+  React.useEffect(() => {
+    if (!user) return;
+    if (
+      user.terms === null ||
+      user.terms === undefined ||
+      user.terms.length === 0
+    ) {
+      router.replace("/auth/terms");
+    }
+    api
+      .post(`/api/v1/response`, {
+        ["survey.slug"]: "welcome",
+        status: "complete",
+      })
+      .then((resp) => {
+        if ("data" in resp && resp.data.length !== 0) return;
+        router.replace("/survey?name=welcome");
+      });
+  }, [user]);
+  if (!user) return <LoadingOverlay />;
   return (
     <Grid container size={12}>
       <Grid
@@ -55,19 +55,19 @@ export default function page() {
 
 function Stats() {
   const [statistics, setStatistics] = React.useState({});
-  // React.useEffect(() => {
-  //   api
-  //     .get(`/api/v1/me/statistics`)
-  //     .then((resp) => {
-  //       if (!resp.data) return useToast(resp);
-  //       let data = resp.data;
-  //       setStatistics(data);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     })
-  //     .finally(() => {});
-  // }, []);
+  React.useEffect(() => {
+    api
+      .get(`/api/v1/me/statistics`)
+      .then((resp) => {
+        if (!resp.data) return useToast(resp);
+        let data = resp.data;
+        setStatistics(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {});
+  }, []);
 
   const stats = React.useMemo(() => {
     return [

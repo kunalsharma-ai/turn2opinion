@@ -126,22 +126,28 @@ export default function AdminHeader() {
           },
         }}
       >
-        {/* <MenuItem
-          onClick={() => {}}
-          sx={{ gap: 1, color: "black", fontWeight: 500 }}
-        >
-          <i className="icon-user" /> Profile
-        </MenuItem>
+                {me?.navbar?.map((link) => (
+          <MenuItem
+            key={link?.text}
+            onClick={() => {
+              setProfileAnchorEl(null);
+              router.replace(link?.link ?? "/");
+            }}
+            sx={{ gap: 1, px: 3, py: 1, color: "black", fontWeight: 500 }}
+          >
+            {link?.icon && <i className={link.icon} />}
+            {link?.text}
+          </MenuItem>
+        ))}
         <MenuItem
-          onClick={() => {}}
-          sx={{ gap: 1, color: "black", fontWeight: 500 }}
-        >
-          <i className="icon-settings" /> Settings
-        </MenuItem> */}
-        <MenuItem
-          onClick={() => {}}
+          onClick={async () => {
+            setProfileAnchorEl(null);
+            me.Logout();
+          }}
           sx={{
             gap: 1,
+            px: 3,
+            py: 1,
             borderTop: "1px solid whitesmoke",
             color: "black",
             fontWeight: 500,

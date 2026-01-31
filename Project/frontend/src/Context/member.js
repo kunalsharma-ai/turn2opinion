@@ -5,27 +5,21 @@ import { api } from "@/util";
 const MemberContext = createContext();
 function notLoggedIn(pathname, router) {
   if (typeof pathname !== "string") return;
+  return;
   if (pathname.startsWith("/member")) router.replace("/");
   if (pathname.startsWith("/admin")) router.replace("/");
-
-}
-function createEvent(name, detail) {
-  if (typeof document === "undefined") return console.log("No Document");
-  if (!name) return console.log("Event ka naam required hai")
-  document.dispatchEvent(new CustomEvent(name, { detail }));
 }
 
 async function loadUserInfo() {
-  let temp = await api.get(`/api/v1/me`);
-  if (
-    temp.status === "error" &&
-    temp.message.toLowerCase() === "token expired"
-  ) {
-    window.localStorage.removeItem("token");
-    setMe(null);
-    throw new Error("token expired");
+  try {
+    let temp = await api.get(`/api/v1/me`);
+    if (temp.status === "error") throw new Error(temp.message);
+    if ("data" in temp)
+      return {...temp.data,fullname:temp.data.fullName}
+    
+  } catch (error) {
+    throw new Error(error.message);
   }
-  return temp.data
 }
 export function MemberProvider({ children }) {
   const [reload, setReload] = useState(1);
@@ -35,34 +29,36 @@ export function MemberProvider({ children }) {
     setReload(reload + 1)
   }
   function update(data) {
-    updateMe(data)
+    if (!Boolean(data))
+      updateMe(null)
+    else
+      updateMe(data)
+  }
+  async function Logout() {
+    await api.delete("/api/v1/me")
+    router.replace("/")
   }
   function updateMe(data) {
     setMe({
       ...data,
       Reload,
+      Logout,
       update
     })
   }
-  // useEffect(() => {
-  //   if (typeof window === "undefined")
-  //     return console.error("Window not loaded yet");
-  //   const token = localStorage.getItem("token");
-  //   if (!token) {
-  //     setMe(null)
-  //     return notLoggedIn(pathname, router);
-  //   }
-  //   loadUserInfo()
-  //     .then((resp) => {
-  //       if(pathname.startsWith("/admin") && !["root","admin"].includes(resp.role)){
-  //           router.replace("/")
-  //       }
-  //       updateMe(resp)
-  //     })
-  //     .catch((err) => {
-  //       notLoggedIn(pathname, router);
-  //     });
-  // }, [reload, pathname]);
+  useEffect(() => {
+    loadUserInfo()
+      .then((resp) => {
+        if (pathname.startsWith("/admin") && !["root", "admin"].includes(resp.role)) {
+          // router.replace("/")
+        }
+        updateMe(resp)
+      })
+      .catch((err) => {
+        // notLoggedIn(pathname, router);
+        setMe(null);
+      });
+  }, [reload, pathname]);
   return <MemberContext.Provider value={ me }>{ children }</MemberContext.Provider>;
 }
 

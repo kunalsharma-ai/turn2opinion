@@ -56,7 +56,10 @@ export default function MemberNotification() {
   ]);
   const { messages, emit } = useSharedSocket(user);
   const notificationCount = notificationMessages.length ?? 0;
-  console.log(messages)
+   React.useEffect(()=>{
+    if(messages instanceof Array)
+    setNotificationMessages(messages.filter(msg=>msg.type==="notification").map(msg=>msg.data));
+  },[messages])
   if (!user) return <></>;
   return (
     <>
