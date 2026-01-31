@@ -1,6 +1,0 @@
-{
-  "/admin/(admin pages)/dashboard/page": "app/admin/(admin pages)/dashboard/page.js",
-  "/admin/(admin pages)/panelists/page": "app/admin/(admin pages)/panelists/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/page": "app/page.js"
-}
