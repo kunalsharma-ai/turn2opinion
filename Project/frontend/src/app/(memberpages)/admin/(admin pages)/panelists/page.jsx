@@ -219,7 +219,8 @@ export default function () {
               fontSize: "18px",
               display: "inline-block",
               fontWeight: "600",
-           borderBottom:(theme)=> `2px solid ${theme.palette.primary.main}`,
+              borderBottom: (theme) =>
+                `2px solid ${theme.palette.primary.main}`,
               pb: 0.5,
               my: 1,
             }}
@@ -493,7 +494,8 @@ function UserData({ userId, onClose }) {
               sx={{
                 display: "inline-block",
                 fontWeight: "600",
-                borderBottom:(theme)=> `2px solid ${theme.palette.primary.main}`,
+                borderBottom: (theme) =>
+                  `2px solid ${theme.palette.primary.main}`,
 
                 pb: 0.5,
                 my: 1,
@@ -524,7 +526,8 @@ function UserData({ userId, onClose }) {
               sx={{
                 display: "inline-block",
                 fontWeight: "600",
-                borderBottom:(theme)=> `2px solid ${theme.palette.primary.main}`,
+                borderBottom: (theme) =>
+                  `2px solid ${theme.palette.primary.main}`,
 
                 pb: 0.5,
                 my: 1,
@@ -640,7 +643,7 @@ function ProfilesData({ user }) {
         .map((q) => ({
           ...q,
           answer: user[q.name],
-        }))
+        })),
     );
   }, [questionBank, user]);
 
@@ -653,52 +656,55 @@ function ProfilesData({ user }) {
   if (!tabs) return;
   return (
     <Grid size={12} px={2} mt={3}>
-      <Grid size={12} sx={{ border: "1px solid #cecece" }}>
-        <ToggleButtonGroup
-          variant="contained"
-          value={selectedProfile?.slug || ""}
-          exclusive
-          color="secondary"
-          fullWidth
-          onChange={(e, value) => {
-            if (!value) return;
-            setSelectedProfile(profiles.find((p) => p.slug === value));
-          }}
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", sm: "row" },
-            flexWrap: "nowrap",
+      <Grid size={12} sx={{ border: "1px solid #cecece", overflowX: "auto" }}>
+        <Grid size={12} sx={{ overflowX: "auto" }}>
+          <ToggleButtonGroup
+            variant="contained"
+            value={selectedProfile?.slug || ""}
+            exclusive
+            color="secondary"
+            fullWidth
+            onChange={(e, value) => {
+              if (!value) return;
+              setSelectedProfile(profiles.find((p) => p.slug === value));
+            }}
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              flexWrap: "nowrap",
 
-            "& .MuiToggleButton-root": {
-              textTransform: "capitalize",
-              fontWeight: 600,
-              fontSize: 13,
-              px: 2,
-              py: 0.5,
-              color: "secondary.main",
-              borderColor: "secondary.main",
-            },
-            "& .Mui-selected": {
-              backgroundColor: (theme) => theme.palette.primary.main + " !important",
-              color: "#fff !important",
-              "&:hover": {
-                backgroundColor: "primary.dark",
+              "& .MuiToggleButton-root": {
+                textTransform: "capitalize",
+                fontWeight: 600,
+                fontSize: 13,
+                px: 2,
+                py: 0.5,
+                color: "secondary.main",
+                borderColor: "secondary.main",
               },
-            },
-          }}
-        >
-          {tabs.map((tab, i) => (
-            <ToggleButton
-              variant="contained"
-              key={tab.link}
-              value={tab.link}
-              size="small"
-              color="secondary"
-            >
-              {tab.label}
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
+              "& .Mui-selected": {
+                backgroundColor: (theme) =>
+                  theme.palette.primary.main + " !important",
+                color: "#fff !important",
+                "&:hover": {
+                  backgroundColor: "primary.dark",
+                },
+              },
+            }}
+          >
+            {tabs.map((tab, i) => (
+              <ToggleButton
+                variant="contained"
+                key={tab.link}
+                value={tab.link}
+                size="small"
+                color="secondary"
+              >
+                {tab.label}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+        </Grid>
         <Collapse
           in={openData}
           timeout="auto"
