@@ -1,0 +1,2584 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "turn2opinion API",
+    "version": "1.0.0",
+    "description": "API documentation for the turn2opinion application"
+  },
+  "servers": [
+    {
+      "url": "https://t2o.sampledge.duckdns.org/api/v1",
+      "description": "Development server"
+    },
+    {
+      "url": "https://t2o-prod.sampledge.duckdns.org/api/v1",
+      "description": "Test server"
+    },
+    {
+      "url": "https://new.turn2opinion.com/api/v1",
+      "description": "Production server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Answers",
+      "description": "Answer management"
+    },
+    {
+      "name": "Batch",
+      "description": "Batch processing"
+    },
+    {
+      "name": "Category",
+      "description": "Category management"
+    },
+    {
+      "name": "changeEmail",
+      "description": "Email change requests"
+    },
+    {
+      "name": "Feasibility",
+      "description": "Feasibility checks"
+    },
+    {
+      "name": "forgotPassword",
+      "description": "Password recovery"
+    },
+    {
+      "name": "Me",
+      "description": "Current user operations"
+    },
+    {
+      "name": "Option",
+      "description": "Option management"
+    },
+    {
+      "name": "Profile",
+      "description": "User profile management"
+    },
+    {
+      "name": "ProjectLaunch",
+      "description": "Project launch operations"
+    },
+    {
+      "name": "Question",
+      "description": "Question management"
+    },
+    {
+      "name": "Respondent",
+      "description": "Respondent management"
+    },
+    {
+      "name": "Response",
+      "description": "Response management"
+    },
+    {
+      "name": "Support",
+      "description": "Support ticket system"
+    },
+    {
+      "name": "Survey",
+      "description": "Survey management"
+    },
+    {
+      "name": "Users",
+      "description": "User management and retrieval"
+    }
+  ],
+  "paths": {
+    "/answers": {
+      "get": {
+        "summary": "Summarize answers",
+        "tags": [
+          "Answers"
+        ],
+        "responses": {
+          "200": {
+            "description": "A summary of answers."
+          }
+        }
+      }
+    },
+    "/batch": {
+      "get": {
+        "summary": "List all batches",
+        "tags": [
+          "Batch"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of batches."
+          }
+        }
+      },
+      "post": {
+        "summary": "Filter batches",
+        "tags": [
+          "Batch"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A filtered list of batches."
+          }
+        }
+      },
+      "put": {
+        "summary": "Create a new batch",
+        "tags": [
+          "Batch"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Batch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Batch created successfully."
+          }
+        }
+      }
+    },
+    "/batch/{id}": {
+      "get": {
+        "summary": "Get batch by ID",
+        "tags": [
+          "Batch"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single batch."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update batch",
+        "tags": [
+          "Batch"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Batch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Batch updated successfully."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete batch",
+        "tags": [
+          "Batch"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Batch deleted successfully."
+          }
+        }
+      }
+    },
+    "/category": {
+      "get": {
+        "summary": "List all categories",
+        "tags": [
+          "Category"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of categories."
+          }
+        }
+      },
+      "post": {
+        "summary": "Filter categories",
+        "tags": [
+          "Category"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A filtered list of categories."
+          }
+        }
+      },
+      "put": {
+        "summary": "Create a new category",
+        "tags": [
+          "Category"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Category"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category created successfully."
+          }
+        }
+      }
+    },
+    "/category/{id}": {
+      "get": {
+        "summary": "Get category by ID",
+        "tags": [
+          "Category"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single category."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update category",
+        "tags": [
+          "Category"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Category"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category updated successfully."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete category",
+        "tags": [
+          "Category"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category deleted successfully."
+          }
+        }
+      }
+    },
+    "/change-email": {
+      "post": {
+        "summary": "Initiate email change",
+        "tags": [
+          "changeEmail"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email change process initiated."
+          }
+        }
+      },
+      "patch": {
+        "summary": "Confirm email change",
+        "tags": [
+          "changeEmail"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email changed successfully."
+          }
+        }
+      }
+    },
+    "/feasibility": {
+      "get": {
+        "summary": "List all users (for feasibility)",
+        "tags": [
+          "Feasibility"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of users."
+          }
+        }
+      },
+      "post": {
+        "summary": "Check feasibility",
+        "tags": [
+          "Feasibility"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Feasibility check results."
+          }
+        }
+      }
+    },
+    "/forgot-password": {
+      "post": {
+        "summary": "Request password reset",
+        "tags": [
+          "forgotPassword"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset link sent."
+          }
+        }
+      },
+      "patch": {
+        "summary": "Reset password",
+        "tags": [
+          "forgotPassword"
+        ],
+        "responses": {
+          "200": {
+            "description": "Password reset successfully."
+          }
+        }
+      }
+    },
+    "/me": {
+      "get": {
+        "summary": "Get current user details",
+        "tags": [
+          "Me"
+        ],
+        "responses": {
+          "200": {
+            "description": "Current user data."
+          }
+        }
+      },
+      "post": {
+        "summary": "Get specific user answers",
+        "tags": [
+          "Me"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "questions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User answers."
+          }
+        }
+      },
+      "patch": {
+        "summary": "Change password",
+        "tags": [
+          "Me"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "oldPassword": {
+                    "type": "string"
+                  },
+                  "newPassword": {
+                    "type": "string"
+                  },
+                  "cnfPassword": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password changed successfully."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update user details",
+        "tags": [
+          "Me"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Logout",
+        "tags": [
+          "Me"
+        ],
+        "responses": {
+          "200": {
+            "description": "Logged out successfully."
+          }
+        }
+      }
+    },
+    "/me/points": {
+      "get": {
+        "summary": "Get user points",
+        "tags": [
+          "Me"
+        ],
+        "responses": {
+          "200": {
+            "description": "User points summary."
+          }
+        }
+      }
+    },
+    "/me/statistics": {
+      "get": {
+        "summary": "Get user survey statistics",
+        "tags": [
+          "Me"
+        ],
+        "responses": {
+          "200": {
+            "description": "User survey statistics."
+          }
+        }
+      }
+    },
+    "/me/rewards": {
+      "get": {
+        "summary": "Get user rewards",
+        "tags": [
+          "Me"
+        ],
+        "responses": {
+          "200": {
+            "description": "User rewards summary."
+          }
+        }
+      }
+    },
+    "/me/answer": {
+      "patch": {
+        "summary": "Save user answers",
+        "tags": [
+          "Me"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Answers saved successfully."
+          }
+        }
+      }
+    },
+    "/me/change-category": {
+      "patch": {
+        "summary": "Change user category",
+        "tags": [
+          "Me"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category updated."
+          }
+        }
+      }
+    },
+    "/me/payment-method": {
+      "patch": {
+        "summary": "Change payment method",
+        "tags": [
+          "Me"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment method updated."
+          }
+        }
+      }
+    },
+    "/me/change-email": {
+      "patch": {
+        "summary": "Request email change",
+        "tags": [
+          "Me"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email change process initiated."
+          }
+        }
+      }
+    },
+    "/me/invite": {
+      "post": {
+        "summary": "Invite users",
+        "tags": [
+          "Me"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "emails": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Invitations sent."
+          }
+        }
+      },
+      "get": {
+        "summary": "Get invited users",
+        "tags": [
+          "Me"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of invited users."
+          }
+        }
+      }
+    },
+    "/me/profile": {
+      "patch": {
+        "summary": "Update profile answers",
+        "tags": [
+          "Me"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "questions": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "answers": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated successfully."
+          }
+        }
+      }
+    },
+    "/me/survey": {
+      "get": {
+        "summary": "Get my survey counts",
+        "tags": [
+          "Me"
+        ],
+        "responses": {
+          "200": {
+            "description": "Survey counts for the current user."
+          }
+        }
+      },
+      "post": {
+        "summary": "Get my surveys",
+        "tags": [
+          "Me"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "dateRange": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "source": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List of surveys for the current user."
+          }
+        }
+      },
+      "put": {
+        "summary": "Start a survey",
+        "tags": [
+          "Me"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "slug": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Survey started successfully."
+          }
+        }
+      },
+      "patch": {
+        "summary": "Submit survey answers",
+        "tags": [
+          "Me"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Survey submitted successfully."
+          }
+        }
+      }
+    },
+    "/option": {
+      "get": {
+        "summary": "Not implemented",
+        "tags": [
+          "Option"
+        ],
+        "responses": {
+          "200": {
+            "description": "Not implemented"
+          }
+        }
+      },
+      "post": {
+        "summary": "Filter options",
+        "tags": [
+          "Option"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A filtered list of options."
+          }
+        }
+      },
+      "put": {
+        "summary": "Not implemented",
+        "tags": [
+          "Option"
+        ],
+        "responses": {
+          "200": {
+            "description": "Not implemented"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Not implemented",
+        "tags": [
+          "Option"
+        ],
+        "responses": {
+          "200": {
+            "description": "Not implemented"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Not implemented",
+        "tags": [
+          "Option"
+        ],
+        "responses": {
+          "200": {
+            "description": "Not implemented"
+          }
+        }
+      }
+    },
+    "/option/{parent}": {
+      "get": {
+        "summary": "List options by parent",
+        "tags": [
+          "Option"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parent",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of options."
+          }
+        }
+      },
+      "post": {
+        "summary": "Filter options by parent",
+        "tags": [
+          "Option"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parent",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A filtered list of options."
+          }
+        }
+      },
+      "put": {
+        "summary": "Create a new option",
+        "tags": [
+          "Option"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parent",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Option"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Option created successfully."
+          }
+        }
+      }
+    },
+    "/option/{parent}/{id}": {
+      "get": {
+        "summary": "Get option by ID",
+        "tags": [
+          "Option"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parent",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single option."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update option",
+        "tags": [
+          "Option"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parent",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Option"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Option updated successfully."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete option",
+        "tags": [
+          "Option"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "parent",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Option deleted successfully."
+          }
+        }
+      }
+    },
+    "/profile": {
+      "get": {
+        "summary": "List all profiles",
+        "tags": [
+          "Profile"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of profiles."
+          }
+        }
+      },
+      "post": {
+        "summary": "Filter profiles",
+        "tags": [
+          "Profile"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A filtered list of profiles."
+          }
+        }
+      },
+      "put": {
+        "summary": "Create a new profile",
+        "tags": [
+          "Profile"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Profile"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile created successfully."
+          }
+        }
+      },
+      "patch": {
+        "summary": "It works well",
+        "tags": [
+          "Profile"
+        ],
+        "responses": {
+          "200": {
+            "description": "It works well"
+          }
+        }
+      }
+    },
+    "/profile/{id}": {
+      "get": {
+        "summary": "Get profile by ID",
+        "tags": [
+          "Profile"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single profile."
+          }
+        }
+      },
+      "post": {
+        "summary": "Verify OTP for profile",
+        "tags": [
+          "Profile"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OTP verified."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update profile",
+        "tags": [
+          "Profile"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Profile"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated successfully."
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update profile partially",
+        "tags": [
+          "Profile"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile updated."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete profile",
+        "tags": [
+          "Profile"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile deleted successfully."
+          }
+        }
+      }
+    },
+    "/projectLaunch": {
+      "get": {
+        "summary": "List all projects for launch",
+        "tags": [
+          "ProjectLaunch"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of projects."
+          }
+        }
+      },
+      "post": {
+        "summary": "Filter projects for launch",
+        "tags": [
+          "ProjectLaunch"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A filtered list of projects."
+          }
+        }
+      },
+      "put": {
+        "summary": "Create or update a project",
+        "tags": [
+          "ProjectLaunch"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectLaunch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project created or updated successfully."
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update project CPI",
+        "tags": [
+          "ProjectLaunch"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "CPI updated successfully."
+          }
+        }
+      }
+    },
+    "/projectLaunch/{id}": {
+      "get": {
+        "summary": "Get project by ID",
+        "tags": [
+          "ProjectLaunch"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single project."
+          }
+        }
+      },
+      "post": {
+        "summary": "Schedule invites",
+        "tags": [
+          "ProjectLaunch"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Invites scheduled."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update project from source",
+        "tags": [
+          "ProjectLaunch"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectLaunch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project updated successfully."
+          }
+        }
+      },
+      "patch": {
+        "summary": "Soft launch project",
+        "tags": [
+          "ProjectLaunch"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Soft launch successful."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Cancel a project",
+        "tags": [
+          "ProjectLaunch"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project cancelled successfully."
+          }
+        }
+      }
+    },
+    "/projectLaunch/{id}/qualified": {
+      "get": {
+        "summary": "Get qualified users for a project",
+        "tags": [
+          "ProjectLaunch"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of qualified users."
+          }
+        }
+      }
+    },
+    "/question": {
+      "get": {
+        "summary": "List all questions",
+        "tags": [
+          "Question"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of questions."
+          }
+        }
+      },
+      "post": {
+        "summary": "Filter questions",
+        "tags": [
+          "Question"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A filtered list of questions."
+          }
+        }
+      },
+      "put": {
+        "summary": "Create a new question",
+        "tags": [
+          "Question"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Question"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Question created successfully."
+          }
+        }
+      }
+    },
+    "/question/{id}": {
+      "get": {
+        "summary": "Get question by ID",
+        "tags": [
+          "Question"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single question."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update question",
+        "tags": [
+          "Question"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Question"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Question updated successfully."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete question",
+        "tags": [
+          "Question"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Question deleted successfully."
+          }
+        }
+      }
+    },
+    "/response": {
+      "get": {
+        "summary": "List all responses",
+        "tags": [
+          "Response"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of responses."
+          }
+        }
+      },
+      "post": {
+        "summary": "Filter responses",
+        "tags": [
+          "Response"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A filtered list of responses."
+          }
+        }
+      },
+      "put": {
+        "summary": "Create a new response",
+        "tags": [
+          "Response"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Response"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response created successfully."
+          }
+        }
+      }
+    },
+    "/response/{id}": {
+      "get": {
+        "summary": "Get response by ID",
+        "tags": [
+          "Response"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single response."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update response",
+        "tags": [
+          "Response"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Response"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Response updated successfully."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete response",
+        "tags": [
+          "Response"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Response deleted successfully."
+          }
+        }
+      }
+    },
+    "/support": {
+      "get": {
+        "summary": "List all support tickets",
+        "tags": [
+          "Support"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of support tickets."
+          }
+        }
+      },
+      "post": {
+        "summary": "Filter support tickets",
+        "tags": [
+          "Support"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A filtered list of support tickets."
+          }
+        }
+      },
+      "put": {
+        "summary": "Create a new support ticket",
+        "tags": [
+          "Support"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SupportTicket"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Support ticket created successfully."
+          }
+        }
+      }
+    },
+    "/support/{id}": {
+      "get": {
+        "summary": "Get support ticket by ID",
+        "tags": [
+          "Support"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single support ticket."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete support ticket",
+        "tags": [
+          "Support"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Support ticket deleted successfully."
+          }
+        }
+      }
+    },
+    "/support/{id}/reply": {
+      "get": {
+        "summary": "Get conversation for a ticket",
+        "tags": [
+          "Support"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of replies."
+          }
+        }
+      },
+      "put": {
+        "summary": "Reply to a support ticket",
+        "tags": [
+          "Support"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SupportComment"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reply posted successfully."
+          }
+        }
+      }
+    },
+    "/survey": {
+      "get": {
+        "summary": "List all surveys",
+        "tags": [
+          "Survey"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of surveys."
+          }
+        }
+      },
+      "post": {
+        "summary": "Filter surveys",
+        "tags": [
+          "Survey"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A filtered list of surveys."
+          }
+        }
+      },
+      "put": {
+        "summary": "Create a new survey",
+        "tags": [
+          "Survey"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Survey"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Survey created successfully."
+          }
+        }
+      }
+    },
+    "/survey/responses/{slug}": {
+      "get": {
+        "summary": "Get survey responses by slug",
+        "tags": [
+          "Survey"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of responses for the survey."
+          }
+        }
+      }
+    },
+    "/survey/{id}": {
+      "get": {
+        "summary": "Get survey by ID",
+        "tags": [
+          "Survey"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single survey."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update survey",
+        "tags": [
+          "Survey"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Survey"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Survey updated successfully."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete survey",
+        "tags": [
+          "Survey"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Survey deleted successfully."
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "summary": "Retrieve a list of users",
+        "description": "Retrieve a list of all users.",
+        "tags": [
+          "Users"
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of users.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Filter users",
+        "description": "Retrieve a filtered list of users based on the request body.",
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "Filter criteria for users"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A filtered list of users."
+          }
+        }
+      },
+      "put": {
+        "summary": "Create a new user",
+        "description": "Create a new user and sends an OTP for verification.",
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The OTP for user verification."
+          }
+        }
+      },
+      "patch": {
+        "summary": "Set user password",
+        "description": "Set the user's password after verifying the OTP.",
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "userID",
+                  "emailOTP",
+                  "password",
+                  "confirmPassword"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password created successfully."
+          }
+        }
+      }
+    },
+    "/user/summarize": {
+      "get": {
+        "summary": "Get user summary",
+        "description": "Retrieve a summary of user data.",
+        "tags": [
+          "Users"
+        ],
+        "responses": {
+          "200": {
+            "description": "A summary of users."
+          }
+        }
+      }
+    },
+    "/user/login": {
+      "post": {
+        "summary": "User login",
+        "description": "Authenticate a user and return a token.",
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful."
+          }
+        }
+      }
+    },
+    "/user/autologin": {
+      "post": {
+        "summary": "User autologin",
+        "description": "Automatically log in a user with a valid token.",
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful."
+          }
+        }
+      }
+    },
+    "/user/terms": {
+      "delete": {
+        "summary": "Reset user terms",
+        "description": "Reset the terms and conditions for a user.",
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Terms reset successfully."
+          }
+        }
+      }
+    },
+    "/user/refresh": {
+      "post": {
+        "summary": "Refresh user data",
+        "description": "Refresh a user's data, removing all records other than registration details.",
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User refreshed successfully."
+          }
+        }
+      }
+    },
+    "/user/resend": {
+      "post": {
+        "summary": "Resend OTP",
+        "description": "Resend the OTP for email verification.",
+        "tags": [
+          "Users"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "mail",
+                  "action"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP resent successfully."
+          }
+        }
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "summary": "Get user by ID",
+        "description": "Retrieve a single user by their ID.",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A single user."
+          }
+        }
+      },
+      "post": {
+        "summary": "Verify OTP",
+        "description": "Verify the OTP for a user.",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "code"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP verified successfully."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update user",
+        "description": "Update a user's information.",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully."
+          }
+        }
+      },
+      "patch": {
+        "summary": "Resend OTP for a user",
+        "description": "Resend the OTP for a specific user.",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "action"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP resent successfully."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete user",
+        "description": "Delete a user by their ID.",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted successfully."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Answer": {
+        "type": "object",
+        "properties": {}
+      },
+      "Batch": {
+        "type": "object",
+        "properties": {}
+      },
+      "Category": {
+        "type": "object",
+        "properties": {}
+      },
+      "Option": {
+        "type": "object",
+        "properties": {}
+      },
+      "Profile": {
+        "type": "object",
+        "properties": {}
+      },
+      "ProjectLaunch": {
+        "type": "object",
+        "properties": {}
+      },
+      "Question": {
+        "type": "object",
+        "properties": {}
+      },
+      "Response": {
+        "type": "object",
+        "properties": {}
+      },
+      "SupportTicket": {
+        "type": "object",
+        "properties": {}
+      },
+      "SupportComment": {
+        "type": "object",
+        "properties": {}
+      },
+      "Survey": {
+        "type": "object",
+        "properties": {}
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "mail": {
+            "type": "string",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "origin": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          }
+        }
+      },
+      "UserInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "mail": {
+            "type": "string",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+        }
+      }
+    }
+  }
+}
