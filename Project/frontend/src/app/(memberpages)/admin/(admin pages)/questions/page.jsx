@@ -45,7 +45,7 @@ export default function () {
           {
             id: "category",
             label: "Category",
-            width: "300px",
+
             render: (info) => {
               if (info.category instanceof Array) {
                 const formatter = new Intl.ListFormat("en-IN", {
@@ -60,7 +60,7 @@ export default function () {
             id: "label",
             label: "Question",
             data: "label",
-            width: "300px",
+            width: "400px",
             feature: ["searchable"],
           },
           {
@@ -105,7 +105,7 @@ export default function () {
             width: "150px",
             render: (info) =>
               ["radio", "checkbox", "select", "multiselect"].includes(
-                info?.type
+                info?.type,
               ) && (
                 <Page.MuiButton
                   sx={{ color: "secondary.main", fontWeight: 500, p: 0 }}
@@ -149,7 +149,8 @@ export default function () {
               fontSize: "18px",
               display: "inline-block",
               fontWeight: "600",
-              borderBottom:(theme)=> `2px solid ${theme.palette.primary.main}`,
+              borderBottom: (theme) =>
+                `2px solid ${theme.palette.primary.main}`,
               pb: 0.5,
               my: 1,
             }}

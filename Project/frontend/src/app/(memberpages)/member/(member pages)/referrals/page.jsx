@@ -141,7 +141,7 @@ export default function page() {
         <Typography fontSize={15}>
           Sharing is Caring! Why not extend your benefits to your colleagues.
           Share the below link with your colleagues and let them enjoy the
-          benefits of being a My Health Opinions - In Community member.
+          benefits of being a Turn2Opinion - In Community member.
         </Typography>
         <Box display={"flex"} alignItems="center" gap={1} width={"100%"}>
           <Typography fontSize={15} fontWeight={600}>

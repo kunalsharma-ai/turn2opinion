@@ -1046,22 +1046,22 @@ function Summary() {
       label: "Rewards Summary",
       render: (
         <Grid size={12}>
-          <DataList dataList={rewardSummary} />,
+          <DataList dataList={rewardSummary} />
         </Grid>
       ),
     },
     {
       label: "Rewards Processed Summary",
       render: (
-        <Grid size={12}>
-          <DataList dataList={rewardSummary} />,
+       <Grid size={12} container justifyContent="center" py={7}>
+          No Reward Processed yet.
         </Grid>
       ),
     },
     {
       label: "Rejected Responses",
       render: (
-        <Grid size={12} container justifyContent="center" py={5}>
+        <Grid size={12} container justifyContent="center" py={7}>
           No Rejected Responses.
         </Grid>
       ),
