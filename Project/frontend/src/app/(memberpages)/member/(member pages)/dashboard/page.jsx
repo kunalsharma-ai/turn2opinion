@@ -8,7 +8,7 @@ import { DateRangeSelector } from "@/components/Form";
 import LoadingOverlay from "@/componentsMHO/LoadingOverlay";
 import { api, Page } from "@/util";
 import { useToast } from "@/hooks";
-import { SurveyPoints, CurrentUser } from "@/app/member/components/index";
+import { SurveyPoints, CurrentUser } from "@/app/(memberpages)/member/components";
 
 export default function page() {
   const user = useMember();

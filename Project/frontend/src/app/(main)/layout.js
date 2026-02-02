@@ -1,6 +1,6 @@
 "use client";
 import React, { Suspense } from "react";
-import { Fab, Zoom, useTheme, useMediaQuery } from "@mui/material";
+import { Fab, Zoom, useTheme, useMediaQuery, Box } from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 import Header from "@/componentsMHO/Header";
@@ -10,6 +10,7 @@ import SignUp from "@/componentsMHO/SignUp";
 import Login from "@/componentsMHO/Login";
 import LoadingOverlay from "@/componentsMHO/LoadingOverlay";
 import { useQuery } from "@/Context";
+import { ContextProviders } from "@/Context";
 
 export default function MainLayout({ children }) {
   const [visible, setVisible] = React.useState(false);
@@ -63,30 +64,41 @@ export default function MainLayout({ children }) {
         background: "linear-gradient(90deg, #fff 0, #fff1d8 100%)",
       }}
     >
-      {" "}
-      <Header
-        openLogin={openLogin}
-        setOpenLogin={setOpenLogin}
-        openSignUp={openSignUp}
-        setOpenSignUp={setOpenSignUp}
-      />
+      <ContextProviders>
+        <React.Suspense
+          fallback={
+            <Box sx={{ width: "100%", height: { xs: "86px", lg: "124px" } }} />
+          }
+        >
+          <Header
+            openLogin={openLogin}
+            setOpenLogin={setOpenLogin}
+            openSignUp={openSignUp}
+            setOpenSignUp={setOpenSignUp}
+          />
+        </React.Suspense>
+      </ContextProviders>
       <main>{children}</main>
-      <JoinPanel open={openSignUp} setOpen={setOpenSignUp} />
-      <Footer />
-      <SignUp
-        open={openSignUp}
-        onClose={() => {
-          setOpenSignUp(false);
-        }}
-        setOpenLogin={setOpenLogin}
-      />
-      <Login
-        open={openLogin}
-        setOpenSignUp={setOpenSignUp}
-        onClose={() => {
-          setOpenLogin(false);
-        }}
-      />
+      <JoinPanel setOpenSignUp={setOpenSignUp} />
+      <React.Suspense fallback={<></>}>
+        <Footer />
+      </React.Suspense>
+      <ContextProviders>
+        <SignUp
+          open={openSignUp}
+          onClose={() => {
+            setOpenSignUp(false);
+          }}
+          setOpenLogin={setOpenLogin}
+        />
+        <Login
+          open={openLogin}
+          setOpenSignUp={setOpenSignUp}
+          onClose={() => {
+            setOpenLogin(false);
+          }}
+        />
+      </ContextProviders>
       {isMdUp && (
         <Zoom in={visible} unmountOnExit>
           <Fab
@@ -96,7 +108,7 @@ export default function MainLayout({ children }) {
             sx={{
               position: "fixed",
               bottom: 35,
-              right: 35,
+              left: 35,
               boxShadow: 4,
               zIndex: 999,
               color: "white",

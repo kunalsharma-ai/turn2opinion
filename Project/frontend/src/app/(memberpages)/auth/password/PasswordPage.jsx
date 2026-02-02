@@ -381,7 +381,7 @@ function SetPasswordForm({ form }) {
   );
 }
 
-export default function Page() {
+export default function () {
   return (
     <Suspense>
       <PasswordPage />

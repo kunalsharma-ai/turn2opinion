@@ -16,7 +16,7 @@ import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { Question } from "@/app/survey/page";
+import { Question } from "@/app/(memberpages)/survey/page";
 import { api, Page } from "@/util";
 import { useMember, useQuery } from "@/Context";
 import LoadingOverlay from "@/componentsMHO/LoadingOverlay";

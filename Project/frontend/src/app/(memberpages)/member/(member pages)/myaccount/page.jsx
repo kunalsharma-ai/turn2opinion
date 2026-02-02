@@ -372,16 +372,14 @@ function UserInfo({ user }) {
 function Payment() {
   const [openPayment, setOpenPayment] = React.useState(false);
   const [selectedMethod, setSelectedMethod] = React.useState("Wire Transfer");
-
   const [payment, setPayment] = React.useState({
-    method: "Wire Transfer",
-    value: {
-      bank: "qwertyuiop",
-      ifsc: "QWERTY",
-      accountNumber: "123456789097656434",
-    },
   });
-
+  const member = useMember();
+  React.useEffect(() => {
+    if(!member)return;
+    setPayment({...member.paymentMethod,value:member?.paymentMethod?.details})
+  }, [member])
+  
   const paymentMethods = [
     { name: "PayPal", icon: "/images/payment/paypal.png" },
     { name: "Wire Transfer", icon: "/images/payment/wire-transfer.png" },
@@ -389,10 +387,19 @@ function Payment() {
     { name: "UPI", icon: "/images/payment/upi.png" },
   ];
 
-  const handleSave = (method, value) => {
+  const handleSave = async (method, value) => {
+     let resp = await api.patch("/api/v1/me/payment-method", {
+      method, details: {
+        ...value
+      }
+    })
+    console.log(resp)
+    // console.log({value})
     setPayment({ method, value });
     setOpenPayment(false);
-    console.log({ method, value });
+    // setPayment({ method, value });
+    // setOpenPayment(false);
+    // console.log({ method, value });
   };
 
   return (
@@ -451,9 +458,9 @@ function Payment() {
             >
               {payment.method}:
             </Typography>
-            {typeof payment.value === "string" ? (
+             { ["PayPal","UPI","Amazon"].includes(payment?.method) ? (
               <Typography color="secondary" fontWeight={500}>
-                {payment.value}
+                { payment?.value?.account }
               </Typography>
             ) : (
               <Grid size={12} mt={1.5}>
@@ -475,7 +482,7 @@ function Payment() {
                     color="secondary"
                     fontWeight={500}
                   >
-                    {payment.value.bank}
+                    {payment?.value?.bank}
                   </Typography>{" "}
                 </Grid>
                 <Grid
@@ -496,7 +503,7 @@ function Payment() {
                     color="secondary"
                     fontWeight={500}
                   >
-                    {payment.value.ifsc}
+                    {payment?.value?.ifsc}
                   </Typography>{" "}
                 </Grid>
                 <Grid size={12} container alignItems="center" py={1}>
@@ -511,7 +518,7 @@ function Payment() {
                     color="secondary"
                     fontWeight={500}
                   >
-                    {payment.value.accountNumber}
+                    {payment?.value?.account}
                   </Typography>
                 </Grid>
               </Grid>
@@ -609,9 +616,9 @@ function Payment() {
                   Enter your PayPal Email
                 </Typography>
                 <Page.Input
-                  value={payment.method === "PayPal" ? payment.value : ""}
+                  value={payment.method === "PayPal" ? payment?.value?.account : ""}
                   onChange={(e) =>
-                    setPayment({ method: "PayPal", value: e.target.value })
+                    setPayment({ method: "PayPal", value: { account: e.target.value }})
                   }
                 />
                 <Button
@@ -640,7 +647,7 @@ function Payment() {
               >
                 <Grid size={6} container spacing={0}>
                   <Typography fontSize={16} fontWeight={600} color="secondary">
-                    Enter your Bank Name
+                    Bank
                   </Typography>
                   <Page.Input
                     value={
@@ -658,7 +665,7 @@ function Payment() {
                 </Grid>
                 <Grid size={6} container spacing={0}>
                   <Typography fontSize={16} fontWeight={600} color="secondary">
-                    Enter your IFSC/IBAN/SWIFT Code
+                    IFSC/IBAN/SWIFT Code
                   </Typography>
                   <Page.Input
                     value={
@@ -681,13 +688,13 @@ function Payment() {
                   <Page.Input
                     value={
                       payment.method === "Wire Transfer"
-                        ? payment.value.accountNumber || ""
+                        ? payment.value.account || ""
                         : ""
                     }
                     onChange={(e) =>
                       setPayment((prev) => ({
                         method: "Wire Transfer",
-                        value: { ...prev.value, accountNumber: e.target.value },
+                        value: { ...prev.value, account: e.target.value },
                       }))
                     }
                   />
@@ -725,9 +732,9 @@ function Payment() {
                   Enter your Amazon Email
                 </Typography>
                 <Page.Input
-                  value={payment.method === "Amazon" ? payment.value : ""}
+                  value={payment.method === "Amazon" ? payment?.value?.account : ""}
                   onChange={(e) =>
-                    setPayment({ method: "Amazon", value: e.target.value })
+                    setPayment({ method: "Amazon", value: {account:e.target.value }})
                   }
                 />
                 <Button
@@ -763,9 +770,9 @@ function Payment() {
                   Enter your UPI ID
                 </Typography>
                 <Page.Input
-                  value={payment.method === "UPI" ? payment.value : ""}
+                  value={payment.method === "UPI" ? payment?.value?.account : ""}
                   onChange={(e) =>
-                    setPayment({ method: "UPI", value: e.target.value })
+                    setPayment({ method: "UPI", value:{account: e.target.value }})
                   }
                 />
                 <Button

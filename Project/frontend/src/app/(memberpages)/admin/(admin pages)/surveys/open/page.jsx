@@ -13,12 +13,12 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 import { useRouter } from "next/navigation";
-import SurveyStatsCards from "@/app/admin/components/SurveyStats";
+import SurveyStatsCards from "../../../components/SurveyStats";
 import { Page, api } from "@/util";
 import { SideDrawer } from "@/components/Popup";
 import CloseIcon from "@mui/icons-material/Close";
 import { useQuery } from "@/Context";
-import Mailer from "@/app/admin/components/Mailer";
+import Mailer from "../../../components/Mailer";
 
 const statusColor = [
   {

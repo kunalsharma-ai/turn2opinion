@@ -1,5 +1,5 @@
 "use client"
-import { createContext, useContext } from "react"
+import { createContext, Suspense, useContext } from "react"
 import { useSearchParams } from "next/navigation";
 
 const QueryContext = createContext();
@@ -10,7 +10,7 @@ export function QueryProvider({ children }) {
         a[key] = values.length === 1 ? values[0] : values;
         return a;
     }, {})
-    return <QueryContext.Provider value={ queryParams }>{ children }</QueryContext.Provider>
+    return <Suspense><QueryContext.Provider value={ queryParams }>{ children }</QueryContext.Provider></Suspense>
 }
 export function useQuery() {
     return useContext(QueryContext);

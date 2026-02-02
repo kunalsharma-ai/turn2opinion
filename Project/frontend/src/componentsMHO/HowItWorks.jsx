@@ -2,11 +2,7 @@
 import React from "react";
 import { Grid, Container, Typography, Box, Button } from "@mui/material";
 
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-function HowItWorks() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+function HowItWorks({ setOpenSignUp }) {
   const cardData = [
     {
       img: "step1",
@@ -116,12 +112,7 @@ function HowItWorks() {
         <Button
           variant="outlined"
           onClick={() => {
-            const params = new URLSearchParams(searchParams.toString());
-            params.set("signup", "1");
-
-            router.replace(`${pathname}?${params.toString()}`, {
-              scroll: false,
-            });
+            setOpenSignUp(true);
           }}
           sx={{
             height: { xs: 38, lg: 42, xl: 52 },

@@ -24,12 +24,7 @@ import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import { useMember, useQuery } from "@/Context";
 
-export default function Header({
-  openLogin,
-  setOpenLogin,
-  openSignUp,
-  setOpenSignUp,
-}) {
+export default function Header({ setOpenLogin, setOpenSignUp }) {
   const [profileAnchorEl, setProfileAnchorEl] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -51,8 +46,6 @@ export default function Header({
   const handleDrawerClose = () => {
     setMobileOpen(false);
   };
-
-  /* -------------------- NAVIGATION LOGIC -------------------- */
 
   const scrollToHowItWorks = () => {
     const el = document.getElementById("how-it-works");
@@ -107,8 +100,6 @@ export default function Header({
       },
     },
   ];
-
-  /* --------------------------------------------------------- */
 
   const drawer = (
     <Box
@@ -198,12 +189,7 @@ export default function Header({
               <Button
                 variant="outlined"
                 onClick={() => {
-                  const params = new URLSearchParams(searchParams.toString());
-                  params.set("login", "1");
-
-                  router.replace(`${pathname}?${params.toString()}`, {
-                    scroll: false,
-                  });
+                  setOpenLogin(true);
                 }}
                 sx={{
                   padding: "15px 15px 15px 30px",
@@ -224,12 +210,7 @@ export default function Header({
               <Button
                 variant="outlined"
                 onClick={() => {
-                  const params = new URLSearchParams(searchParams.toString());
-                  params.set("signup", "1");
-
-                  router.replace(`${pathname}?${params.toString()}`, {
-                    scroll: false,
-                  });
+                  setOpenSignUp(true);
                 }}
                 sx={{
                   padding: "15px 30px 15px 15px",
@@ -435,14 +416,7 @@ export default function Header({
                     <Button
                       variant="outlined"
                       onClick={() => {
-                        const params = new URLSearchParams(
-                          searchParams.toString(),
-                        );
-                        params.set("login", "1");
-
-                        router.replace(`${pathname}?${params.toString()}`, {
-                          scroll: false,
-                        });
+                        setOpenLogin(true);
                       }}
                       sx={{
                         padding: "15px 15px 15px 30px",
@@ -463,14 +437,7 @@ export default function Header({
                     <Button
                       variant="outlined"
                       onClick={() => {
-                        const params = new URLSearchParams(
-                          searchParams.toString(),
-                        );
-                        params.set("signup", "1");
-
-                        router.replace(`${pathname}?${params.toString()}`, {
-                          scroll: false,
-                        });
+                        setOpenSignUp(true);
                       }}
                       sx={{
                         padding: "15px 30px 15px 15px",
@@ -529,7 +496,6 @@ export default function Header({
           anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
           PaperProps={{
             sx: {
-              // bgcolor: "#016550",
               color: "white",
               boxShadow: 24,
               mt: 1.5,
@@ -550,35 +516,35 @@ export default function Header({
           }}
         >
           {user?.navbar?.map((link) => (
+            <MenuItem
+              key={link?.text}
+              onClick={() => {
+                setProfileAnchorEl(null);
+                router.replace(link?.link ?? "/");
+              }}
+              sx={{ gap: 1, px: 3, py: 1, color: "black", fontWeight: 500 }}
+            >
+              {link?.icon && <i className={link.icon} />}
+              {link?.text}
+            </MenuItem>
+          ))}
           <MenuItem
-            key={link?.text}
-            onClick={() => {
+            onClick={async () => {
               setProfileAnchorEl(null);
-              router.replace(link?.link ?? "/");
+              user.Logout();
             }}
-            sx={{ gap: 1, px: 3, py: 1, color: "black", fontWeight: 500 }}
+            sx={{
+              gap: 1,
+              px: 3,
+              py: 1,
+              borderTop: "1px solid whitesmoke",
+              color: "black",
+              fontWeight: 500,
+            }}
           >
-            {link?.icon && <i className={link.icon} />}
-            {link?.text}
+            <i className="icon-power" />
+            Logout
           </MenuItem>
-        ))}
-        <MenuItem
-          onClick={async () => {
-            setProfileAnchorEl(null);
-            user.Logout();
-          }}
-          sx={{
-            gap: 1,
-            px: 3,
-            py: 1,
-            borderTop: "1px solid whitesmoke",
-            color: "black",
-            fontWeight: 500,
-          }}
-        >
-          <i className="icon-power" />
-          Logout
-        </MenuItem>
         </Menu>
         <Drawer
           variant="temporary"

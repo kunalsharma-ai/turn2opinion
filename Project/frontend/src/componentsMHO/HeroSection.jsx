@@ -12,8 +12,6 @@ import {
   Avatar,
 } from "@mui/material";
 
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-
 const BannerData = [
   {
     backgroundImg: "/images/home/banner/bg1.jpg",
@@ -38,10 +36,7 @@ const BannerData = [
   },
 ];
 
-const HeroSection = () => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+const HeroSection = ({ setOpenSignUp }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -170,12 +165,7 @@ const HeroSection = () => {
         <Button
           variant="contained"
           onClick={() => {
-            const params = new URLSearchParams(searchParams.toString());
-            params.set("signup", "1");
-
-            router.replace(`${pathname}?${params.toString()}`, {
-              scroll: false,
-            });
+            setOpenSignUp(true);
           }}
           sx={{
             height: { xs: 58, lg: 42, xl: 58 },

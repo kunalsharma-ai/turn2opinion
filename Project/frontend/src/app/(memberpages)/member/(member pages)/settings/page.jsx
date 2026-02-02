@@ -13,7 +13,7 @@ import {
   ListItem,
   Collapse,
 } from "@mui/material";
-import { Terms } from "@/app/auth/terms/page";
+import { Terms } from "@/app/(memberpages)/auth/terms/page";
 import { useMember } from "@/Context";
 import { useDebounce, useToast } from "@/hooks";
 

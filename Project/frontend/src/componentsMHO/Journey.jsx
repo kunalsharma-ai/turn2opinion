@@ -3,12 +3,7 @@ import React from "react";
 import { Grid, Typography, Box, Button } from "@mui/material";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-
-function Journey() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+function Journey({ setOpenSignUp }) {
   const steps = [
     "Create a free account via your active E-mail ID & valid Contact Number.",
     "You will receive a verification link to verify your email and contact number with OTP.",
@@ -92,12 +87,7 @@ function Journey() {
           <Button
             variant="contained"
             onClick={() => {
-              const params = new URLSearchParams(searchParams.toString());
-              params.set("signup", "1");
-
-              router.replace(`${pathname}?${params.toString()}`, {
-                scroll: false,
-              });
+              setOpenSignUp(true);
             }}
             sx={{
               height: { xs: 38, lg: 42, xl: 52 },

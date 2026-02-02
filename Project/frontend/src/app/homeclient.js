@@ -1,12 +1,23 @@
 "use client";
 
 import React from "react";
-import { Fab, Zoom, useTheme, useMediaQuery } from "@mui/material";
+import { Fab, Zoom, useTheme, useMediaQuery, Box } from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import Header from "@/componentsMHO/Header";
+import HeroSection from "@/componentsMHO/HeroSection";
+import Stats from "@/componentsMHO/Stats";
+import WhoWeAre from "@/componentsMHO/WhoWeAre";
+import HowItWorks from "@/componentsMHO/HowItWorks";
+import Testimonial from "@/componentsMHO/Testimonial";
+import JoinPanel from "@/componentsMHO/JoinPanel";
+import Footer from "@/componentsMHO/Footer";
+import WeArePart from "@/componentsMHO/WeArePart";
+import Journey from "@/componentsMHO/Journey";
 
 import SignUp from "@/componentsMHO/SignUp";
 import Login from "@/componentsMHO/Login";
 import { useQuery } from "@/Context";
+import { ContextProviders } from "@/Context";
 
 export default function HomeClient() {
   const theme = useTheme();
@@ -16,6 +27,12 @@ export default function HomeClient() {
   const [visible, setVisible] = React.useState(false);
   const [openLogin, setOpenLogin] = React.useState(false);
   const [openSignUp, setOpenSignUp] = React.useState(false);
+
+  const sections = [
+    { label: "About", id: "about" },
+    { label: "Steps to Join", id: "how-it-works" },
+    { label: "Contact Us", isExternalPage: true, path: "/contact" },
+  ];
 
   React.useEffect(() => {
     if (query && query.signup !== undefined) {
@@ -54,36 +71,77 @@ export default function HomeClient() {
 
   return (
     <>
-      {isMdUp && (
-        <Zoom in={visible} unmountOnExit>
-          <Fab
-            size="medium"
-            color="primary"
-            onClick={scrollToTop}
-            aria-label="Scroll to top"
-            sx={{
-              position: "fixed",
-              bottom: 35,
-              right: 35,
-              zIndex: 999,
-            }}
+      <div
+        id="scroll-container"
+        style={{
+          height: "100vh",
+          overflowY: "auto",
+          background: "linear-gradient(90deg, #fff 0, #fff1d8 100%)",
+        }}
+      >
+        <ContextProviders>
+          <React.Suspense
+            fallback={
+              <Box
+                sx={{ width: "100%", height: { xs: "86px", lg: "124px" } }}
+              />
+            }
           >
-            <KeyboardArrowUpIcon sx={{ fontSize: 30, color: "white" }} />
-          </Fab>
-        </Zoom>
-      )}
+            <Header
+              sections={sections}
+              setOpenLogin={setOpenLogin}
+              setOpenSignUp={setOpenSignUp}
+            />
+          </React.Suspense>
+        </ContextProviders>
 
-      <SignUp
-        open={openSignUp}
-        onClose={() => setOpenSignUp(false)}
-        setOpenLogin={setOpenLogin}
-      />
+        <HeroSection setOpenSignUp={setOpenSignUp} />
+        <WeArePart />
+        <Journey setOpenSignUp={setOpenSignUp} />
+        <Stats />
+        <WhoWeAre />
 
-      <Login
-        open={openLogin}
-        setOpenSignUp={setOpenSignUp}
-        onClose={() => setOpenLogin(false)}
-      />
+        <div id="how-it-works">
+          <HowItWorks setOpenSignUp={setOpenSignUp} />
+        </div>
+
+        <Testimonial />
+        <JoinPanel setOpenSignUp={setOpenSignUp} />
+        <React.Suspense fallback={<></>}>
+          <Footer sections={sections} />
+        </React.Suspense>
+        {isMdUp && (
+          <Zoom in={visible} unmountOnExit>
+            <Fab
+              size="medium"
+              color="primary"
+              onClick={scrollToTop}
+              aria-label="Scroll to top"
+              sx={{
+                position: "fixed",
+                bottom: 35,
+                left: 35,
+                zIndex: 999,
+              }}
+            >
+              <KeyboardArrowUpIcon sx={{ fontSize: 30, color: "white" }} />
+            </Fab>
+          </Zoom>
+        )}
+        <ContextProviders>
+          <SignUp
+            open={openSignUp}
+            onClose={() => setOpenSignUp(false)}
+            setOpenLogin={setOpenLogin}
+          />
+
+          <Login
+            open={openLogin}
+            setOpenSignUp={setOpenSignUp}
+            onClose={() => setOpenLogin(false)}
+          />
+        </ContextProviders>
+      </div>
     </>
   );
 }

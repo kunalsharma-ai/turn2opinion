@@ -2,13 +2,7 @@
 import React from "react";
 import { Button, Grid, Typography, Box } from "@mui/material";
 
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-
-
-function JoinPanel() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+function JoinPanel({ setOpenSignUp }) {
   return (
     <Grid
       size={12}
@@ -69,12 +63,7 @@ function JoinPanel() {
         </Box>
         <Button
           onClick={() => {
-            const params = new URLSearchParams(searchParams.toString());
-            params.set("signup", "1");
-
-            router.replace(`${pathname}?${params.toString()}`, {
-              scroll: false,
-            });
+            setOpenSignUp(true);
           }}
           variant="contained"
           sx={{
