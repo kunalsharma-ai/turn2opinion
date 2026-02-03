@@ -8,11 +8,11 @@ import { useMember, useQuery } from "@/Context";
 import { api, Page } from "@/util";
 export default function () {
   const [user, query] = [useMember(), useQuery()];
-  
+
   return (
     <>
-      <AvailableSurvey user={user} query={query} />
-      <MySurveys user={user} query={query} />
+      <AvailableSurvey user={ user } query={ query } />
+      <MySurveys user={ user } query={ query } />
     </>
   );
 }
@@ -41,11 +41,11 @@ function MySurveys({ user, query }) {
       id: "source",
       label: "Survey Type",
       render: (info) =>
-        ({
-          internal: "Your Survey",
-          external: "External Survey",
-          sampledge: "Daily Survey",
-        }[info.source]),
+      ({
+        internal: "Your Survey",
+        external: "External Survey",
+        sampledge: "Daily Survey",
+      }[info.source]),
     },
     {
       id: "createdAt",
@@ -60,8 +60,8 @@ function MySurveys({ user, query }) {
       render: (info) =>
         info.status === "active" && info.participationStatus === "" ? (
           <Page.Link
-            sx={{ color: "secondary.main", fontWeight: 600 }}
-            href={`/survey?name=${info.slug}`}
+            sx={ { color: "secondary.main", fontWeight: 600 } }
+            href={ `/survey?name=${info.slug}` }
           >
             Open
           </Page.Link>
@@ -74,40 +74,40 @@ function MySurveys({ user, query }) {
   ];
 
   return (
-    <Grid size={12} px={{ xs: 2, md: 3 }} mt={2} spacing={0}>
+    <Grid size={ 12 } px={ { xs: 2, md: 3 } } mt={ 2 } spacing={ 0 }>
       <Datatable
-        isLoading={false}
-        pagination={[10, 20, 50, 100]}
-        pageSize={20}
-        data={data}
+        isLoading={ false }
+        pagination={ [10, 20, 50, 100] }
+        pageSize={ 20 }
+        data={ data }
         hideColumnSelector
         noDataMsg="No Survey Available."
         extra={
-          <Box px={{ xs: 0, md: 2 }} my={{ xs: 1, md: 0 }}>
+          <Box px={ { xs: 0, md: 2 } } my={ { xs: 1, md: 0 } }>
             <DateRangeSelector
-              onUpdate={(e) => {
+              onUpdate={ (e) => {
                 setDateRange(
                   e.map((d) => new Date(d.toDate()).toISOString().split("T")[0])
                 );
-              }}
+              } }
             />
           </Box>
         }
         title={
           <Typography
-            sx={{
+            sx={ {
               fontSize: "16px",
               display: "inline-block",
               fontWeight: "600",
-              borderBottom:(theme)=> `2px solid ${theme.palette.primary.main}`,
+              borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
               pb: 0.5,
               my: 1,
-            }}
+            } }
           >
             My Survey
           </Typography>
         }
-        columns={columns}
+        columns={ columns }
       />
     </Grid>
   );
@@ -137,11 +137,11 @@ function AvailableSurvey({ user, query }) {
       id: "source",
       label: "Survey Type",
       render: (info) =>
-        ({
-          internal: "Your Survey",
-          external: "External Survey",
-          sampledge: "Daily Survey",
-        }[info.source]),
+      ({
+        internal: "Your Survey",
+        external: "External Survey",
+        sampledge: "Daily Survey",
+      }[info.source]),
     },
     {
       id: "createdAt",
@@ -158,47 +158,49 @@ function AvailableSurvey({ user, query }) {
     {
       id: "participate",
       label: "",
-      render: (info) =>
-        info.status === "active" &&
-        (info.participationStatus === "" ||
-          (info.source === "internal" &&
-            ["", "dropout"].includes(info.participationStatus))) ? (
+      render: (info) => {
+        console.log(info)
+        return info.status === "active" &&
+          (info.participationStatus === "" ||
+            (info.source === "internal" &&
+              ["", "dropout"].includes(info.participationStatus))) ? (
           <Page.Link
-            sx={{ color: "secondary.main", fontWeight: 600 }}
-            href={`/survey?name=${info.slug}`}
+            sx={ { color: "secondary.main", fontWeight: 600 } }
+            href={ `/survey?name=${info.slug}` }
           >
             Participate
           </Page.Link>
         ) : (
-          <>{info.participationStatus}</>
-        ),
+          <>{ info.participationStatus }</>
+        )
+      }
     },
   ];
   if (data.length === 0) return <></>;
   return (
-    <Grid size={12} px={{ xs: 2, md: 3 }} mt={2} spacing={0}>
+    <Grid size={ 12 } px={ { xs: 2, md: 3 } } mt={ 2 } spacing={ 0 }>
       <Datatable
-        isLoading={false}
-        pagination={[10, 20, 50, 100]}
-        pageSize={20}
-        data={data}
+        isLoading={ false }
+        pagination={ [10, 20, 50, 100] }
+        pageSize={ 20 }
+        data={ data }
         hideColumnSelector
         noDataMsg="No Survey available."
         title={
           <Typography
-            sx={{
+            sx={ {
               fontSize: "16px",
               display: "inline-block",
               fontWeight: "600",
               borderBottom: "2px solid #59AC77",
               pb: 0.5,
               my: 1,
-            }}
+            } }
           >
             Available Surveys
           </Typography>
         }
-        columns={columns}
+        columns={ columns }
       />
     </Grid>
   );

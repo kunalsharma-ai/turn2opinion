@@ -84,15 +84,16 @@ class Response extends CrudController {
         return temp;
     }
     async createOrUpdate(data) {
-        let filters = {...this.commonFilters};
+        let filters = { ...this.commonFilters };
         filters.user = new mongoose.Types.ObjectId(this.request.user._id);
-        filters["survey.slug"]=data.survey.slug
+        filters["survey.slug"] = data.survey.slug
         let resp = Mutate(await super.list(filters));
+        console.log(resp)
         if (resp.length === 0 || (resp.length === 1 && resp[0]["status"] === "dropout")) {
             let response = await responseModel.updateOne(filters, {
                 $set: { ...data, ...this.commonFilters }
             }, { upsert: true })
-            
+
         } else {
             throw new Error("Already completed survey")
         }
@@ -107,11 +108,12 @@ class Response extends CrudController {
                 .find({
                     user: this.request.user._id,
                     ...this.commonFilters
-                }, { "slug": "$survey.slug", "status": "$survey.status" }))
+                }, { "slug": "$survey.slug",status:1}))
             .reduce((a,c) => {
                 a[c.slug]=c.status;
                 return a;
             },{})
+            
         let surveys = Mutate(await surveyModel.aggregate([
             {
                 $match: {
@@ -120,7 +122,7 @@ class Response extends CrudController {
                     category: this.request.user.category
                 }
             }
-        ])).map(s=>({...s,participationStatus:(temp[s.slug]??"")}))
+        ])).map(s=>({...s,participationStatus:(temp[s.slug]??"")})) //*/
         return surveys
     }
     async mySurveyCounts() {
