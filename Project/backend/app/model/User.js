@@ -22,7 +22,8 @@ export default mongooseModel(
         },
         category: {
             type: String,
-            required: [true, "Please select if you are medical professional, caregiver or a patient."],
+            required: [true, "Please select your category"],
+            default: "b2c"
         },
         name: {
             salutation: {

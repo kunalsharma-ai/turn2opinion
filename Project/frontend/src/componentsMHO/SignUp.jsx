@@ -60,26 +60,26 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
   const [status, setStatus] = React.useState("signup"); // signup, success, duplicate
   const [isLoading, setIsLoading] = React.useState(false);
   const [country, setCountry] = React.useState("");
-  // const [categoryOptions, setCategoryOptions] = React.useState([]);
+  const [categoryOptions, setCategoryOptions] = React.useState([]);
   const [query, member] = [useQuery(), useMember()];
 
-  // React.useEffect(() => {
-  //   api.get(`/api/v1/category`).then((resp) => {
-  //     if (resp.status === "error") return useToast(resp);
-  //     setCategoryOptions(
-  //       resp.data.map((cat) => {
-  //         return {
-  //           label: capitalizeName(cat.name),
-  //           value: cat.name,
-  //         };
-  //       })
-  //     );
-  //   });
-  // }, []);
+  React.useEffect(() => {
+    api.get(`/api/v1/category`).then((resp) => {
+      if (resp.status === "error") return useToast(resp);
+      setCategoryOptions(
+        resp.data.map((cat) => {
+          return {
+            label: capitalizeName(cat.name),
+            value: cat.name,
+          };
+        })
+      );
+    });
+  }, []);
 
   const form = useForm({
     defaultValues: {
-      category: "",
+      category: "b2c",
       name: {
         salutation: "Mr.",
         first: "",
@@ -142,7 +142,8 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
     }
   };
 
-  const category = form.watch("category");
+  // const category = form.watch("category");
+  // console.log(category)
   return (
     <PopUp
       open={open}
@@ -544,7 +545,7 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
               </Grid>
             </Grid>
           )}
-          {status == "duplicate" && (
+          {status === "duplicate" && (
             <Grid
               size={12}
               container
@@ -613,7 +614,11 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                     variant="contained"
                     color="secondary"
                     sx={{ fontWeight: "bold", mt: 2, color: "white" }}
-                    onClick={() => {}}
+                    onClick={async() => {
+                      await api.post(`/api/v1/user/resend`,{
+                        ...form.watch()
+                      })
+                    }}
                   >
                     Resend Verification Email
                   </Page.MuiButton>{" "}

@@ -142,8 +142,8 @@ router
         async req => {
             // update single entry
             let message = req.body.action;
+            console.log(req.body)
             let data = await userController.findOne({ mail: req.body.mail, origin: req.origin });
-
             // if (req.body.action === "resend-otp") {
             let otp = await otpController.generate(
                 data._id,

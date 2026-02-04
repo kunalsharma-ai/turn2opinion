@@ -15,7 +15,7 @@ async function loadUserInfo() {
     let temp = await api.get(`/api/v1/me`);
     if (temp.status === "error") throw new Error(temp.message);
     if ("data" in temp)
-      return {...temp.data,fullname:temp.data.fullName}
+      return {...temp.data,fullname:temp.data.fullName,firstname:temp?.data?.name?.first,lastname:temp?.data?.name?.last}
     
   } catch (error) {
     throw new Error(error.message);
