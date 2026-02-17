@@ -61,6 +61,7 @@ class Survey extends CrudController {
         const category = this.request.user.category;
         if (!category) throw new Error("Invalid request")
         let temp = Mutate(await this.list({ slug, category }));
+    console.log({temp,slug,category})
         if (temp.length !== 1)
             throw new Error("Invalid request")
         return temp[0];

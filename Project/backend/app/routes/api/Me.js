@@ -69,6 +69,8 @@ router
                 }) : null)
                 .filter(link => Boolean(link));
             data = { ...Mutate(data), ...req.user, navbar }
+            data.firstname = data.name.first;
+            data.lastname = data.name.last;
             return { message, data };
         },
         userController
@@ -81,6 +83,8 @@ router
             let data = Mutate(await userController.read(req.user._id))
             data.whatsapp = data.phone;
             let temp = Mutate(await answerController.getAnswers({ user: req.user._id, question: { $in: [...req.body.questions] } }))
+            temp.firstname = data.name.first;
+            temp.lastname = data.name.last;
             return { message, data: { ...data, ...temp } };
         },
         userController

@@ -512,9 +512,9 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                       fontWeight: 600,
                     }}
                   >
-                    MyHealthOpinions
+                    Turn 2 Opinion
                   </Page.Text>{" "}
-                  - A Frequent Research Healthcare Panel Community.{" "}
+                  - A Frequent Research Panel Community.{" "}
                 </Page.Text>
                 <Page.Text
                   sx={{
@@ -755,95 +755,3 @@ function GenderRadioGroup({
     />
   );
 }
-
-// function AccountTypeButtonGroup({
-//   name = "category",
-//   control,
-//   validations,
-//   errors,
-//   isDisabled = false,
-//   options,
-// }) {
-//   const hasError = !!errors;
-//   const errorMessage = errors?.message;
-
-//   // const options = [
-//   //   { label: "Healthcare Professional", value: "Professional" },
-//   //   { label: "Patient", value: "Patient" },
-//   //   { label: "Caregiver", value: "Care Giver" },
-//   // ];
-
-//   return (
-//     <Controller
-//       name={name}
-//       control={control}
-//       rules={validations}
-//       render={({ field }) => (
-//         <FormControl fullWidth error={hasError} disabled={isDisabled}>
-//           <ToggleButtonGroup
-//             value={field.value || ""}
-//             size="small"
-//             exclusive
-//             onChange={(_, value) => {
-//               if (value !== null) field.onChange(value);
-//             }}
-//             sx={{
-//               display: "flex",
-//               flexDirection: { xs: "column", sm: "row" },
-//               flexWrap: "nowrap",
-//               "& .MuiToggleButton-root": {
-//                 textTransform: "none",
-//                 fontWeight: 600,
-//                 fontSize: 13,
-//                 px: 2,
-//                 py: 0.5,
-//                 color: errorMessage ? "red" : "secondary.main",
-//                 borderColor: errorMessage ? "red" : "secondary.main",
-//               },
-//               "& .Mui-selected": {
-//                 backgroundColor: "#016550 !important",
-//                 color: "#fff !important",
-//                 "&:hover": {
-//                   backgroundColor: "primary.dark",
-//                 },
-//               },
-
-//               // xs only rounded corners
-//               "@media (max-width: 600px)": {
-//                 "& .MuiToggleButton-root": {
-//                   borderRadius: 0,
-//                   flex: 1,
-//                   width: "100%",
-//                   justifyContent: "center",
-//                 },
-//                 "& .MuiToggleButton-root:first-of-type": {
-//                   borderTopLeftRadius: 4,
-//                   borderTopRightRadius: 4,
-//                 },
-//                 "& .MuiToggleButton-root:last-of-type": {
-//                   borderBottomLeftRadius: 4,
-//                   borderBottomRightRadius: 4,
-//                 },
-//                 "& .MuiToggleButton-root:not(:first-of-type)": {
-//                   borderTop: "none",
-//                 },
-//               },
-//             }}
-//           >
-//             {options.map((option) => (
-//               <ToggleButton key={option.value} value={option.value}>
-//                 {option.label}
-//               </ToggleButton>
-//             ))}
-//           </ToggleButtonGroup>
-
-//           {errorMessage && (
-//             <Page.Text sx={{ color: "red", fontSize: "11px" }}>
-//               {errorMessage}
-//             </Page.Text>
-//           )}
-//         </FormControl>
-//       )}
-//     />
-//   );
-// }

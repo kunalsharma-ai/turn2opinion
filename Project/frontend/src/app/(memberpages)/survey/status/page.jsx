@@ -13,7 +13,6 @@ import { Page } from "@/util";
 
 function page() {
   const [status, setStatus] = React.useState({ type: "complete" });
-  const logo = "/images/logo/My-Health-Opinions.png";
   const background = "/images/logo/groupofpeople.jpg";
 
   return (
@@ -58,8 +57,33 @@ function page() {
           <CircularProgress />
         ) : (
           <Page.Box>
-            <Page.Box>
-              <img src={logo} alt="Logo" style={{ height: 100 }} />
+            <Page.Box
+              sx={{
+                position: "relative",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Page.Box
+                sx={{
+                  height: { xs: "60px", md: "80px" },
+                  width: { xs: "180px", md: "300px" },
+                  position: "relative",
+                }}
+              >
+                <img src="/images/logo/mfr-logo.png" alt="logo" width="100%" />
+                <Page.Box
+                  component="img"
+                  src="/imagesmfr/dol-sign.gif"
+                  alt="logo"
+                  width={{ xs: 15, md: 20 }}
+                  sx={{
+                    position: "absolute",
+                    right: -4.5,
+                    top: { xs: 0, md: 5 },
+                  }}
+                />
+              </Page.Box>{" "}
             </Page.Box>
             <Page.Divider sx={{ mb: 2, width: "90%", mx: "auto" }} />
             <StatusMessage
@@ -117,8 +141,15 @@ function StatusMessage({ type, points, link }) {
       statusColor = "green";
       surveyStatus = "Complete !!!";
       statusMessage = {
-        title: <div><h4>You have successfully completed the survey. </h4>
-        You have earned <span style={{color:"green"}}>{points}</span> points.</div>,
+        title: (
+          <div>
+            <h4>You have successfully completed the survey. </h4>
+            You have earned <span style={{ color: "green" }}>
+              {points}
+            </span>{" "}
+            points.
+          </div>
+        ),
         info: `Dear user, You have successfully completed this survey. We will reach you for more opportunities soon.`,
       };
       break;

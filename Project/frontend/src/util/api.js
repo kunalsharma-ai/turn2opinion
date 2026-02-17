@@ -1,3 +1,4 @@
+//todo: Delete token if erorr received is Invalid Token
 function wait(time = 1000) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {

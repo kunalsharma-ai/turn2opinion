@@ -44,7 +44,12 @@ export default function Phone({
             : {
                 ...validations,
                 validate: (val) => {
-                  if (!val || val.trim() === "") return "Required"; // allow blank
+                  if (!val) return true; 
+                  if (val.length < 4)
+                    
+                    return true;
+
+                  // if (!val || val.trim() === "") return ""; // allow blank
                   try {
                     const parsedPhone = parsePhoneNumber("+" + val);
                     return parsedPhone.isValid() || "Invalid phone number";

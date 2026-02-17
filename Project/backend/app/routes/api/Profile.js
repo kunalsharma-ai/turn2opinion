@@ -1,6 +1,6 @@
 import express from "express";
 import { Profile as profileController } from "../../controller/index.js";
-import { expressRoute, expressView, isAuthenticated, fsLogger, getMailer, sendMail, Token } from "../../utils/index.js"
+import { Mutate, expressRoute, expressView, isAuthenticated, fsLogger, getMailer, sendMail, Token } from "../../utils/index.js"
 
 const router = express.Router();
 router
@@ -14,18 +14,23 @@ router
         },
         profileController
     ))
-    .post(expressRoute(
+    .post(isAuthenticated,expressRoute(
         async req => {
             // Read all entries matching filter
             let message = "";
-            let data = await profileController.list(req.body)
+            let status = await profileController.status();
+            let data = Mutate(await profileController.list(req.body))
+            for (let index = 0; index < data.length; index++) {
+                let profile = data[index];
+                profile["status"] = status[profile.slug] ?? -1;
+            }
             return { message, data };
         },
         profileController
     ))
-    .put(isAuthenticated,expressRoute(
+    .put(isAuthenticated, expressRoute(
         async req => {
-            let data=await profileController.create(req.body)
+            let data = await profileController.create(req.body)
             return {
                 message: "It works well",
                 data
@@ -43,10 +48,10 @@ router
         profileController
     ))
 
-    
+
 router
     .route('/:id')
-    .get(isAuthenticated,expressRoute(
+    .get(isAuthenticated, expressRoute(
         async req => {
             // read single entry
             let message = "";
@@ -64,11 +69,11 @@ router
         },
         profileController
     ))
-    .put(isAuthenticated,expressRoute(
+    .put(isAuthenticated, expressRoute(
         async req => {
             // update single entry
             let message = "Updated";
-            let data = await profileController.update(req.params.id,req.body)
+            let data = await profileController.update(req.params.id, req.body)
             return { message, data };
         },
         profileController

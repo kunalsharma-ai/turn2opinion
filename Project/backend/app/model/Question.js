@@ -35,6 +35,12 @@ export default mongooseModel(
         adminLabel:{
             type:String,
         },
+
+        isMoney: {
+            type: Boolean,
+            default: false,
+            required:true,
+        },
         isRequired:{
             type:Boolean,
             default:true

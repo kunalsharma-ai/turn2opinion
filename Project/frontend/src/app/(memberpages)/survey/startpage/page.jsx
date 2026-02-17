@@ -15,8 +15,8 @@ export default function SurveyStart({
           <tr>
             <td align="center">
               <img
-                src="https://myhealthopinions.com/images/logo/logo-300w.png"
-                alt="My Health Opinions"
+                src="/images/logo/logo-300w.png"
+                alt="Turn2Opinion"
                 style={{ width: 320, height: "auto", margin: 0, padding: 0 }}
               />
             </td>

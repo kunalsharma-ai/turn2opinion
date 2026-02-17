@@ -317,7 +317,19 @@ function TicketHistory({ ticket }) {
 
 function TicketReply({ ticket, reloadData }) {
   const [reload, setReload] = React.useState(1);
-
+let ticketStatusOptions = ticket.status === "Closed" ? [
+    "Re Open"
+  ] : [
+    "In Progress",
+    "Close",
+    // "New",
+    // "Open",
+    // "Resolved",
+    // "Re Opened",
+    // "Pending",
+    // "Awaited",
+    // "Cancelled",
+  ]
   const form = useForm({
     defaultValues: {},
   });
@@ -368,21 +380,21 @@ function TicketReply({ ticket, reloadData }) {
           control={ control }
           { ...form.register("status") }
           label="Ticket Status"
-          options={ [
-            "New",
-            "Open",
-            "In Progress",
-            "Resolved",
-            "Closed",
-            "Re Opened",
-            "Pending",
-            "Awaited",
-            "Cancelled",
-          ].map((option) => ({
+          options={ ticketStatusOptions.map((option) => ({
             label: option,
             value: option.sluggify(),
           })) }
+          errors={ form?.formState?.errors?.status }
+          validations={
+            {
+              validate: async val => {
+                if (ticketStatusOptions.map(v=>v.sluggify()).indexOf(val) > -1) return;
+                return "Please select ticket status"
+              }
+            }
+          }
         />
+   
       </Grid>
       <Form.Upload
         endpoint="/api/v1/upload/image"

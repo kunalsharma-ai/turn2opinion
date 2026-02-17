@@ -447,7 +447,7 @@ function UserData({ userId, onClose }) {
                   <i className="fa-solid fa-user" style={ { fontSize: "14px" } } />
                 }
               >
-                { me.role }
+                { me?.role }
               </Page.MuiButton>
             </Grid>
             <Collapse

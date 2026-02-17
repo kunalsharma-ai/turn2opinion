@@ -329,6 +329,11 @@ function CreateOrEditQuestion({ questionID = null, close }) {
         <Grid size={12} direction="column" container pl={2}>
           <Form.Checkbox
             control={control}
+            {...form.register("isMoney")}
+            label="Money"
+          />{" "}
+          <Form.Checkbox
+            control={control}
             {...form.register("isRequired")}
             label="Required"
           />{" "}

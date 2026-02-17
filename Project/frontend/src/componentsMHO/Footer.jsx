@@ -247,7 +247,7 @@ function Footer({ sections = [] }) {
             <ChevronRightIcon
               sx={{ fontSize: 24, mb: -0.7, color: "primary.main" }}
             />
-            Healthcare Panel Book
+            Panel Book
           </Typography>
           <Typography
             role="button"

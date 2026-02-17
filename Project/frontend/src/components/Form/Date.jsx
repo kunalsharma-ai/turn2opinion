@@ -92,6 +92,11 @@ export default function DateField({
                     zIndex: 9999,
                   },
                 },
+                dialog: {
+                  sx: {
+                    zIndex: 999999,
+                  },
+                },
                 day: {
                   sx: {
                     "&.Mui-selected": {

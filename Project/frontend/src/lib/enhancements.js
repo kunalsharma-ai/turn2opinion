@@ -48,7 +48,35 @@ Array.prototype.min = function () {
   }
   return min;
 };
+Array.prototype.sortRange = function (direction = "asc") {
+  const factor = direction === "desc" ? -1 : 1;
 
+  const extractLow = (val) => {
+    let str = val;
+    if (typeof str !== "string")
+      str = ("label" in val) ? str.label : ("value" in val) ? str.value : JSON.stringify(str);
+    str = str.toLowerCase();
+
+    // Up to ₹ 2,000 → treat as 0
+    if (str.includes("up to")) return 0;
+
+    // ₹ 5,000 and above → extract 5000
+    if (str.includes("and above")) {
+      return Number(str.replace(/[^\d]/g, ""));
+    }
+
+    // ₹ 2,000 - ₹ 3,000
+    if (str.includes("-")) {
+      return Number(str.split("-")[0].replace(/[^\d]/g, ""));
+    }
+
+    return 0;
+  };
+
+  return this.sort((a, b) =>
+    (extractLow(a) - extractLow(b)) * factor
+  );
+};
 Date.prototype.timestamp = function () {
   return Math.floor(this.getTime() / 1000);
 };
@@ -188,6 +216,38 @@ String.prototype.sluggify = function () {
     .replace(/-+/g, "-") // Collapse multiple consecutive dashes
     .replace(/^-|-$/g, ""); // Remove leading/trailing dashes
 };
+
+String.prototype.toMoneyRange = function (currency = "INR", locale = "en-IN") {
+  const formatter = new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency
+  });
+
+  const str = this.toLowerCase();
+
+  // 1️⃣ Up to case
+  if (str.includes("up to")) {
+    const value = Number(this.replace(/[^\d]/g, ""));
+    return `Up to ${formatter.format(value)}`;
+  }
+
+  // 2️⃣ And above case
+  if (str.includes("and above")) {
+    const value = Number(this.replace(/[^\d]/g, ""));
+    return `${formatter.format(value)} and above`;
+  }
+
+  // 3️⃣ Normal range case
+  if (str.includes("-")) {
+    const [min, max] = this.split("-").map(v =>
+      Number(v.replace(/[^\d]/g, ""))
+    );
+
+    return `${formatter.format(min)} - ${formatter.format(max)}`;
+  }
+
+  return this;
+};
 Number.prototype.toMoney = function (currency = "INR", locale = "en-IN") {
   const format = new Intl.NumberFormat(locale, {
     style: "currency",
@@ -204,18 +264,18 @@ Number.prototype.toPercent = function (locale = "en-IN") {
   });
   return format(this / 100);
 };
-Number.prototype.toTime=Number.prototype.toTimeElapsed = function () {
+Number.prototype.toTime = Number.prototype.toTimeElapsed = function () {
   let temp = this;
   let ms = temp % 1000; temp = (temp - ms) / 1000;
   let sec = temp % 60; temp = (temp - sec) / 60;
   let min = temp % 60; temp = (temp - min) / 60;
   let hr = temp;
-  return `${hr}:${(min<10)?`0${min}`:min}:${(sec<10)?`0${sec}`:sec}.${ms}`
+  return `${hr}:${(min < 10) ? `0${min}` : min}:${(sec < 10) ? `0${sec}` : sec}.${ms}`
 }
-Array.prototype.avg=function(){
-  let sum=0;
+Array.prototype.avg = function () {
+  let sum = 0;
   for (let i = 0; i < this.length; i++) {
-    sum+= Number(this[i]);
+    sum += Number(this[i]);
   }
-  return (sum/this.length)
+  return (sum / this.length)
 }

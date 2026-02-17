@@ -49,29 +49,11 @@ router
                         parent: [null, undefined, ""].includes(que.parent) ? undefined : que.parent,
                         required: que.isRequired ?? false,
                         disabled: !(que.isEditable ?? true),
+                        children:que.children,
+                        isMoney:que.isMoney,
                         options
                     })
                 }
-                /*
-                // console.log(options.length)
-                let data = questions.map(que => {
-                    return {
-                        category: req.user.category,
-                        type: que.type,
-                        name: que.name,
-                        size: que.size,
-                        label: (que.type === "note") ? que.description : que.label,
-                        parent: [null, undefined, ""].includes(que.parent) ? undefined : que.parent,
-                        required: que.isRequired ?? false,
-                        disabled: !(que.isEditable ?? true),
-                        options: options.filter(opt => opt.question === que.name).map(opt => ({
-                            label: opt.label,
-                            value: opt.value.trim(),
-                            parentValue: [null, undefined, ""].includes(que.parent) ? [] : opt.parentValue
-                        }))
-                    }
-                })
-                    //*/
                 return { message, data };
             },
             questionController

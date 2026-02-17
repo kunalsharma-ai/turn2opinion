@@ -30,9 +30,9 @@ export default function page() {
     >
       <ChangePassword />
       <SurveyNotification />
-      <Grid size={12}>
+      {/* <Grid size={12}>
         <ChangeEmail />
-      </Grid>
+      </Grid> */}
       <TermsAndConditions />
     </Grid>
   );

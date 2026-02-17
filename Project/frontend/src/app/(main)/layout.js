@@ -65,18 +65,16 @@ export default function MainLayout({ children }) {
       }}
     >
       <ContextProviders>
-        <React.Suspense
-          fallback={
-            <Box sx={{ width: "100%", height: { xs: "86px", lg: "124px" } }} />
-          }
-        >
-          <Header
-            openLogin={openLogin}
-            setOpenLogin={setOpenLogin}
-            openSignUp={openSignUp}
-            setOpenSignUp={setOpenSignUp}
-          />
-        </React.Suspense>
+        <Box sx={{ width: "100%", height: { xs: "86px", lg: "124px" } }}>
+          <React.Suspense fallback={null}>
+            <Header
+              openLogin={openLogin}
+              setOpenLogin={setOpenLogin}
+              openSignUp={openSignUp}
+              setOpenSignUp={setOpenSignUp}
+            />
+          </React.Suspense>
+        </Box>
       </ContextProviders>
       <main>{children}</main>
       <JoinPanel setOpenSignUp={setOpenSignUp} />

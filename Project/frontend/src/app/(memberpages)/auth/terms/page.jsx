@@ -153,7 +153,7 @@ export function Terms({
     {
       label: (
         <>
-          I accept for <b>Frequent Research / MyHealthOpinions</b> and its{" "}
+          I accept for <b>Frequent Research / Turn 2 Opinion</b> and its{" "}
           <b>trusted third parties</b> to use cookies to improve my experience
           and personalize content for market research
           <Page.Text component="span" color="red">
@@ -335,8 +335,8 @@ export function Terms({
     let resp = api.put(`/api/v1/user/${user._id}`, {
       terms: acceptedTerms,
     });
-    if ("Reload" in user) user.Reload();
     if (pathName === "/auth/terms") router.push("/survey?name=welcome");
+    if ("Reload" in user) user.Reload();
     else
       useToast({
         status: "success",
