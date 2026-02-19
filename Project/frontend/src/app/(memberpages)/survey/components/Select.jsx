@@ -8,14 +8,14 @@ import {
 } from "@mui/material";
 
 export default function SelectElement({ question, form, options, disabled }) {
-  const isQuestionDisabled = disabled || !(question.isEditable ?? true);
+  const isQuestionDisabled = disabled || question.disabled;
   const errors = form?.formState?.errors
   function onChange() {
     question?.children.map(child => {
       form.setValue(child, null)
     })
   }
-  if (!options || options?.length === 0) 
+  if (!options || options?.length === 0)
     // options=[];
     return <></>
   let formattedOptions = options;
@@ -24,7 +24,6 @@ export default function SelectElement({ question, form, options, disabled }) {
     if (!country) return null;
     formattedOptions = options.sortRange("asc").map(range => ({ ...range, label: range.label.toMoneyRange(getCurrency(country), "en-IN") }))
   }
-
   return <Grid
     size={ { xs: 12, md: Number(question?.size) } }
     alignSelf="flex-end"
