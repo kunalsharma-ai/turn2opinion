@@ -10,7 +10,7 @@ const world = JSON.parse(
 function getCN(country) {
     let cn
     if (country.length === 2)
-        cn = world[req.body.country];
+        cn = world[country];
     else {
         cn = Object.values(world).find(c => c.name === country);
     }

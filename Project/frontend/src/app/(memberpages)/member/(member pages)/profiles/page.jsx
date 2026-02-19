@@ -190,7 +190,7 @@ function ProfileTabs({
       return;
     return profiles.map((p) => p.slug).indexOf(query.profile);
   }, [profiles, query]);
-  if(!activeTab)return <></>
+  // if(!activeTab)return <></>
   return <Tabs
     value={ activeTab }
     onChange={ (_, v) => {
