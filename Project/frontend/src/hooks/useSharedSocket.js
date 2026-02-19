@@ -19,7 +19,7 @@ export default function useSharedSocket(user) {
   // Initialize SharedWorker
   useEffect(() => {
     if (!user || !uuid) {
-      console.log("Waiting for user + uuid...");
+      // console.log("Waiting for user + uuid...");
       return;
     }
     const worker = new SharedWorker("/js/socket-worker.js", { type: "classic" });

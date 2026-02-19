@@ -409,7 +409,7 @@ router
                 fld => {
                     let temp = fld.split("-")
                     const ans = req.body[fld];
-                    let gps = ans.consent === "Yes" ? {
+                    let gps = ans?.consent === "Yes" ? {
                         type: "Point",
                         coordinates: [ans.coordinates.lat, ans.coordinates.lng]
                     } : null;

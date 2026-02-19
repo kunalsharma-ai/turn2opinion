@@ -15,7 +15,9 @@ export default function SelectElement({ question, form, options, disabled }) {
       form.setValue(child, null)
     })
   }
-  if (!options || options?.length === 0) options=[];//return <></>
+  if (!options || options?.length === 0) 
+    // options=[];
+    return <></>
   let formattedOptions = options;
   if (question.isMoney) {
     let country = form.watch("country");

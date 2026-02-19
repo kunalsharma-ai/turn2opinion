@@ -31,14 +31,12 @@ export default function Survey({
 }) {
   const [currentPage, setCurrentPage] = React.useState(start);
   const [validationError, setValidationError] = React.useState(null);
-
   const pages = survey.pages;
   const form = useForm({
     mode: "onChange",
     // defaultValues: {...user,age:""}
   })
   let questions = pages[currentPage]
-  // if (!questions || !(questions instanceof Array)) return;
   if (questions?.includes("phone")) questions.push("phone-whatsapp")
   if (questions?.includes("alternate-phone")) questions.push("alternate-phone-whatsapp")
   questions = questions?.unique();

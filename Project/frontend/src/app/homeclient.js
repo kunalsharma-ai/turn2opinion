@@ -80,19 +80,15 @@ export default function HomeClient() {
         }}
       >
         <ContextProviders>
-          <React.Suspense
-            fallback={
-              <Box
-                sx={{ width: "100%", height: { xs: "86px", lg: "124px" } }}
+          <Box sx={{ width: "100%", height: { xs: "86px", lg: "124px" } }}>
+            <React.Suspense fallback={<></>}>
+              <Header
+                sections={sections}
+                setOpenLogin={setOpenLogin}
+                setOpenSignUp={setOpenSignUp}
               />
-            }
-          >
-            <Header
-              sections={sections}
-              setOpenLogin={setOpenLogin}
-              setOpenSignUp={setOpenSignUp}
-            />
-          </React.Suspense>
+            </React.Suspense>
+          </Box>
         </ContextProviders>
 
         <HeroSection setOpenSignUp={setOpenSignUp} />

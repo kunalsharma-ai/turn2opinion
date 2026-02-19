@@ -63,7 +63,7 @@ export default function AdminSidebar({ children }) {
     <Box display="flex">
       <Grid
         container
-        sx={{
+        sx={ {
           width: { xs: "50px", lg: "110px" },
           flexDirection: "column",
           height: "calc(100vh - 78px)",
@@ -75,81 +75,80 @@ export default function AdminSidebar({ children }) {
           borderRadius: "0 0.75rem 0.75rem 0",
           borderLeft: "1px solid #f3f3f3",
           boxShadow: "0 3px 30px rgba(0,0,0,0.1), 0 3px 20px rgba(0,0,0,0.1)",
-        }}
+        } }
       >
-        {sidebarItems.map((item, index) => {
+        { sidebarItems.map((item, index) => {
           const isActive = pathname === item.link;
 
           const content = (
             <Box
               role="button"
-              tabIndex={0}
-              onClick={() => router.push(item.link)}
-              onKeyDown={(e) => {
+              tabIndex={ 0 }
+              onClick={ () => router.push(item.link) }
+              onKeyDown={ (e) => {
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
                   router.push(item.link);
                 }
-              }}
-              sx={{
+              } }
+              sx={ {
                 flex: 1,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
                 border: "1px solid #e0e0e0",
-
                 color: isActive ? "secondary.main" : "inherit",
-
-bgcolor: isActive ? "#eaf7ffff" : "transparent",
+                bgcolor: isActive ? "#eaf7ffff" : "transparent",
                 gap: 0.5,
+                minHeight:"6rem",
                 "&:hover": {
                   cursor: "pointer",
                   color: "secondary.main",
                   bgcolor: "#d6e8f3ff",
-                                },
-              }}
+                },
+              } }
             >
-              <i className={item.icon} style={{ fontSize: "26px" }} />
+              <i className={ item.icon } style={ { fontSize: "26px" } } />
               <Typography
-                sx={{
+                sx={ {
                   display: {
                     xs: "none",
                     lg: "inline",
                     fontWeight: 500,
                     fontSize: { xs: 12, xl: 14 },
                   },
-                }}
+                } }
               >
-                {item.label}
+                { item.label }
               </Typography>
             </Box>
           );
 
           return isLgUp ? (
-            <React.Fragment key={index}>{content}</React.Fragment>
+            <React.Fragment key={ index }>{ content }</React.Fragment>
           ) : (
             <Tooltip
-              key={index}
-              title={item.label}
+              key={ index }
+              title={ item.label }
               placement="right"
-              enterTouchDelay={0}
-              leaveTouchDelay={1000}
+              enterTouchDelay={ 0 }
+              leaveTouchDelay={ 1000 }
             >
-              {content}
+              { content }
             </Tooltip>
           );
-        })}
+        }) }
       </Grid>
       <Grid
-        sx={{
+        sx={ {
           width: { xs: "calc(100vw - 50px)", lg: "calc(100vw - 110px)" },
           height: "calc(100vh - 78px)",
           mt: "78px",
           overflow: "auto",
-        }}
+        } }
       >
-        {children}
+        { children }
       </Grid>
     </Box>
   );

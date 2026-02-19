@@ -1,13 +1,8 @@
 "use client";
 import React from "react";
-
-import { Datatable, Icon, SectionTitle } from "@/components";
-
 import { api, Page } from "@/util";
 import { useMember, useQuery } from "@/Context";
 import LoadingOverlay from "@/componentsMHO/LoadingOverlay";
-import CircleIcon from "@mui/icons-material/Circle";
-
 import {
   Grid,
   Chip,
@@ -17,10 +12,15 @@ import {
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
+import { Datatable, Icon, SectionTitle } from "@/components";
 
-import CloseIcon from "@mui/icons-material/Close";
-import { SideDrawer } from "@/components/Popup";
+import {
+  Circle as CircleIcon,
+  Close as CloseIcon
+} from "@mui/icons-material";
+
 import DataList from "@/componentsMHO/DataList";
+import { SideDrawer } from "@/components/Popup";
 import { useToast } from "@/hooks";
 import useSharedSocket from "@/hooks/useSharedSocket";
 
@@ -202,7 +202,9 @@ function UserData({ userId, onClose }) {
   const [user, setUser] = React.useState({});
   const [loading, setLoading] = React.useState(true);
   const [showProfiles, setShowProfiles] = React.useState(false);
+  const [reload,setReload]=React.useState(false);
   const me = useMember();
+  
   React.useEffect(() => {
     if (!userId) return;
     setLoading(true)
@@ -406,6 +408,13 @@ function UserData({ userId, onClose }) {
                 variant="contained"
                 color="error"
                 sx={ { fontWeight: 600 } }
+                onClick={ async (e) => {
+                  let resp = await api.delete(`/api/v1/user/terms`, {
+                    _id: user._id,
+                  });
+                  useToast(resp);
+                  setReload(!reload);
+                } }
                 startIcon={
                   <i
                     className="fa-solid fa-trash-can"
@@ -413,12 +422,39 @@ function UserData({ userId, onClose }) {
                   />
                 }
               >
-                Delete
+                Delete Terms Accepted
+              </Page.MuiButton>
+              <Page.MuiButton
+                variant="contained"
+                color="error"
+                sx={ { fontWeight: 600 } }
+                onClick={ async (e) => {
+                  let resp = await api.post(`/api/v1/user/refresh`, {
+                    user: user._id,
+                  });
+                  useToast(resp);
+                  setReload(!reload);
+                } }
+                startIcon={
+                  <i
+                    className="fa-solid fa-trash-can"
+                    style={ { fontSize: "14px" } }
+                  />
+                }
+              >
+                Clear Data
               </Page.MuiButton>
               <Page.MuiButton
                 variant="outlined"
                 color={ user?.isActive ? "error" : "success" }
                 sx={ { borderWidth: 2, fontWeight: 600 } }
+                onClick={ async (e) => {
+                  let resp = await api.put(`/api/v1/user/${user._id}`, {
+                    isActive: !Boolean(user?.isActive)
+                  });
+                  useToast(resp);
+                  setReload(!reload);
+                } }
                 startIcon={
                   user?.isActive ? (
                     <i className="fa-solid fa-ban" style={ { fontSize: "14px" } } />
@@ -433,21 +469,18 @@ function UserData({ userId, onClose }) {
                 { user?.isActive ? "Disable" : "Enable" }
               </Page.MuiButton>
               <Page.MuiButton
-                variant="contained"
+                variant="outlined"
+                color={ ["admin", "superadmin", "root"].includes(user?.role) ? "error" : "success" }
+                sx={ { borderWidth: 2, fontWeight: 600 } }
                 onClick={ async (e) => {
-                  let resp = await api.put(`/api/v1/user/${userId}`, {
-                    role: (me.role === "admin") ? "respondent" : "admin"
+                  let resp = await api.put(`/api/v1/user/${user._id}`, {
+                    role: ["admin", "superadmin", "root"].includes(user?.role) ? "respondent" : "admin"
                   });
                   useToast(resp);
-                  onClose();
+                  setReload(!reload);
                 } }
-                color="info"
-                sx={ { fontWeight: 600, color: "white" } }
-                startIcon={
-                  <i className="fa-solid fa-user" style={ { fontSize: "14px" } } />
-                }
               >
-                { me?.role }
+                { ["admin", "superadmin", "root"].includes(user?.role) ? "Admin" : "Respondent" }
               </Page.MuiButton>
             </Grid>
             <Collapse

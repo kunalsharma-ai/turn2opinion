@@ -37,6 +37,19 @@ export default function Header({ setOpenLogin, setOpenSignUp }) {
   const query = useQuery();
 
   useEffect(() => {
+    if (!query) return;
+    if (![null, undefined].includes(query.login)) {
+      setOpenLogin(true);
+    }
+  }, [query]);
+  React.useEffect(() => {
+    if (!query) return;
+    if (![null, undefined].includes(query.signup)) {
+      setOpenSignUp(true);
+    }
+  }, [query]);
+
+  useEffect(() => {
     setMounted(true);
   }, []);
 
@@ -103,7 +116,7 @@ export default function Header({ setOpenLogin, setOpenSignUp }) {
 
   const drawer = (
     <Box
-      sx={{
+      sx={ {
         display: "flex",
         flexDirection: "column",
         width: "100vw",
@@ -113,10 +126,10 @@ export default function Header({ setOpenLogin, setOpenSignUp }) {
         pt: 2,
         pb: 2,
         position: "relative",
-      }}
+      } }
     >
       <Box
-        sx={{
+        sx={ {
           px: 3,
           pb: 2,
           mb: 2,
@@ -125,52 +138,52 @@ export default function Header({ setOpenLogin, setOpenSignUp }) {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-        }}
+        } }
       >
         <img
           src="/images/logo/t2o-logo.png"
           alt="logo"
-          height={26.8}
-          width={180}
-          style={{ cursor: "pointer" }}
-          onClick={() => {
+          height={ 26.8 }
+          width={ 180 }
+          style={ { cursor: "pointer" } }
+          onClick={ () => {
             router.push("/");
             setMobileOpen(false);
-          }}
+          } }
         />
         <IconButton
-          onClick={() => setMobileOpen(false)}
-          sx={{ color: "black" }}
+          onClick={ () => setMobileOpen(false) }
+          sx={ { color: "black" } }
         >
           <CloseIcon />
         </IconButton>
       </Box>
 
       <List>
-        {navigationItems.map((item, index) => (
+        { navigationItems.map((item, index) => (
           <ListItem
-            key={index}
-            onClick={item.onClick}
-            sx={{ cursor: "pointer" }}
+            key={ index }
+            onClick={ item.onClick }
+            sx={ { cursor: "pointer" } }
           >
             <ListItemText
-              primary={item.label}
-              primaryTypographyProps={{
+              primary={ item.label }
+              primaryTypographyProps={ {
                 fontWeight: "bold",
                 color: "primary.main",
                 fontSize: "22px",
                 borderBottom: "1px solid #ead0b9ff",
                 pb: 2,
-              }}
+              } }
             />
           </ListItem>
-        ))}
+        )) }
       </List>
-      <Box sx={{ px: 3, mt: 3 }} position="absolute" bottom="20px">
-        {showLogin &&
+      <Box sx={ { px: 3, mt: 3 } } position="absolute" bottom="20px">
+        { showLogin &&
           (user === null ? (
             <ButtonGroup
-              sx={{
+              sx={ {
                 height: 56,
                 "& .MuiButtonGroup-grouped": { borderWidth: 2 },
                 "& .MuiButtonGroup-grouped:not(:first-of-type)": {
@@ -184,14 +197,14 @@ export default function Header({ setOpenLogin, setOpenSignUp }) {
                   borderTopLeftRadius: 0,
                   borderBottomLeftRadius: 0,
                 },
-              }}
+              } }
             >
               <Button
                 variant="outlined"
-                onClick={() => {
+                onClick={ () => {
                   setOpenLogin(true);
-                }}
-                sx={{
+                } }
+                sx={ {
                   padding: "15px 15px 15px 30px",
                   fontSize: "16px",
                   borderColor: "primary.main",
@@ -203,16 +216,16 @@ export default function Header({ setOpenLogin, setOpenSignUp }) {
                     color: "white",
                     background: "var(--bg-primary-gradient)",
                   },
-                }}
+                } }
               >
                 Sign In
               </Button>
               <Button
                 variant="outlined"
-                onClick={() => {
+                onClick={ () => {
                   setOpenSignUp(true);
-                }}
-                sx={{
+                } }
+                sx={ {
                   padding: "15px 30px 15px 15px",
                   fontSize: "16px",
                   borderRadius: 20,
@@ -224,77 +237,77 @@ export default function Header({ setOpenLogin, setOpenSignUp }) {
                     color: "white",
                     background: "var(--bg-primary-gradient)",
                   },
-                }}
+                } }
               >
                 Sign Up
               </Button>
             </ButtonGroup>
           ) : (
             <Box
-              display={"flex"}
+              display={ "flex" }
               alignItems="center"
               justifyContent="space-between"
             >
               <Box display="flex" alignItems="center">
                 <Avatar
-                  sx={{
+                  sx={ {
                     width: "40px",
                     height: "40px",
                     bgcolor: user?.profilePicture
                       ? "transparent"
                       : "primary.main",
-                  }}
-                  src={user?.profilePicture || ""}
-                  alt={user?.name?.first ?? "U"}
+                  } }
+                  src={ user?.profilePicture || "" }
+                  alt={ user?.name?.first ?? "U" }
                 />
                 <Typography
-                  sx={{
+                  sx={ {
                     ml: 1,
                     fontSize: "16px",
                     fontWeight: "bold",
-                  }}
+                  } }
                 >
-                  {user?.name?.first ?? "User"}
+                  { user?.name?.first ?? "User" }
                 </Typography>
               </Box>
-              <Box display={"flex"} alignItems="center" gap={2} ml={3}>
+              <Box display={ "flex" } alignItems="center" gap={ 2 } ml={ 3 }>
                 <Tooltip
                   title="Dashboard"
-                  enterTouchDelay={0}
-                  leaveTouchDelay={1500}
+                  enterTouchDelay={ 0 }
+                  leaveTouchDelay={ 1500 }
                   placement="top"
                 >
                   <IconButton
-                    sx={{ fontSize: "26px", color: "black" }}
-                    onClick={() => {
+                    sx={ { fontSize: "26px", color: "black" } }
+                    onClick={ () => {
                       router.push("/member/dashboard");
                       handleDrawerClose();
-                    }}
+                    } }
                   >
                     <DashboardIcon />
                   </IconButton>
                 </Tooltip>
                 <Tooltip
                   title="Log Out"
-                  enterTouchDelay={0}
-                  leaveTouchDelay={1500}
+                  enterTouchDelay={ 0 }
+                  leaveTouchDelay={ 1500 }
                   placement="top"
                 >
                   <IconButton
-                    sx={{ fontSize: "26px", color: "black" }}
-                    onClick={async () => {
+                    sx={ { fontSize: "26px", color: "black" } }
+                    onClick={ async () => {
                       localStorage.removeItem("token");
                       user.Reload();
                       router.push("/");
                       handleDrawerClose();
-                    }}
+                    } }
                   >
                     <PowerSettingsNewIcon />
                   </IconButton>
                 </Tooltip>
               </Box>
             </Box>
-          ))}
+          )) }
       </Box>
     </Box>
   );
@@ -303,46 +316,46 @@ export default function Header({ setOpenLogin, setOpenSignUp }) {
     <>
       <AppBar
         position="static"
-        elevation={0}
-        sx={{
+        elevation={ 0 }
+        sx={ {
           position: { xs: "sticky", md: "static" },
           top: { xs: 0, md: "auto" },
           bgcolor: { xs: "white", md: "transparent" },
           color: "black",
           p: { xs: "15px", lg: "30px" },
           zIndex: 200,
-        }}
+        } }
       >
         <Toolbar
-          sx={{ justifyContent: "space-between", alignItems: "center", px: 0 }}
+          sx={ { justifyContent: "space-between", alignItems: "center", px: 0 } }
         >
           <Box
-            component={"img"}
+            component={ "img" }
             src="/images/logo/t2o-logo.png"
             alt="logo"
-            height={{ xs: 26.8, md: 42 }}
-            width={{ xs: 180, md: 282 }}
-            style={{ cursor: "pointer" }}
-            onClick={() => {
+            height={ { xs: 26.8, md: 42 } }
+            width={ { xs: 180, md: 282 } }
+            style={ { cursor: "pointer" } }
+            onClick={ () => {
               router.push("/");
-            }}
+            } }
           />
-          <Box display="flex" gap={4} justifyContent={"flex-end"}>
+          <Box display="flex" gap={ 4 } justifyContent={ "flex-end" }>
             <Box
-              sx={{
+              sx={ {
                 display: { xs: "none", lg: "flex" },
                 gap: { xs: 2, xl: 4 },
                 alignItems: "center",
-              }}
+              } }
             >
-              {navigationItems.map((item, index) => (
+              { navigationItems.map((item, index) => (
                 <Box
                   component="button"
-                  tabIndex={0}
-                  key={index}
+                  tabIndex={ 0 }
+                  key={ index }
                   className="hover-line"
-                  onClick={item.onClick}
-                  sx={{
+                  onClick={ item.onClick }
+                  sx={ {
                     fontFamily: "inherit",
                     bgcolor: "transparent",
                     border: "none",
@@ -369,35 +382,35 @@ export default function Header({ setOpenLogin, setOpenSignUp }) {
                       color: "primary.main",
                       "&:after": { width: "100%" },
                     },
-                  }}
+                  } }
                 >
-                  {item.label}
+                  { item.label }
                 </Box>
-              ))}
+              )) }
             </Box>
             <Box
-              sx={{ display: { xs: "flex", lg: "none" }, alignItems: "center" }}
+              sx={ { display: { xs: "flex", lg: "none" }, alignItems: "center" } }
             >
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
                 edge="end"
-                onClick={handleDrawerToggle}
-                sx={{ mx: 0.5 }}
+                onClick={ handleDrawerToggle }
+                sx={ { mx: 0.5 } }
               >
-                <MenuIcon fontSize="large" sx={{ color: "primary.main" }} />
+                <MenuIcon fontSize="large" sx={ { color: "primary.main" } } />
               </IconButton>
             </Box>
             <Box
-              sx={{
+              sx={ {
                 display: { xs: "none", lg: "block" },
                 alignItems: "center",
-              }}
+              } }
             >
-              {showLogin &&
+              { showLogin &&
                 (user === null ? (
                   <ButtonGroup
-                    sx={{
+                    sx={ {
                       height: 56,
                       "& .MuiButtonGroup-grouped": { borderWidth: 2 },
                       "& .MuiButtonGroup-grouped:not(:first-of-type)": {
@@ -411,14 +424,14 @@ export default function Header({ setOpenLogin, setOpenSignUp }) {
                         borderTopLeftRadius: 0,
                         borderBottomLeftRadius: 0,
                       },
-                    }}
+                    } }
                   >
                     <Button
                       variant="outlined"
-                      onClick={() => {
+                      onClick={ () => {
                         setOpenLogin(true);
-                      }}
-                      sx={{
+                      } }
+                      sx={ {
                         padding: "15px 15px 15px 30px",
                         fontSize: "16px",
                         borderColor: "primary.main",
@@ -430,16 +443,16 @@ export default function Header({ setOpenLogin, setOpenSignUp }) {
                           color: "white",
                           background: "var(--bg-primary-gradient)",
                         },
-                      }}
+                      } }
                     >
                       Sign In
                     </Button>
                     <Button
                       variant="outlined"
-                      onClick={() => {
+                      onClick={ () => {
                         setOpenSignUp(true);
-                      }}
-                      sx={{
+                      } }
+                      sx={ {
                         padding: "15px 30px 15px 15px",
                         fontSize: "16px",
                         borderRadius: 20,
@@ -451,50 +464,50 @@ export default function Header({ setOpenLogin, setOpenSignUp }) {
                           color: "white",
                           background: "var(--bg-primary-gradient)",
                         },
-                      }}
+                      } }
                     >
                       Sign Up
                     </Button>
                   </ButtonGroup>
                 ) : (
                   <Button
-                    onClick={(event) => setProfileAnchorEl(event.currentTarget)}
+                    onClick={ (event) => setProfileAnchorEl(event.currentTarget) }
                     color="inherit"
-                    sx={{ textTransform: "none", px: 2 }}
+                    sx={ { textTransform: "none", px: 2 } }
                   >
                     <Avatar
-                      sx={{
+                      sx={ {
                         width: "40px",
                         height: "40px",
                         bgcolor: user?.profilePicture
                           ? "transparent"
                           : "primary.main",
-                      }}
-                      src={user?.profilePicture || ""}
-                      alt={"user photo"}
+                      } }
+                      src={ user?.profilePicture || "" }
+                      alt={ "user photo" }
                     />
                     <Typography
-                      sx={{
+                      sx={ {
                         display: { xs: "none", lg: "block" },
                         ml: 1,
                         fontSize: "16px",
                         fontWeight: "bold",
-                      }}
+                      } }
                     >
-                      {user?.name?.first ?? "User"}
+                      { user?.name?.first ?? "User" }
                     </Typography>
                   </Button>
-                ))}
+                )) }
             </Box>
           </Box>
         </Toolbar>
         <Menu
-          anchorEl={profileAnchorEl}
-          open={Boolean(profileAnchorEl)}
-          onClose={() => setProfileAnchorEl(null)}
-          transformOrigin={{ horizontal: "left", vertical: "top" }}
-          anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
-          PaperProps={{
+          anchorEl={ profileAnchorEl }
+          open={ Boolean(profileAnchorEl) }
+          onClose={ () => setProfileAnchorEl(null) }
+          transformOrigin={ { horizontal: "left", vertical: "top" } }
+          anchorOrigin={ { horizontal: "left", vertical: "bottom" } }
+          PaperProps={ {
             sx: {
               color: "white",
               boxShadow: 24,
@@ -513,34 +526,34 @@ export default function Header({ setOpenLogin, setOpenSignUp }) {
                 zIndex: 0,
               },
             },
-          }}
+          } }
         >
-          {user?.navbar?.map((link) => (
+          { user?.navbar?.map((link) => (
             <MenuItem
-              key={link?.text}
-              onClick={() => {
+              key={ link?.text }
+              onClick={ () => {
                 setProfileAnchorEl(null);
                 router.replace(link?.link ?? "/");
-              }}
-              sx={{ gap: 1, px: 3, py: 1, color: "black", fontWeight: 500 }}
+              } }
+              sx={ { gap: 1, px: 3, py: 1, color: "black", fontWeight: 500 } }
             >
-              {link?.icon && <i className={link.icon} />}
-              {link?.text}
+              { link?.icon && <i className={ link.icon } /> }
+              { link?.text }
             </MenuItem>
-          ))}
+          )) }
           <MenuItem
-            onClick={async () => {
+            onClick={ async () => {
               setProfileAnchorEl(null);
               user.Logout();
-            }}
-            sx={{
+            } }
+            sx={ {
               gap: 1,
               px: 3,
               py: 1,
               borderTop: "1px solid whitesmoke",
               color: "black",
               fontWeight: 500,
-            }}
+            } }
           >
             <i className="icon-power" />
             Logout
@@ -548,18 +561,18 @@ export default function Header({ setOpenLogin, setOpenSignUp }) {
         </Menu>
         <Drawer
           variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{ keepMounted: true }}
-          sx={{
+          open={ mobileOpen }
+          onClose={ handleDrawerToggle }
+          ModalProps={ { keepMounted: true } }
+          sx={ {
             display: { xs: "block", lg: "none" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               position: "relative",
             },
-          }}
+          } }
         >
-          {drawer}
+          { drawer }
         </Drawer>
       </AppBar>
     </>
