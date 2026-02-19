@@ -74,6 +74,7 @@ function Que({ question, form, disabled }) {
       return <TextElement disabled={ disabled } form={ form } question={ question } />
 
     case "phone":
+      console.log(question)
       return <PhoneElement disabled={ disabled } form={ form } question={ question } />
 
     case "select":

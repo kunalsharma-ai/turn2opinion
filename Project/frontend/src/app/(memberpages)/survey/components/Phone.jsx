@@ -40,9 +40,9 @@ export default function PhoneElement({ question, form, disabled }) {
     },
     enabled: [undefined, null].includes(value)
   });
-  let validations = undefined;
+  let validations;
   if (question.required)
-    validations["required"] = "This field is required"
+    validations={required:"This field is required"}
   return <Grid
     size={ { xs: 12, md: Number(question?.size) } }
     alignSelf="flex-end"

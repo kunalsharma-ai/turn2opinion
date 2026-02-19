@@ -4,7 +4,6 @@ import { expressRoute, expressView, isAuthenticated, fsLogger } from "../../util
 import fs from "fs";
 const router = express.Router();
 
-/*
 const world = JSON.parse(
     fs.readFileSync("/src/app/dataBank/theworld.json", "utf-8")
 )
@@ -17,6 +16,24 @@ function getCN(country) {
     }
     return cn;
 }
+
+router.post(
+    "/zipcode",
+    expressRoute(
+        async req => {
+            let country = req.body.country;
+            let cn = getCN(country);
+            return {
+                message: "",
+                data: [{
+                    pattern: (Buffer.from(cn.zipFormat, "utf-8")).toString("base64")
+                }]
+            }
+        },
+        userController
+    )
+)
+/*
 
 router
     .get(

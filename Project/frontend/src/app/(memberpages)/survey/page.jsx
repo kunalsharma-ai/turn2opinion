@@ -74,7 +74,7 @@ export default function page() {
       container
       sx={ {
         bgcolor: "primary.main",
-        backgroundImage: "url(/imagesmfr/facts-bg-last.png)",
+        backgroundImage: "url(/imagest2o/facts-bg-last.png)",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
@@ -121,7 +121,7 @@ export default function page() {
                     p: 3,
                     width: "100%",
                     minHeight: "calc(90vh - 215px)",
-                    bgcolor: "#8cb2f333",
+                    // bgcolor: "#8cb2f333",
                     border: "1px solid #f4f4f4",
                     textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
                   } }

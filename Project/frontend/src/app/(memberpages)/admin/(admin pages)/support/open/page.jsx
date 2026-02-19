@@ -408,6 +408,7 @@ let ticketStatusOptions = ticket.status === "Closed" ? [
       <Grid size={ 12 } container justifyContent="flex-end" my={ 2 }>
         <Page.MuiButton
           type="submit"
+           disabled={form.watch("message")===""}
           variant="contained"
           color="secondary"
           sx={ { fontWeight: 600 } }

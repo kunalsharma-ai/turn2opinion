@@ -26,12 +26,12 @@ import { useToast } from "@/hooks";
 
 function TabPanel({ children, value, index }) {
   return (
-    <Fade in={ value === index } timeout={ 1000 } unmountOnExit>
+    <Fade in={value === index} timeout={1000} unmountOnExit>
       <Page.Box
-        hidden={ value !== index }
-        sx={ { width: "100%", bgcolor: "white", mb: { xs: 1, md: 2 } } }
+        hidden={value !== index}
+        sx={{ width: "100%", bgcolor: "white", mb: { xs: 1, md: 2 } }}
       >
-        { value === index && children }
+        {value === index && children}
       </Page.Box>
     </Fade>
   );
@@ -51,22 +51,22 @@ export default function () {
 
   return (
     <Grid
-      size={ 12 }
+      size={12}
       container
-      px={ { xs: 1, md: 2 } }
-      pt={ { xs: 1, md: 2 } }
+      px={{ xs: 1, md: 2 }}
+      pt={{ xs: 1, md: 2 }}
       justifyContent="center"
-      sx={ { bgcolor: (theme) => theme.palette.page.main } }
+      sx={{ bgcolor: (theme) => theme.palette.page.main }}
     >
       <Tabs
-        value={ activeTab }
-        onChange={ (e, v) => {
+        value={activeTab}
+        onChange={(e, v) => {
           setActiveTab(v);
-        } }
+        }}
         variant="fullWidth"
         scrollButtons="auto"
         allowScrollButtonsMobile
-        sx={ {
+        sx={{
           width: "100%",
           bgcolor: "white",
           borderBottom: "3px solid whitesmoke",
@@ -84,56 +84,56 @@ export default function () {
 
             fontWeight: 600,
           },
-        } }
+        }}
       >
-        { tabs.map((tab) => (
-          <Tab label={ tab.label } key={ tab.label } />
-        )) }
+        {tabs.map((tab) => (
+          <Tab label={tab.label} key={tab.label} />
+        ))}
       </Tabs>
-      { tabs.map((tab, index) => (
-        <TabPanel key={ tab.label } value={ activeTab } index={ index }>
-          { tab.render }
+      {tabs.map((tab, index) => (
+        <TabPanel key={tab.label} value={activeTab} index={index}>
+          {tab.render}
         </TabPanel>
-      )) }
+      ))}
     </Grid>
   );
 }
 
 function FAQ() {
   return (
-    <Grid size={ 12 } px={ { xs: 0, md: 3 } } py={ 2 }>
+    <Grid size={12} px={{ xs: 0, md: 3 }} py={2}>
       <Grid
-        size={ 12 }
+        size={12}
         container
         direction="column"
-        alignItems={ "center" }
-        sx={ { border: `1px solid #e0e0e0` } }
+        alignItems={"center"}
+        sx={{ border: `1px solid #e0e0e0` }}
       >
         <Grid
-          size={ { xs: 11, md: 8 } }
+          size={{ xs: 11, md: 8 }}
           container
-          justifyContent={ "center" }
-          py={ 5 }
-          px={ 0.5 }
+          justifyContent={"center"}
+          py={5}
+          px={0.5}
         >
-          <Typography fontWeight={ "bold" } fontSize={ "24px" }>
-            Do You Have{ " " }
+          <Typography fontWeight={"bold"} fontSize={"24px"}>
+            Do You Have{" "}
             <Typography
-              fontSize={ "24px" }
+              fontSize={"24px"}
               component="span"
               color="primary.main"
-              fontWeight={ "bold" }
+              fontWeight={"bold"}
             >
               Any Question?
             </Typography>
           </Typography>
 
-          <Grid size={ 12 } container direction="column" spacing={ 2 } mt={ 4 }>
-            { data.faqs.slice(3).map((faq, index) => (
+          <Grid size={12} container direction="column" spacing={2} mt={4}>
+            {data.faqs.slice(3).map((faq, index) => (
               <Accordion
-                key={ index }
+                key={index}
                 disableGutters
-                sx={ {
+                sx={{
                   boxShadow: 0,
                   bgcolor: "#fff1d9",
                   border: `1px solid #ecccafff`,
@@ -148,28 +148,28 @@ function FAQ() {
                     borderBottomLeftRadius: 12,
                     borderBottomRightRadius: 12,
                   },
-                } }
+                }}
               >
                 <AccordionSummary
-                  expandIcon={ <ExpandMoreIcon sx={ { color: "black" } } /> }
-                  sx={ { borderRadius: 3 } }
+                  expandIcon={<ExpandMoreIcon sx={{ color: "black" }} />}
+                  sx={{ borderRadius: 3 }}
                 >
-                  <Typography fontSize={ "18px" } fontWeight="500" color="black">
-                    { faq.que }
+                  <Typography fontSize={"18px"} fontWeight="500" color="black">
+                    {faq.que}
                   </Typography>
                 </AccordionSummary>
                 <AccordionDetails
-                  sx={ {
+                  sx={{
                     bgcolor: "white",
                     borderRadius: 2,
                     textAlign: "justify",
                     fontSize: 15,
-                  } }
+                  }}
                 >
-                  <div dangerouslySetInnerHTML={ { __html: faq.ans } } />
+                  <div dangerouslySetInnerHTML={{ __html: faq.ans }} />
                 </AccordionDetails>
               </Accordion>
-            )) }
+            ))}
           </Grid>
         </Grid>
       </Grid>
@@ -186,35 +186,35 @@ function ContactSupport() {
   }
   return (
     <Grid
-      size={ 12 }
-      px={ { xs: 2, md: 3 } }
-      py={ 2 }
+      size={12}
+      px={{ xs: 2, md: 3 }}
+      py={2}
       justifyContent="center"
-      sx={ { border: `1px solid #e0e0e0` } }
+      sx={{ border: `1px solid #e0e0e0` }}
     >
-      { createTicket ? (
+      {createTicket ? (
         <CreateTicket
-          setCreateTicket={ setCreateTicket }
-          setActiveTicket={ setActiveTicket }
-          reloadData={ reloadData }
+          setCreateTicket={setCreateTicket}
+          setActiveTicket={setActiveTicket}
+          reloadData={reloadData}
         />
       ) : activeTicket ? (
         <TicketList
-          setCreateTicket={ setCreateTicket }
-          reload={ reload }
-          setActiveTicket={ setActiveTicket }
+          setCreateTicket={setCreateTicket}
+          reload={reload}
+          setActiveTicket={setActiveTicket}
         />
       ) : (
-        <Grid size={ 12 }>
+        <Grid size={12}>
           <Grid
-            size={ 12 }
+            size={12}
             container
             justifyContent="space-between"
             alignItems="center"
-            mb={ 1 }
+            mb={1}
           >
             <Page.Text
-              sx={ {
+              sx={{
                 fontSize: "16px",
                 display: "inline-block",
                 fontWeight: "600",
@@ -222,40 +222,40 @@ function ContactSupport() {
                   `2px solid ${theme.palette.primary.main}`,
                 pb: 0.5,
                 my: 1,
-              } }
+              }}
             >
               Support Tickets
             </Page.Text>
             <Page.MuiButton
               variant="contained"
               color="secondary"
-              onClick={ () => {
+              onClick={() => {
                 setCreateTicket(true);
-              } }
-              sx={ {
+              }}
+              sx={{
                 fontWeight: "bold",
-              } }
+              }}
             >
               Create Ticket
             </Page.MuiButton>
           </Grid>
           <Grid
             container
-            size={ 12 }
+            size={12}
             justifyContent="center"
             alignItems="center"
-            p={ 2 }
-            mb={ 1 }
-            sx={ {
+            p={2}
+            mb={1}
+            sx={{
               minHeight: "300px",
               border: (theme) => `1px solid ${theme.palette.primary.main}`,
               borderRadius: 2,
-            } }
+            }}
           >
             No Active Support Tickets
           </Grid>
         </Grid>
-      ) }
+      )}
     </Grid>
   );
 }
@@ -321,15 +321,15 @@ function TicketList({ setCreateTicket, reload, setActiveTicket }) {
       label: "Status",
       render: (info) => (
         <Chip
-          label={ info.status }
+          label={info.status}
           size="small"
-          color={ info.status === "closed" ? "error" : "info" }
-          sx={ {
+          color={info.status === "closed" ? "error" : "info"}
+          sx={{
             fontSize: "12px",
             textTransform: "capitalize",
             height: 22,
             px: 1,
-          } }
+          }}
         />
       ),
       feature: ["filterable", "sortable"],
@@ -340,19 +340,19 @@ function TicketList({ setCreateTicket, reload, setActiveTicket }) {
       width: "200px",
       render: (info) => (
         <div
-          style={ {
+          style={{
             display: "flex",
             gap: "4px",
-          } }
+          }}
         >
           <Page.MuiButton
             variant="contained"
             color="secondary"
             size="small"
-            sx={ { height: 22, textTransform: "none" } }
-            onClick={ () => {
+            sx={{ height: 22, textTransform: "none" }}
+            onClick={() => {
               router.push(`./support/open?ticket=${info._id}`);
-            } }
+            }}
           >
             Open
           </Page.MuiButton>
@@ -362,53 +362,53 @@ function TicketList({ setCreateTicket, reload, setActiveTicket }) {
   ];
   return (
     <Grid
-      size={ 12 }
-      px={ { xs: 2, md: 3 } }
-      py={ 2 }
+      size={12}
+      px={{ xs: 2, md: 3 }}
+      py={2}
       justifyContent="center"
-      sx={ { border: `1px solid #e0e0e0` } }
+      sx={{ border: `1px solid #e0e0e0` }}
     >
       <Datatable
-        isLoading={ isLoading }
-        pagination={ [10, 20, 50, 100] }
-        pageSize={ 20 }
+        isLoading={isLoading}
+        pagination={[10, 20, 50, 100]}
+        pageSize={20}
         noDataMsg="No Record Found."
-        data={ data }
+        data={data}
         hideColumnSelector
         extra={
           <Page.Box
-            px={ { xs: 0, md: 2 } }
-            my={ { xs: 1, md: 0 } }
+            px={{ xs: 0, md: 2 }}
+            my={{ xs: 1, md: 0 }}
             display="flex"
             alignItems="center"
             flexWrap="wrap"
-            gap={ 1 }
+            gap={1}
           >
             <Page.MuiButton
               variant="contained"
               color="secondary"
-              onClick={ () => {
+              onClick={() => {
                 setCreateTicket(true);
-              } }
-              sx={ {
+              }}
+              sx={{
                 height: 30,
                 fontSize: 12,
                 textTransform: "none",
                 py: "5px",
-              } }
+              }}
             >
               Create Ticket
             </Page.MuiButton>
             <Page.Select
               label=""
-              value={ ticketStatus }
-              onChange={ (e) => setTicketStatus(e.target.value) }
-              options={ [
+              value={ticketStatus}
+              onChange={(e) => setTicketStatus(e.target.value)}
+              options={[
                 { label: "All Tickets", value: "all" },
                 { label: "Pending Tickets", value: "pending" },
                 { label: "Closed Tickets", value: "closed" },
-              ] }
-              sx={ {
+              ]}
+              sx={{
                 width: "160px",
                 height: 30,
 
@@ -423,22 +423,22 @@ function TicketList({ setCreateTicket, reload, setActiveTicket }) {
                     borderColor: "grey.500",
                   },
                 },
-              } }
+              }}
             />
             <DateRangeSelector
-              onUpdate={ (e) => {
+              onUpdate={(e) => {
                 setDateRange(
                   e.map(
                     (d) => new Date(d.toDate()).toISOString().split("T")[0],
                   ),
                 );
-              } }
+              }}
             />
           </Page.Box>
         }
         title={
           <Page.Text
-            sx={ {
+            sx={{
               fontSize: "16px",
               display: "inline-block",
               fontWeight: "600",
@@ -446,12 +446,12 @@ function TicketList({ setCreateTicket, reload, setActiveTicket }) {
                 `2px solid ${theme.palette.primary.main}`,
               pb: 0.5,
               my: 1,
-            } }
+            }}
           >
             Support Tickets
           </Page.Text>
         }
-        columns={ columns }
+        columns={columns}
       />
     </Grid>
   );
@@ -459,7 +459,12 @@ function TicketList({ setCreateTicket, reload, setActiveTicket }) {
 
 function CreateTicket({ reloadData, setCreateTicket, setActiveTicket }) {
   const form = useForm({
-    defaultValues: {},
+    defaultValues: {
+      subject: "",
+      description: "",
+      attachments: [],
+    },
+    mode: "onChange",
   });
 
   const {
@@ -469,10 +474,17 @@ function CreateTicket({ reloadData, setCreateTicket, setActiveTicket }) {
     setValue,
     formState: { errors },
   } = form;
+
+  const subject = watch("subject");
+  const description = watch("description");
+
+  const isDisabled =
+    !subject?.trim() || !description?.replace(/<[^>]*>/g, "").trim();
+
   return (
     <Grid
       component="form"
-      onSubmit={ handleSubmit(async (data) => {
+      onSubmit={handleSubmit(async (data) => {
         let resp = await api.put(`/api/v1/support`, data);
         useToast(resp);
         if (resp.status === "success") {
@@ -480,11 +492,11 @@ function CreateTicket({ reloadData, setCreateTicket, setActiveTicket }) {
           setActiveTicket(true);
           reloadData();
         }
-      }) }
+      })}
       container
-      spacing={ 2 }
-      size={ 12 }
-      sx={ {
+      spacing={2}
+      size={12}
+      sx={{
         bgcolor: "white",
         overflow: "hidden",
         borderRadius: "10px",
@@ -493,26 +505,26 @@ function CreateTicket({ reloadData, setCreateTicket, setActiveTicket }) {
         my: 1,
         alignSelf: "flex-start",
         border: (theme) => `1px solid #e0e0e0`,
-      } }
+      }}
     >
       <SectionTitle title="Create Ticket" />
 
-      <Grid container size={ 12 } spacing={ 1.4 } sx={ { px: 2 } }>
+      <Grid container size={12} spacing={1.4} sx={{ px: 2 }}>
         <Form.Input
-          control={ control }
-          { ...form.register("subject") }
+          control={control}
+          {...form.register("subject")}
           label="Subject"
         />
         <Form.TextEditor
-          control={ control }
+          control={control}
           name="description"
           label="Description"
         />
         <Form.Upload
           endpoint="/api/v1/upload/image"
           name="attachments"
-          control={ control }
-          form={ form }
+          control={control}
+          form={form}
           multiple
           accept="image/jpeg,image/png,image/webp"
           hideCaption
@@ -520,32 +532,33 @@ function CreateTicket({ reloadData, setCreateTicket, setActiveTicket }) {
       </Grid>
       <Grid
         container
-        size={ 12 }
-        sx={ {
+        size={12}
+        sx={{
           justifyContent: "flex-end",
           mr: 2,
           mb: 1,
-        } }
+        }}
       >
         <Page.MuiButton
-          onClick={ () => {
+          onClick={() => {
             setCreateTicket(false);
-          } }
+          }}
           variant="outlined"
           color="secondary"
-          sx={ {
+          sx={{
             fontWeight: "bold",
-          } }
+          }}
         >
           Cancel
         </Page.MuiButton>
         <Page.MuiButton
           type="submit"
           variant="contained"
+          disabled={isDisabled}
           color="secondary"
-          sx={ {
+          sx={{
             fontWeight: "bold",
-          } }
+          }}
         >
           Create
         </Page.MuiButton>

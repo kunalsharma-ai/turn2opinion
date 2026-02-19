@@ -75,7 +75,7 @@ function ChangePassword() {
             fontSize: "16px",
             display: "inline-block",
             fontWeight: 600,
-            borderBottom:(theme)=> `2px solid ${theme.palette.primary.main}`,
+            borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
             pb: 0.5,
           }}
         >
@@ -91,8 +91,8 @@ function ChangePassword() {
         px={2}
         py={2}
         sx={{
-        border:(theme) =>`1px solid ${theme.palette.primary.main}`,  
-              bgcolor: (theme) => theme.palette.cardbg.main,
+          border: (theme) => `1px solid ${theme.palette.primary.main}`,
+          bgcolor: (theme) => theme.palette.cardbg.main,
           borderRadius: 2,
         }}
       >
@@ -132,7 +132,9 @@ function ChangePassword() {
         variant="contained"
         color="secondary"
         disabled={
-          inputs.cnfPassword !== inputs.newPassword || inputs.newPassword === ""
+          inputs.cnfPassword !== inputs.newPassword ||
+          inputs.newPassword === "" ||
+          inputs.oldPassword === ""
         }
         sx={{
           ml: 1,
@@ -149,6 +151,8 @@ function ChangePassword() {
 
 function SurveyNotification() {
   const [selected, setSelected] = React.useState([]);
+
+  const [initialSelected, setInitialSelected] = React.useState([]);
   const [user] = [useMember()];
   React.useEffect(() => {
     if (!user) return;
@@ -156,6 +160,7 @@ function SurveyNotification() {
       .post(`/api/v1/me`, { questions: ["communication-methods"] })
       .then((resp) => {
         setSelected(resp.data["communication-methods"] ?? []);
+        setInitialSelected(resp.data["communication-methods"] ?? []);
       });
   }, [user]);
 
@@ -166,6 +171,13 @@ function SurveyNotification() {
     { label: "By Dashboard Notifications", value: "dashboard" },
     { label: "By Whatsapp", value: "whatsapp" },
   ];
+
+  const isUnchanged = React.useMemo(() => {
+    const sort = (arr) => [...arr].sort();
+    return (
+      JSON.stringify(sort(selected)) === JSON.stringify(sort(initialSelected))
+    );
+  }, [selected, initialSelected]);
 
   return (
     <Grid size={{ xs: 12, md: 6 }} container spacing={2}>
@@ -182,7 +194,7 @@ function SurveyNotification() {
             fontSize: "16px",
             display: "inline-block",
             fontWeight: "600",
-          borderBottom:(theme)=> `2px solid ${theme.palette.primary.main}`,
+            borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
             pb: 0.5,
           }}
         >
@@ -198,8 +210,8 @@ function SurveyNotification() {
         px={2}
         py={2}
         sx={{
-          border:(theme) =>`1px solid ${theme.palette.primary.main}`,  
-              bgcolor: (theme) => theme.palette.cardbg.main,
+          border: (theme) => `1px solid ${theme.palette.primary.main}`,
+          bgcolor: (theme) => theme.palette.cardbg.main,
           borderRadius: 2,
         }}
       >
@@ -216,7 +228,7 @@ function SurveyNotification() {
                 onChange={(e) => {
                   selected.includes(option.value)
                     ? setSelected(
-                        selected.filter((opt) => opt !== option.value)
+                        selected.filter((opt) => opt !== option.value),
                       )
                     : setSelected([...selected, option.value]);
                 }}
@@ -236,6 +248,7 @@ function SurveyNotification() {
           useToast(resp);
           console.log(resp);
         }}
+        disabled={isUnchanged}
         variant="contained"
         color="secondary"
         sx={{
@@ -262,8 +275,8 @@ function ChangeEmail() {
       if (
         !Boolean(
           /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@([A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,}$/.test(
-            email
-          )
+            email,
+          ),
         )
       )
         return setIsValid(false);
@@ -276,15 +289,15 @@ function ChangeEmail() {
         });
     },
     1000,
-    [email]
+    [email],
   );
   useDebounce(
     () => {
       if (
         !Boolean(
           /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@([A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,}$/.test(
-            email
-          )
+            email,
+          ),
         )
       )
         return setIsValid(false);
@@ -297,7 +310,7 @@ function ChangeEmail() {
         });
     },
     1000,
-    [email]
+    [email],
   );
 
   return (
@@ -329,7 +342,7 @@ function ChangeEmail() {
             fontSize: "16px",
             display: "inline-block",
             fontWeight: 600,
-          borderBottom:(theme)=> `2px solid ${theme.palette.primary.main}`,
+            borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
             pb: 0.5,
           }}
         >
@@ -345,8 +358,8 @@ function ChangeEmail() {
         px={2}
         py={2}
         sx={{
-          border:(theme) =>`1px solid ${theme.palette.primary.main}`,  
-              bgcolor: (theme) => theme.palette.cardbg.main,
+          border: (theme) => `1px solid ${theme.palette.primary.main}`,
+          bgcolor: (theme) => theme.palette.cardbg.main,
           borderRadius: 2,
         }}
       >
@@ -397,7 +410,7 @@ function TermsAndConditions() {
             fontSize: "16px",
             display: "inline-block",
             fontWeight: "600",
-          borderBottom:(theme)=> `2px solid ${theme.palette.primary.main}`,
+            borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
             pb: 0.5,
           }}
         >

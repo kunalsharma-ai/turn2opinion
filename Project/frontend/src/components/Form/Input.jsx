@@ -18,8 +18,8 @@ function ParseErrorMessage({ error }) {
     let err = JSON.parse(error);
     return (
       <>
-        {err.message}
-        {err.link && <Link href={err.link.target}>{err.link.text}</Link>}
+        { err.message }
+        { err.link && <Link href={ err.link.target }>{ err.link.text }</Link> }
       </>
     );
   } catch (e) {
@@ -31,11 +31,11 @@ function PasswordStrengthMeter({ passwordStrength, showStrength }) {
   if (!showStrength || passwordStrength.score === 0) return null;
 
   return (
-    <Page.Box sx={{ mt: 1, mb: 1 }}>
+    <Page.Box sx={ { mt: 1, mb: 1 } }>
       <LinearProgress
         variant="determinate"
-        value={passwordStrength.score * 20}
-        sx={{
+        value={ passwordStrength.score * 20 }
+        sx={ {
           height: 4,
           borderRadius: 2,
           "& .MuiLinearProgress-barColorPrimary": {
@@ -43,26 +43,26 @@ function PasswordStrengthMeter({ passwordStrength, showStrength }) {
               passwordStrength.color === "success"
                 ? "#4caf50"
                 : passwordStrength.color === "warning"
-                ? "#ff9800"
-                : passwordStrength.color === "error"
-                ? "#f44336"
-                : "#9e9e9e",
+                  ? "#ff9800"
+                  : passwordStrength.color === "error"
+                    ? "#f44336"
+                    : "#9e9e9e",
           },
-        }}
+        } }
       />
       <Page.Box
-        sx={{
+        sx={ {
           fontSize: "12px",
           mt: 0.5,
           display: "flex",
           justifyContent: "space-between",
-        }}
+        } }
       >
-        <span style={{ color: passwordStrength.color, fontWeight: 500 }}>
-          {passwordStrength.strength}
+        <span style={ { color: passwordStrength.color, fontWeight: 500 } }>
+          { passwordStrength.strength }
         </span>
-        <span style={{ color: "#757575", fontSize: "11px" }}>
-          {passwordStrength.score}/5
+        <span style={ { color: "#757575", fontSize: "11px" } }>
+          { passwordStrength.score }/5
         </span>
       </Page.Box>
     </Page.Box>
@@ -90,6 +90,7 @@ export default function Input({
   strengthMeter,
   match,
   onStrengthChanged,
+  onHide,
   ...props
 }) {
   const [hide, setHide] = React.useState(false);
@@ -143,57 +144,61 @@ export default function Input({
   let temp = {};
   if (suffix && suffix !== "")
     temp.endAdornment = (
-      <InputAdornment position="end">{suffix}</InputAdornment>
+      <InputAdornment position="end">{ suffix }</InputAdornment>
     );
   if (prefix && prefix !== "")
     temp.startAdornment = (
-      <InputAdornment position="start">{prefix}</InputAdornment>
+      <InputAdornment position="start">{ prefix }</InputAdornment>
     );
-
+  React.useEffect(() => {
+    if (onHide) onHide(hide)
+  }, [hide])
   // Add visibility toggle for password fields
   if (type === "password" && !props.InputProps?.endAdornment) {
     temp.endAdornment = (
       <InputAdornment position="end">
         <IconButton
-          onClick={() => setMasked(!masked)}
-          sx={{
+          onClick={ () => setMasked(!masked) }
+          sx={ {
             height: "32px",
             width: "32px",
             p: 0,
             "&:hover": {
               boxShadow: "none",
             },
-          }}
+          } }
         >
-          {masked ? (
+          { masked ? (
             <VisibilityOff fontSize="small" />
           ) : (
             <Visibility fontSize="small" />
-          )}
+          ) }
         </IconButton>
-        {temp.endAdornment}
+        { temp.endAdornment }
       </InputAdornment>
     );
   }
 
   props["InputProps"] = { ...temp };
   if (hide) return <></>;
-  /* <Grid
+  /* 
+  <Grid
           size={ { xs: 12, md: Number(question?.size) } }
           alignSelf="flex-end"
           sx={ { textAlign: "center", px: 2, py: 1 } }
-        ></Grid> */
+        ></Grid> 
+        */
   return (
     <Grid
-      size={{ xs: 12, md: Number(compSize ?? 12) }}
+      size={ { xs: 12, md: Number(compSize ?? 12) } }
       alignSelf="flex-end"
-      // sx={ { textAlign: "center", px: 2, py: 1 } }
+    // sx={ { textAlign: "center", px: 2, py: 1 } }
     >
       <Controller
-        name={name}
-        control={control}
-        rules={validate}
-        render={({ field }) => {
+        name={ name }
+        control={ control }
+        rules={ validate }
+        render={ ({ field }) => {
           const hasError = !!errors;
           const errorMessage = errors?.message;
           const isPasswordField = type === "password";
@@ -204,23 +209,23 @@ export default function Input({
           if (isPasswordField) {
             inputProps.endAdornment = (
               <>
-                {inputProps.endAdornment}
-                {hasError && errorMessage && (
+                { inputProps.endAdornment }
+                { hasError && errorMessage && (
                   <Tooltip
-                    title={ParseErrorMessage({ error: errorMessage })}
+                    title={ ParseErrorMessage({ error: errorMessage }) }
                     arrow
                     placement="top-end"
-                    slots={{
+                    slots={ {
                       transition: Zoom,
-                    }}
-                    slotProps={{
+                    } }
+                    slotProps={ {
                       transition: { timeout: 200 },
-                    }}
-                    PopperProps={{
+                    } }
+                    PopperProps={ {
                       disablePortal: true,
                       sx: { zIndex: 7600 },
-                    }}
-                    componentsProps={{
+                    } }
+                    componentsProps={ {
                       tooltip: {
                         sx: {
                           zIndex: 7600,
@@ -240,35 +245,35 @@ export default function Input({
                           filter: "drop-shadow(0 0 1.5px #d32f2f)",
                         },
                       },
-                    }}
+                    } }
                   >
                     <IconButton size="small" aria-label="error info">
                       <InfoOutlinedIcon color="error" fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                )}
+                ) }
               </>
             );
           } else {
             inputProps.endAdornment = (
               <>
-                {inputProps.endAdornment}
-                {hasError && errorMessage && (
+                { inputProps.endAdornment }
+                { hasError && errorMessage && (
                   <Tooltip
-                    title={ParseErrorMessage({ error: errorMessage })}
+                    title={ ParseErrorMessage({ error: errorMessage }) }
                     arrow
                     placement="top-end"
-                    slots={{
+                    slots={ {
                       transition: Zoom,
-                    }}
-                    slotProps={{
+                    } }
+                    slotProps={ {
                       transition: { timeout: 200 },
-                    }}
-                    PopperProps={{
+                    } }
+                    PopperProps={ {
                       disablePortal: true,
                       sx: { zIndex: 7600 },
-                    }}
-                    componentsProps={{
+                    } }
+                    componentsProps={ {
                       tooltip: {
                         sx: {
                           zIndex: 7600,
@@ -288,74 +293,74 @@ export default function Input({
                           filter: "drop-shadow(0 0 1.5px #d32f2f)",
                         },
                       },
-                    }}
+                    } }
                   >
                     <IconButton size="small" aria-label="error info">
                       <InfoOutlinedIcon color="error" fontSize="small" />
                     </IconButton>
                   </Tooltip>
-                )}
+                ) }
               </>
             );
           }
 
           if (prefix && prefix !== "") {
             inputProps.startAdornment = (
-              <InputAdornment position="start">{prefix}</InputAdornment>
+              <InputAdornment position="start">{ prefix }</InputAdornment>
             );
           }
 
           return (
             <>
-              {surveyLabel}
-              {labelText && (
-                <Page.Text sx={{ fontWeight: 500, color: "#555" }}>
-                  {labelText}{" "}
-                  {required && (
-                    <span style={{ color: "red", fontWeight: 600 }}>*</span>
-                  )}
+              { surveyLabel }
+              { labelText && (
+                <Page.Text sx={ { fontWeight: 500, color: "#555" } }>
+                  { labelText }{ " " }
+                  { required && (
+                    <span style={ { color: "red", fontWeight: 600 } }>*</span>
+                  ) }
                 </Page.Text>
-              )}
+              ) }
               <InputTextField
-                {...props}
-                {...field}
-                value={field.value ?? ""}
+                { ...props }
+                { ...field }
+                value={ field.value ?? "" }
                 type={
                   type === "password" ? (masked ? "password" : "text") : type
                 }
                 label={
                   label === undefined ? undefined : validate?.required ? (
-                    <RequiredLabel label={label} />
+                    <RequiredLabel label={ label } />
                   ) : (
                     label
                   )
                 }
                 fullWidth
-                sx={{
+                sx={ {
                   ...sx,
                   "& .MuiInputAdornment-root": {
                     opacity: 0.7,
                   },
-                }}
-                error={hasError}
-                InputProps={inputProps}
-                onChange={(e) => {
+                } }
+                error={ hasError }
+                InputProps={ inputProps }
+                onChange={ (e) => {
                   field.onChange(e);
                   // Update password state for strength meter
                   if (isPasswordField) {
                     setPassword(e.target.value);
                   }
-                }}
+                } }
               />
-              {isPasswordField && (
+              { isPasswordField && (
                 <PasswordStrengthMeter
-                  passwordStrength={passwordStrength}
-                  showStrength={showStrength}
+                  passwordStrength={ passwordStrength }
+                  showStrength={ showStrength }
                 />
-              )}
+              ) }
             </>
           );
-        }}
+        } }
       />
     </Grid>
   );
