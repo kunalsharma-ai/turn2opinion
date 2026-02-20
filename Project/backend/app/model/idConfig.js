@@ -57,6 +57,11 @@ const idConfig= mongooseModel(
 )
 
 export async function generateID(module, origin, count) {
+    console.log("Looking for ")
+    console.log({module,
+        origin,
+        isActive: true,
+        isDeleted: false})
     let info = await idConfig.findOne({
         module,
         origin,

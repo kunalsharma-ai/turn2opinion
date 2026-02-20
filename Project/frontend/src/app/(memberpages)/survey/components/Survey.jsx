@@ -187,7 +187,8 @@ export default function Survey({
         spacing={ 2 }
         sx={ {
           justifyContent: "flex-end",
-          p: 2,
+          py: 2,
+          px: isProfile ? 2 : 0,
         } }
       >
         {isProfile&&<Page.MuiButton onClick={ () => { setEditMode(false) } } variant="outlined" sx={ { fontWeight: 600 } }>

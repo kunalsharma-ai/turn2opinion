@@ -52,7 +52,7 @@ function AboutUs() {
           component={"div"}
           sx={{ fontSize: { xs: 24, lg: 28 }, fontWeight: "bold", my: 1, textAlign:{xs:'center',lg:"justify"} }}
         >
-          We Started In 2015 & Currently Have More Than
+          We Started In 2015 & Currently Have More Than {" "}
           <Box
             component="span"
             sx={{

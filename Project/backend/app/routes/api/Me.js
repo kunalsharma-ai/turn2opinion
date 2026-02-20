@@ -287,7 +287,9 @@ router
     .patch(expressRoute(
         async req => {
             const user = req.user;
-            const { questions, answers } = req.body;
+            // const { questions, answers } = req.body;
+            const answers=req.body;
+            const questions=Object.keys(req.body);
             if (!user || !questions || !(questions instanceof Array) || questions.length < 1) throw new Error("Invalid request");
             const updatedAnswers = questions.map(fld => {
                 if (!(fld in answers)) return false;

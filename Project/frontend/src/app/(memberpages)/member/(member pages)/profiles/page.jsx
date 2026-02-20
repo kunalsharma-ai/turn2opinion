@@ -154,6 +154,7 @@ export default function () {
           editMode={editMode} 
           setEditMode={setEditMode}
           hideSteps={true} 
+          isProfile={true}
           survey={ selectedProfile } 
           start={ 0 } 
           user={ user } 

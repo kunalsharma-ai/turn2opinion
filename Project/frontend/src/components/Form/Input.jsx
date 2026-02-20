@@ -329,11 +329,13 @@ export default function Input({
                   type === "password" ? (masked ? "password" : "text") : type
                 }
                 label={
-                  label === undefined ? undefined : validate?.required ? (
-                    <RequiredLabel label={ label } />
-                  ) : (
-                    label
-                  )
+                  showLabel
+                    ? label === undefined
+                      ? undefined
+                      : validate?.required
+                        ? <RequiredLabel label={ label } />
+                        : label
+                    : null
                 }
                 fullWidth
                 sx={ {

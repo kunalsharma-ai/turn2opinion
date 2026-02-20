@@ -38,6 +38,8 @@ export default function TextElement({ question, form, disabled }) {
       disabled={ isQuestionDisabled }
       parent={ question.parent }
       api={ question.name }
+      label={question.label}
+      showLabel={false}
       onHide={ (e) => {
         setHideLabel(e);
       } }
