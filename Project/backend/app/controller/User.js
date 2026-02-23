@@ -14,7 +14,7 @@ class User extends CrudController {
         let user
         if (!phone)
             user = await super.list({ mail });
-        if (!mail) user = await super.list({ phone });
+        if (!mail) user = await super.list({ phone:phone.replace(/\D/g,"") });
 
         if (user.length !== 1) throw new Error(`${!phone ? "E-Mail id" : "Phone no."} or Password is invalid`)
         let temp = await userModel.findById(user[0]._id).select("+role");

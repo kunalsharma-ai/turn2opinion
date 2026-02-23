@@ -8,16 +8,21 @@ class Answer extends CrudController {
     async save(data) {
         const origin = this.request.origin;
         const user = this.request.user._id;
-        let temp = data.map(info => {
+        let temp = data.map(({ question, answer }) => {
             return {
                 updateOne: {
                     filter: {
-                        question: info.question,
+                        question,
                         user,
                         origin
                     },
                     update: {
-                        ...info,
+                        question,
+                        answer: Array.isArray(answer)
+                            ? answer
+                            : answer === null
+                                ? []
+                                : [answer],
                         user,
                         origin
                     },
@@ -25,7 +30,7 @@ class Answer extends CrudController {
                 }
             }
         })
-        console.log({temp})
+        console.log({ temp })
         return await answerModel.bulkWrite(temp, { ordered: true });
         // await answerModel.update
         throw new Error("Unable to save data")
@@ -60,8 +65,8 @@ class Answer extends CrudController {
                     return a;
                 }
                 a[c] = {
-                    $in: filters[c].map(fltr=>{
-                        let temp=fltr.split(" | ")
+                    $in: filters[c].map(fltr => {
+                        let temp = fltr.split(" | ")
                         return temp[0]
                     })
                 }
@@ -157,9 +162,9 @@ class Answer extends CrudController {
                 gender: "$userInfo.gender",
                 timezone: "$userInfo.timezone",
                 category: "$userInfo.category",
-                name:"$userInfo.name",
-                mail:"$userInfo.mail",
-                qualityScore:"$userInfo.qualityScore",
+                name: "$userInfo.name",
+                mail: "$userInfo.mail",
+                qualityScore: "$userInfo.qualityScore",
                 data: 1
             }
         })
@@ -173,9 +178,9 @@ class Answer extends CrudController {
                             gender: "$gender",
                             timezone: "$timezone",
                             category: "$category",
-                            name:"$name",
-                            mail:"$mail",
-                            qualityScore:"$qualityScore"
+                            name: "$name",
+                            mail: "$mail",
+                            qualityScore: "$qualityScore"
                         },
                         "$data"
                     ]
