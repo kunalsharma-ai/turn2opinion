@@ -318,7 +318,7 @@ export default function Header({ setOpenLogin, setOpenSignUp }) {
         position="static"
         elevation={ 0 }
         sx={ {
-          position: { xs: "sticky", md: "static" },
+          position: { xs: "fixed", md: "static" },
           top: { xs: 0, md: "auto" },
           bgcolor: { xs: "white", md: "transparent" },
           color: "black",

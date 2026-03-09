@@ -79,8 +79,8 @@ export default function HomeClient() {
           background: "linear-gradient(90deg, #fff 0, #fff1d8 100%)",
         }}
       >
-        <ContextProviders>
-          <Box sx={{ width: "100%", height: { xs: "86px", lg: "124px" } }}>
+        <Box sx={{ width: "100%", height: { xs: "86px", lg: "124px" } }}>
+          <ContextProviders>
             <React.Suspense fallback={<></>}>
               <Header
                 sections={sections}
@@ -88,21 +88,23 @@ export default function HomeClient() {
                 setOpenSignUp={setOpenSignUp}
               />
             </React.Suspense>
-          </Box>
-        </ContextProviders>
+          </ContextProviders>
+        </Box>
 
-        <HeroSection setOpenSignUp={setOpenSignUp} />
-        <WeArePart />
-        <Journey setOpenSignUp={setOpenSignUp} />
-        <Stats />
-        <WhoWeAre />
+        <main>
+          <HeroSection setOpenSignUp={setOpenSignUp} />
+          <WeArePart />
+          <Journey setOpenSignUp={setOpenSignUp} />
+          <Stats />
+          <WhoWeAre />
 
-        <div id="how-it-works">
-          <HowItWorks setOpenSignUp={setOpenSignUp} />
-        </div>
+          <div id="how-it-works">
+            <HowItWorks setOpenSignUp={setOpenSignUp} />
+          </div>
 
-        <Testimonial />
-        <JoinPanel setOpenSignUp={setOpenSignUp} />
+          <Testimonial />
+          <JoinPanel setOpenSignUp={setOpenSignUp} />
+        </main>
         <React.Suspense fallback={<></>}>
           <Footer sections={sections} />
         </React.Suspense>

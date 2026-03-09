@@ -14,8 +14,7 @@ export default function expressRoute(callback, Controller) {
             });
             return res.json({
                 status: "success",
-                message,
-                token
+                message
             })
         } catch (error) {
             console.log(error)

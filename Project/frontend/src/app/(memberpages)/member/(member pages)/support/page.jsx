@@ -554,6 +554,8 @@ function CreateTicket({ reloadData, setCreateTicket, setActiveTicket }) {
         <Page.MuiButton
           type="submit"
           variant="contained"
+          // loading={isLoading}
+          // loadingIndicator="Creating..."
           disabled={isDisabled}
           color="secondary"
           sx={{

@@ -264,13 +264,16 @@ Number.prototype.toPercent = function (locale = "en-IN") {
   });
   return format(this / 100);
 };
-Number.prototype.toTime = Number.prototype.toTimeElapsed = function () {
+Number.prototype.toTime = Number.prototype.toTimeElapsed = function (showMs = false) {
   let temp = this;
   let ms = temp % 1000; temp = (temp - ms) / 1000;
   let sec = temp % 60; temp = (temp - sec) / 60;
   let min = temp % 60; temp = (temp - min) / 60;
   let hr = temp;
-  return `${hr}:${(min < 10) ? `0${min}` : min}:${(sec < 10) ? `0${sec}` : sec}.${ms}`
+  if (showMs)
+    return `${hr}:${(min < 10) ? `0${min}` : min}:${(sec < 10) ? `0${sec}` : sec}.${ms}`
+  return `${hr}:${(min < 10) ? `0${min}` : min}:${(sec < 10) ? `0${sec}` : sec}`
+
 }
 Array.prototype.avg = function () {
   let sum = 0;

@@ -478,13 +478,13 @@ function ForgotCard({ onClose, setCardType, setOpenSignUp }) {
             <Page.Box
               sx={{
                 textAlign: "center",
-                borderRadius: 5,
-                bgcolor: "rgba(163, 243, 206, 0.21)",
+                borderRadius: 3,
+                bgcolor: (theme) => theme.palette.cardbg.main,
                 border: "1px solid #f4f4f4",
                 p: 4,
               }}
             >
-              <Page.Text sx={{ fontWeight: 500, color: "secondary.main" }}>
+              <Page.Text sx={{ fontWeight: 600 }}>
                 A link has been sent to you on your email. Please check your
                 inbox and spam folders, find the link and reset your password.
               </Page.Text>
