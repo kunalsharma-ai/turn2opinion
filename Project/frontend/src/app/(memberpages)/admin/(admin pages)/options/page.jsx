@@ -22,6 +22,7 @@ import { useQuery } from "@/Context";
 export default function () {
   const [question, setQuestion] = React.useState([]);
   const [options, setOptions] = React.useState([]);
+  const [reload,setReload]=React.useState(0);
   const [open, setOpen] = React.useState({ open: false, id: null });
   const query = useQuery();
   const router = useRouter();
@@ -37,9 +38,8 @@ export default function () {
     api
       .get(`/api/v1/option/${question.name}`)
       .then((resp) => setOptions(resp.data));
-  }, [question]);
+  }, [question,reload]);
 
-  console.log(question);
 
   return (
     <Page.Box
@@ -72,6 +72,7 @@ export default function () {
             id: "action",
             label: "Action",
             render: (info) => (
+              <>
               <IconButton
                 sx={{ p: 0 }}
                 onClick={() => {
@@ -80,6 +81,19 @@ export default function () {
               >
                 <EditIcon fontSize="small" />
               </IconButton>
+              <IconButton
+                sx={{ p: 0 }}
+                onClick={async() => {
+                  let temp=await api.delete(`/api/v1/option/${info.question}/${info._id}`,{});
+                  useToast(temp);
+                  setReload(reload+1)
+                }}
+              >
+                <i className="fa-solid fa-times"></i>
+                {/* <EditIcon fontSize="small" /> */}
+              </IconButton>
+              
+              </>
             ),
           },
         ]}

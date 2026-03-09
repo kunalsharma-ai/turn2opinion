@@ -52,5 +52,15 @@ const user = {
   category: {
     required: "Account Type is Required",
   },
+  parent: {
+    email: {
+      validate: async (v) => {
+        if (!email.format(v)) return "Invalid E-Mail";
+        if (!(await email.validateDomain(v))) return "E-Mail Address not valid";
+        return;
+      },
+    },
+
+  }
 };
 export default user;

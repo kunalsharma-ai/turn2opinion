@@ -1,4 +1,3 @@
-//todo: Delete token if erorr received is Invalid Token
 function wait(time = 1000) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -51,6 +50,20 @@ class API {
       } catch {
         console.log(response)
         errorData = { message: response.statusText };
+      }
+
+      const errorMessage = (errorData?.message || '').toLowerCase();
+      if (
+        token &&
+        typeof window !== 'undefined' &&
+        (response.status === 401 ||
+          errorMessage.includes('invalid token') ||
+          errorMessage.includes('token invalid') ||
+          errorMessage.includes('jwt malformed') ||
+          errorMessage.includes('jwt expired')   ||
+          errorMessage.includes("token expired"))
+      ) {
+        localStorage.removeItem('token');
       }
 
       document.dispatchEvent(

@@ -156,6 +156,11 @@ Date.prototype.showDate = function (
 Date.prototype.toDate = function () {
   return this;
 };
+Date.prototype.isMinor=function(cn="IN"){
+  let today=new Date();
+  let age=(today - this) / (365.25 * 24 * 3600 * 1000);
+  return age < 18
+}
 Date.prototype.relativeTime = function () {
   const slabs = [0, 60, 3600, 86400, 604800, 2592000, 31536000];
   const slabNames = [
@@ -264,16 +269,16 @@ Number.prototype.toPercent = function (locale = "en-IN") {
   });
   return format(this / 100);
 };
-Number.prototype.toTime = Number.prototype.toTimeElapsed = function (showMs = false) {
+Number.prototype.toTime = Number.prototype.toTimeElapsed = function (showMs=false) {
   let temp = this;
   let ms = temp % 1000; temp = (temp - ms) / 1000;
   let sec = temp % 60; temp = (temp - sec) / 60;
   let min = temp % 60; temp = (temp - min) / 60;
   let hr = temp;
-  if (showMs)
-    return `${hr}:${(min < 10) ? `0${min}` : min}:${(sec < 10) ? `0${sec}` : sec}.${ms}`
+  if(showMs)
+  return `${hr}:${(min < 10) ? `0${min}` : min}:${(sec < 10) ? `0${sec}` : sec}.${ms}`
   return `${hr}:${(min < 10) ? `0${min}` : min}:${(sec < 10) ? `0${sec}` : sec}`
-
+   
 }
 Array.prototype.avg = function () {
   let sum = 0;

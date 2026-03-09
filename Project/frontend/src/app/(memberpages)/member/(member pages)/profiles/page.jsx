@@ -76,19 +76,19 @@ function TabLabel({ label, progress = 0, icon, selected }) {
 }
 
 export default function () {
-  const [editMode,setEditMode]=React.useState(false);
+  const [editMode, setEditMode] = React.useState(false);
   const [user, query, router] = [
     useMember(),
     useQueryParameters(),
     useRouter(),
   ];
   const { data: profiles = [], isLoading: profilesLoading } = useQuery({
-    queryKey: ["profiles", user?.category],
+    queryKey: ["profiles", user?.category,editMode?"true":"false"],
     queryFn: () =>
       api
         .post("/api/v1/profile", { category: user.category })
         .then((r) => r.data),
-    enabled: !!user?.category,
+    enabled: !!user?.category || !editMode,
   });
   if (profilesLoading || profiles.length === 0) return <></>
   const activeTab = 1 + profiles.map(profile => profile.slug).indexOf(query.profile);
@@ -110,7 +110,7 @@ export default function () {
           bgcolor: (theme) => theme.palette.cardbg.main,
           borderRadius: 2.5,
           boxShadow: 1,
-          
+
         } }
       >
         <Grid
@@ -150,19 +150,19 @@ export default function () {
             ) }
           </Page.Box>
         </Grid>
-        <Survey 
-          editMode={editMode} 
-          setEditMode={setEditMode}
-          hideSteps={true} 
-          isProfile={true}
-          survey={ selectedProfile } 
-          start={ 0 } 
-          user={ user } 
-          endpage={"/api/v1/me/profile"}
-          onComplete={e=>{
+        <Survey
+          editMode={ editMode }
+          setEditMode={ setEditMode }
+          hideSteps={ true }
+          isProfile={ true }
+          survey={ selectedProfile }
+          start={ 0 }
+          user={ user }
+          endpage={ "/api/v1/me/profile" }
+          onComplete={ e => {
             setEditMode(false);
-          }}
-          />
+          } }
+        />
       </Grid>
     </Grid>
   </Grid>
@@ -177,11 +177,12 @@ function ProfileTabs({
       label: p.name,
       icon: p.icon,
       link: p.slug,
-      status:p.status
+      status: p.status
     }));
   }, [profiles]);
 
   const activeTab = React.useMemo(() => {
+    
     if (
       !profiles ||
       !query?.profile ||
@@ -191,7 +192,6 @@ function ProfileTabs({
       return;
     return profiles.map((p) => p.slug).indexOf(query.profile);
   }, [profiles, query]);
-  // if(!activeTab)return <></>
   return <Tabs
     value={ activeTab }
     onChange={ (_, v) => {
@@ -231,7 +231,7 @@ function ProfileTabs({
             label={ tab.label }
             icon={ tab.icon }
             selected={ activeTab === i }
-          progress={tab.status}
+            progress={ tab.status }
           />
         }
       />

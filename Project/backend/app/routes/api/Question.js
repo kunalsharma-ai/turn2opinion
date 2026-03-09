@@ -25,35 +25,12 @@ router
         isAuthenticated,
         expressRoute(
             async req => {
-                // Read all entries matching filter            
-                // console.log({
-                //     user:req.user
-                // })
                 optionController.request = req;
                 let message = "";
-                let questions = Mutate(await questionController.list({ ...req.body, category: req.user.category }))
-                let data = [];
-                for (let index = 0; index < questions.length; index++) {
-                    const que = questions[index];                    
-                    let options = Mutate(await optionController.list({ question: que.name })).map(opt => ({
-                            label: opt.label,
-                            value: opt.value.trim(),
-                            parentValue: [null, undefined, ""].includes(que.parent) ? [] : opt.parentValue
-                        }))
-                    data.push({
-                        category: req.user.category,
-                        type: que.type,
-                        name: que.name,
-                        size: que.size,
-                        label: (que.type === "note") ? que.description : que.label,
-                        parent: [null, undefined, ""].includes(que.parent) ? undefined : que.parent,
-                        required: que.isRequired ?? false,
-                        disabled: !(que.isEditable ?? true),
-                        children:que.children,
-                        isMoney:que.isMoney,
-                        options
-                    })
-                }
+                let data = Mutate(await questionController.list(
+                    { ...req.body, category: req.user.category }
+                ))
+
                 return { message, data };
             },
             questionController

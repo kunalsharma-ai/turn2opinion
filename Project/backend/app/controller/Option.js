@@ -45,8 +45,18 @@ class Option extends CrudController {
         return;
         
     }
-    async list(query = {}, populateFields = null, sort = {}, project = null) {
-        console.log({query})
+    async list(q = {}, populateFields = null, sort = {}, project = null) {
+        let query=Object.fromEntries(Object.entries(q).map(fltr=>{
+            if(fltr[1] instanceof Array){
+                return [
+                    fltr[0],
+                    {$in:fltr[1]}
+                ]
+            }
+            return fltr;
+        }))
+
+        // console.log({query})
         return await super.list(query, populateFields, sort, project)
     }
     async create(data) {

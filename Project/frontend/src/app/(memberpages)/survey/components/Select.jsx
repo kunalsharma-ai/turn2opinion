@@ -2,29 +2,31 @@
 import React from "react";
 import { Page, getCurrency } from "@/util";
 import { Form } from "@/components"
+import TextElement from "./Text";
 
 import {
   Grid,
 } from "@mui/material";
 
 export default function SelectElement({ question, form, options, disabled }) {
-  const isQuestionDisabled = disabled || question.disabled;
+  const [showSpecify,setShowSpecify]=React.useState(false)
+  const isQuestionDisabled = disabled || !(question.isEditable ?? true);
   const errors = form?.formState?.errors
-  function onChange() {
+  function onChange(e,v) {
+    setShowSpecify(v?.value==="others")
     question?.children.map(child => {
       form.setValue(child, null)
     })
   }
-  if (!options || options?.length === 0)
-    // options=[];
-    return <></>
+  if (!options || options?.length === 0) return <></>
   let formattedOptions = options;
   if (question.isMoney) {
     let country = form.watch("country");
     if (!country) return null;
     formattedOptions = options.sortRange("asc").map(range => ({ ...range, label: range.label.toMoneyRange(getCurrency(country), "en-IN") }))
   }
-  return <Grid
+
+  return <><Grid
     size={ { xs: 12, md: Number(question?.size) } }
     alignSelf="flex-end"
     sx={ {
@@ -69,6 +71,15 @@ export default function SelectElement({ question, form, options, disabled }) {
         },
       } }
       onChange={ onChange }
+      hasOthers={ question.hasOthers }
     />
   </Grid>
+  {showSpecify && <TextElement  form={ form } question={ {
+    label:`Please Specify`,
+    name:`${question.name}_specify`,
+    type:"text",
+    isEditable:true,
+    size:question.size
+  } } />}
+  </>
 }

@@ -6,12 +6,14 @@ import LoadingOverlay from "@/componentsMHO/LoadingOverlay";
 import {
   Grid,
   Chip,
+  Box,
   IconButton,
   Avatar,
   Collapse,
   ToggleButton,
   ToggleButtonGroup,
 } from "@mui/material";
+
 import { Datatable, Icon, SectionTitle } from "@/components";
 
 import {
@@ -48,10 +50,16 @@ export default function () {
   }, [messages]);
   React.useEffect(() => {
     setIsLoading(true);
-    api.get(`/api/v1/user`).then((resp) => {
-      setUsers(resp.data);
-      setIsLoading(false);
-    });
+    api
+      .post(`/api/v1/user`, {
+        isActive: {
+          $in: [true, false],
+        },
+      })
+      .then((resp) => {
+        setUsers(resp.data);
+        setIsLoading(false);
+      });
   }, [reload]);
 
   const columns = [
@@ -98,6 +106,11 @@ export default function () {
       ),
     },
     {
+      id: "role",
+      label: "Role",
+      render: (info) => info?.role?.Capitalize(),
+    },
+    {
       id: "name",
       label: "User",
       render: (info) => (
@@ -126,12 +139,12 @@ export default function () {
         </Page.Box>
       ),
     },
-    {
-      id: "category",
-      label: "Category",
-      data: "category",
-      feature: ["filterable"],
-    },
+    // {
+    //   id: "category",
+    //   label: "Category",
+    //   data: "category",
+    //   feature: ["filterable"],
+    // },
     {
       id: "email",
       label: "Email",
@@ -145,7 +158,7 @@ export default function () {
       render: (info) => `+${info.phone}`,
       feature: ["searchable"],
       width: 150,
-    }
+    },
   ];
 
   return (
@@ -197,14 +210,33 @@ export default function () {
     </Page.Box>
   );
 }
+function useCustomState(defaultValue) {
+  const [state, setState] = React.useState(defaultValue);
+  // const update = (val) => {
+  //   setState({ ...defaultValue, ...val, update })
+  // }
+  // React.useEffect(() => {
+  //   setState({
+  //     ...defaultValue,
+  //     update
+  //   })
+  // }, [defaultValue])
+  return {
+    ...state,
+    update: (newData) => {
+      setState({ ...state, ...newData });
+    },
+  };
+}
 
 function UserData({ userId, onClose }) {
-  const [user, setUser] = React.useState({});
+  // const [user, setUser] = React.useState({});
+  const user =useCustomState({})
   const [loading, setLoading] = React.useState(true);
   const [showProfiles, setShowProfiles] = React.useState(false);
-  const [reload,setReload]=React.useState(false);
+  const [reload, setReload] = React.useState(false);
   const me = useMember();
-  
+
   React.useEffect(() => {
     if (!userId) return;
     setLoading(true)
@@ -212,9 +244,9 @@ function UserData({ userId, onClose }) {
       .get(`/api/v1/user/${userId}`)
       .then((resp) => {
         setLoading(false)
-        setUser(resp.data)
+        user.update(resp.data)
       })
-  }, [userId]);
+  }, [userId, reload]);
   const userData = [
     {
       label: "Name",
@@ -391,7 +423,6 @@ function UserData({ userId, onClose }) {
                   let resp = await api.post(`/api/v1/user/autologin`, {
                     _id: userId,
                   });
-                  localStorage.setItem("token", resp.token);
                   useToast(resp);
                   me.Reload();
                   onClose();
@@ -466,7 +497,7 @@ function UserData({ userId, onClose }) {
                   )
                 }
               >
-                { user?.isActive ? "Disable" : "Enable" }
+                { user?.isActive ? "Disabled" : "Enabled" }
               </Page.MuiButton>
               <Page.MuiButton
                 variant="outlined"
@@ -571,14 +602,13 @@ function UserData({ userId, onClose }) {
   );
 }
 
+
 function ProfilesData({ user }) {
   const [profiles, setProfiles] = React.useState();
   const [selectedProfile, setSelectedProfile] = React.useState("");
   const [questionBank, setQuestionBank] = React.useState();
   const [dataList, setDataList] = React.useState([]);
   const [openData, setOpenData] = React.useState(true);
-
-  console.log(user);
 
   React.useEffect(() => {
     if (!user) return;
@@ -633,10 +663,13 @@ function ProfilesData({ user }) {
 
       setQuestionBank(profileQuestions);
     });
-    api.post("/api/v1/me", { questions: questions }).then((resp) => {
-      if ("update" in user) user.update(resp.data);
-      else console.log("unable to update user");
-    });
+
+    api
+      .post(`/api/v1/user/${user.id}/profile-data`, { questions: questions })
+      .then((resp) => {
+        if ("update" in user) user.update(resp.data);
+        else console.log("unable to update user");
+      });
   }, [selectedProfile]);
 
   const tabs = React.useMemo(() => {
@@ -667,10 +700,23 @@ function ProfilesData({ user }) {
   }, [profiles]);
 
   if (!tabs) return;
+
+  const values = Object.values(dataList || []);
+
+  const noAnswers = values.every(
+    (d) =>
+      !d?.answer ||
+      (Array.isArray(d.answer) && d.answer.length === 0) ||
+      d.answer === "",
+  );
   return (
     <Grid size={ 12 } px={ 2 } mt={ 3 }>
-      <Grid size={ 12 } sx={ { border: "1px solid #cecece", overflowX: "auto" } }>
-        <Grid size={ 12 } sx={ { overflowX: "auto" } }>
+      <Grid
+        size={ 12 }
+        container
+        sx={ { border: "1px solid #cecece", overflowX: "auto" } }
+      >
+        <Box sx={ { overflowX: "auto", width: { xs: "100%", md: 280 } } }>
           <ToggleButtonGroup
             variant="contained"
             value={ selectedProfile?.slug || "" }
@@ -683,8 +729,7 @@ function ProfilesData({ user }) {
             } }
             sx={ {
               display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
-              flexWrap: "nowrap",
+              flexDirection: "column",
 
               "& .MuiToggleButton-root": {
                 textTransform: "capitalize",
@@ -692,6 +737,7 @@ function ProfilesData({ user }) {
                 fontSize: 13,
                 px: 2,
                 py: 0.5,
+                borderRadius: 0,
                 color: "secondary.main",
                 borderColor: "secondary.main",
               },
@@ -717,32 +763,51 @@ function ProfilesData({ user }) {
               </ToggleButton>
             )) }
           </ToggleButtonGroup>
-        </Grid>
+        </Box>
         <Collapse
           in={ openData }
           timeout="auto"
-          sx={ { width: "100%", p: 3 } }
+          sx={ { flex: 1, p: 3 } }
           unmountOnExit
         >
-          { Object.values(dataList).map((d, i) => {
-            if (Array.isArray(d.answer) && d.answer.length === 0) return null;
-
-            return (
+          <Grid size={ 12 } container spacing={ 1 }>
+            { noAnswers ? (
               <Grid
-                key={ i }
                 size={ 12 }
                 container
-                direction="column"
-                spacing={ 0 }
-                mb={ 1.5 }
+                justifyContent="center"
+                alignItems="center"
+                height={ 400 }
               >
-                <Page.Text fontWeight={ 600 } fontSize={ 16 }>
-                  { d.label }
-                </Page.Text>
-                <Page.Text>{ d.answer }</Page.Text>
+                No Profile Data
               </Grid>
-            );
-          }) }
+            ) : (
+              values.map((d, i) => (
+                <Grid
+                  key={ i }
+                  size={ { xs: 12, md: 6 } }
+                  container
+                  direction="column"
+                  spacing={ 0 }
+                  mb={ 1 }
+                  sx={ {
+                    borderBottom: "1px solid #D9D9D9",
+                  } }
+                >
+                  <Page.Text
+                    fontWeight={ 600 }
+                    fontSize={ 16 }
+                    color="secondary.main"
+                  >
+                    { d.label }
+                  </Page.Text>
+                  <Page.Text>
+                    { Array.isArray(d.answer) ? d.answer.join(", ") : d.answer }
+                  </Page.Text>
+                </Grid>
+              ))
+            ) }
+          </Grid>
         </Collapse>
       </Grid>
     </Grid>

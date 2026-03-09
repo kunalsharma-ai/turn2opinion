@@ -42,11 +42,11 @@ const sidebarItems = [
     label: "Support",
     link: "/admin/support",
   },
-  {
-    icon: "icon-speech",
-    label: "Chat",
-    link: "/admin/chat",
-  },
+  // {
+  //   icon: "icon-speech",
+  //   label: "Chat",
+  //   link: "/admin/chat",
+  // },
   {
     icon: "icon-settings",
     label: "Panel Config",

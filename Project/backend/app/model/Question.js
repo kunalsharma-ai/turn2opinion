@@ -32,33 +32,43 @@ export default mongooseModel(
             ...string,
             required: true,
         }],
-        adminLabel:{
-            type:String,
+        adminLabel: {
+            type: String,
         },
-
         isMoney: {
             type: Boolean,
             default: false,
-            required:true,
         },
-        isRequired:{
-            type:Boolean,
-            default:true
+        isRequired: {
+            type: Boolean,
+            default: true
         },
-        isEditable:{
-            type:Boolean,
-            default:true
+        isEditable: {
+            type: Boolean,
+            default: true
         },
-        size:{
-            type:String,
-            default:"6"
+        hasOthers: {
+            type: Boolean,
+            default: false
+        },
+        hasNone: {
+            type: Boolean,
+            default: false
+        },
+        hasSkip: {
+            type: Boolean,
+            default: false
+        },
+        size: {
+            type: String,
+            default: "6"
         }
     },
     [
         [
             {
                 name: 1,
-                category:1,
+                category: 1,
                 origin: 1
             },
             {
