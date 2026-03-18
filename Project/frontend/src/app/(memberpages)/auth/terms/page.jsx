@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import {useForm} from "react-hook-form"
 import { useRouter, usePathname } from "next/navigation";
 import {
   Grid,
@@ -13,7 +14,7 @@ import { useMember } from "@/Context";
 import { api, Page } from "@/util";
 import LoadingOverlay from "@/componentsMHO/LoadingOverlay";
 import { useToast } from "@/hooks";
-
+import ParentDetailsForm from "../password/ParentDetailsForm";
 export default function page() {
   return (
     <Grid
@@ -66,7 +67,7 @@ export function Terms({
   width = { xs: "90vw", lg: "80vw", xl: "70vw" },
   hideLoading = false,
 }) {
-  const [user, router, pathName] = [useMember(), useRouter(), usePathname()];
+  const [user, router, pathName,form] = [useMember(), useRouter(), usePathname(),useForm()];
   const [category, setCategory] = React.useState({});
   const [isLoading, setIsLoading] = React.useState(true);
   const [termOptions, setTermsOptions] = React.useState([
@@ -157,6 +158,19 @@ export function Terms({
   };
   if (isLoading && !hideLoading) {
     return <LoadingOverlay />;
+  }
+
+  if(user?.isMinor && [null,undefined,""].includes(user?.parent?.email)){
+    return <form 
+      onSubmit={
+        form.handleSubmit(async data=>{
+          let resp=await api.patch(`/api/v1/me/parent-details`,data)
+          user.update(resp.data)
+        })
+      }
+      >
+      <ParentDetailsForm form={form} submitLabel={"Submit"}/>
+    </form>
   }
   return (
     <>

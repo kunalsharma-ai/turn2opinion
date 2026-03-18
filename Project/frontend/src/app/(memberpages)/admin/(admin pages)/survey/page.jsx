@@ -44,7 +44,7 @@ export default function () {
       <Datatable
         columns={[
           { id: "category", label: "Category", data: "category" },
-          { id: "name", label: "Survey", data: "name" },
+          { id: "name", label: "Survey", data: "name",feature: ["sortable", "searchable"], },
           { id: "loi", label: "LOI (in min)", data: "loi", width: 120 },
           { id: "source", label: "Source", data: "source", width: 120 },
           { id: "points", label: "Survey Points", data: "points", width: 120 },
@@ -119,7 +119,7 @@ export default function () {
               my: 1,
             }}
           >
-            Surveys List
+           Internal Surveys List
           </Page.Text>
         }
       />

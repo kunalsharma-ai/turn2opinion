@@ -5,18 +5,22 @@ import { Form } from "@/components"
 import {
   Grid,
 } from "@mui/material";
-
+import TextElement from "./Text";
 export default function MultiSelectElement({ question, form, options, disabled }) {
+  const [describe, setDescribe] = React.useState("");
   const isQuestionDisabled = disabled || !(question.isEditable ?? true);
   const errors = form?.formState?.errors
   const value = form.watch(question.name);
-  function onChange() {
+  function onChange(e, v) {
+    let tempDescribe = v.find(opt => opt?.describeLabel !== "")
+    if (tempDescribe) setDescribe(tempDescribe.describeLabel); else setDescribe("")
     question?.children.map(child => {
       form.setValue(child, null)
     })
   }
+  
   if (!options || options?.length === 0) return <></>
-  return <Grid
+  return <><Grid
     size={ { xs: 12, md: Number(question?.size) } }
     alignSelf="flex-end"
     sx={ {
@@ -47,7 +51,10 @@ export default function MultiSelectElement({ question, form, options, disabled }
             };
           return {
             label: opt.label,
-            value: opt.value
+            value: opt.value,
+            isExclusive: opt.isExclusive,
+            requiredDescribe: opt.describeLabel !== "",
+            describeLabel: opt.describeLabel,
           };
         })
       }
@@ -68,4 +75,12 @@ export default function MultiSelectElement({ question, form, options, disabled }
       hasSkip={ question.hasSkip }
     />
   </Grid>
+    { (!["",null,undefined].includes(describe)) && <TextElement form={ form } question={ {
+      label: describe,
+      name: `${question.name}_specify`,
+      type: "text",
+      isEditable: true,
+      size: question.size
+    } } /> }
+  </>
 }

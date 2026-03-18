@@ -15,7 +15,19 @@ export default mongooseModel(
         },
         parentValue: [{
             type: String
-        }]
+        }],
+        isSelected:{
+            type:Boolean,
+            default:false
+        },
+        isExclusive:{
+            type:Boolean,
+            default:false
+        },
+        describeLabel:{
+            type:String,
+            default:""
+        }
     },
     [
         [

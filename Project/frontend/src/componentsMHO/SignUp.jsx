@@ -108,17 +108,13 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
   minDOB.setFullYear(minDOB.getFullYear() - 120);
   let maxDOB = new Date();
   maxDOB.setFullYear(maxDOB.getFullYear() - 14);
-  const isMinor = new Date(form.watch("dob")).isMinor();
+  // const isMinor = new Date(form.watch("dob")).isMinor();
 
   const onSubmit = async (userData) => {
     setIsLoading(true);
     try {
       let { agreedtoterms, ...data } = userData;
       if (Boolean(query?.ref) && query.ref !== "") data.referredBy = query.ref;
-      // if(isMinor){
-      //   console.log(data)
-      //   return;
-      // }
       const temp = await api.put("api/v1/user", data);
       useToast(temp);
 
@@ -381,94 +377,6 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                         />
                       </Grid>
                     </Grid>
-                    {isMinor ? (
-                      <>
-                        <Page.Divider sx={{ width: "100%", opacity: "0.5" }} />
-                        <Grid size={12}>
-                          <Page.Text
-                            sx={{
-                              fontSize: 16,
-                              fontWeight: 600,
-                              color: "secondary.main",
-                            }}
-                          >
-                            Parent / Legal Guardian
-                          </Page.Text>
-                          <Page.Text sx={{ textAlign: "justify" }}>
-                            Since you are under 18 years of age, we are required
-                            to obtain consent from your parent or legal guardian
-                            before proceeding. You are kindly requested to share
-                            the details below.
-                          </Page.Text>
-                        </Grid>
-                        <Grid size={12}>
-                          <Form.Select
-                            {...register("parent.relation")}
-                            control={control}
-                            options={[
-                              { label: "Father", value: "father" },
-                              { label: "Mother", value: "mother" },
-                              { label: "Legal Guardian", value: "guardian" },
-                            ]}
-                            labelText="Relation"
-                          />
-                        </Grid>
-                        <Grid
-                          size={12}
-                          container
-                          spacing={1.2}
-                          direction="row"
-                          style={{ alignItems: "flex-end" }}
-                        >
-                          <Grid size={{ xs: 12, md: 2 }}>
-                            <Form.Select
-                              {...register("parent.name.salutation")}
-                              control={control}
-                              options={[
-                                { value: "Mr.", label: "Mr." },
-                                { value: "Ms.", label: "Ms." },
-                                { value: "Mrs.", label: "Mrs." },
-                                { value: "Dr.", label: "Dr." },
-                                { value: "Prof.", label: "Prof." },
-                                { value: "Mx. ", label: "Mx." },
-                              ]}
-                              labelText="Sal."
-                            />
-                          </Grid>
-                          <Grid size={{ xs: 12, md: 5 }}>
-                            <Form.Input
-                              {...register("parent.name.first")}
-                              control={control}
-                              labelText="First Name"
-                              required={true}
-                              errors={errors?.parent?.name?.first}
-                              validations={user.name.first}
-                            />
-                          </Grid>
-                          <Grid size={{ xs: 12, md: 5 }}>
-                            <Form.Input
-                              {...register("parent.name.last")}
-                              control={control}
-                              labelText="Last Name"
-                              required={true}
-                              errors={errors?.parent?.name?.last}
-                              validations={user.name.last}
-                            />
-                          </Grid>
-                        </Grid>
-
-                        <Grid size={12}>
-                          <Form.Input
-                            {...register("parent.email")}
-                            control={control}
-                            labelText="Email"
-                            required={true}
-                            errors={errors?.parent?.email}
-                            validations={user.parent.email}
-                          />
-                        </Grid>
-                      </>
-                    ) : (
                       <Grid
                         size={12}
                         container
@@ -484,7 +392,7 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                         <Typography
                           sx={{ flex: 1, ml: -1.5, textAlign: "justify" }}
                         >
-                          I agree for My Frequent Rewards Panel to use my
+                          I agree for Turn 2 Opinion Panel to use my
                           information for the purposes of determining my
                           eligibility and for contacting me in relation to
                           participation in market research surveys. Also, I am
@@ -514,7 +422,6 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                           </Typography>
                         </Typography>
                       </Grid>
-                    )}
                     <Page.MuiButton
                       type="submit"
                       variant="contained"
@@ -600,7 +507,7 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                       fontWeight: 600,
                     }}
                   >
-                    My Frequent Rewards
+                    Turn 2 Opinion
                   </Page.Text>{" "}
                   - A Frequent Research Panel Community.{" "}
                 </Page.Text>

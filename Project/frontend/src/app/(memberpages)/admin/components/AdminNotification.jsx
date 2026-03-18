@@ -52,7 +52,7 @@ export default function AdminNotification() {
   const [user] = [useMember()];
   const [notifAnchorEl, setNotifAnchorEl] = React.useState();
   const [notificationMessages, setNotificationMessages] = React.useState([
-    ...mockupNotifications,
+    // ...mockupNotifications,
   ]);
 
   const notificationCount = notificationMessages.length ?? 0;

@@ -3,10 +3,10 @@ import { Grid, Typography } from "@mui/material";
 import Counter from "./Counter";
 
 const stats = [
-  { label: "Registered Panellist", value: 1233332 },
-  { label: "Incentives this Month", value: 3221333, prefix: "$" },
-  { label: "Monthly Surveys", value: 142233 },
-  { label: "Completed Surveys", value: 323212 },
+  { label: "Registered Panellist", value: 28450 },
+  { label: "Incentives this Month", value: 12680, prefix: "$" },
+  { label: "Monthly Surveys", value: 42 },
+  { label: "Completed Surveys", value: 1380 },
 ];
 
 function Stats() {

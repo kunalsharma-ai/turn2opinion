@@ -1,0 +1,152 @@
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr>
+    <td align="center">
+       <img
+        src="https://turn2opinion.com/images/logo.png"
+        alt="Turn 2 Opinion"
+        style="width: 320px; height: auto; margin: 20px 0; padding: 0"
+      />
+    </td>
+  </tr>
+</table>
+<div
+  style="
+    max-width: 600px;
+    margin: auto;
+    background: #f8f8f8;
+    border: 1px solid rgba(89, 172, 119, 0.3);
+    border-radius: 6px;
+  "
+>
+  <div style="padding: 30px 20px; font-family: Roboto, sans-serif color: #2a3940">
+    <h3 style=" color: #2a3940; font-weight: 400; margin: 0">
+      Dear {{user.parent.name.first}},
+    </h3>
+    <p
+      style="
+        font-size: 17px;
+        color: #2a3940;
+        
+        margin: 20px 0;
+      "
+    >
+We hope this message finds you well.
+</p>
+<p
+      style="
+        font-size: 17px;
+        color: #2a3940;
+        
+        margin: 20px 0;
+      "
+    >
+Your child, {{user.name.first}}, has registered on <a href="https://{{user.origin}}">turn2opinion</a>, an online survey and market research panel platform published by Frequent Research Fieldwork Solutions Pvt. Ltd. As they have indicated that they are under the age of 18.
+</p>
+
+<p
+      style="
+        font-size: 17px;
+        color: #2a3940;
+        
+        margin: 20px 0;
+      "
+    >
+<a href="https://{{user.origin}}">
+turn2opinion
+</a> 
+allows members to participate in surveys and earn rewards by sharing opinions on various topics. We are committed to maintain a safe and secure environment for all participants, especially minors.
+</p>
+<h3>
+  Why You Are Receiving This Email
+</h3>
+
+<p
+      style="
+        font-size: 17px;
+        color: #2a3940;
+        
+        margin: 20px 0;
+      "
+    >
+During registration, your child provided your email address as the {{user.parent.relation}}. In accordance with our Child Protection and Privacy Policy, we require verified parental approval before allowing access to our platform.
+</p>
+<h3>
+  What We Collect
+</h3>
+
+<p
+      style="
+        font-size: 17px;
+        color: #2a3940;
+
+        margin: 20px 0;
+      "
+    >
+With your consent, we may collect:
+</p>
+<ul style="color: #2a3940;" >
+  <li>
+     Basic profile information (name, age, gender)
+  </li>
+  <li>
+     Survey participation responses
+  </li>
+  <li>
+     Reward-related details (if applicable)
+  </li>
+</ul>
+
+<h3>
+  Your Rights as a Parent/Guardian
+</h3>
+
+<p
+      style="
+        font-size: 17px;
+        color: #2a3940;
+        
+        margin: 20px 0;
+      "
+    >
+You have the right to:
+</p>
+<ul style="color: #2a3940;">
+  <li>
+  Review your child's information {% comment %} shared with us (only), on an exclusive request on email {% endcomment %}
+  </li>
+  <li>
+    Withdraw consent at any time {% comment %} by making a request on <a mailto:support@{{user.origin}}>support@{{user.origin}}</a> {% endcomment %}
+  </li>
+  <li>
+    Request account deletion {% comment %} by generating a support ticket or writing email to <a mailto:support@{{user.origin}}>support@{{user.origin}}</a> {% endcomment %}
+  </li>
+    <li>
+      Contact us for any clarification 
+    </li>
+  
+  </ul>
+  <p
+      style="
+        font-size: 17px;
+        color: #2a3940;
+        
+        margin: 20px 0;
+      "
+    >
+For assistance, please contact us at <a href="mailto:support@{{user.origin}}">support@{{user.origin}}</a>
+</p>
+<p
+      style="
+        font-size: 17px;
+        color: #2a3940;
+        
+        margin: 20px 0;
+      "
+    >
+We appreciate your cooperation in helping us maintain a safe and responsible research environment.
+</p>
+ <hr style="border: 0; border-top: 2px solid #e8e8e8; margin: 30px 0" />
+
+    {% include  "mailer/footer.liquid" %}
+  </div>
+</div>

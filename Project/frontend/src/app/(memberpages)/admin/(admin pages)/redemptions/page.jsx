@@ -120,7 +120,7 @@ export default function page() {
               my: 1,
             } }
           >
-            Redumption Requests
+            Redemption Requests
           </Typography>
         }
         columns={ columns }

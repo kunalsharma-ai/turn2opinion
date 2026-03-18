@@ -425,6 +425,7 @@ function TermsAndConditions() {
         }}
       >
         <Terms width={"100%"} hideLoading={true} />
+        <Terms width={"100%"} hideLoading={true} />
       </Grid>
     </Grid>
   );

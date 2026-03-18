@@ -62,11 +62,13 @@ export default function Select({
   let pValue = parentDefault ?? "";
   const isOthersOption = React.useCallback((option) => {
     if (!option) return false;
+    // console.log(option);
     const value = String(option.value ?? "").trim().toLowerCase();
     const label = String(option.label ?? "").trim().toLowerCase();
     return value === "others" || label === "others";
   }, []);
   const isSkipOption = React.useCallback((option) => {
+    // console.log(option)
     if (!option) return false;
     const value = String(option.value ?? "").trim().toLowerCase();
     const label = String(option.label ?? "").trim().toLowerCase();
@@ -78,7 +80,7 @@ export default function Select({
     const label = String(option.label ?? "").trim().toLowerCase();
     return value === "none_of_the_above" || label === "none of the above";
   }, []);
-  
+
   if (api) {
     if (parent instanceof Array) {
       let parentVal = [];
@@ -133,16 +135,16 @@ export default function Select({
     }
     return list;
   }, [optionList, hasOthers, hasSkip, hasNone, isOthersOption, isSkipOption, isNoneOption]);
-  
+  // console.log({optionList})
   if (hide && !showSelect) return <></>;
   return (
     <>
-      { (formattedOptions && formattedOptions instanceof Array && formattedOptions.length > 0) && ( 
+      { (formattedOptions && formattedOptions instanceof Array && formattedOptions.length > 0) && (
         <Controller
           name={ name }
           control={ control }
           rules={ validate }
-          
+
           render={ ({ field }) => {
             const othersSelected =
               // multiple &&
@@ -210,23 +212,23 @@ export default function Select({
                           Select All
                         </Page.MuiButton>
                       ) }
-                    {isOpen && addOptions && (
-                    <IconButton
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setIsPopperOpen(true);
-                        setIsOpen(false);
-                      }}
-                      sx={{
-                        position: "absolute",
-                        top: "-27px",
-                        zIndex: 99999,
-                      }}
-                    >
-                      <PlusIcon />
-                    </IconButton>
-                  )}
+                    { isOpen && addOptions && (
+                      <IconButton
+                        onMouseDown={ (e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setIsPopperOpen(true);
+                          setIsOpen(false);
+                        } }
+                        sx={ {
+                          position: "absolute",
+                          top: "-27px",
+                          zIndex: 99999,
+                        } }
+                      >
+                        <PlusIcon />
+                      </IconButton>
+                    ) }
                   </Page.Box>
                   <Autocomplete
                     fullWidth
@@ -268,10 +270,14 @@ export default function Select({
                         : !!multiple
                     }
                     disableCloseOnSelect={ !!multiple }
-                    disableClearable={ !multiple || hasError }
+                    // disableClearable={ !multiple || hasError }
                     options={ formattedOptions ?? [] }
-                    getOptionDisabled={ (option) =>
-                      !!(
+                    getOptionDisabled={ (option) => {
+                      let exclusiveOption=formattedOptions.filter(option=>{
+                        return field.value?.includes(option.value)
+                      }).find(v=>v.isExclusive);
+                      if(exclusiveOption)return true;
+                      return !!(
                         (multiple &&
                           hasOthers &&
                           othersSelected &&
@@ -285,6 +291,7 @@ export default function Select({
                           noneSelected &&
                           !isNoneOption(option))
                       )
+                    }
                     }
                     open={ showSelectAllBtn || addOptions ? isOpen : undefined }
                     getOptionLabel={ (option) => option.label || "" }
@@ -342,7 +349,10 @@ export default function Select({
                           );
                           return;
                         }
-                        field.onChange(newValue.map((val) => val.value));
+                        let exclusiveOption = newValue.find(val => val.isExclusive);
+                        if (!exclusiveOption)
+                          return field.onChange(newValue.map((val) => val.value));
+                        field.onChange([exclusiveOption.value]);
                         return;
                       }
                       field.onChange(newValue === null ? "" : newValue.value);
@@ -573,7 +583,7 @@ export default function Select({
             );
           } }
         />
-      ) } 
+      ) }
       { isPopperOpen && (
         <Page.Box
           sx={ {

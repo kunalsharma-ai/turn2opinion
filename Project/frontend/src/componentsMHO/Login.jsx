@@ -169,12 +169,15 @@ function LoginCard({ onClose, setCardType, setOpenSignUp }) {
           setLoading(true);
           try {
             const resp = await submitWithAjax(e);
-            if ("token" in resp) {
-              localStorage.setItem("token", resp.token);
-              router.replace("/member/dashboard");
-            } else {
-              setErrorMessage("Invalid credentials");
-              setLoading(false);
+            switch (resp.status) {
+              case "success":
+                router.replace("/dashboard")
+                break;
+            
+              default:
+                setErrorMessage(resp.message);
+                setLoading(false);
+                break;
             }
           } catch (error) {
             console.log({ error });

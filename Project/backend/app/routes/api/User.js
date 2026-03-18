@@ -11,7 +11,16 @@ import {
     OTP as otpController,
     Answer as answerController,
 } from "../../controller/index.js";
-import { Mutate,expressRoute, expressView, isAuthenticated, fsLogger, getMailer, sendMail, Token } from "../../utils/index.js"
+import {
+    Mutate,
+    expressRoute,
+    expressView,
+    isAuthenticated,
+    fsLogger,
+    getMailer,
+    sendMail,
+    Token
+} from "../../utils/index.js"
 
 const router = express.Router();
 router
@@ -43,37 +52,8 @@ router
                 if (col in userInfo) delete (userInfo[col]);
             }
             let message = "";
-            // console.log({ userInfo })
-            // throw new Error("abhi testing mode me hai");
             let data = await userController.create(userInfo);
-            // generate otp
-            const isMinor = (new Date(userInfo.dob)).isMinor();
 
-            if (isMinor) {
-                let otp = await otpController.generate(
-                    data._id,
-                    "parent-email",
-                    req.origin,
-                    7 * 24 * 60 * 60 * 1000
-                )
-                let mailer = await getMailer(
-                    "register",
-                    "parent-consent",
-                    {
-                        user: data,
-                        otp
-                    }
-                )
-                console.log({
-                    emailStatus: await sendMail(
-                        { origin: req.origin, "content-type": "application/json" },
-                        data?.parent?.email,
-                        `My Frequent Rewards: Registration Consent for ${data.name.first}`,
-                        mailer.data
-                    )
-                })
-                return { message: "Please ask your parent to check their inbox and share consent for you to join this panel.", data: null };
-            }
             let otp = await otpController.generate(
                 data._id,
                 "email",
@@ -89,15 +69,12 @@ router
                     otp
                 }
             )
-            console.log({
-                emailStatus: await sendMail(
-                    { origin: req.origin, "content-type": "application/json" },
-                    data.mail,
-                    "My Frequent Rewards: Registration",
-                    mailer.data
-                )
-            })
-
+            const emailStatus = await sendMail(
+                { origin: req.origin, "content-type": "application/json" },
+                data.mail,
+                "Turn 2 Opinion: Registration",
+                mailer.data
+            )
             return { message, data: otp };
         },
         userController
@@ -217,7 +194,7 @@ router
     ))
     .post(`/:user/profile-data`, expressRoute(
         async req => {
-            let data = await userController.read(req.params.user)
+            // let data = await userController.read(req.params.user)
             answerController.request = req;
             let temp = Mutate(await answerController.getAnswers({ user: req.params.user, question: { $in: [...req.body.questions] } }))
             return {

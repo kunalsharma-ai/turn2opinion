@@ -64,6 +64,15 @@ router
         },
         questionController
     ))
+    .patch(expressRoute(
+        async req => {
+            // update single entry
+            let message = "";
+            let data = await questionController.deleteParent(req.params.id)
+            return { message, data };
+        },
+        questionController
+    ))
     .delete(expressRoute(
         async req => {
             // delete single entry

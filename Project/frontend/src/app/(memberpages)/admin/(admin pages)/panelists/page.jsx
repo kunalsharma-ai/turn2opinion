@@ -16,10 +16,7 @@ import {
 
 import { Datatable, Icon, SectionTitle } from "@/components";
 
-import {
-  Circle as CircleIcon,
-  Close as CloseIcon
-} from "@mui/icons-material";
+import { Circle as CircleIcon, Close as CloseIcon } from "@mui/icons-material";
 
 import DataList from "@/componentsMHO/DataList";
 import { SideDrawer } from "@/components/Popup";
@@ -72,70 +69,100 @@ export default function () {
         <Page.Box
           display="flex"
           alignItems="center"
-          gap={ 2 }
-          mx={ 1 }
+          gap={2}
+          mx={1}
           justifyContent="center"
         >
           <Icon
             iconClass="fa fa-user"
-            onClick={ () => {
+            onClick={() => {
               setOpen({ open: true, id: info._id });
-            } }
-            style={ { color: "#035f87", fontSize: 16 } }
-            sx={ { m: 0 } }
+            }}
+            style={{ color: "#035f87", fontSize: 16 }}
+            sx={{ m: 0 }}
             label="User Details"
           />
-          { info.isActive ? (
+          {info.isActive ? (
             <Icon
               iconClass="fa fa-ban"
-              onClick={ () => { } }
+              onClick={() => {}}
               label="Disable User"
-              style={ { color: "rgba(237, 89, 89, 1)", fontSize: 16 } }
-              sx={ { m: 0 } }
+              style={{ color: "rgba(237, 89, 89, 1)", fontSize: 16 }}
+              sx={{ m: 0 }}
             />
           ) : (
             <Icon
               iconClass="fa fa-circle-check"
-              onClick={ () => { } }
+              onClick={() => {}}
               label="Enable User"
-              style={ { color: "#59AC77", fontSize: 16 } }
-              sx={ { m: 0 } }
+              style={{ color: "#59AC77", fontSize: 16 }}
+              sx={{ m: 0 }}
             />
-          ) }
+          )}
         </Page.Box>
       ),
     },
     {
       id: "role",
       label: "Role",
-      render: (info) => info?.role?.Capitalize(),
+      render: (info, i) => {
+        return (
+          <Chip
+            size="small"
+            label={info?.role}
+            variant="contained"
+            color={info?.role == "admin" ? "secondary" : "primary"}
+            sx={{ mr: 0.5, color: "white", textTransform: "capitalize" }}
+          />
+        );
+      },
+      width: 150,
+      feature: ["filterable", "sortable"],
+    },
+    {
+      id: "category",
+      label: "Category",
+      render: (info, i) => {
+        return (
+          <Chip
+            size="small"
+            label={info?.category}
+            variant="contained"
+            color={info?.category == "b2c" ? "success" : "error"}
+            sx={{ mr: 0.5, color: "white", textTransform: "uppercase" }}
+          />
+        );
+      },
+      width: 150,
+      feature: ["filterable", "sortable"],
     },
     {
       id: "name",
       label: "User",
+      width: 250,
       render: (info) => (
-        <Page.Box display="flex" alignItems="center" gap={ 1 }>
+        <Page.Box display="flex" alignItems="center" gap={1}>
           <Avatar
-            sx={ { height: 25, width: 25 } }
-            src={ info.profilePicture }
+            sx={{ height: 25, width: 25 }}
+            src={info.profilePicture}
             alt="user photo"
-          />{ " " }
+          />{" "}
           <Page.Text
-            sx={ {
+            sx={{
               fontSize: 13,
               fontWeight: 500,
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
-            } }
+            }}
           >
-            { info.fullName }
+            {info.fullName}
           </Page.Text>
-          { activeUsers.includes(info.mail) ? (
-            <CircleIcon sx={ { fontSize: 10, color: "#4dbf0b" } } />
+          {activeUsers.includes(info.mail) ? (
+            <CircleIcon sx={{ fontSize: 10, color: "#4dbf0b" }} />
           ) : (
-            <CircleIcon sx={ { fontSize: 10, color: "red" } } />
-          ) }
+            <CircleIcon sx={{ fontSize: 10, color: "red" }} />
+          )}
         </Page.Box>
       ),
     },
@@ -163,23 +190,23 @@ export default function () {
 
   return (
     <Page.Box
-      sx={ {
+      sx={{
         bgcolor: (theme) => theme.palette.page.main,
         p: { xs: 2, md: 3 },
-      } }
+      }}
     >
       <Datatable
-        columns={ columns }
-        data={ users }
-        isLoading={ isLoading }
-        pagination={ [10, 20, 50, 100] }
-        pageSize={ 10 }
+        columns={columns}
+        data={users}
+        isLoading={isLoading}
+        pagination={[10, 20, 50, 100]}
+        pageSize={10}
         hideColumnSelector
         hideDownload
         noDataMsg="No Record Found."
         title={
           <Page.Text
-            sx={ {
+            sx={{
               fontSize: "18px",
               display: "inline-block",
               fontWeight: "600",
@@ -187,24 +214,25 @@ export default function () {
                 `2px solid ${theme.palette.primary.main}`,
               pb: 0.5,
               my: 1,
-            } }
+            }}
           >
             Users List
           </Page.Text>
         }
       />
       <SideDrawer
-        open={ open.open }
-        hideTitleBar={ true }
+        open={open.open}
+        width={"100vw"}
+        hideTitleBar={true}
         anchor="right"
-        onClose={ () => setOpen({ open: false, id: null }) }
+        onClose={() => setOpen({ open: false, id: null })}
       >
         <UserData
-          userId={ open.id }
-          onClose={ () => {
-            setOpen({ open: false, id: null })
-            setReload((reload + 1) % 10)
-          } }
+          userId={open.id}
+          onClose={() => {
+            setOpen({ open: false, id: null });
+            setReload((reload + 1) % 10);
+          }}
         />
       </SideDrawer>
     </Page.Box>
@@ -231,7 +259,7 @@ function useCustomState(defaultValue) {
 
 function UserData({ userId, onClose }) {
   // const [user, setUser] = React.useState({});
-  const user =useCustomState({})
+  const user = useCustomState({});
   const [loading, setLoading] = React.useState(true);
   const [showProfiles, setShowProfiles] = React.useState(false);
   const [reload, setReload] = React.useState(false);
@@ -239,13 +267,11 @@ function UserData({ userId, onClose }) {
 
   React.useEffect(() => {
     if (!userId) return;
-    setLoading(true)
-    api
-      .get(`/api/v1/user/${userId}`)
-      .then((resp) => {
-        setLoading(false)
-        user.update(resp.data)
-      })
+    setLoading(true);
+    api.get(`/api/v1/user/${userId}`).then((resp) => {
+      setLoading(false);
+      user.update(resp.data);
+    });
   }, [userId, reload]);
   const userData = [
     {
@@ -260,27 +286,27 @@ function UserData({ userId, onClose }) {
     {
       label: "Verification",
       value: (
-        <Page.Box component="span" display="flex" alignItems="center" gap={ 1 }>
+        <Page.Box component="span" display="flex" alignItems="center" gap={1}>
           <Chip
             size="small"
             label="Email"
-            color={ user?.isVerified?.email === "verified" ? "success" : "error" }
+            color={user?.isVerified?.email === "verified" ? "success" : "error"}
             variant="contained"
-            sx={ { fontWeight: 600 } }
+            sx={{ fontWeight: 600 }}
           />
           <Chip
             label="Phone"
             size="small"
-            color={ user?.isVerified?.phone === "verified" ? "success" : "error" }
+            color={user?.isVerified?.phone === "verified" ? "success" : "error"}
             variant="contained"
-            sx={ { fontWeight: 600 } }
+            sx={{ fontWeight: 600 }}
           />
           <Chip
             label="Video"
             size="small"
-            color={ user?.isVerified?.video === "verified" ? "success" : "error" }
+            color={user?.isVerified?.video === "verified" ? "success" : "error"}
             variant="contained"
-            sx={ { fontWeight: 600 } }
+            sx={{ fontWeight: 600 }}
           />
           <Chip
             label="In-Person"
@@ -291,7 +317,7 @@ function UserData({ userId, onClose }) {
                 : "error"
             }
             variant="contained"
-            sx={ { fontWeight: 600 } }
+            sx={{ fontWeight: 600 }}
           />
         </Page.Box>
       ),
@@ -301,20 +327,20 @@ function UserData({ userId, onClose }) {
     {
       label: "Consent",
       value: (
-        <Page.Box component="span" display="flex" alignItems="center" gap={ 1 }>
+        <Page.Box component="span" display="flex" alignItems="center" gap={1}>
           <Chip
             size="small"
             label="Video"
-            color={ user?.consent?.canShareVideo ? "success" : "error" }
+            color={user?.consent?.canShareVideo ? "success" : "error"}
             variant="contained"
-            sx={ { fontWeight: 600 } }
+            sx={{ fontWeight: 600 }}
           />
           <Chip
             label="GPS"
             size="small"
-            color={ user?.consent?.canShareGPS ? "success" : "error" }
+            color={user?.consent?.canShareGPS ? "success" : "error"}
             variant="contained"
-            sx={ { fontWeight: 600 } }
+            sx={{ fontWeight: 600 }}
           />
           <Chip
             label="Notification"
@@ -323,7 +349,7 @@ function UserData({ userId, onClose }) {
               user?.consent?.canAcceptPushNotification ? "success" : "error"
             }
             variant="contained"
-            sx={ { fontWeight: 600 } }
+            sx={{ fontWeight: 600 }}
           />
         </Page.Box>
       ),
@@ -335,44 +361,44 @@ function UserData({ userId, onClose }) {
   const socialIcons = {
     facebook: (
       <Icon
-        disabled={ true }
+        disabled={true}
         iconClass="fa-brands fa-square-facebook"
-        style={ { color: "#3b5998", fontSize: 16 } }
+        style={{ color: "#3b5998", fontSize: 16 }}
       />
     ),
     whatsapp: (
       <Icon
-        disabled={ true }
+        disabled={true}
         iconClass="fa-brands fa-whatsapp"
-        style={ { color: "#25D366", fontSize: 16 } }
+        style={{ color: "#25D366", fontSize: 16 }}
       />
     ),
     linkedin: (
       <Icon
-        disabled={ true }
+        disabled={true}
         iconClass="fa-brands fa-square-linkedin"
-        style={ { color: "#0e76a8", fontSize: 16 } }
+        style={{ color: "#0e76a8", fontSize: 16 }}
       />
     ),
     instagram: (
       <Icon
-        disabled={ true }
+        disabled={true}
         iconClass="fa-brands fa-instagram"
-        style={ { color: "#C13584", fontSize: 16 } }
+        style={{ color: "#C13584", fontSize: 16 }}
       />
     ),
     twitter: (
       <Icon
-        disabled={ true }
+        disabled={true}
         iconClass="fa-brands fa-square-x-twitter"
-        style={ { color: "black", fontSize: 16 } }
+        style={{ color: "black", fontSize: 16 }}
       />
     ),
     youtube: (
       <Icon
-        disabled={ true }
+        disabled={true}
         iconClass="fa-brands fa-youtube"
-        style={ { color: "#FF0000", fontSize: 16 } }
+        style={{ color: "#FF0000", fontSize: 16 }}
       />
     ),
   };
@@ -380,228 +406,246 @@ function UserData({ userId, onClose }) {
   return (
     <Grid
       container
-      spacing={ 2 }
-      size={ 12 }
-      sx={ {
+      spacing={2}
+      size={12}
+      sx={{
         bgcolor: "white",
         overflow: "hidden",
         borderRadius: "10px",
         boxShadow: 1,
         pb: 2,
         alignSelf: "flex-start",
-      } }
+      }}
     >
       <SectionTitle
-        title={ user?.fullName }
-        sx={ { justifyContent: "space-between" } }
+        title={user?.fullName}
+        sx={{ justifyContent: "space-between" }}
       >
-        <IconButton onClick={ onClose } color="secondary">
+        <IconButton onClick={onClose} color="secondary">
           <CloseIcon />
         </IconButton>
       </SectionTitle>
-      {
-        loading
-          ? <></>
-          : <Grid container size={ 12 } spacing={ 0 }>
-            <Grid size={ 12 } container justifyContent="flex-end" spacing={ 2 } mr={ 3 }>
-              <Page.MuiButton
-                variant="contained"
-                onClick={ () => {
-                  setShowProfiles(!showProfiles);
-                } }
-                color="secondary"
-                sx={ { fontWeight: 600, color: "white" } }
-                startIcon={
-                  <i className="fa-solid fa-users" style={ { fontSize: "14px" } } />
-                }
-              >
-                { showProfiles ? "Hide Profiles" : "Profiles" }
-              </Page.MuiButton>
-              <Page.MuiButton
-                variant="contained"
-                onClick={ async (e) => {
-                  let resp = await api.post(`/api/v1/user/autologin`, {
-                    _id: userId,
-                  });
-                  useToast(resp);
-                  me.Reload();
-                  onClose();
-                } }
-                color="info"
-                sx={ { fontWeight: 600, color: "white" } }
-                startIcon={
-                  <i className="fa-solid fa-user" style={ { fontSize: "14px" } } />
-                }
-              >
-                Login As User
-              </Page.MuiButton>
-              <Page.MuiButton
-                variant="contained"
-                color="error"
-                sx={ { fontWeight: 600 } }
-                onClick={ async (e) => {
-                  let resp = await api.delete(`/api/v1/user/terms`, {
-                    _id: user._id,
-                  });
-                  useToast(resp);
-                  setReload(!reload);
-                } }
-                startIcon={
-                  <i
-                    className="fa-solid fa-trash-can"
-                    style={ { fontSize: "14px" } }
-                  />
-                }
-              >
-                Delete Terms Accepted
-              </Page.MuiButton>
-              <Page.MuiButton
-                variant="contained"
-                color="error"
-                sx={ { fontWeight: 600 } }
-                onClick={ async (e) => {
-                  let resp = await api.post(`/api/v1/user/refresh`, {
-                    user: user._id,
-                  });
-                  useToast(resp);
-                  setReload(!reload);
-                } }
-                startIcon={
-                  <i
-                    className="fa-solid fa-trash-can"
-                    style={ { fontSize: "14px" } }
-                  />
-                }
-              >
-                Clear Data
-              </Page.MuiButton>
-              <Page.MuiButton
-                variant="outlined"
-                color={ user?.isActive ? "error" : "success" }
-                sx={ { borderWidth: 2, fontWeight: 600 } }
-                onClick={ async (e) => {
-                  let resp = await api.put(`/api/v1/user/${user._id}`, {
-                    isActive: !Boolean(user?.isActive)
-                  });
-                  useToast(resp);
-                  setReload(!reload);
-                } }
-                startIcon={
-                  user?.isActive ? (
-                    <i className="fa-solid fa-ban" style={ { fontSize: "14px" } } />
-                  ) : (
-                    <i
-                      className="fa-solid fa-circle-check"
-                      style={ { fontSize: "14px" } }
-                    />
-                  )
-                }
-              >
-                { user?.isActive ? "Disabled" : "Enabled" }
-              </Page.MuiButton>
-              <Page.MuiButton
-                variant="outlined"
-                color={ ["admin", "superadmin", "root"].includes(user?.role) ? "error" : "success" }
-                sx={ { borderWidth: 2, fontWeight: 600 } }
-                onClick={ async (e) => {
-                  let resp = await api.put(`/api/v1/user/${user._id}`, {
-                    role: ["admin", "superadmin", "root"].includes(user?.role) ? "respondent" : "admin"
-                  });
-                  useToast(resp);
-                  setReload(!reload);
-                } }
-              >
-                { ["admin", "superadmin", "root"].includes(user?.role) ? "Admin" : "Respondent" }
-              </Page.MuiButton>
-            </Grid>
-            <Collapse
-              in={ showProfiles }
-              timeout="auto"
-              unmountOnExit
-              sx={ { width: "100%" } }
+      {loading ? (
+        <></>
+      ) : (
+        <Grid container size={12} spacing={0}>
+          <Grid
+            size={12}
+            container
+            justifyContent="flex-end"
+            spacing={2}
+            mr={3}
+          >
+            <Page.MuiButton
+              variant="contained"
+              onClick={() => {
+                setShowProfiles(!showProfiles);
+              }}
+              color="secondary"
+              sx={{ fontWeight: 600, color: "white" }}
+              startIcon={
+                <i className="fa-solid fa-users" style={{ fontSize: "14px" }} />
+              }
             >
-              <ProfilesData user={ user } />
-            </Collapse>
-
-            <Collapse
-              in={ !showProfiles }
-              unmountOnExit
-              timeout="auto"
-              sx={ { width: "100%" } }
+              {showProfiles ? "Hide Profiles" : "Profiles"}
+            </Page.MuiButton>
+            <Page.MuiButton
+              variant="contained"
+              onClick={async (e) => {
+                let resp = await api.post(`/api/v1/user/autologin`, {
+                  _id: userId,
+                });
+                useToast(resp);
+                me.Reload();
+                onClose();
+              }}
+              color="info"
+              sx={{ fontWeight: 600, color: "white" }}
+              startIcon={
+                <i className="fa-solid fa-user" style={{ fontSize: "14px" }} />
+              }
             >
-              <Grid size={ 12 }>
-                <DataList dataList={ userData } />
-              </Grid>
-              <Grid size={ 12 } px={ 2 } ml={ 3 }>
-                <Page.Text
-                  sx={ {
-                    display: "inline-block",
-                    fontWeight: "600",
-                    borderBottom: (theme) =>
-                      `2px solid ${theme.palette.primary.main}`,
-
-                    pb: 0.5,
-                    my: 1,
-                  } }
-                >
-                  Accepted Terms
-                </Page.Text>
-                <Grid size={ 12 } container>
-                  { (!Array.isArray(user?.terms) || user?.terms.length === 0) && (
-                    <Page.Text fontSize={ 13 }>No Terms Accepted</Page.Text>
-                  ) }
-                  { user?.terms?.map((term, index) => {
-                    return (
-                      <Page.Box width="50%" key={ index } my={ 0.5 } fontWeight={ 500 }>
-                        <Icon
-                          disabled={ true }
-                          iconClass="fa-regular fa-check-circle"
-                          style={ { color: "#124d86", fontSize: 16 } }
-                        />{ " " }
-                        { term }
-                      </Page.Box>
-                    );
-                  }) }
-                </Grid>
-              </Grid>
-              <Grid size={ 12 } px={ 2 } ml={ 3 } mt={ 2 }>
-                <Page.Text
-                  sx={ {
-                    display: "inline-block",
-                    fontWeight: "600",
-                    borderBottom: (theme) =>
-                      `2px solid ${theme.palette.primary.main}`,
-
-                    pb: 0.5,
-                    my: 1,
-                  } }
-                >
-                  Contacts
-                </Page.Text>
-                <Grid size={ 12 } container>
-                  { (!Array.isArray(user?.socials) ||
-                    user?.socials.length === 0) && (
-                      <Page.Text fontSize={ 13 }>No Socials Added</Page.Text>
-                    ) }
-                  { user?.socials?.map((social, index) => {
-                    return (
-                      social?.account && (
-                        <Page.Box width="50%" key={ index } my={ 0.5 } fontWeight={ 500 }>
-                          { socialIcons[social?.channel] }
-                          { social?.account }
-                        </Page.Box>
-                      )
-                    );
-                  }) }
-                </Grid>
-              </Grid>
-            </Collapse>
+              Login As User
+            </Page.MuiButton>
+            <Page.MuiButton
+              variant="contained"
+              color="error"
+              sx={{ fontWeight: 600 }}
+              onClick={async (e) => {
+                let resp = await api.delete(`/api/v1/user/terms`, {
+                  _id: user._id,
+                });
+                useToast(resp);
+                setReload(!reload);
+              }}
+              startIcon={
+                <i
+                  className="fa-solid fa-trash-can"
+                  style={{ fontSize: "14px" }}
+                />
+              }
+            >
+              Delete Terms Accepted
+            </Page.MuiButton>
+            <Page.MuiButton
+              variant="contained"
+              color="error"
+              sx={{ fontWeight: 600 }}
+              onClick={async (e) => {
+                let resp = await api.post(`/api/v1/user/refresh`, {
+                  user: user._id,
+                });
+                useToast(resp);
+                setReload(!reload);
+              }}
+              startIcon={
+                <i
+                  className="fa-solid fa-trash-can"
+                  style={{ fontSize: "14px" }}
+                />
+              }
+            >
+              Clear Data
+            </Page.MuiButton>
+            <Page.MuiButton
+              variant="outlined"
+              color={user?.isActive ? "error" : "success"}
+              sx={{ borderWidth: 2, fontWeight: 600 }}
+              onClick={async (e) => {
+                let resp = await api.put(`/api/v1/user/${user._id}`, {
+                  isActive: !Boolean(user?.isActive),
+                });
+                useToast(resp);
+                setReload(!reload);
+              }}
+              startIcon={
+                user?.isActive ? (
+                  <i className="fa-solid fa-ban" style={{ fontSize: "14px" }} />
+                ) : (
+                  <i
+                    className="fa-solid fa-circle-check"
+                    style={{ fontSize: "14px" }}
+                  />
+                )
+              }
+            >
+              {user?.isActive ? "Disabled" : "Enabled"}
+            </Page.MuiButton>
+            <Page.MuiButton
+              variant="outlined"
+              color={
+                ["admin", "superadmin", "root"].includes(user?.role)
+                  ? "error"
+                  : "success"
+              }
+              sx={{ borderWidth: 2, fontWeight: 600 }}
+              onClick={async (e) => {
+                let resp = await api.put(`/api/v1/user/${user._id}`, {
+                  role: ["admin", "superadmin", "root"].includes(user?.role)
+                    ? "respondent"
+                    : "admin",
+                });
+                useToast(resp);
+                setReload(!reload);
+              }}
+            >
+              {["admin", "superadmin", "root"].includes(user?.role)
+                ? "Admin"
+                : "Respondent"}
+            </Page.MuiButton>
           </Grid>
-      }
+          <Collapse
+            in={showProfiles}
+            timeout="auto"
+            unmountOnExit
+            sx={{ width: "100%" }}
+          >
+            <ProfilesData user={user} />
+          </Collapse>
+
+          <Collapse
+            in={!showProfiles}
+            unmountOnExit
+            timeout="auto"
+            sx={{ width: "100%" }}
+          >
+            <Grid size={12}>
+              <DataList dataList={userData} />
+            </Grid>
+            <Grid size={12} px={2} ml={3}>
+              <Page.Text
+                sx={{
+                  display: "inline-block",
+                  fontWeight: "600",
+                  borderBottom: (theme) =>
+                    `2px solid ${theme.palette.primary.main}`,
+
+                  pb: 0.5,
+                  my: 1,
+                }}
+              >
+                Accepted Terms
+              </Page.Text>
+              <Grid size={12} container>
+                {(!Array.isArray(user?.terms) || user?.terms.length === 0) && (
+                  <Page.Text fontSize={13}>No Terms Accepted</Page.Text>
+                )}
+                {user?.terms?.map((term, index) => {
+                  return (
+                    <Page.Box width="50%" key={index} my={0.5} fontWeight={500}>
+                      <Icon
+                        disabled={true}
+                        iconClass="fa-regular fa-check-circle"
+                        style={{ color: "#124d86", fontSize: 16 }}
+                      />{" "}
+                      {term}
+                    </Page.Box>
+                  );
+                })}
+              </Grid>
+            </Grid>
+            <Grid size={12} px={2} ml={3} mt={2}>
+              <Page.Text
+                sx={{
+                  display: "inline-block",
+                  fontWeight: "600",
+                  borderBottom: (theme) =>
+                    `2px solid ${theme.palette.primary.main}`,
+
+                  pb: 0.5,
+                  my: 1,
+                }}
+              >
+                Contacts
+              </Page.Text>
+              <Grid size={12} container>
+                {(!Array.isArray(user?.socials) ||
+                  user?.socials.length === 0) && (
+                  <Page.Text fontSize={13}>No Socials Added</Page.Text>
+                )}
+                {user?.socials?.map((social, index) => {
+                  return (
+                    social?.account && (
+                      <Page.Box
+                        width="50%"
+                        key={index}
+                        my={0.5}
+                        fontWeight={500}
+                      >
+                        {socialIcons[social?.channel]}
+                        {social?.account}
+                      </Page.Box>
+                    )
+                  );
+                })}
+              </Grid>
+            </Grid>
+          </Collapse>
+        </Grid>
+      )}
     </Grid>
   );
 }
-
 
 function ProfilesData({ user }) {
   const [profiles, setProfiles] = React.useState();
@@ -710,24 +754,24 @@ function ProfilesData({ user }) {
       d.answer === "",
   );
   return (
-    <Grid size={ 12 } px={ 2 } mt={ 3 }>
+    <Grid size={12} px={2} mt={3}>
       <Grid
-        size={ 12 }
+        size={12}
         container
-        sx={ { border: "1px solid #cecece", overflowX: "auto" } }
+        sx={{ border: "1px solid #cecece", overflowX: "auto" }}
       >
-        <Box sx={ { overflowX: "auto", width: { xs: "100%", md: 280 } } }>
+        <Box sx={{ overflowX: "auto", width: { xs: "100%", md: 280 } }}>
           <ToggleButtonGroup
             variant="contained"
-            value={ selectedProfile?.slug || "" }
+            value={selectedProfile?.slug || ""}
             exclusive
             color="secondary"
             fullWidth
-            onChange={ (e, value) => {
+            onChange={(e, value) => {
               if (!value) return;
               setSelectedProfile(profiles.find((p) => p.slug === value));
-            } }
-            sx={ {
+            }}
+            sx={{
               display: "flex",
               flexDirection: "column",
 
@@ -749,64 +793,64 @@ function ProfilesData({ user }) {
                   backgroundColor: "primary.dark",
                 },
               },
-            } }
+            }}
           >
-            { tabs.map((tab, i) => (
+            {tabs.map((tab, i) => (
               <ToggleButton
                 variant="contained"
-                key={ tab.link }
-                value={ tab.link }
+                key={tab.link}
+                value={tab.link}
                 size="small"
                 color="secondary"
               >
-                { tab.label }
+                {tab.label}
               </ToggleButton>
-            )) }
+            ))}
           </ToggleButtonGroup>
         </Box>
         <Collapse
-          in={ openData }
+          in={openData}
           timeout="auto"
-          sx={ { flex: 1, p: 3 } }
+          sx={{ flex: 1, p: 3 }}
           unmountOnExit
         >
-          <Grid size={ 12 } container spacing={ 1 }>
-            { noAnswers ? (
+          <Grid size={12} container spacing={1}>
+            {noAnswers ? (
               <Grid
-                size={ 12 }
+                size={12}
                 container
                 justifyContent="center"
                 alignItems="center"
-                height={ 400 }
+                height={400}
               >
                 No Profile Data
               </Grid>
             ) : (
               values.map((d, i) => (
                 <Grid
-                  key={ i }
-                  size={ { xs: 12, md: 6 } }
+                  key={i}
+                  size={{ xs: 12, md: 6 }}
                   container
                   direction="column"
-                  spacing={ 0 }
-                  mb={ 1 }
-                  sx={ {
+                  spacing={0}
+                  mb={1}
+                  sx={{
                     borderBottom: "1px solid #D9D9D9",
-                  } }
+                  }}
                 >
                   <Page.Text
-                    fontWeight={ 600 }
-                    fontSize={ 16 }
+                    fontWeight={600}
+                    fontSize={16}
                     color="secondary.main"
                   >
-                    { d.label }
+                    {d.label}
                   </Page.Text>
                   <Page.Text>
-                    { Array.isArray(d.answer) ? d.answer.join(", ") : d.answer }
+                    {Array.isArray(d.answer) ? d.answer.join(", ") : d.answer}
                   </Page.Text>
                 </Grid>
               ))
-            ) }
+            )}
           </Grid>
         </Collapse>
       </Grid>

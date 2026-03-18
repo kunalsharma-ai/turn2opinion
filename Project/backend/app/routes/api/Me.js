@@ -107,90 +107,132 @@ router
         },
         userController
     ))
-    .delete(async (req,res)=>{
-        res.cookie("authorization",null,{
-            maxAge:-1
+    .delete(async (req, res) => {
+        res.cookie("authorization", null, {
+            maxAge: -1
         })
         return res.json({})
     })
 router
-    .get("/points", expressRoute(
-        async req => {
-            let message = "";
-            let data = []
-            responseController.request = req;
-            let respPoints = await responseController.getPoints();
-            data = {
-                respPoints,
-                redeemPoints: 0,
-                totalPoints: (respPoints - 0),
-                threshold: 2500,
-                conversionRate: 0.01
-            }
-            return { message, data }
-        },
-        userController
-    ))
-    .get(`/statistics`, expressRoute(
-        async req => {
-            let data = [];
-            let message = "";
-
-            responseController.request = req;
-            data = Mutate(await responseController.surveySummary());
-            if (data.length === 1) data = data[0]
-            return { message, data }
-        },
-        responseController
-    ))
-    .get(`/rewards`, expressRoute(
-        async req => {
-            let message = "";
-            const data = {
-                total: 0,
-                claimed: 0,
-                earned: 0,
-            }
-            return { message, data }
-        },
-        responseController
-    ))
-    .patch(`/answer`, expressRoute(
-        async req => {
-            let [message, data] = ["Updated successfully", []]
-            const questions = Object.keys(req.body);
-            const answers = questions.map(fld => {
-                return {
-                    user: req.user._id,
-                    question: fld,
-                    answer: req.body[fld]
+    .get("/points",
+        expressRoute(
+            async req => {
+                let message = "";
+                let data = []
+                responseController.request = req;
+                let respPoints = await responseController.getPoints();
+                data = {
+                    respPoints,
+                    redeemPoints: 0,
+                    totalPoints: (respPoints - 0),
+                    threshold: 2500,
+                    conversionRate: 0.01
                 }
-            })
-            await answerController.save(answers)
-            return { message, data }
-        },
-        answerController
-    ))
-    .patch("/change-category", expressRoute(
-        async req => {
-            const [message, data] = [
-                "Category Updated",
-                await userController.changeCategory(req.body.category)
-            ];
-            return { message, data };
-        },
-        userController
-    ))
-    .patch("/payment-method", expressRoute(
-        async req => {
-            const [message, data] = [
-                "Payment Method Updated",
-                await userController.changePaymentMethod(req.body)
-            ];
-            return { message, data };
-        },
-        userController
-    ))
+                return { message, data }
+            },
+            userController
+        )
+    )
+    .get(`/statistics`,
+        expressRoute(
+            async req => {
+                let data = [];
+                let message = "";
+
+                responseController.request = req;
+                data = Mutate(await responseController.surveySummary());
+                if (data.length === 1) data = data[0]
+                return { message, data }
+            },
+            responseController
+        )
+    )
+    .get(`/rewards`,
+        expressRoute(
+            async req => {
+                let message = "";
+                const data = {
+                    total: 0,
+                    claimed: 0,
+                    earned: 0,
+                }
+                return { message, data }
+            },
+            responseController
+        )
+    )
+    .patch(`/answer`,
+        expressRoute(
+            async req => {
+                let [message, data] = ["Updated successfully", []]
+                const questions = Object.keys(req.body);
+                const answers = questions.map(fld => {
+                    return {
+                        user: req.user._id,
+                        question: fld,
+                        answer: req.body[fld]
+                    }
+                })
+                await answerController.save(answers)
+                return { message, data }
+            },
+            answerController
+        )
+    )
+    .patch("/change-category",
+        expressRoute(
+            async req => {
+                const [message, data] = [
+                    "Category Updated",
+                    await userController.changeCategory(req.body.category)
+                ];
+                return { message, data };
+            },
+            userController
+        )
+    )
+    .patch("/payment-method",
+        expressRoute(
+            async req => {
+                const [message, data] = [
+                    "Payment Method Updated",
+                    await userController.changePaymentMethod(req.body)
+                ];
+                return { message, data };
+            },
+            userController
+        )
+    )
+    .patch("/parent-details",
+        expressRoute(
+            async req => {
+                await userController.update(req.user._id, { ...req.body, category: "minor" });
+                let user = Mutate(await userController.read(req.user._id))
+
+                let mailer = await getMailer(
+                    "register",
+                    "minor",
+                    {
+                        user
+                    }
+                )
+                const emailStatus = await sendMail(
+                    { origin: req.origin, "content-type": "application/json" },
+                    user?.parent?.email,
+                    "My Frequent Rewards: Child Registration",
+                    mailer.data
+                )
+                console.log(emailStatus)
+                return {
+                    status: "success",
+                    message: "",
+                    data: user
+                }
+            },
+            userController
+        )
+    )
+
 router
     .route("/change-email")
     .patch(expressRoute(
@@ -288,8 +330,8 @@ router
         async req => {
             const user = req.user;
             // const { questions, answers } = req.body;
-            const answers=req.body;
-            const questions=Object.keys(req.body);
+            const answers = req.body;
+            const questions = Object.keys(req.body);
             if (!user || !questions || !(questions instanceof Array) || questions.length < 1) throw new Error("Invalid request");
             const updatedAnswers = questions.map(fld => {
                 if (!(fld in answers)) return false;

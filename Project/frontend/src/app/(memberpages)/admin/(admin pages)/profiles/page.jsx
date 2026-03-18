@@ -5,10 +5,11 @@
 
 "use client";
 import React from "react";
+import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Datatable, Form, Icon, SectionTitle } from "@/components";
 import { Page, api } from "@/util";
-import { Grid, IconButton } from "@mui/material";
+import { Grid, IconButton, Chip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
@@ -18,6 +19,7 @@ import { useToast } from "@/hooks";
 import { SideDrawer } from "@/components/Popup";
 const endpoint = `/api/v1/profile`;
 export default function () {
+  const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(true);
   const [profiles, setProfiles] = React.useState([]);
   const [open, setOpen] = React.useState({ open: false, id: null });
@@ -51,11 +53,27 @@ export default function () {
     >
       <Datatable
         columns={[
-          { id: "category", label: "Category", data: "category" },
+          {
+            id: "category",
+            label: "Category",
+            feature: ["sortable"],
+            render: (info, i) => {
+              return (
+                <Chip
+                  size="small"
+                  label={info?.category}
+                  variant="contained"
+                  color={info?.category == "b2c" ? "secondary" : "primary"}
+                  sx={{ mr: 0.5, color: "white", textTransform: "uppercase" }}
+                />
+              );
+            },
+          },
           {
             id: "name",
             label: "Profile",
             render: (info) => info.name.Capitalize(),
+            feature: ["sortable", "searchable"],
           },
           {
             id: "questionsList",
@@ -81,7 +99,7 @@ export default function () {
                   setOpen({ open: true, id: info._id });
                 }}
               >
-                <EditIcon fontSize="small" />
+                <EditIcon fontSize="small" color="secondary" />
               </IconButton>
             ),
           },
@@ -96,13 +114,30 @@ export default function () {
         add={() => {
           setOpen({ open: true, id: null });
         }}
+        extra={
+          <Page.MuiButton
+            onClick={() => {
+              router.push("/admin/questions");
+            }}
+            variant="contained"
+            color="secondary"
+            size="small"
+            sx={{
+              fontWeight: "bold",
+              mr: 2,
+            }}
+          >
+            Show All Questions List
+          </Page.MuiButton>
+        }
         title={
           <Page.Text
             sx={{
               fontSize: "18px",
               display: "inline-block",
               fontWeight: "600",
-              borderBottom:(theme)=> `2px solid ${theme.palette.primary.main}`,
+              borderBottom: (theme) =>
+                `2px solid ${theme.palette.primary.main}`,
               pb: 0.5,
               my: 1,
             }}
@@ -111,6 +146,7 @@ export default function () {
           </Page.Text>
         }
       />
+
       <SideDrawer
         open={open.open}
         hideTitleBar={true}
@@ -337,7 +373,7 @@ function ProfileQuestions({ profileID = null, close }) {
             sx={{
               p: 2,
               borderRadius: 2,
-              border:(theme) =>`1px solid ${theme.palette.primary.main}`,  
+              border: (theme) => `1px solid ${theme.palette.primary.main}`,
               bgcolor: (theme) => theme.palette.cardbg.main,
             }}
           >
@@ -457,7 +493,7 @@ function QuestionsEditor({ pageIndex, control, register, watch }) {
                   control={control}
                   {...register(`pages.${pageIndex}.${index}`)}
                   label={`Question ${index + 1} [${watch(
-                    `pages.${pageIndex}.${index}`
+                    `pages.${pageIndex}.${index}`,
                   )}]`}
                   // label={`Question ${index + 1}`}
                   api="question"

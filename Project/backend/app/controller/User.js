@@ -1,3 +1,10 @@
+
+Date.prototype.isMinor = function (cn = "IN") {
+    let today = new Date();
+    let age = (today - this) / (365.25 * 24 * 3600 * 1000);
+    return age < 18
+}
+
 import { CrudController, Mutate } from "../utils/index.js";
 import { User as userModel, Invites as invitesModel, Answers, Survey,Response as responseModel } from "../model/index.js";
 import fs from "fs"
@@ -44,7 +51,8 @@ class User extends CrudController {
     }
     async read(id) {
         let temp = Mutate(await userModel.findById(id).select("+role"))
-        return temp;
+        let dob = new Date(temp.dob);
+        return {...temp, isMinor: dob.isMinor()};
     }
     async delete(id) {
         this.fixUserIssue();

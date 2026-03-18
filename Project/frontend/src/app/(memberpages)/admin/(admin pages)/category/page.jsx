@@ -57,7 +57,7 @@ export default function () {
                   setOpen({ open: true, id: info._id });
                 }}
               >
-                <EditIcon fontSize="small" />
+                <EditIcon fontSize="small" color="secondary"/>
               </IconButton>
             ),
           },

@@ -5,6 +5,7 @@
 
 "use client";
 import React from "react";
+import {useRouter} from "next/navigation"
 import { useForm, useFieldArray } from "react-hook-form";
 import { Datatable, Form, Icon, SectionTitle } from "@/components";
 import { Page, api } from "@/util";
@@ -18,6 +19,7 @@ import { useToast } from "@/hooks";
 import { SideDrawer } from "@/components/Popup";
 const endpoint = `/api/v1/project`;
 export default function () {
+  const router = useRouter()
   const [isLoading, setIsLoading] = React.useState(true);
   const [surveys, setSurveys] = React.useState([]);
   const [open, setOpen] = React.useState({ open: false, id: null });
@@ -50,6 +52,7 @@ export default function () {
             label: "Survey",
             width: 300,
             render: (info) => <Tooltip title={info.name}>{info?.name}</Tooltip>,
+            feature: ["sortable", "searchable"],
           },
           { id: "source", label: "Source", data: "source", width: 120 },
           {
@@ -156,6 +159,22 @@ export default function () {
         add={() => {
           setOpen({ open: true, id: null });
         }}
+        extra={
+          <Page.MuiButton
+            onClick={() => {
+              router.push("/admin/survey");
+            }}
+            variant="contained"
+            color="secondary"
+            size="small"
+            sx={{
+              fontWeight: "bold",
+              mr:2
+            }}
+          >
+            Show Internal Surveys
+          </Page.MuiButton>
+        }
         title={
           <Page.Text
             sx={{

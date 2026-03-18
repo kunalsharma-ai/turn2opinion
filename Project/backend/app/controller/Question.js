@@ -31,7 +31,6 @@ class Question extends CrudController {
             await super.create(data[index]);
         }
     }
-
     async children(query = {}) {
         return await modelQuestion.aggregate([
             {
@@ -84,6 +83,13 @@ class Question extends CrudController {
     async update(id, data) {
         this.fixUserIssue();
         return await super.update(id, data);
+    }
+    async deleteParent(id){
+        return await this.model.findByIdAndUpdate(id,{
+            $unset:{
+                parent:null
+            }
+        })
     }
     async read(id) {
         return await super.read(id)
