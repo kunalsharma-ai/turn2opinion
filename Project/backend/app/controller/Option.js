@@ -45,7 +45,7 @@ class Option extends CrudController {
         return;
         
     }
-    async list(q = {}, populateFields = null, sort = {}, project = null) {
+    async list(q = {}, populateFields = null, sort = {}, project = "+sortOrder") {
         let query=Object.fromEntries(Object.entries(q).map(fltr=>{
             if(fltr[1] instanceof Array){
                 return [

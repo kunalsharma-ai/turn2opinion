@@ -8,7 +8,7 @@ import React from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Datatable, Form, Icon, SectionTitle } from "@/components";
 import { Page, api } from "@/util";
-import { Grid, IconButton } from "@mui/material";
+import { Grid, IconButton, Chip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
@@ -43,11 +43,38 @@ export default function () {
     >
       <Datatable
         columns={[
-          { id: "category", label: "Category", data: "category" },
-          { id: "name", label: "Survey", data: "name",feature: ["sortable", "searchable"], },
+          {
+            id: "category",
+            label: "Category",
+            width: 160,
+            feature: ["filterable", "sortable"],
+            render: (info, i) => {
+              return (
+                <Chip
+                  size="small"
+                  label={info?.category}
+                  variant="contained"
+                  color={info?.category == "b2c" ? "secondary" : "primary"}
+                  sx={{ mr: 0.5, color: "white", textTransform: "uppercase" }}
+                />
+              );
+            },
+          },
+          {
+            id: "name",
+            label: "Survey",
+            data: "name",
+            feature: ["sortable", "searchable"],
+          },
           { id: "loi", label: "LOI (in min)", data: "loi", width: 120 },
           { id: "source", label: "Source", data: "source", width: 120 },
-          { id: "points", label: "Survey Points", data: "points", width: 120 },
+          {
+            id: "points",
+            label: "Survey Points",
+            data: "points",
+            width: 120,
+            feature: ["sortable"],
+          },
           {
             id: "responses",
             label: "Responses",
@@ -93,7 +120,7 @@ export default function () {
                   setOpen({ open: true, id: info._id });
                 }}
               >
-                <EditIcon fontSize="small" />
+                <EditIcon fontSize="small" color="secondary"/>
               </IconButton>
             ),
           },
@@ -114,12 +141,13 @@ export default function () {
               fontSize: "18px",
               display: "inline-block",
               fontWeight: "600",
-              borderBottom:(theme)=> `2px solid ${theme.palette.primary.main}`,
+              borderBottom: (theme) =>
+                `2px solid ${theme.palette.primary.main}`,
               pb: 0.5,
               my: 1,
             }}
           >
-           Internal Surveys List
+            Internal Surveys List
           </Page.Text>
         }
       />
@@ -408,7 +436,7 @@ function SurveyQuestions({ surveyID = null, close }) {
             sx={{
               p: 2,
               borderRadius: 2,
-              border:(theme) =>`1px solid ${theme.palette.primary.main}`,  
+              border: (theme) => `1px solid ${theme.palette.primary.main}`,
               bgcolor: (theme) => theme.palette.cardbg.main,
             }}
           >
@@ -528,7 +556,7 @@ function QuestionsEditor({ pageIndex, control, register, watch }) {
                   control={control}
                   {...register(`pages.${pageIndex}.${index}`)}
                   label={`Question ${index + 1} [${watch(
-                    `pages.${pageIndex}.${index}`
+                    `pages.${pageIndex}.${index}`,
                   )}]`}
                   // label={`Question ${index + 1}`}
                   api="question"

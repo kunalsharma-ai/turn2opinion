@@ -91,9 +91,9 @@ export default class CrudController {
         try {
             let item
             if (!populateFields)
-                item = await this.#model.findById(id);
+                item = await this.#model.findById(id).select("+sortOrder");
             else
-                item = await this.#model.findById(id).populate(populateFields);
+                item = await this.#model.findById(id).select("+sortOrder").populate(populateFields);
             if (!item) {
                 throw new Error('Item not found');
             }
@@ -156,14 +156,14 @@ export default class CrudController {
     }
     async list(query = {}, populateFields = null, sort = {}, project = null) {
         try {
-            let sortOrder = { _id: 1, isActive: -1, sortOrder: -1, ...sort };
+            let sortOrder = { sortOrder: -1,...sort };
             let temp = this.#model.find({
                 isActive: true,
                 isDeleted: false,
                 ...query,
                 origin: this.request.origin
             });
-            
+
             temp = temp.sort(sortOrder);
             if (populateFields) temp = temp.populate(populateFields)
             if (!!project) temp = temp.select(project)

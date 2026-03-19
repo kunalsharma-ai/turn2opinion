@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useRouter } from "next/navigation";
 import { api, Page } from "@/util";
 import { useMember, useQuery } from "@/Context";
 import LoadingOverlay from "@/componentsMHO/LoadingOverlay";
@@ -14,7 +15,12 @@ import {
   ToggleButtonGroup,
 } from "@mui/material";
 
-import { Datatable, Icon, SectionTitle } from "@/components";
+import {
+  Datatable,
+  FlagAndCountryCode,
+  Icon,
+  SectionTitle,
+} from "@/components";
 
 import { Circle as CircleIcon, Close as CloseIcon } from "@mui/icons-material";
 
@@ -22,6 +28,31 @@ import DataList from "@/componentsMHO/DataList";
 import { SideDrawer } from "@/components/Popup";
 import { useToast } from "@/hooks";
 import useSharedSocket from "@/hooks/useSharedSocket";
+
+function getAge(dob) {
+  if (!dob) return "";
+
+  const birth = new Date(dob);
+  const today = new Date();
+
+  let years = today.getFullYear() - birth.getFullYear();
+  let months = today.getMonth() - birth.getMonth();
+
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  if (today.getDate() < birth.getDate()) {
+    months--;
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+  }
+
+  return `${years}y ${months}m`;
+}
 
 export default function () {
   const me = useMember();
@@ -264,6 +295,7 @@ function UserData({ userId, onClose }) {
   const [showProfiles, setShowProfiles] = React.useState(false);
   const [reload, setReload] = React.useState(false);
   const me = useMember();
+  const router = useRouter();
 
   React.useEffect(() => {
     if (!userId) return;
@@ -418,7 +450,28 @@ function UserData({ userId, onClose }) {
       }}
     >
       <SectionTitle
-        title={user?.fullName}
+        title={
+          <div className="profile-details">
+            <span style={{ color: "#063686", marginRight: "5px" }}>
+              {user?.fullName}{" "}
+            </span>
+            {showProfiles && (
+              <>
+                {`- ${[user?.gender, getAge(user?.dob)].filter(Boolean).join(" - ")}`}
+                {user?.country && (
+                  <>
+                    {" - "}
+                    <FlagAndCountryCode
+                      cn={user?.country}
+                      showLabel={false}
+                      title={user?.country}
+                    />
+                  </>
+                )}
+              </>
+            )}
+          </div>
+        }
         sx={{ justifyContent: "space-between" }}
       >
         <IconButton onClick={onClose} color="secondary">
@@ -458,6 +511,7 @@ function UserData({ userId, onClose }) {
                 useToast(resp);
                 me.Reload();
                 onClose();
+                router.refresh();
               }}
               color="info"
               sx={{ fontWeight: 600, color: "white" }}

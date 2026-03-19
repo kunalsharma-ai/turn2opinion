@@ -14,16 +14,18 @@ router
         },
         profileController
     ))
-    .post(isAuthenticated,expressRoute(
+    
+    .post(isAuthenticated, expressRoute(
         async req => {
             // Read all entries matching filter
             let message = "";
             let status = await profileController.status();
-            let data = Mutate(await profileController.list(req.body))
+            let data = Mutate(await profileController.list(req.body,null,{sortOrder:1},"+sortOrder"))
             for (let index = 0; index < data.length; index++) {
                 let profile = data[index];
                 profile["status"] = status[profile.slug] ?? -1;
             }
+            // throw new Error("it works")
             return { message, data };
         },
         profileController

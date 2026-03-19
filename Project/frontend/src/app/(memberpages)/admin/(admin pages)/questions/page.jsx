@@ -54,7 +54,7 @@ export default function () {
                   label={cat}
                   variant="contained"
                   color={cat == "b2c" ? "secondary" : "primary"}
-                  sx={{ mr: 0.5, color: "white",textTransform:"uppercase" }}
+                  sx={{ mr: 0.5, color: "white", textTransform: "uppercase" }}
                 />
               ));
             },
@@ -181,6 +181,22 @@ export default function () {
         add={() => {
           setOpen({ open: true, id: null });
         }}
+        extra={
+          <Page.MuiButton
+            onClick={() => {
+              router.push("/admin/profiles");
+            }}
+            variant="contained"
+            color="secondary"
+            size="small"
+            sx={{
+              fontWeight: "bold",
+              mr: 2,
+            }}
+          >
+            Show Profiles
+          </Page.MuiButton>
+        }
         title={
           <Page.Text
             sx={{

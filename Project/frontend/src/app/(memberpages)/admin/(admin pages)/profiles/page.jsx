@@ -1,8 +1,3 @@
-// todo: create default data,
-// todo: display survey from database
-// todo: setup welcome survey from ui based on category
-// todo: calculate survey points, and completion status by respondent.
-
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
@@ -22,6 +17,7 @@ export default function () {
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(true);
   const [profiles, setProfiles] = React.useState([]);
+  const [reload,setReload]=React.useState(0);
   const [open, setOpen] = React.useState({ open: false, id: null });
   const [openQuestons, setOpenQuestions] = React.useState({
     open: false,
@@ -32,7 +28,9 @@ export default function () {
     const fetchProfiles = async () => {
       try {
         setIsLoading(true);
-        const resp = await api.get(endpoint);
+        const resp = await api.post(endpoint,{
+          isActive:[true,false]
+        });
         setProfiles(resp.data);
       } catch (err) {
         console.error("Failed to fetch profiles:", err);
@@ -42,7 +40,7 @@ export default function () {
     };
 
     fetchProfiles();
-  }, [open]);
+  }, [open,reload]);
 
   return (
     <Page.Box
@@ -93,6 +91,7 @@ export default function () {
             id: "action",
             label: "Action",
             render: (info) => (
+              <>
               <IconButton
                 sx={{ p: 0 }}
                 onClick={() => {
@@ -101,6 +100,7 @@ export default function () {
               >
                 <EditIcon fontSize="small" color="secondary" />
               </IconButton>
+              </>
             ),
           },
         ]}
@@ -127,7 +127,7 @@ export default function () {
               mr: 2,
             }}
           >
-            Show All Questions List
+            Show All Questions
           </Page.MuiButton>
         }
         title={

@@ -5,7 +5,7 @@ import SubHeader from "@/componentsMHO/SubHeader";
 function page() {
   return (
     <div className="scroll-target">
-      <SubHeader title='Privacy Policy' pageName='Privacy Policy'/>
+      <SubHeader title="Privacy Policy" pageName="Privacy Policy" />
       <Grid size={12} py={10} bgcolor="white">
         <Container
           maxWidth="xl"
@@ -13,15 +13,21 @@ function page() {
             textAlign: "justify",
             "& p": {
               fontSize: 16,
-              mb: 2,
+              mb: 1.5,
               lineHeight: 1.7,
             },
             "& h5": {
-              fontSize: 20,
+              fontSize: 22,
               mt: 4,
               mb: 2,
               fontWeight: 600,
-              color:"#e48025"
+              color: "#e48025",
+            },
+            "& h6": {
+              fontSize: 18,
+              mt: 4,
+              mb: 1,
+              fontWeight: 600,
             },
             "& ul": {
               pl: 3,
@@ -41,7 +47,7 @@ function page() {
         </Container>
       </Grid>
     </div>
-  )
+  );
 }
 
-export default page
+export default page;
