@@ -171,7 +171,7 @@ function LoginCard({ onClose, setCardType, setOpenSignUp }) {
             const resp = await submitWithAjax(e);
             switch (resp.status) {
               case "success":
-                router.replace("/dashboard")
+                router.replace("/member/dashboard")
                 break;
             
               default:

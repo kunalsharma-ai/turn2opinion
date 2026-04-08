@@ -55,7 +55,7 @@ function Footer({ sections = [] }) {
       const sectionLabel = searchParams.get("section");
       if (sectionLabel) {
         const section = sections.find(
-          (s) => s.label === decodeURIComponent(sectionLabel)
+          (s) => s.label === decodeURIComponent(sectionLabel),
         );
         if (section) {
           handleScroll(section.ref);
@@ -115,7 +115,7 @@ function Footer({ sections = [] }) {
           </Typography>
         </Grid>
         <Grid
-          size={{ xs: 12,sm:6, lg: 4 }}
+          size={{ xs: 12, sm: 6, lg: 4 }}
           container
           direction="column"
           spacing={{ xs: 0.5, lg: 2 }}
@@ -220,8 +220,30 @@ function Footer({ sections = [] }) {
               sx={{ fontSize: 24, mb: -0.7, color: "primary.main" }}
             />
             Terms of Use
+          </Typography>{" "}
+          <Typography
+            role="button"
+            tabIndex={0}
+            fontSize={16}
+            onClick={() => handleNavigation("/profiling")}
+            onKeyDown={(e) =>
+              handleKeyDown(e, () => handleNavigation("/profiling"))
+            }
+            sx={{
+              color: "black",
+              "&:hover": { cursor: "pointer", color: "primary.main" },
+              "&:focus-visible": {
+                outline: "2px solid",
+                outlineColor: "primary.main",
+                outlineOffset: "2px",
+              },
+            }}
+          >
+            <ChevronRightIcon
+              sx={{ fontSize: 24, mb: -0.7, color: "primary.main" }}
+            />
+            Profiling and Quality Score
           </Typography>
-
           <Typography
             role="button"
             tabIndex={0}
@@ -231,7 +253,7 @@ function Footer({ sections = [] }) {
             }
             onKeyDown={(e) =>
               handleKeyDown(e, () =>
-                handleExternalNavigation("//panels.frequentresearch.com/")
+                handleExternalNavigation("//panels.frequentresearch.com/"),
               )
             }
             sx={{
@@ -273,7 +295,7 @@ function Footer({ sections = [] }) {
         </Grid>
 
         <Grid
-          size={{ xs: 12,sm:6, lg: 4 }}
+          size={{ xs: 12, sm: 6, lg: 4 }}
           container
           direction="column"
           spacing={{ xs: 0.5, lg: 2 }}
@@ -339,9 +361,7 @@ function Footer({ sections = [] }) {
                 fontSize: { xs: "22px", xl: "26px" },
               }}
             />
-            <Typography sx={{ fontSize: 16 }}>
-              +919810459700
-            </Typography>
+            <Typography sx={{ fontSize: 16 }}>+919810459700</Typography>
           </Box>
           <Box
             display="flex"

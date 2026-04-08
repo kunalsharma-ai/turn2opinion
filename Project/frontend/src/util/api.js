@@ -1,10 +1,3 @@
-function wait(time = 1000) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve()
-    }, time)
-  })
-}
 class API {
   constructor(baseUrl = "") {
     this.baseUrl = baseUrl;
@@ -105,6 +98,7 @@ class API {
     }
     return response
   }
+  
   get(endpoint, options = {}) {
     return this.request('GET', endpoint, options);
   }

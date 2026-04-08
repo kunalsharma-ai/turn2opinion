@@ -46,7 +46,6 @@ export default function page() {
     fetchData();
   }, [user, dateRange, reload]);
 
-
   const columns = [
     {
       id: "createdAt",
@@ -73,15 +72,15 @@ export default function page() {
       label: "Status",
       render: (info) => (
         <Chip
-          label={ info.status }
+          label={info.status}
           size="small"
-          color={ info.status === "closed" ? "error" : "info" }
-          sx={ {
+          color={info.status === "closed" ? "error" : "info"}
+          sx={{
             fontSize: "12px",
             textTransform: "capitalize",
             height: 22,
             px: 1,
-          } }
+          }}
         />
       ),
       feature: ["filterable", "sortable"],
@@ -92,19 +91,19 @@ export default function page() {
       width: "200px",
       render: (info) => (
         <div
-          style={ {
+          style={{
             display: "flex",
             gap: "4px",
-          } }
+          }}
         >
           <Page.MuiButton
             variant="contained"
             color="secondary"
             size="small"
-            sx={ { height: 22, textTransform: "none" } }
-            onClick={ () => {
+            sx={{ height: 22, textTransform: "none" }}
+            onClick={() => {
               router.push(`./support/open?ticket=${info._id}`);
-            } }
+            }}
           >
             Open
           </Page.MuiButton>
@@ -114,54 +113,54 @@ export default function page() {
   ];
   return (
     <Grid
-      size={ 12 }
-      p={ { xs: 2, md: 3 } }
+      size={12}
+      p={{ xs: 2, md: 3 }}
       justifyContent="center"
-      sx={ {
+      sx={{
         border: `1px solid #e0e0e0`,
         bgcolor: (theme) => theme.palette.page.main,
-      } }
+      }}
     >
       <Datatable
-        isLoading={ isLoading }
-        pagination={ [10, 20, 50, 100] }
-        pageSize={ 20 }
+        isLoading={isLoading}
+        pagination={[10, 20, 50, 100]}
+        pageSize={20}
         noDataMsg="No Record Found."
-        data={ data }
+        data={data}
         hideColumnSelector
         extra={
           <Box
-            px={ { xs: 0, md: 2 } }
-            my={ { xs: 1, md: 0 } }
+            px={{ xs: 0, md: 2 }}
+            my={{ xs: 1, md: 0 }}
             display="flex"
             alignItems="center"
-            gap={ 1 }
+            gap={1}
           >
             <Page.MuiButton
               variant="contained"
               color="secondary"
-              onClick={ () => {
+              onClick={() => {
                 setOpen(true);
-              } }
-              sx={ {
+              }}
+              sx={{
                 height: 30,
                 fontSize: 12,
                 textTransform: "none",
                 py: "5px",
-              } }
+              }}
             >
               Create Ticket
             </Page.MuiButton>
             <Page.Select
               label=""
-              value={ ticketStatus }
-              onChange={ (e) => setTicketStatus(e.target.value) }
-              options={ [
+              value={ticketStatus}
+              onChange={(e) => setTicketStatus(e.target.value)}
+              options={[
                 { label: "All Tickets", value: "all" },
                 { label: "Pending Tickets", value: "pending" },
                 { label: "Closed Tickets", value: "closed" },
-              ] }
-              sx={ {
+              ]}
+              sx={{
                 width: "160px",
                 height: 30,
 
@@ -176,44 +175,47 @@ export default function page() {
                     borderColor: "grey.500",
                   },
                 },
-              } }
+              }}
             />
             <DateRangeSelector
-              onUpdate={ (e) => {
+              onUpdate={(e) => {
                 setDateRange(
-                  e.map((d) => new Date(d.toDate()).toISOString().split("T")[0])
+                  e.map(
+                    (d) => new Date(d.toDate()).toISOString().split("T")[0],
+                  ),
                 );
-              } }
+              }}
             />
           </Box>
         }
         title={
           <Typography
-            sx={ {
+            sx={{
               fontSize: "16px",
               display: "inline-block",
               fontWeight: "600",
-              borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
+              borderBottom: (theme) =>
+                `2px solid ${theme.palette.primary.main}`,
               pb: 0.5,
               my: 1,
-            } }
+            }}
           >
             Support Tickets
           </Typography>
         }
-        columns={ columns }
+        columns={columns}
       />
 
       <SideDrawer
-        open={ open }
-        hideTitleBar={ true }
-        onClose={ () => setOpen(false) }
+        open={open}
+        hideTitleBar={true}
+        onClose={() => setOpen(false)}
       >
         <CreateTicket
-          reloadData={ reloadData }
-          close={ () => {
+          reloadData={reloadData}
+          close={() => {
             setOpen(false);
-          } }
+          }}
         />
       </SideDrawer>
     </Grid>
@@ -222,6 +224,7 @@ export default function page() {
 
 function CreateTicket({ reloadData, close }) {
   const id = React.useId();
+  const [isLoading, setIsLoading] = React.useState(false);
   const [users, setUsers] = React.useState([]);
   React.useEffect(() => {
     api.get(`/api/v1/user`).then((resp) => {
@@ -230,7 +233,7 @@ function CreateTicket({ reloadData, close }) {
           resp.data.map((u) => ({
             label: `${u.fullName} (${u.mail}) [${u.category}]`,
             value: u.mail,
-          }))
+          })),
         );
     });
   }, []);
@@ -245,63 +248,79 @@ function CreateTicket({ reloadData, close }) {
     setValue,
     formState: { errors },
   } = form;
+
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+    try {
+      const resp = await api.put(`/api/v1/support`, data);
+      useToast(resp);
+
+      if (resp.status === "success") {
+        reloadData();
+        close();
+      }
+    } catch (err) {
+      useToast({ status: "error", message: "Something went wrong" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const user = watch("user");
+  const subject = watch("subject");
+
+  const isDisabled = !user || !subject;
+
   return (
     <Grid
       component="form"
-      onSubmit={ handleSubmit(async (data) => {
-        let resp = await api.put(`/api/v1/support`, data);
-        useToast(resp);
-        if (resp.status === "success") {
-          reloadData();
-          close();
-        }
-      }) }
+      onSubmit={handleSubmit(onSubmit)}
       container
-      spacing={ 2 }
-      size={ 12 }
-      sx={ {
+      spacing={2}
+      size={12}
+      sx={{
         bgcolor: "white",
         overflow: "hidden",
         borderRadius: "10px",
         boxShadow: 1,
         pb: 2,
         alignSelf: "flex-start",
-      } }
+      }}
     >
       <SectionTitle
         title="Create Ticket"
-        sx={ { justifyContent: "space-between" } }
+        sx={{ justifyContent: "space-between" }}
       >
-        <IconButton onClick={ close } color="secondary">
+        <IconButton onClick={close} color="secondary">
           <CloseIcon />
         </IconButton>
       </SectionTitle>
-      <Grid container size={ 12 } spacing={ 1.4 } sx={ { px: 2 } }>
-        <Grid size={ 12 }>
+      <Grid container size={12} spacing={1.4} sx={{ px: 2 }}>
+        <Grid size={12}>
           <Form.Select
-            control={ control }
-            { ...form.register("user") }
+            control={control}
+            {...form.register("user")}
             label="User"
-            options={ users }
+            options={users}
           />
         </Grid>
         <Form.Input
-          control={ control }
-          { ...form.register("subject") }
+          control={control}
+          {...form.register("subject")}
           label="Subject"
         />
         <Form.TextEditor
-          control={ control }
+          control={control}
           name="description"
           label="Description"
-          editorId={ id }
+          editorId={id}
           dialogScoped
         />
         <Form.Upload
           endpoint="/api/v1/upload/image"
           name="attachments"
-          control={ control }
-          form={ form }
+          control={control}
+          form={form}
           multiple
           accept="image/jpeg,image/png,image/webp"
           hideCaption
@@ -309,19 +328,23 @@ function CreateTicket({ reloadData, close }) {
       </Grid>
       <Grid
         container
-        size={ 12 }
-        sx={ {
+        size={12}
+        sx={{
           justifyContent: "flex-end",
           mr: 2,
-        } }
+        }}
       >
         <Page.MuiButton
           type="submit"
           variant="contained"
           color="secondary"
-          sx={ {
+          disabled={isDisabled || isLoading}
+          loading={isLoading}
+          loadingIndicator="Creating..."
+          sx={{
             fontWeight: "bold",
-          } }
+            minWidth: "110px",
+          }}
         >
           Create
         </Page.MuiButton>

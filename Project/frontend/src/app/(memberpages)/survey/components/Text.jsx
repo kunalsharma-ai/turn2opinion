@@ -8,7 +8,10 @@ import {
 } from "@mui/material";
 
 export default function TextElement({ question, form, disabled }) {
-  const isQuestionDisabled = disabled || !(question.isEditable ?? true);
+  let isQuestionDisabled = disabled;
+  let value = (!question) ? null : !("name" in question) ? null : form.getValues(question?.name);
+
+  if (!isQuestionDisabled) isQuestionDisabled = ([null, undefined, "", []].includes(value)) ? false : !(("isEditable" in question) ? question.isEditable : false)
   const errors = form?.formState?.errors
   const [hideLabel, setHideLabel] = React.useState(false);
   return <Grid
