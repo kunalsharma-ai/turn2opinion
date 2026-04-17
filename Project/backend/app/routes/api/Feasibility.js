@@ -10,7 +10,7 @@ router
             // Read all entries
             let message = "";
             let data = await userController.list()
-            return { message, data };
+            return { message, data:data.length };
         },
         userController
     ))

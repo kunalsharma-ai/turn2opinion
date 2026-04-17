@@ -28,17 +28,20 @@ router
     .use("/api/v1/question", questionRouter)
     .use("/api/v1/option", optionRouter)
     .use("/api/v1/options", optionsRouter)
-    .use("/api/v1/user", userRouter)
+    .use("/api/v1/user", (req, res, next) => {
+        console.log("user route called");
+        next()
+    }, userRouter)
     .use("/api/v1/profile", profileRouter)
     .use("/api/v1/forgot-password", forgotPassword)
     .use("/api/v1/change-email", changeEmail)
     .use("/api/v1/feasibility", feasibilityRouter)
-    .use("/api/v1/project-dev",  projectRouter)
+    .use("/api/v1/project-dev", projectRouter)
     .use("/api/v1/me", isAuthenticated, meRouter)
     .use("/api/v1/response", isAuthenticated, meResponse)
     .use("/api/v1/support", isAuthenticated, supportRouter)
     .use("/api/v1/project", isAuthenticated, projectRouter)
-    .use("/api/v1/batch",isAuthenticated,batchRouter)
+    .use("/api/v1/batch", isAuthenticated, batchRouter)
 
 
 // router

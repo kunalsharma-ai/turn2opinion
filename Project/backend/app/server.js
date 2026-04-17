@@ -22,9 +22,10 @@ import { setOrigin, expressRoute, fsLogger } from "./utils/index.js";
             compression(),
             express.static("/src/public"),
             cors({
-                origin: function (origin, callback) {
-                    return callback(null, origin)
-                }
+                origin: ["https://t2o.sampledge.duckdns.org", "https://admin.sampledge.duckdns.org"],
+                credentials: true,
+                allowedHeaders: ["Content-Type", "Authorization", "test"],
+                methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
             }),
             express.json(),
             express.urlencoded({
@@ -41,9 +42,10 @@ import { setOrigin, expressRoute, fsLogger } from "./utils/index.js";
             async (req) => {
                 fsLogger.Log("Fallback route", {
                     ...req.headers,
+                    endpoint:req.path,
                     origin: req.origin
                 })
-                return { message: "Fallback route", status: "error" }
+                return { message: `Fallback route: ${req.path} is not available`, status: "error" }
             },
             {}
         ))
