@@ -9,11 +9,26 @@ import {
   Mood as MoodIcon,
 } from "@mui/icons-material";
 
-import { Page } from "@/util";
+import { api, loadData, Page } from "@/util";
+import { useQuery } from "@/Context";
 
 function page() {
-  const [status, setStatus] = React.useState({ type: "complete" });
-  const background = "/images/logo/groupofpeople.jpg";
+  const [status, setStatus] = React.useState({ type: "terminate", points: 0 });
+  const background = "/images/logo/groupofpeople2.jpg";
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [query] = [useQuery()];
+  React.useEffect(() => {
+    setIsLoading(true);
+    loadData(
+      api.patch(`/api/v1/survey/response`, query),
+      resp => {
+        let { data } = resp;
+        if (!data) return;
+        setStatus({ type: data.status, points: data.points });
+      }
+    )
+    console.log(query)
+  }, [query])
 
   return (
     <Page.Box
@@ -21,14 +36,14 @@ function page() {
       justifyContent="center"
       alignItems="center"
       minHeight="100vh"
-      sx={{
+      sx={ {
         background: "linear-gradient(-45deg, #b0d4f0, #d3e9f9, #b0d4f0)",
         position: "relative",
         zIndex: 1,
-      }}
+      } }
     >
       <Page.Box
-        sx={{
+        sx={ {
           position: "absolute",
           top: 0,
           left: 0,
@@ -40,10 +55,10 @@ function page() {
           backgroundPosition: "center",
           opacity: 0.2,
           zIndex: -2,
-        }}
+        } }
       />
       <Page.Card
-        sx={{
+        sx={ {
           minWidth: { xs: 300, md: 400 },
           minHeight: 300,
           textAlign: "center",
@@ -51,48 +66,31 @@ function page() {
           mx: 1,
           BoxShadow: 4,
           borderRadius: 4,
-        }}
+        } }
       >
-        {!status.type ? (
+        { !status.type ? (
           <CircularProgress />
         ) : (
           <Page.Box>
             <Page.Box
-              sx={{
+              sx={ {
                 position: "relative",
                 display: "flex",
                 justifyContent: "center",
-              }}
+                mb: 3,
+                mt: 1
+              } }
             >
-              <Page.Box
-                sx={{
-                  height: { xs: "60px", md: "80px" },
-                  width: { xs: "180px", md: "300px" },
-                  position: "relative",
-                }}
-              >
-                <img src="/images/logo/mfr-logo.png" alt="logo" width="100%" />
-                <Page.Box
-                  component="img"
-                  src="/imagesmfr/dol-sign.gif"
-                  alt="logo"
-                  width={{ xs: 15, md: 20 }}
-                  sx={{
-                    position: "absolute",
-                    right: -4.5,
-                    top: { xs: 0, md: 5 },
-                  }}
-                />
-              </Page.Box>{" "}
+                <img src="/images/logo/t2o-logo.png" alt="logo" width={282} height={42} />
             </Page.Box>
-            <Page.Divider sx={{ mb: 2, width: "90%", mx: "auto" }} />
+            <Page.Divider sx={ { mb: 2, width: "90%", mx: "auto" } } />
             <StatusMessage
-              type={status.type}
-              points={100}
+              type={ status?.type??"" }
+              points={ status?.points??0 }
               link="/member/dashboard"
             />
           </Page.Box>
-        )}
+        ) }
       </Page.Card>
     </Page.Box>
   );
@@ -144,9 +142,9 @@ function StatusMessage({ type, points, link }) {
         title: (
           <div>
             <h4>You have successfully completed the survey. </h4>
-            You have earned <span style={{ color: "green" }}>
-              {points}
-            </span>{" "}
+            You have earned <span style={ { color: "green" } }>
+              { points }
+            </span>{ " " }
             points.
           </div>
         ),
@@ -157,66 +155,66 @@ function StatusMessage({ type, points, link }) {
 
   return (
     <>
-      <Page.Box mb={2}>
+      <Page.Box mb={ 2 }>
         <Page.Box
-          sx={{
+          sx={ {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             gap: 1,
-          }}
+          } }
         >
           <Avatar
-            sx={{
+            sx={ {
               bgcolor: statusColor,
               width: 21,
               height: 21,
-            }}
+            } }
           >
-            {avatarIcon}
+            { avatarIcon }
           </Avatar>
 
-          <Page.Text variant="h6" color={statusColor} fontWeight="bold">
-            {surveyStatus}
+          <Page.Text variant="h6" color={ statusColor } fontWeight="bold">
+            { surveyStatus }
           </Page.Text>
         </Page.Box>
 
         <Page.Text
           variant="subtitle1"
           color="text.primary"
-          mt={1.5}
+          mt={ 1.5 }
           fontWeight="bold"
         >
-          {statusMessage.title}
+          { statusMessage.title }
         </Page.Text>
 
         <Page.Text
           color="text.secondary"
-          mt={1}
-          sx={{
+          mt={ 1 }
+          sx={ {
             maxWidth: { xs: "320px", md: "500px" },
             textAlign: "center",
             fontWeight: 500,
             mb: 4,
-          }}
+          } }
         >
-          {statusMessage.info}
+          { statusMessage.info }
         </Page.Text>
       </Page.Box>
 
-      {link && (
+      { link && (
         <Page.MuiButton
           variant="contained"
           color="secondary"
-          sx={{
+          sx={ {
             fontWeight: 600,
             mb: 2,
-          }}
-          onClick={() => redirect(link)}
+          } }
+          onClick={ () => redirect(link) }
         >
           Continue
         </Page.MuiButton>
-      )}
+      ) }
     </>
   );
 }

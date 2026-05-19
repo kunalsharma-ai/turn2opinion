@@ -21,6 +21,7 @@ import {
     sendMail,
     Token
 } from "../../utils/index.js"
+import responseController from "../../controller/Response.js";
 
 const router = express.Router();
 router
@@ -38,7 +39,25 @@ router
         async req => {
             // Read all entries matching filter
             let message = "";
-            let data = await userController.list(req.body, null, {}, "+role")
+            responseController.request = req;
+            let status = Mutate(await responseController.surveySummaryByUsers())
+            let data = Mutate(await userController.list(req.body, null, {}, "+role")).map(
+                user => {
+                    const stat = status.find(st => st._id === user._id);
+                    user.status = {
+                        "total": 0,
+                        "complete": 0,
+                        "disqualified": 0,
+                        "abdoned": 0,
+                        "internal": 0,
+                        "external": 0,
+                        "points": 0,
+                        "totalRewards": 0,
+                        ...stat
+                    }
+                    return user;
+                }
+            )
             return { message, data };
         },
         userController
@@ -198,7 +217,7 @@ router
             answerController.request = req;
             let temp = Mutate(await answerController.getAnswers({ user: req.params.user, question: { $in: [...req.body.questions] } }))
             return {
-                message: "under development", data:temp
+                message: "under development", data: temp
             }
         },
         userController

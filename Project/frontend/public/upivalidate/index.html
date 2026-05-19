@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UPI Verification</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 400px;
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      font-size: 15px;
+    }
+
+    input:focus {
+      border-color: #3399ff;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      background: #3399ff;
+      color: white;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    button:hover {
+      opacity: 0.95;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .message {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .success {
+      background: #e7f8ed;
+      color: #15803d;
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .loading {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Verify UPI ID</h2>
+
+    <div class="input-group">
+      <label for="upiId">UPI ID</label>
+      <input
+        type="text"
+        id="upiId"
+        placeholder="example@oksbi"
+      />
+    </div>
+
+    <button id="verifyBtn">
+      Verify UPI
+    </button>
+
+    <div id="message" class="message"></div>
+  </div>
+
+  <script>
+    const verifyBtn = document.getElementById("verifyBtn");
+    const upiInput = document.getElementById("upiId");
+    const messageBox = document.getElementById("message");
+
+    const upiRegex =
+      /^(?!.*\\.\\.)(?!.*\\s)[a-zA-Z0-9._-]{2,256}@[a-zA-Z0-9.-]{2,64}$/;
+
+    function showMessage(type, text) {
+      messageBox.style.display = "block";
+      messageBox.className = `message ${type}`;
+      messageBox.innerText = text;
+    }
+
+    verifyBtn.addEventListener("click", async () => {
+      const upiId = upiInput.value.trim();
+
+      // Frontend validation
+      if (!upiRegex.test(upiId)) {
+        showMessage("error", "Please enter a valid UPI ID");
+        return;
+      }
+
+      verifyBtn.disabled = true;
+      showMessage("loading", "Verifying UPI ID...");
+
+      try {
+
+        /**
+         * YOUR BACKEND API
+         *
+         * NEVER call Razorpay/Cashfree directly from frontend
+         * because secret keys must stay secure.
+         */
+
+        const response = await fetch("/api/v1/verify-upi", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            upiId
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+
+          showMessage(
+            "success",
+            `Verified successfully as ${data.name}`
+          );
+
+        } else {
+
+          showMessage(
+            "error",
+            data.message || "Invalid UPI ID"
+          );
+
+        }
+
+      } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+          "error",
+          "Something went wrong"
+        );
+
+      } finally {
+
+        verifyBtn.disabled = false;
+
+      }
+    });
+  </script>
+
+</body>
+</html>

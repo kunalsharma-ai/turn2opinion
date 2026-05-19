@@ -23,7 +23,7 @@ export default mongooseModel(
             type: String,
             trim: true,
             lowercase: true,
-            default:"dropout"
+            default:"invited"
         },
         loi: {
             type: Number,
@@ -52,19 +52,19 @@ export default mongooseModel(
     {
         methods: {
             async complete() {
-                if (![null, "", "dropout"].includes(this.students)) throw new Error("Unable to change status of your response");
+                if (![null, "", "dropout", "invited"].includes(this.status)) throw new Error("Unable to change status of your response");
                 this.status = "complete"
                 await this.save()
                 return this;
             },
             async terminate() {
-                if (![null, "", "dropout"].includes(this.students)) throw new Error("Unable to change status of your response");
+                if (![null, "", "dropout", "invited"].includes(this.status)) throw new Error("Unable to change status of your response");
                 this.status = "terminate"
                 await this.save()
                 return this;
             },
             async overquota() {
-                if (![null, "", "dropout"].includes(this.students)) throw new Error("Unable to change status of your response");
+                if (![null, "", "dropout", "invited"].includes(this.status)) throw new Error("Unable to change status of your response");
                 this.status = "overquota"
                 await this.save()
                 return this;

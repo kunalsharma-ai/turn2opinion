@@ -83,13 +83,47 @@ class Response extends CrudController {
         ]);
         return temp;
     }
+    async surveySummaryByUsers() {
+
+        let temp = await responseModel.aggregate([
+            {
+                $group: {
+                    _id: "$user",
+                    total: { $sum: 1 },
+                    complete: {
+                        $sum: { $cond: [{ $eq: ["$status", "complete"] }, 1, 0] }
+                    },
+                    disqualified: {
+                        $sum: { $cond: [{ $eq: ["$status", "terminate"] }, 1, 0] }
+                    },
+                    abdoned: {
+                        $sum: { $cond: [{ $eq: ["$status", "dropout"] }, 1, 0] }
+                    },
+                    internal: {
+                        $sum: { $cond: [{ $eq: ["$source", "internal"] }, 1, 0] }
+                    },
+                    external: {
+                        $sum: { $cond: [{ $eq: ["$source", "external"] }, 1, 0] }
+                    },
+                    points: {
+                        $sum: { $cond: [{ $eq: ["$status", "complete"] }, "$points", 0] }
+                    },
+                    totalRewards: {
+                        $sum: { $cond: [{ $eq: ["$status", "complete"] }, "$points", 0] }
+                    },
+                }
+            }
+        ]);
+        return temp;
+    }
+
     async createOrUpdate(data) {
         let filters = { ...this.commonFilters };
         filters.user = new mongoose.Types.ObjectId(this.request.user._id);
         filters["survey.slug"] = data.survey.slug
         let resp = Mutate(await super.list(filters));
         console.log(resp)
-        if (resp.length === 0 || (resp.length === 1 && resp[0]["status"] === "dropout")) {
+        if (resp.length === 0 || (resp.length === 1 && ["dropout", "invited"].includes(resp[0]["status"]))) {
             let response = await responseModel.updateOne(filters, {
                 $set: { ...data, ...this.commonFilters }
             }, { upsert: true })
@@ -103,61 +137,103 @@ class Response extends CrudController {
         throw new Error("Invalid request");
     }
     async mySurveys(filter = {}) {
-        let temp = Mutate(
-            await responseModel
-                .find({
-                    user: this.request.user._id,
-                    ...this.commonFilters
-                }, { "slug": "$survey.slug",status:1}))
-            .reduce((a,c) => {
-                a[c.slug]=c.status;
-                return a;
-            },{})
-            
-        let surveys = Mutate(await surveyModel.aggregate([
+        console.log(filter)
+        let userID = new mongoose.Types.ObjectId(this.request.user._id);
+
+        let participationFilters = {};
+        if (filter.status === "active") {
+            participationFilters.status = { $in: ["invited", "dropout"] };
+            delete filter.status;
+        }
+
+        let pipeline = [
             {
                 $match: {
-                    ...filter,
+                    user: userID,
                     ...this.commonFilters,
-                    category: this.request.user.category
+                    ...participationFilters
+                }
+            },
+            {
+                $lookup: {
+                    from: "Survey",
+                    localField: "survey.slug",
+                    foreignField: "slug",
+                    as: "surveyInfo"
+                }
+            },
+            {
+                $unwind: "$surveyInfo"
+            },
+            {
+                $match: {
+                    "surveyInfo.category": this.request.user.category,
+                    "surveyInfo.status": "active"
                 }
             }
-        ])).map(s=>({...s,participationStatus:(temp[s.slug]??"")})) //*/
-        return surveys
+        ];
+
+        if (filter.source) {
+            pipeline.push({ $match: { "surveyInfo.source": filter.source } });
+        }
+
+        pipeline.push({
+            $project: {
+                _id: "$surveyInfo._id",
+                name: "$surveyInfo.name",
+                slug: "$surveyInfo.slug",
+                points: "$surveyInfo.points",
+                loi: "$surveyInfo.loi",
+                source: "$surveyInfo.source",
+                createdAt: "$surveyInfo.createdAt",
+                status: "$surveyInfo.status",
+                participationStatus: "$status"
+            }
+        });
+        //*/
+        let surveys = Mutate(await responseModel.aggregate(pipeline));
+        console.log(surveys);
+        return surveys;
     }
     async mySurveyCounts() {
-        let temp = Mutate(await responseModel.find({
-            user: this.request.user._id,
-            ...this.commonFilters
-        }, { "slug": "$survey.slug" })).map(r => r.slug)
-        let surveys = Mutate(await surveyModel.aggregate([
+        let surveys = Mutate(await responseModel.aggregate([
             {
                 $match: {
                     ...this.commonFilters,
-                    category: this.request.user.category,
-                    slug: {
-                        $nin: temp
-                    }
+                    user: new mongoose.Types.ObjectId(this.request.user._id),
+                    status: "invited"
+                }
+            },
+            {
+                $lookup: {
+                    from: "Survey",
+                    localField: "survey.slug",
+                    foreignField: "slug",
+                    as: "surveyDetails"
+                }
+            },
+            {
+                $unwind: "$surveyDetails"
+            },
+            {
+                $match: {
+                    "surveyDetails.category": this.request.user.category,
+                    "surveyDetails.status": "active"
                 }
             },
             {
                 $group: {
-                    _id: "$category",
+                    _id: "$surveyDetails.category",
                     count: {
                         $sum: 1
                     },
-                    internal: {
-                        $sum: { $cond: [{ $eq: ["$source", "internal"] }, 1, 0] }
-                    },
-                    external: {
-                        $sum: { $cond: [{ $eq: ["$source", "external"] }, 1, 0] }
-                    },
-                    sampledge: {
-                        $sum: { $cond: [{ $eq: ["$source", "sampledge"] }, 1, 0] }
-                    }
+                    internal: { $sum: { $cond: [{ $eq: ["$surveyDetails.source", "internal"] }, 1, 0] } },
+                    external: { $sum: { $cond: [{ $eq: ["$surveyDetails.source", "external"] }, 1, 0] } },
+                    sampledge: { $sum: { $cond: [{ $eq: ["$surveyDetails.source", "sampledge"] }, 1, 0] } }
                 }
             }
         ]))
+        console.log(surveys);
         if (surveys.length === 1) return surveys[0];
         return surveys
     }

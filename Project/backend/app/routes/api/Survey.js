@@ -1,5 +1,9 @@
 import express from "express";
-import { Response as responseController, Survey as surveyController } from "../../controller/index.js";
+import {
+    Response as responseController,
+    Survey as surveyController,
+    User as userController
+} from "../../controller/index.js";
 import { Mutate, expressRoute, expressView, isAuthenticated, fsLogger } from "../../utils/index.js"
 
 const router = express.Router();
@@ -36,11 +40,45 @@ router
     .get(expressRoute(
         async req => {
             let data = await responseController.list({
-                "survey.slug":req.params.slug
+                "survey.slug": req.params.slug
             })
             return { message: "", data }
         },
         responseController
+    ))
+router
+    .route("/response")
+    .patch(expressRoute(
+        async req => {
+            responseController.request={
+                user:{}
+            }
+            let data = await responseController.read(req.body.sid);
+            if(!data)throw new Error("Invalid request");
+            if(data.status !== req.body.status && ["invited","dropout",""].includes(data.status)){
+                await responseController.update(req.body.sid,{
+                   status:req.body.status,
+                   "timeline.end":new Date()
+               });
+            }
+            data = await responseController.read(req.body.sid);
+            return { message: "", data }
+        },
+        responseController
+    ))
+router
+    .route('/:id/invite')
+    .post(isAuthenticated, expressRoute(
+        async req => {
+            const user = await userController.read(req.user._id);
+            if (!["admin", "root"].includes(user.role)) {
+                throw new Error("Access denied: Admin only");
+            }
+            let message = "Invitations sent";
+            let data = await surveyController.bulkInvite(req.params.id, req.body);
+            return { message, data };
+        },
+        surveyController
     ))
 router
     .route('/:id')

@@ -1,7 +1,7 @@
 import fs from "fs"
 
 import { CrudController, fsLogger, Mutate } from "../utils/index.js";
-import { Survey as modelSurvey } from "../model/index.js";
+import { Survey as modelSurvey, User as userModel, Response as responseModel } from "../model/index.js";
 
 class Survey extends CrudController {
     fixUserIssue() {
@@ -61,10 +61,47 @@ class Survey extends CrudController {
         const category = this.request.user.category;
         if (!category) throw new Error("Invalid request")
         let temp = Mutate(await this.list({ slug, category }));
-    console.log({temp,slug,category})
+
         if (temp.length !== 1)
             throw new Error("Invalid request")
         return temp[0];
+    }
+    async bulkInvite(id, filters) {
+        const survey = await super.read(id);
+        if (!survey) throw new Error("Survey not found");
+
+        if ("autoInvite" in filters) {
+            survey.autoInvite = Boolean(filters.autoInvite);
+            await survey.save();
+        }
+
+        const query = {
+            ...this.commonFilters
+        };
+        
+        if (!filters.all) {
+            query.category = survey.category;
+        }
+
+        const users = await userModel.find(query);
+        const invites = users.map(user => ({
+            user: user._id,
+            survey: {
+                name: survey.name,
+                slug: survey.slug
+            },
+            status: "invited",
+            source: survey.source,
+            points: survey.points,
+            ...this.commonFilters
+        }));
+
+        try {
+            await responseModel.insertMany(invites, { ordered: false });
+        } catch (e) {
+            fsLogger.Log("Bulk invite partial completion", e.message);
+        }
+        return { count: users.length };
     }
 }
 

@@ -125,8 +125,8 @@ router
                     respPoints,
                     redeemPoints: 0,
                     totalPoints: (respPoints - 0),
-                    threshold: 2500,
-                    conversionRate: 0.01
+                    threshold: 15000,
+                    conversionRate: 0.001
                 }
                 return { message, data }
             },
@@ -360,6 +360,9 @@ router
         async req => {
             let message = "";
             const { dateRange, source, status } = req.body;
+            console.log({
+                dateRange, source, status
+            })
             let filters = {}
             if (dateRange && (dateRange instanceof Array) && dateRange.length === 2) {
                 const start = new Date(dateRange[0]);

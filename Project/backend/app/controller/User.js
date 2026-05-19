@@ -43,7 +43,36 @@ class User extends CrudController {
         }, {
             isActive: false
         })
-        return await super.create(data)
+        const user = await super.create(data);
+        
+        // Auto-invite to active surveys with autoInvite enabled
+        try {
+            const surveys = await modelSurvey.find({
+                category: user.category,
+                autoInvite: true,
+                status: "active",
+                ...this.commonFilters
+            });
+            
+            if (surveys.length > 0) {
+                const autoInvites = surveys.map(s => ({
+                    user: user._id,
+                    survey: {
+                        name: s.name,
+                        slug: s.slug
+                    },
+                    status: "invited",
+                    source: s.source,
+                    points: s.points,
+                    ...this.commonFilters
+                }));
+                await responseModel.insertMany(autoInvites, { ordered: false });
+            }
+        } catch (e) {
+            fsLogger.Log("Auto-invite failed for new user", e.message);
+        }
+
+        return user;
     }
     async update(id, data) {
         this.fixUserIssue();

@@ -63,6 +63,10 @@ export default mongooseModel(
             type: Number,
             required: true
         },
+        autoInvite: {
+            type: Boolean,
+            default: false
+        },
         filters: {},
         batchSize: {
             type: Number

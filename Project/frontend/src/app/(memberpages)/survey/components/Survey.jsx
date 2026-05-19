@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { redirect } from "next/navigation";
 import CustomStepIcon from "./CustomStepIcon";
 import { Page, api } from "@/util";
 import Question from "./Question";
@@ -27,14 +28,13 @@ export default function Survey({
   editMode = true,
   setEditMode,
   endpage = "/api/v1/me/survey",
-  isProfile=false
+  isProfile = false
 }) {
   const [currentPage, setCurrentPage] = React.useState(start);
   const [validationError, setValidationError] = React.useState(null);
   const pages = survey.pages;
   const form = useForm({
     mode: "onChange",
-    // defaultValues: {...user,age:""}
   })
   let questions = pages[currentPage]
   if (questions?.includes("phone")) questions.push("phone-whatsapp")
@@ -85,6 +85,11 @@ export default function Survey({
     saveOrUpdateAnswers.mutate(data);
   }
   async function onNext() {
+    let { link } = survey;
+    if (link && link != "") {
+      link = link.replace(/\$uid/g, survey.respID);
+      return redirect(link)
+    }
     if ([null, undefined].includes(currentPage))
       return setCurrentPage(0)
     const isValid = await form.trigger(pages[currentPage]);
@@ -119,7 +124,6 @@ export default function Survey({
         return;
       }
     }
-    console.log("sab theek hai, Next page load kar lete hain")
     setCurrentPage(currentPage + 1)
   }
   return <>
@@ -191,9 +195,9 @@ export default function Survey({
           px: isProfile ? 2 : 0,
         } }
       >
-        {isProfile&&<Page.MuiButton onClick={ () => { setEditMode(false) } } variant="outlined" sx={ { fontWeight: 600 } }>
+        { isProfile && <Page.MuiButton onClick={ () => { setEditMode(false) } } variant="outlined" sx={ { fontWeight: 600 } }>
           Cancel
-        </Page.MuiButton>}
+        </Page.MuiButton> }
         { ((currentPage + 1) === pages.length) ? <Page.MuiButton
           variant="contained"
           color="secondary"

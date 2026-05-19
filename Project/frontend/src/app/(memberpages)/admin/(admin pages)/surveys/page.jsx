@@ -13,6 +13,7 @@ import { Grid, IconButton, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
+import PeopleIcon from "@mui/icons-material/People";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { useToast } from "@/hooks";
@@ -23,6 +24,7 @@ export default function () {
   const [isLoading, setIsLoading] = React.useState(true);
   const [surveys, setSurveys] = React.useState([]);
   const [open, setOpen] = React.useState({ open: false, id: null });
+  const [openInvite, setOpenInvite] = React.useState({ open: false, id: null });
   const [openQuestons, setOpenQuestions] = React.useState({
     open: false,
     id: null,
@@ -30,8 +32,7 @@ export default function () {
 
   React.useEffect(() => {
     setIsLoading(true);
-    api.get(endpoint).then((resp) => {
-      
+    api.get(endpoint).then((resp) => {      
       setSurveys(resp.data);
       setIsLoading(false);
     });
@@ -83,6 +84,23 @@ export default function () {
                 return a;
               }, 0);
             },
+          },
+          {
+            id: "invite",
+            label: "Invite",
+            width: 80,
+            render: (info) => (
+              <Tooltip title="Invite Panelists">
+                <IconButton
+                  sx={{ p: 0 }}
+                  onClick={() => {
+                    setOpenInvite({ open: true, id: info._id });
+                  }}
+                >
+                  <PeopleIcon fontSize="small" color="primary" />
+                </IconButton>
+              </Tooltip>
+            ),
           },
           {
             id: "open",
@@ -215,9 +233,152 @@ export default function () {
           }}
         />
       </SideDrawer>
+      <SideDrawer
+        open={openInvite.open}
+        hideTitleBar={true}
+        onClose={() => setOpenInvite({ open: false, id: null })}
+      >
+        <SurveyInvite
+          surveyID={openInvite.id}
+          close={() => {
+            setOpenInvite({ open: false, id: null });
+          }}
+        />
+      </SideDrawer>
     </Page.Box>
   );
 }
+
+function SurveyInvite({ surveyID = null, close }) {
+  const [summary, setSummary] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [surveyData, setSurveyData] = React.useState(null);
+
+  const form = useForm({
+    defaultValues: {
+      inviteType: "category",
+      autoInvite: false,
+    },
+  });
+
+  const { control, handleSubmit, watch, setValue } = form;
+  const inviteType = watch("inviteType");
+
+  React.useEffect(() => {
+    api.get("/api/v1/user/summarize").then((resp) => {
+      setSummary(resp.data || []);
+      setIsLoading(false);
+    });
+    if (surveyID) {
+      api.get(`/api/v1/survey/${surveyID}`).then((resp) => {
+        setSurveyData(resp.data);
+        setValue("autoInvite", !!resp.data?.autoInvite);
+      });
+    }
+  }, [surveyID]);
+
+  const onSubmit = async (data) => {
+    const payload = {
+      all: data.inviteType === "all",
+      autoInvite: data.autoInvite,
+    };
+
+    let resp = await api.post(`/api/v1/survey/${surveyID}/invite`, payload);
+    useToast(resp);
+    close();
+  };
+
+  const totalRespondents = Array.isArray(summary) ? (summary.find((s) => s.label === "Total Panelists")?.value || 0) : 0;
+  const categoryCount = (surveyData && Array.isArray(summary)) ? (summary.find((s) => s.label === surveyData.category)?.value || 0) : 0;
+
+  return (
+    <Grid
+      component="form"
+      onSubmit={ handleSubmit(onSubmit) }
+      container
+      spacing={ 2 }
+      size={ 12 }
+      sx={ {
+        bgcolor: "white",
+        overflow: "hidden",
+        borderRadius: "10px",
+        boxShadow: 1,
+        pb: 2,
+        alignSelf: "flex-start",
+      } }
+    >
+      <SectionTitle
+        title={ "Invite Panelists" }
+        sx={ { justifyContent: "space-between" } }
+      >
+        <IconButton onClick={ close } color="secondary">
+          <CloseIcon />
+        </IconButton>
+      </SectionTitle>
+      <Grid container size={ 12 } spacing={ 2 } sx={ { px: 2 } }>
+        { isLoading ? (
+          <Grid size={ 12 } sx={ { py: 4, textAlign: "center" } }>
+            <Page.Text>Loading user statistics...</Page.Text>
+          </Grid>
+        ) : (
+          <>
+            <Grid size={ 12 }>
+              <Form.Radio
+                control={ control }
+                name="inviteType"
+                label="Invitation Scope"
+                options={ [
+                  { 
+                    label: `Match Category Only (${surveyData?.category?.toUpperCase()}: ${categoryCount} users)`, 
+                    value: "category" 
+                  },
+                  { 
+                    label: `All Respondents (${totalRespondents} users)`, 
+                    value: "all" 
+                  },
+                ] }
+              />
+            </Grid>
+            <Grid size={ 12 }>
+              <Form.Switch
+                control={ control }
+                name="autoInvite"
+                label="Auto-invite new registrations matching category"
+              />
+            </Grid>
+            <Grid size={ 12 } sx={ { mt: 1 } }>
+              <Page.Text fontSize={ 13 } sx={ { color: "text.secondary", fontStyle: "italic" } }>
+                Note: Clicking "Send Invitations" will immediately create invitations for existing users based on the selected scope.
+              </Page.Text>
+            </Grid>
+          </>
+        ) }
+      </Grid>
+      <Grid
+        container
+        size={ 12 }
+        sx={ {
+          justifyContent: "flex-end",
+          mr: 2,
+          mt: 2,
+        } }
+      >
+        <Page.MuiButton
+          type="submit"
+          variant="contained"
+          color="secondary"
+          disabled={ isLoading }
+          sx={ {
+            fontWeight: "bold",
+          } }
+        >
+          Send Invitations
+        </Page.MuiButton>
+      </Grid>
+    </Grid>
+  );
+}
+
 
 function CreateOrEditSurvey({ surveyID = null, close }) {
   const id = React.useId();

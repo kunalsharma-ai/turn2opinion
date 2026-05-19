@@ -6,7 +6,6 @@ import { useMember } from "@/Context";
 
 export default function CurrentUser() {
   const [user] = [useMember()];
-  // todo: change profile picture
   return (
     <Grid
       size={{ xs: 12, md: 6 }}
@@ -41,14 +40,6 @@ export default function CurrentUser() {
         <Typography fontSize="13px" fontWeight={500}>
           {user?.mail}
         </Typography>
-        {/* <Typography
-          fontSize="13px"
-          color="secondary.main"
-          fontWeight={600}
-          textTransform="capitalize"
-        >
-          {user?.category}
-        </Typography> */}
       </Box>
     </Grid>
   );

@@ -178,10 +178,10 @@ const DateRangeSelector = ({ onUpdate, defaultValue, ...attr }) => {
                     value={dateRange[0]}
                     maxDate={dateRange[1]}
                     onChange={handleDateRangeChange(0)}
-                    renderInput={(params) => (
-                      <TextField {...params} size="small" />
-                    )}
                     slotProps={{
+                         textField: {
+                        size: "small",
+                      },
                       day: {
                         sx: {
                           "&.Mui-selected": {
@@ -215,10 +215,10 @@ const DateRangeSelector = ({ onUpdate, defaultValue, ...attr }) => {
                     value={dateRange[1]}
                     disableFuture
                     onChange={handleDateRangeChange(1)}
-                    renderInput={(params) => (
-                      <TextField {...params} size="small" />
-                    )}
                     slotProps={{
+                      textField: {
+                        size: "small",
+                      },
                       day: {
                         sx: {
                           "&.Mui-selected": {

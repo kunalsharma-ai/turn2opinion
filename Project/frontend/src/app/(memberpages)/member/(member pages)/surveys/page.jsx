@@ -58,7 +58,7 @@ function MySurveys({ user, query }) {
       label: "Survey Status",
       width: 130,
       render: (info) =>
-        info.status === "active" && info.participationStatus === "" ? (
+        info.status === "active" && ["", "invited", "reinvited"].includes(info.participationStatus) ? (
           <Page.Link
             sx={ { color: "secondary.main", fontWeight: 600 } }
             href={ `/survey?name=${info.slug}` }
@@ -72,7 +72,6 @@ function MySurveys({ user, query }) {
         ),
     },
   ];
-
   return (
     <Grid size={ 12 } px={ { xs: 2, md: 3 } } mt={ 2 } spacing={ 0 }>
       <Datatable
@@ -161,9 +160,9 @@ function AvailableSurvey({ user, query }) {
       render: (info) => {
         console.log(info)
         return info.status === "active" &&
-          (info.participationStatus === "" ||
+          (["", "invited"].includes(info.participationStatus) ||
             (info.source === "internal" &&
-              ["", "dropout"].includes(info.participationStatus))) ? (
+              ["", "dropout", "invited"].includes(info.participationStatus))) ? (
           <Page.Link
             sx={ { color: "secondary.main", fontWeight: 600 } }
             href={ `/survey?name=${info.slug}` }
@@ -192,7 +191,7 @@ function AvailableSurvey({ user, query }) {
               fontSize: "16px",
               display: "inline-block",
               fontWeight: "600",
-               borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
+              borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
               pb: 0.5,
               my: 1,
             } }

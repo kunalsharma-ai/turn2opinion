@@ -3,6 +3,7 @@ import "@/lib/enhancements.js";
 import { CssBaseline } from "@mui/material";
 import Providers from "./providers";
 import { Toast } from "@/components";
+import { GoogleTagManager } from "@next/third-parties/google";
 
 export default function RootLayout({ children }) {
   return (
@@ -11,10 +12,37 @@ export default function RootLayout({ children }) {
         <link rel="preload" href="/css/style.css" as="style" />
         <link rel="stylesheet" href="/css/style.css" />
 
-        <title>Turn2Opinion - Get Paid for Your Opinion</title>
+        <title>
+          Turn2Opinion | Get Paid for Online Surveys & Rewards Platform
+        </title>
         <meta
           name="description"
-          content="Join Turn2Opinion — a trusted platform where people share insights and earn rewards for participating in surveys."
+          content="Join Turn2Opinion, a trusted online survey panel where you can participate in paid surveys, share opinions, and earn rewards through PayPal, gift vouchers, and more."
+        />
+        <meta
+          name="keywords"
+          content="
+            paid online surveys,
+            earn money online surveys,
+            online survey panel,
+            paid surveys India,
+            survey rewards platform,
+            get paid for opinions,
+            earn rewards online,
+            market research panel,
+            consumer survey panel,
+            B2B survey panel,
+            online opinion surveys,
+            paid survey website,
+            survey community,
+            online research panel,
+            cash rewards surveys,
+            paypal survey rewards,
+            gift voucher surveys,
+            survey participation rewards,
+            market research surveys,
+            trusted survey sites India
+          "
         />
       </head>
       <body>
@@ -25,6 +53,7 @@ export default function RootLayout({ children }) {
             <Toast />
           </Providers>
         </main>
+        <GoogleTagManager gtmId="GTM-MBPP77RX" />
       </body>
     </html>
   );
