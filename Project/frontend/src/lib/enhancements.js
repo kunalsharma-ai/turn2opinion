@@ -156,9 +156,9 @@ Date.prototype.showDate = function (
 Date.prototype.toDate = function () {
   return this;
 };
-Date.prototype.isMinor=function(cn="IN"){
-  let today=new Date();
-  let age=(today - this) / (365.25 * 24 * 3600 * 1000);
+Date.prototype.isMinor = function (cn = "IN") {
+  let today = new Date();
+  let age = (today - this) / (365.25 * 24 * 3600 * 1000);
   return age < 18
 }
 Date.prototype.relativeTime = function () {
@@ -258,7 +258,24 @@ Number.prototype.toMoney = function (currency = "INR", locale = "en-IN") {
     style: "currency",
     currency: currency,
   }).format;
-  return format(this);
+  return `${format(this)} ${currency}`;
+};
+
+Number.prototype.toLocalCurrency = function (currency = "INR", locale = "en-IN") {
+  const format = new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: currency,
+  }).format;
+  let localCurrency = localStorage.getItem("local-currency");
+  if (!localCurrency)
+    return ``;
+  let currencyConversion = localStorage.getItem("currency-conversion");
+  if (!currencyConversion) currencyConversion = 1;
+  const localFormat = new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: localCurrency,
+  }).format;
+  return ` ~ ${localFormat(this * currencyConversion)} ${localCurrency} `;
 };
 Number.prototype.toPercent = function (locale = "en-IN") {
   const { format } = new Intl.NumberFormat(locale, {
@@ -269,16 +286,16 @@ Number.prototype.toPercent = function (locale = "en-IN") {
   });
   return format(this / 100);
 };
-Number.prototype.toTime = Number.prototype.toTimeElapsed = function (showMs=false) {
+Number.prototype.toTime = Number.prototype.toTimeElapsed = function (showMs = false) {
   let temp = this;
   let ms = temp % 1000; temp = (temp - ms) / 1000;
   let sec = temp % 60; temp = (temp - sec) / 60;
   let min = temp % 60; temp = (temp - min) / 60;
   let hr = temp;
-  if(showMs)
-  return `${hr}:${(min < 10) ? `0${min}` : min}:${(sec < 10) ? `0${sec}` : sec}.${ms}`
+  if (showMs)
+    return `${hr}:${(min < 10) ? `0${min}` : min}:${(sec < 10) ? `0${sec}` : sec}.${ms}`
   return `${hr}:${(min < 10) ? `0${min}` : min}:${(sec < 10) ? `0${sec}` : sec}`
-   
+
 }
 Array.prototype.avg = function () {
   let sum = 0;

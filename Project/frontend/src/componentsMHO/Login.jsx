@@ -1,4 +1,4 @@
-import React, { startTransition } from "react";
+import React, { startTransition, useEffect } from "react";
 import PopUp from "./PopUp";
 import {
   Typography,
@@ -16,6 +16,17 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
+import {
+  Facebook,
+  GitHub,
+  Google,
+  LinkedIn,
+  X,
+  Apple,
+  Microsoft,
+  Login as LoginIcon,
+} from "@mui/icons-material";
 import { api, Page, submitWithAjax } from "@/util";
 import { useForm } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
@@ -110,6 +121,15 @@ function LoginCard({ onClose, setCardType, setOpenSignUp }) {
   const [loginType, setLoginType] = React.useState("mail");
   const [phone, setPhone] = React.useState("");
 
+  const [providers, setProviders] = React.useState([]);
+  useEffect(() => {
+    api.post("/api/v1/auth/socials", {}).then((resp) => {
+      setProviders(resp?.data ?? []);
+    });
+  }, []);
+
+  console.log(providers);
+
   React.useEffect(() => {
     if (!telemetry) return;
     telemetry.ip().then((resp) => {
@@ -123,15 +143,35 @@ function LoginCard({ onClose, setCardType, setOpenSignUp }) {
     { label: "Email", value: "mail" },
     { label: "Phone", value: "phone" },
   ];
+
+  const providerIcons = {
+    google: <Google />,
+    github: <GitHub />,
+    facebook: <Facebook />,
+    linkedin: <LinkedIn />,
+    twitter: <X />,
+    x: <X />,
+    apple: <Apple />,
+    microsoft: <Microsoft />,
+  };
+
+  const authProviders = providers.map((provider) => ({
+    label: `Continue with ${
+      provider.name.charAt(0).toUpperCase() + provider.name.slice(1)
+    }`,
+    icon: providerIcons[provider.name?.toLowerCase()] || <LoginIcon />,
+    href: provider.authUrl,
+  }));
+
   return (
     <Card
       sx={{
         display: "flex",
         flexDirection: "column",
         alignSelf: "center",
-        minHeight: "520px",
-        width: { xs: "95vw", sm: "430px" },
-        px: { xs: 1, md: 3 },
+        minHeight: authProviders.length > 0 ? "620px" : "520px",
+        width: { xs: "95vw", sm: "440px" },
+        px: { xs: 1.5, sm: 3 },
         position: "relative",
       }}
     >
@@ -151,7 +191,7 @@ function LoginCard({ onClose, setCardType, setOpenSignUp }) {
           width: "100%",
           fontSize: "30px",
           textAlign: "center",
-          pt: 9,
+          pt: 6,
           pb: 3,
           fontWeight: 500,
         }}
@@ -171,9 +211,9 @@ function LoginCard({ onClose, setCardType, setOpenSignUp }) {
             const resp = await submitWithAjax(e);
             switch (resp.status) {
               case "success":
-                router.replace("/member/dashboard")
+                router.replace("/member/dashboard");
                 break;
-            
+
               default:
                 setErrorMessage(resp.message);
                 setLoading(false);
@@ -316,6 +356,7 @@ function LoginCard({ onClose, setCardType, setOpenSignUp }) {
           </Box>
         </Grid>
         {errorMessage && <Page.Error message={errorMessage} />}
+
         <Page.MuiButton
           type="submit"
           fullWidth
@@ -338,6 +379,104 @@ function LoginCard({ onClose, setCardType, setOpenSignUp }) {
         >
           Log in
         </Page.MuiButton>
+        {authProviders.length > 0 && (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              my: 0.5,
+            }}
+          >
+            <Box
+              sx={{
+                flex: 1,
+                height: "1px",
+                bgcolor: "divider",
+              }}
+            />
+
+            <Typography
+              variant="body2"
+              sx={{
+                color: "text.secondary",
+                fontSize: 13,
+                whiteSpace: "nowrap",
+              }}
+            >
+              or continue with
+            </Typography>
+
+            <Box
+              sx={{
+                flex: 1,
+                height: "1px",
+                bgcolor: "divider",
+              }}
+            />
+          </Box>
+        )}
+        {authProviders.length <= 2 ? (
+          <Box display="flex" flexDirection="column" gap={1}>
+            {authProviders.map((provider, i) => (
+              <Page.MuiButton
+                component={"a"}
+                href={provider.href}
+                key={i}
+                fullWidth
+                variant="outlined"
+                color="secondary"
+                startIcon={provider.icon}
+                sx={{
+                  borderRadius: "8px",
+                  padding: "9px",
+                  fontWeight: 600,
+                  textTransform: "none",
+                  borderWidth: "1px",
+                  "&:hover": {
+                    borderWidth: "1px",
+                    backgroundColor: "transparent",
+                  },
+                }}
+              >
+                {provider.label}
+              </Page.MuiButton>
+            ))}
+          </Box>
+        ) : (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            gap={{ xs: 0.8, sm: 1.5 }}
+            flexWrap="wrap"
+            mb={0.5}
+          >
+            {authProviders.map((provider, i) => (
+              <IconButton
+                component={"a"}
+                href={provider.href}
+                onClick={provider.onClick}
+                key={i}
+                title={provider?.label}
+                sx={{
+                  border: "1px solid",
+                  borderColor: "secondary.main",
+                  color: "secondary.main",
+                  width: 42,
+                  height: 42,
+                  transition: "all 0.2s ease",
+                  "&:hover": {
+                    backgroundColor: "action.hover",
+                    transform: "translateY(-1px)",
+                  },
+                }}
+              >
+                {provider.icon}
+              </IconButton>
+            ))}
+          </Box>
+        )}
         <Box display="flex" alignItems="center" justifyContent="center">
           <Typography>Don&apos;t have an account?&nbsp;</Typography>
           <Page.MuiButton

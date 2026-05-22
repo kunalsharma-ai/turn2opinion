@@ -802,7 +802,7 @@ export default function Datatable({
             component={Paper}
             sx={{
               boxShadow: 2,
-              borderRadius: 2,
+              borderRadius: attr.noBorderRadius ? "0" : "8px",
               maxHeight:
                 attr.maxHeight ||
                 (attr?.withSelected

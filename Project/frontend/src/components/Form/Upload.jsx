@@ -209,7 +209,7 @@ export default function Upload({
 
       {/* ------- IMAGE UPLOAD UI ------- */}
       {outputType === "image/webp" ? (
-        <Grid container flexDirection="column" gap={0.5}>
+        <Grid container flexDirection="column" gap={0.5} {...attr?.containerSx}>
           {editMode && (
             <Page.Text sx={{ px: 2, pt: 2, color: "grey" }}>{label}</Page.Text>
           )}

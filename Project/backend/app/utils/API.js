@@ -4,6 +4,7 @@ import https from "https";
 class API {
   constructor({ baseURL, headers = {}, useHttps = false }) {
     try {
+      console.log(baseURL)
         this.baseURL = new URL(baseURL);
         this.defaultHeaders = headers;
         this.client = useHttps ? https : http;

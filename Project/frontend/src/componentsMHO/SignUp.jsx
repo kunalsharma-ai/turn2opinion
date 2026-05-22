@@ -146,17 +146,43 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
     return () => clearInterval(interval);
   }, [cooldown]);
   const progress = ((RESEND_SECONDS - cooldown) / RESEND_SECONDS) * 100;
+  React.useEffect(() => {
+    let userInfo = form.getValues();
+    if (("name" in query)) {
+      let name = query?.name.split(" ");
+      switch (name.length) {
+        case 1:
+          userInfo.name.first = name[0];
+          break;
+        case 2:
+          userInfo.name.first = name[0];
+          userInfo.name.last = name[1];
+          break;
+        case 3:
+          userInfo.name.first = name[0];
+          userInfo.name.middle = name[1];
+          userInfo.name.last = name[2];
+          break;
+        default:
+          userInfo.name.first = name[0] ?? "";
+          userInfo.name.last = name.at(-1) ?? "";
 
+      }
+    }
+    if ("email" in query)
+      userInfo.mail = query?.email;
+    form.reset(userInfo)
+  }, [query])
   const category = form.watch("category");
   return (
     <PopUp
-      open={open}
-      onClose={() => {
+      open={ open }
+      onClose={ () => {
         onClose();
-      }}
-      hideTitle={true}
-      noBorder={true}
-      sx={{
+      } }
+      hideTitle={ true }
+      noBorder={ true }
+      sx={ {
         width: "100vw",
         height: "100vh",
         bgcolor: "primary.main",
@@ -165,8 +191,8 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
-      }}
-      DialogSx={{
+      } }
+      DialogSx={ {
         "& .MuiDialog-paper": {
           width: "100vw",
           margin: {
@@ -174,98 +200,98 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
             sm: "32px",
           },
         },
-      }}
-      maxWidth={status !== "signup" ? "md" : "xl"}
+      } }
+      maxWidth={ status !== "signup" ? "md" : "xl" }
       children={
         <>
-          {status == "signup" && (
+          { status == "signup" && (
             <Grid
-              size={12}
+              size={ 12 }
               container
-              sx={{
+              sx={ {
                 maxHeight: { xs: "90vh", lg: "75vh" },
                 overflow: "hidden",
                 border: 1.5,
                 borderColor: "#33aaca",
-              }}
+              } }
             >
-              <Grid size={{ xs: 0, lg: 7.5 }} container>
+              <Grid size={ { xs: 0, lg: 7.5 } } container>
                 <img
-                  width={"100%"}
+                  width={ "100%" }
                   src="images/home/signup2.jpg"
                   // src="images/home/signup-image5.jpg"
                   loading="eager"
                   alt=""
-                  style={{
+                  style={ {
                     objectFit: "cover",
                     backgroundColor: "white",
                     filter: "brightness(85%)",
-                  }}
+                  } }
                 />
               </Grid>
               <Grid
-                size={{ xs: 12, lg: 4.5 }}
+                size={ { xs: 12, lg: 4.5 } }
                 container
-                sx={{
+                sx={ {
                   maxHeight: { xs: "90vh", lg: "75vh" },
                   overflowY: "auto",
                   position: "relative",
-                }}
+                } }
               >
                 <Grid
-                  size={12}
+                  size={ 12 }
                   container
                   justifyContent="space-between"
                   alignItems="center"
-                  sx={{
+                  sx={ {
                     position: "sticky",
                     bgcolor: "#f1f4f9",
                     zIndex: 4444,
                     top: 0,
                     right: 0,
                     px: 2,
-                  }}
+                  } }
                 >
-                  <Page.Box sx={{ position: "relative", pt: 3 }}>
+                  <Page.Box sx={ { position: "relative", pt: 3 } }>
                     <Page.Box
-                      sx={{
-                        height: { xs: "60px", md: "80px" },
+                      sx={ {
+                        height: 60,
                         width: { xs: "180px", md: "300px" },
-                      }}
+                      } }
                     >
                       <img
                         src="/images/logo/t2o-logo.png"
                         alt="logo"
                         width="100%"
                       />
-                    </Page.Box>{" "}
+                    </Page.Box>{ " " }
                   </Page.Box>
                   <IconButton
-                    sx={{
+                    sx={ {
                       "&:hover": { color: "red" },
-                    }}
-                    onClick={onClose}
+                    } }
+                    onClick={ onClose }
                   >
-                    <CloseIcon sx={{ fontSize: { xs: "16px", md: "26px" } }} />
+                    <CloseIcon sx={ { fontSize: { xs: "16px", md: "26px" } } } />
                   </IconButton>
                 </Grid>
                 <Grid
                   component="form"
-                  size={12}
+                  size={ 12 }
                   container
                   direction="column"
                   alignItems="center"
-                  onSubmit={handleSubmit(onSubmit, (errors) => {
+                  onSubmit={ handleSubmit(onSubmit, (errors) => {
                     console.log(errors);
-                  })}
-                  spacing={0}
-                  sx={{
+                  }) }
+                  spacing={ 0 }
+                  sx={ {
                     px: { xs: 2, md: 4 },
                     pb: 4,
-                  }}
+                  } }
                 >
                   <Page.Text
-                    sx={{
+                    sx={ {
                       alignSelf: "flex-start",
                       textAlign: "center",
                       fontSize: { xs: "18px", md: "26px" },
@@ -273,166 +299,166 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                       color: "secondary.main",
 
                       my: 2,
-                    }}
+                    } }
                   >
                     Signup
                   </Page.Text>
-                  <Grid size={12} container direction="column" spacing={1.2}>
+                  <Grid size={ 12 } container direction="column" spacing={ 1.2 }>
                     <Grid
-                      size={12}
+                      size={ 12 }
                       container
                       direction="row"
-                      style={{ alignItems: "flex-end" }}
+                      style={ { alignItems: "flex-end" } }
                     >
-                      <Grid size={{ xs: 12, md: 2 }}>
+                      <Grid size={ { xs: 12, md: 2 } }>
                         <Form.Select
-                          {...register("name.salutation")}
-                          control={control}
-                          options={[
+                          { ...register("name.salutation") }
+                          control={ control }
+                          options={ [
                             { value: "Mr.", label: "Mr." },
                             { value: "Ms.", label: "Ms." },
                             { value: "Mrs.", label: "Mrs." },
                             { value: "Dr.", label: "Dr." },
                             { value: "Prof.", label: "Prof." },
                             { value: "Mx. ", label: "Mx." },
-                          ]}
+                          ] }
                           labelText="Salutation"
                         />
                       </Grid>
-                      <Grid size={{ xs: 12, md: 5 }}>
+                      <Grid size={ { xs: 12, md: 5 } }>
                         <Form.Input
-                          {...register("name.first")}
-                          control={control}
+                          { ...register("name.first") }
+                          control={ control }
                           labelText="First Name"
-                          required={true}
-                          errors={errors?.name?.first}
-                          validations={user.name.first}
+                          required={ true }
+                          errors={ errors?.name?.first }
+                          validations={ user.name.first }
                         />
                       </Grid>
-                      <Grid size={{ xs: 12, md: 5 }}>
+                      <Grid size={ { xs: 12, md: 5 } }>
                         <Form.Input
-                          {...register("name.last")}
-                          control={control}
+                          { ...register("name.last") }
+                          control={ control }
                           labelText="Last Name"
-                          required={true}
-                          errors={errors?.name?.last}
-                          validations={user.name.last}
+                          required={ true }
+                          errors={ errors?.name?.last }
+                          validations={ user.name.last }
                         />
                       </Grid>
                     </Grid>
 
-                    <Grid size={12}>
+                    <Grid size={ 12 }>
                       <Form.Input
-                        {...register("mail")}
-                        control={control}
+                        { ...register("mail") }
+                        control={ control }
                         labelText="Email"
-                        required={true}
-                        errors={errors?.mail}
-                        validations={user.email}
+                        required={ true }
+                        errors={ errors?.mail }
+                        validations={ user.email }
                       />
                     </Grid>
 
-                    <Grid size={12}>
+                    <Grid size={ 12 }>
                       <Form.Phone
-                        {...register("phone")}
-                        control={control}
+                        { ...register("phone") }
+                        control={ control }
                         labelText="Phone"
                         // onlyCountries={ [country] }
-                        selectedCountry={country}
-                        disableDropdown={Boolean(country)}
-                        validations={user.phone}
-                        errors={errors?.phone}
-                        onBlur={(e) => {
+                        selectedCountry={ country }
+                        disableDropdown={ Boolean(country) }
+                        validations={ user.phone }
+                        errors={ errors?.phone }
+                        onBlur={ (e) => {
                           console.log(form.getValues());
-                        }}
+                        } }
                       />
                     </Grid>
 
-                    <Grid size={12} container direction="row">
-                      <Grid size={6}>
+                    <Grid size={ 12 } container direction="row">
+                      <Grid size={ 6 }>
                         <Form.Date
-                          {...register("dob")}
-                          control={control}
+                          { ...register("dob") }
+                          control={ control }
                           labelText="Date of Birth"
-                          required={true}
-                          dateRange={[minDOB, maxDOB]}
-                          errors={errors?.dob}
-                          validations={user.dob}
-                          onOutOfBound={(e, value) => {
+                          required={ true }
+                          dateRange={ [minDOB, maxDOB] }
+                          errors={ errors?.dob }
+                          validations={ user.dob }
+                          onOutOfBound={ (e, value) => {
                             if (!value) return;
                             alert(
                               "You are not meeting our age criteria, Type your date of birth again",
                             );
                             e.target.focus();
-                          }}
+                          } }
                         />
-                      </Grid>{" "}
-                      <Grid size={6}>
+                      </Grid>{ " " }
+                      <Grid size={ 6 }>
                         <GenderRadioGroup
-                          name={"gender"}
-                          control={control}
+                          name={ "gender" }
+                          control={ control }
                           label="Gender"
-                          errors={errors?.gender}
-                          validations={user.gender}
+                          errors={ errors?.gender }
+                          validations={ user.gender }
                         />
                       </Grid>
                     </Grid>
-                      <Grid
-                        size={12}
-                        container
-                        spacing={0}
-                        alignItems="flex-start"
-                        mt={3}
+                    <Grid
+                      size={ 12 }
+                      container
+                      spacing={ 0 }
+                      alignItems="flex-start"
+                      mt={ 3 }
+                    >
+                      <Form.Checkbox
+                        size="medium"
+                        { ...register("agreedtoterms") }
+                        control={ control }
+                      />
+                      <Typography
+                        sx={ { flex: 1, ml: -1.5, textAlign: "justify" } }
                       >
-                        <Form.Checkbox
-                          size="medium"
-                          {...register("agreedtoterms")}
-                          control={control}
-                        />
+                        I agree for Turn 2 Opinion Panel to use my
+                        information for the purposes of determining my
+                        eligibility and for contacting me in relation to
+                        participation in market research surveys. Also, I am
+                        agreeing to{ " " }
                         <Typography
-                          sx={{ flex: 1, ml: -1.5, textAlign: "justify" }}
+                          component={ "a" }
+                          href="/terms"
+                          target="_blank"
+                          sx={ {
+                            textDecoration: "underline",
+                            color: "secondary.main",
+                          } }
                         >
-                          I agree for Turn 2 Opinion Panel to use my
-                          information for the purposes of determining my
-                          eligibility and for contacting me in relation to
-                          participation in market research surveys. Also, I am
-                          agreeing to{" "}
-                          <Typography
-                            component={"a"}
-                            href="/terms"
-                            target="_blank"
-                            sx={{
-                              textDecoration: "underline",
-                              color: "secondary.main",
-                            }}
-                          >
-                            Terms & Conditions
-                          </Typography>{" "}
-                          and{" "}
-                          <Typography
-                            component={"a"}
-                            href="/privacy"
-                            target="_blank"
-                            sx={{
-                              textDecoration: "underline",
-                              color: "secondary.main",
-                            }}
-                          >
-                            Privacy Policy.
-                          </Typography>
+                          Terms & Conditions
+                        </Typography>{ " " }
+                        and{ " " }
+                        <Typography
+                          component={ "a" }
+                          href="/privacy"
+                          target="_blank"
+                          sx={ {
+                            textDecoration: "underline",
+                            color: "secondary.main",
+                          } }
+                        >
+                          Privacy Policy.
                         </Typography>
-                      </Grid>
+                      </Typography>
+                    </Grid>
                     <Page.MuiButton
                       type="submit"
                       variant="contained"
                       color="secondary"
-                      loading={isLoading}
+                      loading={ isLoading }
                       loadingIndicator="Signing Up..."
                       disabled={
                         !Boolean(form.watch("agreedtoterms")) &&
                         !Boolean(form.watch("parent.email"))
                       }
-                      sx={{
+                      sx={ {
                         bgcolor: "secondary.main",
                         my: 2,
                         p: 1,
@@ -440,28 +466,28 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                         fontWeight: 600,
                         textTransform: "none",
                         color: "white",
-                      }}
+                      } }
                     >
                       Sign Up
                     </Page.MuiButton>
                     <Grid
-                      size={12}
+                      size={ 12 }
                       container
                       justifyContent="center"
                       alignItems="center"
                     >
                       <Page.Text>Already have an account?</Page.Text>
                       <Page.Text
-                        sx={{
+                        sx={ {
                           color: "secondary.main",
                           cursor: "pointer",
                           "&:hover": {
                             textDecoration: "underline",
                           },
-                        }}
-                        onClick={() => {
+                        } }
+                        onClick={ () => {
                           (onClose(), setOpenLogin(true));
-                        }}
+                        } }
                       >
                         Log in
                       </Page.Text>
@@ -470,49 +496,49 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                 </Grid>
               </Grid>
             </Grid>
-          )}
-          {status == "success" && (
+          ) }
+          { status == "success" && (
             <Grid
-              size={12}
+              size={ 12 }
               container
               alignItems="center"
-              sx={{
+              sx={ {
                 minHeight: { xs: "90vh", lg: "80vh" },
                 p: { xs: 1, md: 6 },
                 border: 1.5,
                 borderColor: "#33aaca",
-              }}
+              } }
             >
               <Grid
-                size={12}
+                size={ 12 }
                 container
-                spacing={4}
+                spacing={ 4 }
                 alignItems="center"
                 direction="column"
               >
-                <CheckCircleIcon color="primary" sx={{ fontSize: "80px" }} />
+                <CheckCircleIcon color="primary" sx={ { fontSize: "80px" } } />
                 <Page.Text
-                  sx={{
+                  sx={ {
                     fontSize: { xs: "18px", md: "26px" },
                     fontWeight: 600,
                     textAlign: "center",
-                  }}
+                  } }
                 >
-                  Thanks for signing up with{" "}
+                  Thanks for signing up with{ " " }
                   <Page.Text
                     component="span"
-                    sx={{
+                    sx={ {
                       color: "secondary.main",
                       fontSize: { xs: "18px", md: "26px" },
                       fontWeight: 600,
-                    }}
+                    } }
                   >
                     Turn 2 Opinion
-                  </Page.Text>{" "}
-                  - A Frequent Research Panel Community.{" "}
+                  </Page.Text>{ " " }
+                  - A Frequent Research Panel Community.{ " " }
                 </Page.Text>
                 <Page.Text
-                  sx={{
+                  sx={ {
                     fontSize: "16px",
                     fontWeight: 500,
                     textAlign: "center",
@@ -520,9 +546,9 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                     bgcolor: "#8cb2f333",
                     border: "1px solid #f4f4f4",
                     p: 4,
-                  }}
+                  } }
                 >
-                  Please check your inbox/Spam and{" "}
+                  Please check your inbox/Spam and{ " " }
                   <strong>click the verification link</strong> to confirm your
                   email and <strong>activate your account.</strong> Once
                   verified, you will be able to create your password and access
@@ -532,60 +558,60 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                 <Page.MuiButton
                   variant="contained"
                   color="secondary"
-                  sx={{ fontWeight: "bold", mt: 2, color: "white" }}
-                  onClick={onClose}
+                  sx={ { fontWeight: "bold", mt: 2, color: "white" } }
+                  onClick={ onClose }
                 >
                   Go To Home
                 </Page.MuiButton>
               </Grid>
             </Grid>
-          )}
-          {status == "duplicate" && (
+          ) }
+          { status == "duplicate" && (
             <Grid
-              size={12}
+              size={ 12 }
               container
               alignItems="center"
-              sx={{
+              sx={ {
                 minHeight: { xs: "90vh", lg: "80vh" },
                 p: { xs: 1, md: 6 },
                 border: 1.5,
                 borderColor: "#33aaca",
-              }}
+              } }
             >
               <Grid
-                size={12}
+                size={ 12 }
                 container
-                spacing={4}
+                spacing={ 4 }
                 alignItems="center"
                 direction="column"
               >
-                <ErrorIcon color="primary" sx={{ fontSize: "80px" }} />
+                <ErrorIcon color="primary" sx={ { fontSize: "80px" } } />
                 <Page.Text
                   component="span"
-                  sx={{
+                  sx={ {
                     color: "secondary.main",
                     fontSize: { xs: "18px", md: "26px" },
                     fontWeight: 600,
-                  }}
+                  } }
                 >
                   Email Already Registered
-                </Page.Text>{" "}
+                </Page.Text>{ " " }
                 <Page.Box
-                  sx={{
+                  sx={ {
                     textAlign: "center",
                     borderRadius: 5,
                     bgcolor: "#8cb2f333",
                     border: "1px solid #f4f4f4",
                     p: 4,
-                  }}
+                  } }
                 >
                   <Page.Text
-                    sx={{
+                    sx={ {
                       fontSize: "16px",
                       fontWeight: 500,
-                    }}
+                    } }
                   >
-                    Please check your inbox/Spam and{" "}
+                    Please check your inbox/Spam and{ " " }
                     <strong>click the verification link</strong> to confirm your
                     email and <strong>activate your account.</strong> Once
                     verified, you will be able to create your password and
@@ -593,23 +619,23 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                     made just for you!
                   </Page.Text>
                   <Page.Text
-                    sx={{
+                    sx={ {
                       mt: 2,
                       fontSize: "16px",
                       fontWeight: 500,
-                    }}
+                    } }
                   >
                     In case, verification link is expired, please request a new
-                    one by clicking on{" "}
+                    one by clicking on{ " " }
                     <strong>Resend Verification Email</strong> button below.
                   </Page.Text>
                 </Page.Box>
-                <Page.Box sx={{ display: "flex", gap: 2 }}>
+                <Page.Box sx={ { display: "flex", gap: 2 } }>
                   <Page.MuiButton
                     variant="contained"
                     color="secondary"
-                    disabled={cooldown > 0}
-                    sx={{
+                    disabled={ cooldown > 0 }
+                    sx={ {
                       position: "relative",
                       fontWeight: "bold",
                       mt: 2,
@@ -634,33 +660,33 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                         position: "relative",
                         zIndex: 1,
                       },
-                    }}
-                    onClick={async () => {
+                    } }
+                    onClick={ async () => {
                       let resp = await api.post(`/api/v1/user/resend`, {
                         ...form.watch(),
                         action: "resend-otp",
                       });
                       useToast(resp);
                       setCooldown(RESEND_SECONDS);
-                    }}
+                    } }
                   >
-                    {cooldown > 0
+                    { cooldown > 0
                       ? `Resend Email Again in ${cooldown}s`
-                      : "Resend Verification Email"}
+                      : "Resend Verification Email" }
                   </Page.MuiButton>
 
                   <Page.MuiButton
                     variant="outlined"
                     color="secondary"
-                    sx={{ fontWeight: "bold", mt: 2, borderWidth: 3 }}
-                    onClick={onClose}
+                    sx={ { fontWeight: "bold", mt: 2, borderWidth: 3 } }
+                    onClick={ onClose }
                   >
                     Go To Home
                   </Page.MuiButton>
                 </Page.Box>
               </Grid>
             </Grid>
-          )}
+          ) }
         </>
       }
     />
@@ -686,39 +712,39 @@ function GenderRadioGroup({
 
   return (
     <Controller
-      name={name}
-      control={control}
-      rules={validations}
-      render={({ field }) => (
+      name={ name }
+      control={ control }
+      rules={ validations }
+      render={ ({ field }) => (
         <FormControl
           component="fieldset"
-          error={hasError}
-          disabled={isDisabled}
+          error={ hasError }
+          disabled={ isDisabled }
           fullWidth
-          sx={{
+          sx={ {
             display: "flex",
-          }}
+          } }
         >
-          <Grid size={12} container direction="column" spacing={0}>
-            <Typography sx={{ fontWeight: 500, color: "#555" }}>
-              {validations?.required ? <RequiredLabel label={label} /> : label}
+          <Grid size={ 12 } container direction="column" spacing={ 0 }>
+            <Typography sx={ { fontWeight: 500, color: "#555" } }>
+              { validations?.required ? <RequiredLabel label={ label } /> : label }
             </Typography>
 
             <RadioGroup
               row
-              value={field.value || ""}
-              onChange={(e) => field.onChange(e.target.value)}
-              sx={{
+              value={ field.value || "" }
+              onChange={ (e) => field.onChange(e.target.value) }
+              sx={ {
                 display: "flex",
                 gap: 1.5,
                 minHeight: 36,
                 alignItems: "center",
-              }}
+              } }
             >
-              {options.map((option) => (
+              { options.map((option) => (
                 <Page.Box
-                  key={option.value}
-                  sx={{
+                  key={ option.value }
+                  sx={ {
                     border:
                       field.value === option.value
                         ? "none"
@@ -738,18 +764,18 @@ function GenderRadioGroup({
                           ? "primary.main"
                           : "action.hover",
                     },
-                  }}
+                  } }
                 >
-                  <Tooltip title={option.label} placement="top">
+                  <Tooltip title={ option.label } placement="top">
                     <FormControlLabel
-                      value={option.value}
+                      value={ option.value }
                       control={
                         <Radio
-                          checked={field.value === option.value}
-                          icon={option.icon}
-                          checkedIcon={option.icon}
-                          aria-label={option.label}
-                          sx={{
+                          checked={ field.value === option.value }
+                          icon={ option.icon }
+                          checkedIcon={ option.icon }
+                          aria-label={ option.label }
+                          sx={ {
                             "& .MuiSvgIcon-root": {
                               fontSize: 22,
                               color: hasError
@@ -758,25 +784,25 @@ function GenderRadioGroup({
                                   ? "white"
                                   : "secondary.main",
                             },
-                          }}
+                          } }
                         />
                       }
-                      sx={{
+                      sx={ {
                         m: 0,
-                      }}
+                      } }
                     />
                   </Tooltip>
                 </Page.Box>
-              ))}
+              )) }
             </RadioGroup>
           </Grid>
-          {hasError && errorMessage && (
-            <FormHelperText sx={{ fontSize: "12px", mx: 0 }}>
-              {errorMessage}
+          { hasError && errorMessage && (
+            <FormHelperText sx={ { fontSize: "12px", mx: 0 } }>
+              { errorMessage }
             </FormHelperText>
-          )}
+          ) }
         </FormControl>
-      )}
+      ) }
     />
   );
 }
@@ -794,19 +820,19 @@ function AccountTypeButtonGroup({
 
   return (
     <Controller
-      name={name}
-      control={control}
-      rules={validations}
-      render={({ field }) => (
-        <FormControl fullWidth error={hasError} disabled={isDisabled}>
+      name={ name }
+      control={ control }
+      rules={ validations }
+      render={ ({ field }) => (
+        <FormControl fullWidth error={ hasError } disabled={ isDisabled }>
           <ToggleButtonGroup
-            value={field.value || ""}
+            value={ field.value || "" }
             size="small"
             exclusive
-            onChange={(_, value) => {
+            onChange={ (_, value) => {
               if (value !== null) field.onChange(value);
-            }}
-            sx={{
+            } }
+            sx={ {
               display: "flex",
               flexDirection: { xs: "column", sm: "row" },
               flexWrap: "nowrap",
@@ -847,22 +873,22 @@ function AccountTypeButtonGroup({
                   borderTop: "none",
                 },
               },
-            }}
+            } }
           >
-            {options.map((option) => (
-              <ToggleButton key={option.value} value={option.value}>
-                {option.label}
+            { options.map((option) => (
+              <ToggleButton key={ option.value } value={ option.value }>
+                { option.label }
               </ToggleButton>
-            ))}
+            )) }
           </ToggleButtonGroup>
 
-          {errorMessage && (
-            <Page.Text sx={{ color: "red", fontSize: "11px" }}>
-              {errorMessage}
+          { errorMessage && (
+            <Page.Text sx={ { color: "red", fontSize: "11px" } }>
+              { errorMessage }
             </Page.Text>
-          )}
+          ) }
         </FormControl>
-      )}
+      ) }
     />
   );
 }

@@ -11,7 +11,7 @@ import "tinymce/plugins/link";
 import "tinymce/plugins/lists";
 import "tinymce/plugins/table";
 import "tinymce/plugins/preview";
-import "tinymce/skins/ui/oxide/skin.min.css";
+// import "tinymce/skins/ui/oxide/skin.min.css";
 // import "tinymce/plugins/image";
 import "tinymce/plugins/code";
 // import "tinymce/plugins/fullscreen";

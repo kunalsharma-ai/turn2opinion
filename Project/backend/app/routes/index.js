@@ -1,5 +1,6 @@
 import express from "express";
 import ansRouter from "./api/Answers.js";
+import authRouter from "./api/Auth.js";
 import batchRouter from "./api/Batch.js"
 import categoryRouter from "./api/Category.js";
 import feasibilityRouter from "./api/Feasibility.js";
@@ -22,6 +23,7 @@ import changeEmail from "./api/changeEmail.js"
 const router = express.Router();
 router
     .use("/api/v1/llm", llmRouter)
+    .use("/api/v1/auth",authRouter)
     .use("/api/v1/answers", ansRouter)
     .use("/api/v1/category", categoryRouter)
     .use("/api/v1/survey", surveyRouter)

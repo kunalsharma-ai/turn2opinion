@@ -115,29 +115,29 @@ function Stats({ user }) {
   const stats = [
     {
       label: "Current Rewards",
-      value: statistics?.totalRewards ?? 0,
+      value: `${statistics?.totalRewards ?? 0}pts`,
       icon: "/images/myaccount/currentreward.png",
     },
     {
       label: "Claimed Rewards",
-      value: 0,
+      value: `0pts`,
       icon: "/images/myaccount/claimedreward.png",
     },
     {
       label: "Total Rewards Earned",
-      value: statistics?.totalRewards ?? 0,
+      value: `${statistics?.totalRewards ?? 0} pts`,
       icon: "/images/myaccount/totalreward.png",
     },
-    {
-      label: "Profile Status",
-      value: "42%",
-      icon: "/images/myaccount/profilestatus.png",
-    },
-    {
-      label: "Profile Completion",
-      value: "8/19",
-      icon: "/images/myaccount/totalprofilecompletion.png",
-    },
+    // {
+    //   label: "Profile Status",
+    //   value: "42%",
+    //   icon: "/images/myaccount/profilestatus.png",
+    // },
+    // {
+    //   label: "Profile Completion",
+    //   value: "8/19",
+    //   icon: "/images/myaccount/totalprofilecompletion.png",
+    // },
     {
       label: "Total Surveys Taken",
       value: (statistics?.total ?? 0).toLocaleString("en-US"),
@@ -156,6 +156,16 @@ function Stats({ user }) {
     {
       label: "Abandoned Surveys",
       value: (statistics?.abdoned ?? 0).toLocaleString("en-US"),
+      icon: "/images/myaccount/abandonedsurvey.png",
+    },
+    {
+      label: "Approved Surveys",
+      value: (statistics?.approved ?? 0).toLocaleString("en-US"),
+      icon: "/images/myaccount/disqualifiedsurvey.png",
+    },
+    {
+      label: "Rejected Surveys",
+      value: (statistics?.rejected ?? 0).toLocaleString("en-US"),
       icon: "/images/myaccount/abandonedsurvey.png",
     },
   ];

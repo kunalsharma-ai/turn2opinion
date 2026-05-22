@@ -44,8 +44,9 @@ export default function SurveyPoints() {
           color="secondary.main"
           fontWeight={ "500" }
         >
-          Earned Points : { points } (~{ " " }
-          { (Number(points) * Number(conversionRate)).toMoney("USD") })
+          Earned Points : { points }pts ({ " " }
+          { (Number(points) * Number(conversionRate)).toMoney("USD") }
+          { (Number(points) * Number(conversionRate))?.toLocalCurrency("USD") })
         </Typography>
         { threshold > points ? (
           <>

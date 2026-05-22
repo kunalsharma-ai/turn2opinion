@@ -24,6 +24,7 @@ export default function CurrentUser() {
           height: "70px",
           width: "70px",
           fontSize: "36px",
+          opacity: user?.profilePicture ? 1 : 0.7,
           bgcolor: user?.profilePicture ? "transparent" : "primary.main",
         }}
       />

@@ -1,206 +1,748 @@
 "use client";
-import React from "react";
-import { Datatable } from "@/components";
 
-import { Box, Grid, Typography } from "@mui/material";
-import { DateRangeSelector } from "@/components/Form";
-import { useMember, useQuery } from "@/Context";
-import { api, Page } from "@/util";
-export default function () {
-  const [user, query] = [useMember(), useQuery()];
+import React from "react";
+import {
+  Box,
+  Card,
+  CardContent,
+  Grid,
+  Stack,
+  Typography,
+  IconButton,
+  Avatar,
+  Button,
+  Chip,
+  Divider,
+} from "@mui/material";
+
+import RefreshIcon from "@mui/icons-material/Refresh";
+import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
+import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+import CardGiftcardOutlinedIcon from "@mui/icons-material/CardGiftcardOutlined";
+
+import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
+
+import DataCards from "@/components/DataCards";
+
+const dummySurveys = [
+  {
+    _id: "6978575b01785c9647f1ac4a",
+    name: "Welcome Survey",
+    slug: "welcome",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-01-27T06:12:43.269Z",
+    status: "active",
+    participationStatus: "complete",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6978575b01785c9647f1ac4a",
+    name: "Welcome Survey",
+    slug: "welcome",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-01-27T06:12:43.269Z",
+    status: "active",
+    participationStatus: "complete",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6978575b01785c9647f1ac4a",
+    name: "Welcome Survey",
+    slug: "welcome",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-01-27T06:12:43.269Z",
+    status: "active",
+    participationStatus: "complete",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6978575b01785c9647f1ac4a",
+    name: "Welcome Survey",
+    slug: "welcome",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-01-27T06:12:43.269Z",
+    status: "active",
+    participationStatus: "complete",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6978575b01785c9647f1ac4a",
+    name: "Welcome Survey",
+    slug: "welcome",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-01-27T06:12:43.269Z",
+    status: "active",
+    participationStatus: "complete",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6978575b01785c9647f1ac4a",
+    name: "Welcome Survey",
+    slug: "welcome",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-01-27T06:12:43.269Z",
+    status: "active",
+    participationStatus: "complete",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6978575b01785c9647f1ac4a",
+    name: "Welcome Survey",
+    slug: "welcome",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-01-27T06:12:43.269Z",
+    status: "active",
+    participationStatus: "complete",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6978575b01785c9647f1ac4a",
+    name: "Welcome Survey",
+    slug: "welcome",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-01-27T06:12:43.269Z",
+    status: "active",
+    participationStatus: "complete",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+  {
+    _id: "6a0bfffcb5946057acdd3a60",
+    name: "Test Survey",
+    slug: "test-survey",
+    points: 100,
+    loi: 10,
+    source: "internal",
+    createdAt: "2026-05-19T06:15:24.856Z",
+    status: "active",
+    participationStatus: "invited",
+  },
+];
+
+export default function SurveyDashboard() {
+  const [surveys, setSurveys] = React.useState(dummySurveys);
+
+  const stats = [
+    {
+      title: "Available Surveys",
+      value: surveys?.length,
+      subtitle: "Surveys",
+      icon: <AssignmentOutlinedIcon />,
+      color: "#3B82F6",
+      bg: "#EFF6FF",
+    },
+    {
+      title: "Total Earning Opportunity",
+      value: `$${(surveys?.reduce((sum, survey) => sum + survey.points, 0) / 10).toFixed(2)}`,
+      subtitle: "Across all surveys",
+      icon: <AccountBalanceWalletOutlinedIcon />,
+      color: "#16A34A",
+      bg: "#ECFDF3",
+    },
+    {
+      title: "Estimated Time",
+      value: `${Math.round(surveys?.reduce((sum, survey) => sum + survey.loi, 0) / surveys?.length)} min`,
+      subtitle: "On average",
+      icon: <AccessTimeOutlinedIcon />,
+      color: "#7C3AED",
+      bg: "#F5F3FF",
+    },
+    {
+      title: "Average Reward",
+      value: `$${(surveys?.reduce((sum, survey) => sum + survey.points, 0) / (surveys?.length * 10)).toFixed(2)}`,
+      subtitle: "Per survey",
+      icon: <CardGiftcardOutlinedIcon />,
+      color: "#F59E0B",
+      bg: "#FFFBEB",
+    },
+  ];
 
   return (
+    <Box sx={{ p: 3, bgcolor: "#eff3f5" }}>
+      <SurveyStat stats={stats} />
+      <Divider sx={{ my: 3, bgcolor: "#ffe" }} />
+      <SurveyList surveys={surveys} />
+    </Box>
+  );
+}
+
+function SurveyStat({ stats }) {
+  return (
     <>
-      <AvailableSurvey user={ user } query={ query } />
-      <MySurveys user={ user } query={ query } />
+      {" "}
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="flex-start"
+        mb={4}
+      >
+        <Box>
+          <Typography
+            variant="h4"
+            fontWeight={700}
+            color="text.primary"
+            gutterBottom
+          >
+            Available Surveys
+          </Typography>
+
+          <Typography variant="body1" color="text.secondary">
+            Complete surveys, share your opinion and earn rewards.
+          </Typography>
+        </Box>
+
+        <IconButton
+          onClick={() => {}}
+          sx={{
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: 3,
+            bgcolor: "#fff",
+            px: 2,
+            py: 1,
+            gap: 1,
+            color: "primary.main",
+          }}
+        >
+          <RefreshIcon fontSize="small" />
+
+          <Typography variant="button" fontWeight={600}>
+            Refresh
+          </Typography>
+        </IconButton>
+      </Stack>
+      <Grid container spacing={3}>
+        {stats.map((item, index) => (
+          <Grid
+            key={index}
+            size={{
+              xs: 12,
+              sm: 6,
+              md: 4,
+              lg: 3,
+            }}
+          >
+            <Card
+              elevation={0}
+              sx={{
+                height: "100%",
+                borderRadius: 4,
+                border: "1px solid",
+                borderColor: "divider",
+              }}
+            >
+              <CardContent sx={{ p: 2.5 }}>
+                <Stack direction="row" spacing={2} alignItems="flex-start">
+                  <Avatar
+                    sx={{
+                      width: 56,
+                      height: 56,
+                      bgcolor: item.bg,
+                      color: item.color,
+                    }}
+                  >
+                    {item.icon}
+                  </Avatar>
+
+                  <Box>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      fontWeight={600}
+                      mb={1}
+                    >
+                      {item.title}
+                    </Typography>
+
+                    <Typography variant="h5" fontWeight={700}>
+                      {item.value}
+                    </Typography>
+
+                    <Typography variant="body2" color="text.secondary" mt={0.5}>
+                      {item.subtitle}
+                    </Typography>
+                  </Box>
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
     </>
   );
 }
 
-function MySurveys({ user, query }) {
-  const [dateRange, setDateRange] = React.useState([]);
-  const [data, setData] = React.useState([]);
-  React.useEffect(() => {
-    let filter = { dateRange };
-    if (!user || !user.category) return;
-    if (query && "source" in query) filter.source = query.source;
-    api.post(`/api/v1/me/survey`, filter).then((resp) => {
-      if ("data" in resp) setData(resp.data);
-    });
-  }, [user, query, dateRange]);
-  const columns = [
-    { id: "name", label: "Survey", data: "name", width: 260 },
+function SurveyList({ surveys }) {
+  const [activeFilter, setActiveFilter] = React.useState("All Surveys");
+
+  const filters = [
     {
-      id: "loi",
-      label: "Approximate duration (minutes)",
-      data: "loi",
-      width: 260,
-    },
-    { id: "points", label: "Survey Points", data: "points", width: 130 },
-    {
-      id: "source",
-      label: "Survey Type",
-      render: (info) =>
-      ({
-        internal: "Your Survey",
-        external: "External Survey",
-        sampledge: "Daily Survey",
-      }[info.source]),
+      label: "All Surveys",
     },
     {
-      id: "createdAt",
-      label: "Started On",
-      render: (info) => new Date(info.createdAt).showDate(),
-      width: 130,
+      label: "High Reward",
     },
     {
-      id: "status",
-      label: "Survey Status",
-      width: 130,
-      render: (info) =>
-        info.status === "active" && ["", "invited", "reinvited"].includes(info.participationStatus) ? (
-          <Page.Link
-            sx={ { color: "secondary.main", fontWeight: 600 } }
-            href={ `/survey?name=${info.slug}` }
-          >
-            Open
-          </Page.Link>
-        ) : info.participationStatus === "" ? (
-          info.status
-        ) : (
-          info.participationStatus
-        ),
+      label: "Short Surveys",
+    },
+    {
+      label: "New Surveys",
+      badge: "New",
     },
   ];
+
   return (
-    <Grid size={ 12 } px={ { xs: 2, md: 3 } } mt={ 2 } spacing={ 0 }>
-      <Datatable
-        isLoading={ false }
-        pagination={ [10, 20, 50, 100] }
-        pageSize={ 20 }
-        data={ data }
-        hideColumnSelector
-        noDataMsg="No Survey Available."
-        extra={
-          <Box px={ { xs: 0, md: 2 } } my={ { xs: 1, md: 0 } }>
-            <DateRangeSelector
-              onUpdate={ (e) => {
-                setDateRange(
-                  e.map((d) => new Date(d.toDate()).toISOString().split("T")[0])
-                );
-              } }
-            />
-          </Box>
-        }
-        title={
-          <Typography
-            sx={ {
-              fontSize: "16px",
-              display: "inline-block",
-              fontWeight: "600",
-              borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
-              pb: 0.5,
-              my: 1,
-            } }
-          >
-            My Survey
-          </Typography>
-        }
-        columns={ columns }
+    <Box sx={{ mt: 4 }}>
+      <DataCards
+        data={surveys}
+        pageSize={5}
+        getSearchText={(row) => row.name}
+        renderToolbar={() => (
+          <Stack direction="row" spacing={1.5} flexWrap="wrap">
+            {filters.map((filter) => {
+              const active = activeFilter === filter.label;
+
+              return (
+                <Button
+                  key={filter.label}
+                  variant={active ? "contained" : "outlined"}
+                  color={active ? "secondary" : "inherit"}
+                  onClick={() => setActiveFilter(filter.label)}
+                  sx={{
+                    height: 34,
+                    px: 1.5,
+                    borderRadius: 2,
+                    textTransform: "none",
+                    fontWeight: 700,
+                    borderColor: "divider",
+                    bgcolor: active ? "secondary.main" : "#fff",
+                    color: active ? "#fff" : "text.primary",
+                    boxShadow: "none",
+                    "&:hover": {
+                      boxShadow: 1,
+                    },
+                  }}
+                >
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <Typography variant="body2" fontWeight={700}>
+                      {filter.label}
+                    </Typography>
+
+                    {filter.badge && (
+                      <Chip
+                        label={filter.badge}
+                        size="small"
+                        color="success"
+                        sx={{
+                          height: 20,
+                          fontSize: 10,
+                          fontWeight: 600,
+                          color: "#fff",
+                        }}
+                      />
+                    )}
+                  </Stack>
+                </Button>
+              );
+            })}
+          </Stack>
+        )}
+        card={(row) => <SurveyCard survey={row} />}
+        cardProps={{
+          elevation: 0,
+          sx: {
+            mt: 1,
+            borderRadius: 4,
+            border: "1px solid",
+            borderColor: "divider",
+          },
+        }}
       />
-    </Grid>
+    </Box>
   );
 }
 
-function AvailableSurvey({ user, query }) {
-  const [dateRange, setDateRange] = React.useState([]);
-  const [data, setData] = React.useState([]);
-  React.useEffect(() => {
-    let filter = { status: "active" };
-    if (!user || !user.category) return;
-    if (query && "source" in query) filter.source = query.source;
-    api.post(`/api/v1/me/survey`, filter).then((resp) => {
-      if ("data" in resp) setData(resp.data);
-    });
-  }, [user, query, dateRange]);
-  const columns = [
-    { id: "name", label: "Survey", data: "name", width: 260 },
-    {
-      id: "loi",
-      label: "Approximate duration (minutes)",
-      data: "loi",
-      width: 260,
-    },
-    { id: "points", label: "Survey Points", data: "points", width: 130 },
-    {
-      id: "source",
-      label: "Survey Type",
-      render: (info) =>
-      ({
-        internal: "Your Survey",
-        external: "External Survey",
-        sampledge: "Daily Survey",
-      }[info.source]),
-    },
-    {
-      id: "createdAt",
-      label: "Started On",
-      render: (info) => new Date(info.createdAt).showDate(),
-      width: 130,
-    },
-    {
-      id: "status",
-      label: "Survey Status",
-      render: (info) => info.status,
-      width: 130,
-    },
-    {
-      id: "participate",
-      label: "",
-      render: (info) => {
-        console.log(info)
-        return info.status === "active" &&
-          (["", "invited"].includes(info.participationStatus) ||
-            (info.source === "internal" &&
-              ["", "dropout", "invited"].includes(info.participationStatus))) ? (
-          <Page.Link
-            sx={ { color: "secondary.main", fontWeight: 600 } }
-            href={ `/survey?name=${info.slug}` }
-          >
-            Participate
-          </Page.Link>
-        ) : (
-          <>{ info.participationStatus }</>
-        )
-      }
-    },
-  ];
-  if (data.length === 0) return <></>;
+function SurveyCard({ survey }) {
   return (
-    <Grid size={ 12 } px={ { xs: 2, md: 3 } } mt={ 2 } spacing={ 0 }>
-      <Datatable
-        isLoading={ false }
-        pagination={ [10, 20, 50, 100] }
-        pageSize={ 20 }
-        data={ data }
-        hideColumnSelector
-        noDataMsg="No Survey available."
-        title={
-          <Typography
-            sx={ {
-              fontSize: "16px",
-              display: "inline-block",
-              fontWeight: "600",
-              borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
-              pb: 0.5,
-              my: 1,
-            } }
-          >
-            Available Surveys
-          </Typography>
-        }
-        columns={ columns }
-      />
-    </Grid>
+    <Box
+      sx={{
+        p: 2,
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        minHeight: 220,
+        // filter: survey.participationStatus === "complete" ? "grayscale(1)" : "none",
+        // pointerEvents: survey.participationStatus === "complete" ? "none" : "auto",
+        // userSelect: survey.participationStatus === "complete" ? "none" : "auto",
+      }}
+    >
+      {/* Top */}
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Box>
+          <Chip
+            size="small"
+            color="success"
+            label={"New"}
+            sx={{ color: "white" }}
+          />
+        </Box>
+        <Chip
+          label={survey.participationStatus}
+          size="small"
+          color={
+            survey.participationStatus === "complete" ? "success" : "primary"
+          }
+          sx={{
+            textTransform: "capitalize",
+            fontWeight: 600,
+            color: "#fff",
+          }}
+        />
+      </Stack>
+
+      {/* Content */}
+      <Box sx={{ flex: 1 }}>
+        <Typography
+          variant="h6"
+          fontWeight={700}
+          sx={{
+            mb: 1,
+            lineHeight: 1.4,
+          }}
+        >
+          {survey.name}
+        </Typography>
+
+        <Typography variant="body2" color="text.secondary">
+          {/* Source: {survey.source} */}
+        </Typography>
+      </Box>
+
+      <Divider />
+
+      {/* Stats */}
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent={"space-between"}
+        px={3}
+      >
+        <Stack direction="row" spacing={1} alignItems="center">
+          <AccountBalanceWalletOutlinedIcon
+            sx={{
+              fontSize: 20,
+              color: "success.main",
+            }}
+          />
+
+          <Box>
+            <Typography
+              variant="body1"
+              fontWeight={700}
+              color="success.main"
+            >
+              ${survey.points / 10}
+            </Typography>
+
+            <Typography variant="body2" color="text.secondary">
+              Reward
+            </Typography>
+          </Box>
+        </Stack>
+
+        <Stack direction="row" spacing={1} alignItems="center">
+          <AccessTimeRoundedIcon
+            sx={{
+              fontSize: 20,
+              color: "secondary.main",
+            }}
+          />
+
+          <Box>
+            <Typography variant="body1" fontWeight={700}>
+              {survey.loi} min
+            </Typography>
+
+            <Typography variant="body2" color="text.secondary">
+              Time
+            </Typography>
+          </Box>
+        </Stack>
+      </Stack>
+
+      <Button
+        fullWidth
+        variant="contained"
+        color="secondary"
+        sx={{
+          borderRadius: 2,
+          textTransform: "none",
+          fontWeight: 700,
+        }}
+      >
+        Start Survey
+      </Button>
+    </Box>
   );
 }

@@ -64,7 +64,7 @@ export default function () {
     {
       id: "points",
       label: "Survey Points",
-      data: "points",
+      render:info=>`${info.points} pts`,
       width: 140,
       feature: ["sortable"],
     },
