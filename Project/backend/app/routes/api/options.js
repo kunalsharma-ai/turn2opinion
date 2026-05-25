@@ -3,9 +3,10 @@ import { User as userController } from "../../controller/index.js";
 import { expressRoute, expressView, isAuthenticated, fsLogger } from "../../utils/index.js"
 import fs from "fs";
 const router = express.Router();
-
+const theWorldFile = process.env.PWD + "/app/dataBank/theworld.json";
+console.log(theWorldFile);
 const world = JSON.parse(
-    fs.readFileSync("/src/app/dataBank/theworld.json", "utf-8")
+    fs.readFileSync(theWorldFile, "utf-8")
 )
 function getCN(country) {
     let cn

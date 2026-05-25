@@ -27,8 +27,8 @@ router
     .post(expressRoute(
         async req => {
             let message = "";
-            const { dateRange } = req.body;
-            let filters = {}
+            const { dateRange, status } = req.body;
+            let filters = { status }
             if (Boolean(dateRange) && Boolean(dateRange instanceof Array) && dateRange.length === 2) {
                 const start = new Date(dateRange[0]);
                 const end = new Date(dateRange[1]);

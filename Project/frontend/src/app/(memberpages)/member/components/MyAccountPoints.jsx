@@ -58,7 +58,8 @@ export default function MyAccountPoints() {
         position: "relative",
         px: { xs: 2, md: 4 },
         py: { xs: 2.5, md: 3 },
-        background: "linear-gradient(135deg, #081a3d 0%, #0c5adb 45%, #063686 100%)",
+        background:
+          "linear-gradient(135deg, #081a3d 0%, #0c5adb 45%, #063686 100%)",
         border: "1px solid rgba(255,255,255,0.12)",
         boxShadow: "0 10px 40px rgba(6, 54, 134, 0.3)",
       }}
@@ -178,10 +179,9 @@ export default function MyAccountPoints() {
                 height: 20,
                 borderRadius: "999px",
                 backgroundColor: "rgba(255,255,255,0.15)",
-
                 "& .MuiLinearProgress-bar": {
                   borderRadius: "999px",
-                  background: "linear-gradient(90deg, #60a5fa 0%, #2563eb 100%)",
+                  background: "#fff",
                 },
               }}
             />

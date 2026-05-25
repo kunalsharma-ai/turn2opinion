@@ -329,7 +329,7 @@ function SurveyCard({ survey }) {
       { name: "gaming", icon: "fa-gamepad", color: "#7C3AED" },
     ];
 
-    const surveyCategory = survey.category || survey.slug || survey.name || "";
+    const surveyCategory = survey.category || survey.slug || survey.name || survey.type || "";
 
     return (
       categories.find(
@@ -342,7 +342,7 @@ function SurveyCard({ survey }) {
 
   const category = getCategoryData(survey);
   const darkColor = category.color;
-  const lightBg = darkColor + "25";
+  const lightBg = darkColor + "20";
 
   return (
     <Box
@@ -377,7 +377,7 @@ function SurveyCard({ survey }) {
               bgcolor: lightBg,
               color: darkColor,
               border: "1px solid",
-              borderColor: darkColor,
+              borderColor: `${darkColor}40`,
               boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
               display: "flex",
               alignItems: "center",

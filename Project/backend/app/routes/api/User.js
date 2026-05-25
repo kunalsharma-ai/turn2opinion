@@ -200,7 +200,7 @@ router
                 emailStatus: await sendMail(
                     { origin: req.origin, "content-type": "application/json" },
                     data.mail,
-                    "My Frequent Rewards: Registration",
+                    "Turn 2 Opinion: Registration",
                     mailer.data
                 )
             })
@@ -275,7 +275,7 @@ router
                     emailStatus: await sendMail(
                         { origin: req.origin, "content-type": "application/json" },
                         data.mail,
-                        "My Frequent Rewards: Registration",
+                        "Turn 2 Opinion: Registration",
                         mailer.data
                     )
                 })

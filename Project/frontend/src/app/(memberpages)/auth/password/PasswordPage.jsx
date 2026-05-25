@@ -247,13 +247,13 @@ function PasswordPage() {
               <SetPasswordForm form={form} />
             ) : status === "error" ? (
               <LinkExpiredMessage />
-             ) : status === "resent" ? (
+            ) : status === "resent" ? (
               <LinkResentSuccessfully />
-             ) : (
+            ) : (
               <LoadingOverlay />
             )}
           </>
-        )}  
+        )}
       </Grid>
     </Grid>
   );
@@ -270,8 +270,9 @@ function SetPasswordForm({ form }) {
     <>
       <Page.Box
         sx={{
-          height: { xs: 26.8, lg: 42 },
-          width: { xs: 180, lg: 282 },
+          height: 60,
+          // height: { xs: 26.8, lg: 42 },
+          // width: { xs: 180, lg: 282 },
         }}
       >
         <img
@@ -386,6 +387,5 @@ export default function () {
     <Suspense>
       <PasswordPage />
     </Suspense>
-  )
+  );
 }
-

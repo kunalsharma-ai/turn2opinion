@@ -116,18 +116,16 @@ function HowItWorks({ setOpenSignUp }) {
           }}
           sx={{
             height: { xs: 38, lg: 42, xl: 52 },
-            borderWidth: 2,
             padding: "15px  30px",
             fontSize: { xs: "14px", lg: "16px" },
-            borderColor: "primary.main",
             borderRadius: 20,
             fontWeight: 700,
-            color: "primary.dark",
-            background: "transparent",
+            color: "#fff",
+            background: "var(--bg-primary-gradient)",
             transition: "all 0.3s  ease-in",
+            border: "none",
             "&:hover": {
-              color: "white",
-              background: "var(--bg-primary-gradient)",
+              background: "var(--bg-secondary-gradient)",
             },
           }}
         >

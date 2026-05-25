@@ -46,8 +46,9 @@ export default function page() {
         {" "}
         <Page.Box
           sx={{
-            height: { xs: 26.8, lg: 42 },
-            width: { xs: 180, lg: 282 },
+            // height: { xs: 26.8, lg: 42 },
+            // width: { xs: 180, lg: 282 },
+            height:60,
             mb: 1,
           }}
         >
@@ -55,7 +56,7 @@ export default function page() {
             src="/images/logo/t2o-logo.png"
             alt="logo"
             height={"100%"}
-            width={"100%"}
+            // width={"100%"}
           />
         </Page.Box>
         <Terms />

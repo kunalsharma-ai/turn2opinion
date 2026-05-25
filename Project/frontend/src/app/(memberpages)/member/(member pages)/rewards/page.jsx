@@ -6,7 +6,7 @@ import { useMember } from "@/Context";
 import { Datatable } from "@/components";
 import { DateRangeSelector } from "@/components/Form";
 
-import { api, Page } from "@/util";
+import { api, loadData, Page } from "@/util";
 
 export default function page() {
   const [user] = [useMember()];
@@ -15,28 +15,30 @@ export default function page() {
 
   const [isLoading, setIsLoading] = React.useState(true);
 
+
   React.useEffect(() => {
     if (!user) return;
-
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        let filters = {};
-
-        if (Array.isArray(dateRange) && dateRange.length === 2) {
-          filters.dateRange = dateRange;
-        }
-
-        const resp = await api.post(`/api/v1/response`, filters);
-        setData(resp.data);
-      } catch (error) {
-        console.error("Failed to fetch responses:", error);
-      } finally {
-        setIsLoading(false);
+    setIsLoading(true);
+    let filters = {
+      status: {
+        $nin: ["invited"]
       }
     };
 
-    fetchData();
+    if (Array.isArray(dateRange) && dateRange.length === 2) {
+      filters.dateRange = dateRange;
+    }
+
+    loadData(
+      api.post(`/api/v1/response`, filters),
+      resp => {
+        setData(resp.data)
+      },
+      () => {
+        setIsLoading(false)
+      }
+    )
+
   }, [user, dateRange]);
 
   const columns = [
@@ -121,7 +123,7 @@ export default function page() {
               fontSize: "16px",
               display: "inline-block",
               fontWeight: "600",
-            borderBottom:(theme)=> `2px solid ${theme.palette.primary.main}`,
+              borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
               pb: 0.5,
               my: 1,
             }}
