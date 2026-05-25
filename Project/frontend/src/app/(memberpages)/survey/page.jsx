@@ -150,6 +150,7 @@ export default function page() {
                   alignItems="center"
                   justifyContent={ { xs: "center", md: "space-between" } }
                   mb={ 2 }
+                  pb={1}
                   spacing={ { xs: 1, md: 2 } }
                   direction={ { xs: "column", md: "row" } }
                   sx={ { borderBottom: "1px solid #f4f4f4" } }
@@ -157,11 +158,12 @@ export default function page() {
                   <Page.Box sx={ { position: "relative" } }>
                     <Page.Box
                       sx={ {
-                        height: { xs: "60px", md: "80px" },
-                        width: { xs: "180px", md: "300px" },
+                        height:"65px"
+                        // height: { xs: "60px", md: "80px" },
+                        // width: { xs: "180px", md: "300px" },
                       } }
                     >
-                      <img src="/images/logo/t2o-logo.png" alt="logo" width="100%" />
+                      <img src="/images/logo/t2o-logo.png" alt="logo" height="100%" />
                     </Page.Box>{ " " }
                   </Page.Box>
 

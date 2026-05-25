@@ -35,10 +35,14 @@ export default function CurrentUser() {
           alignItems: { xs: "center", sm: "flex-start" },
         }}
       >
-        <Typography fontSize={"16px"} fontWeight={600} color="secondary.main">
+        <Typography
+          fontSize={{ xs: "16px", md: "20px" }}
+          fontWeight={600}
+          color="secondary.main"
+        >
           {user?.fullName}
         </Typography>
-        <Typography fontSize="13px" fontWeight={500}>
+        <Typography fontSize={{ xs: "14px", md: "18px" }} fontWeight={500}>
           {user?.mail}
         </Typography>
       </Box>

@@ -262,14 +262,15 @@ Number.prototype.toMoney = function (currency = "INR", locale = "en-IN") {
 };
 
 Number.prototype.toLocalCurrency = function (currency = "INR", locale = "en-IN") {
+  if (!localStorage) return "";
   const format = new Intl.NumberFormat(locale, {
     style: "currency",
     currency: currency,
   }).format;
-  let localCurrency = localStorage.getItem("local-currency");
+  let localCurrency = localStorage?.getItem("local-currency");
   if (!localCurrency)
     return ``;
-  let currencyConversion = localStorage.getItem("currency-conversion");
+  let currencyConversion = localStorage?.getItem("currency-conversion");
   if (!currencyConversion) currencyConversion = 1;
   const localFormat = new Intl.NumberFormat(locale, {
     style: "currency",

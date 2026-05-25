@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 import { CrudController, Mutate } from "../utils/index.js";
 import { Response as responseModel, Survey as surveyModel } from "../model/index.js";
+const threshold={
+    rewards:1000,
+    loi:10
+}
 class Response extends CrudController {
     async setStatus(responseID, status) {
         let commonFilters = this.commonFilters;
@@ -56,7 +60,12 @@ class Response extends CrudController {
             {
                 $group: {
                     _id: "$user",
-                    total: { $sum: 1 },
+                    total: {
+                        $sum: { $cond: [{ $eq: ["$status", "invited"] }, 0, 1] }
+                    },
+                    available:{
+                        $sum: { $cond: [{ $eq: ["$status", "invited"] }, 1, 0] }
+                    },
                     complete: {
                         $sum: { $cond: [{ $eq: ["$status", "complete"] }, 1, 0] }
                     },
@@ -89,7 +98,12 @@ class Response extends CrudController {
             {
                 $group: {
                     _id: "$user",
-                    total: { $sum: 1 },
+                    total: {
+                        $sum: { $cond: [{ $eq: ["$status", "invited"] }, 0, 1] }
+                    },
+                    available:{
+                        $sum: { $cond: [{ $eq: ["$status", "invited"] }, 1, 0] }
+                    },
                     complete: {
                         $sum: { $cond: [{ $eq: ["$status", "complete"] }, 1, 0] }
                     },
@@ -223,22 +237,37 @@ class Response extends CrudController {
             },
             {
                 $group: {
-                    _id: "$surveyDetails.category",
-                    count: {
+                    _id: "$surveyDetails.source",
+                    all: {
                         $sum: 1
                     },
-                    internal: { $sum: { $cond: [{ $eq: ["$surveyDetails.source", "internal"] }, 1, 0] } },
-                    external: { $sum: { $cond: [{ $eq: ["$surveyDetails.source", "external"] }, 1, 0] } },
-                    sampledge: { $sum: { $cond: [{ $eq: ["$surveyDetails.source", "sampledge"] }, 1, 0] } }
+                    highRewards:{
+                        $sum:{
+                            $cond: [{ $gte: ["$surveyDetails.points", threshold.rewards] }, 1,0]
+                        }
+                    },
+                    short:{
+                        $sum:{
+                            $cond: [{ $gte: ["$surveyDetails.loi", threshold.loi] }, 1,0]
+                        }
+                    },
+                    newSurveys:{
+                        $sum:{
+                        $cond: [{ $eq: ["$status", "invited"] }, 1,0]
+                        }
+                    }
                 }
             }
         ]))
-        console.log(surveys);
-        if (surveys.length === 1) return surveys[0];
-        return surveys
+//        console.log(surveys);
+//        if (surveys.length === 1) return surveys[0];
+        return surveys.reduce((a,c)=>{
+            a[c._id]=c;
+            return a;
+        },{})
     }
 }
 
 let responseController = new Response(responseModel)
 responseController.surveySummary();
-export default responseController 
+export default responseController

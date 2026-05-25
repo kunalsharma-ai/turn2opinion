@@ -32,68 +32,41 @@ const formatNumber = (value) =>
   Number(value).toLocaleString("en-US", { maximumFractionDigits: 2 });
 
 export default function page() {
-  const user = useMember();
+  const user = [];
   const router = useRouter();
-  React.useEffect(() => {
-    if (!user) return;
-    if (
-      user.terms === null ||
-      user.terms === undefined ||
-      user.terms.length === 0
-    ) {
-      router.replace("/auth/terms");
-    }
-    api
-      .post(`/api/v1/response`, {
-        ["survey.slug"]: "welcome",
-        status: "complete",
-      })
-      .then((resp) => {
-        if ("data" in resp && resp.data.length !== 0) return;
-        router.replace("/survey?name=welcome");
-      });
-  }, [user]);
+  const [[threshold, setThreshold], [conversionRate, setConversionRate]] = [
+    React.useState(15000),
+    React.useState(0.001),
+  ];
+  function onPointsUpdate(data) {
+    setThreshold(data.threshold);
+    setConversionRate(data.conversionRate);
+  }
   if (!user) return <LoadingOverlay />;
   return (
     <Grid container size={12} sx={{ bgcolor: "#eff3f5" }}>
       <Grid
         size={12}
         container
-        px={4}
+        pl={4}
+        pr={3}
         py={2}
         alignItems={"center"}
         justifyContent={"space-between"}
       >
         <CurrentUser />
-        <SurveyPoints />
+        <SurveyPoints onUpdate={onPointsUpdate} />
       </Grid>
-      <Stats />
+      <Stats threshold={threshold} conversionRate={conversionRate} />
       <Surveys />
       <SurveyHistory />
     </Grid>
   );
 }
 
-function Stats() {
+function Stats({ threshold, conversionRate }) {
   const [isLoading, setIsLoading] = React.useState(true);
   const [statistics, setStatistics] = React.useState({});
-  const [threshold, setThreshold] = React.useState(15000);
-  const [conversionRate, setConversionRate] = React.useState(0.001);
-  React.useEffect(() => {
-    // setIsLoading(true)
-    loadData(
-      api.get(`/api/v1/me/points`),
-      (resp) => {
-        let { data } = resp;
-        if (!data) return;
-        setConversionRate(data?.conversionRate ?? 0);
-        setThreshold(data?.threshold ?? 0);
-      },
-      () => {
-        // setIsLoading(false);
-      },
-    );
-  }, []);
   React.useEffect(() => {
     setIsLoading(true);
     loadData(
@@ -101,6 +74,7 @@ function Stats() {
       (resp) => {
         if (!resp.data) return useToast(resp);
         let data = resp.data;
+        console.table(data);
         setStatistics(data);
       },
       () => {
@@ -108,11 +82,12 @@ function Stats() {
       },
     );
   }, [threshold, conversionRate]);
+
   const stats = React.useMemo(() => {
     return [
       {
         label: "Survey Participated",
-        value: statistics?.total ?? 0,
+        value: Number(statistics?.total ?? 0),
         icon: "/images/dashboard/totalsurveytaken.png",
       },
       {
@@ -153,70 +128,6 @@ function Stats() {
     </Grid>
   );
 
-  return isLoading ? (
-    <></>
-  ) : (
-    <Grid
-      size={12}
-      container
-      spacing={2}
-      mt={1}
-      p={{ xs: 2, md: 3 }}
-      justifyContent="center"
-      sx={{ border: `1px solid #e0e0e0` }}
-    >
-      {stats.map((stat, index) => {
-        return (
-          <Grid
-            container
-            size={{ xs: 12, md: 6, lg: 4 }}
-            key={index}
-            alignItems="center"
-            justifyContent="space-between"
-            spacing={1}
-            sx={{
-              border: (theme) => `1px solid ${theme.palette.primary.main}`,
-              bgcolor: (theme) => theme.palette.cardbg.main,
-              borderRadius: 4,
-              px: { xs: 3, xl: 5 },
-              py: 4,
-              minHeight: "120px",
-            }}
-          >
-            <Grid
-              // size={6}
-              direction="column"
-              alignItems="flex-start"
-              justifyContent="center"
-            >
-              <Typography fontSize={{ xs: 14, md: 16 }}>
-                {stat?.label}
-              </Typography>
-              <Typography
-                sx={{
-                  fontWeight: "600",
-                  fontSize: { xs: "24px", xl: "26px" },
-                  wordBreak: "break-word",
-                  overflowWrap: "anywhere",
-                  whiteSpace: "normal",
-                }}
-              >
-                {stat.value.toLocaleString("en-US")}
-              </Typography>
-            </Grid>
-
-            <Page.Box
-              component="img"
-              src={stat.icon}
-              height={60}
-              alt="stats logo"
-              // sx={ { filter: "drop-shadow(8px 8px 2px #59ac7781)" } }
-            />
-          </Grid>
-        );
-      })}
-    </Grid>
-  );
 }
 
 function Surveys() {
@@ -231,7 +142,7 @@ function Surveys() {
         if (!resp || resp.status === "error") return;
         const { data } = resp;
         setAvailableSurveys(data);
-        console.log(data);
+        console.table(data);
       },
       () => {
         setIsLoading(false);
@@ -242,20 +153,68 @@ function Surveys() {
     {
       name: "Your Survey",
       link: "/member/surveys?source=internal",
-      description: "Get paid to complete your profile details.",
+      description:
+        "Handpicked opportunities curated specifically around your unique profile insights. Complete these high-value matches to maximize your earnings securely and directly.",
       isAvailable: Boolean(availableSurveys?.internal),
+      stat: [
+        {
+          title: "All",
+          filter: null,
+          count: availableSurveys?.internal?.all ?? 0,
+          bg: "#2563eb",
+        },
+        {
+          title: "High Reward",
+          filter: "High Reward",
+          count: availableSurveys?.internal?.highRewards ?? 0,
+          bg: "#9333ea",
+        },
+        {
+          filter: "Short",
+          title: "Short",
+          count: availableSurveys?.internal?.short ?? 0,
+          bg: "#059669",
+        },
+        {
+          title: "New",
+          filter: "New Survey",
+          count: availableSurveys?.internal?.newSurveys ?? 0,
+          bg: "#ea580c",
+        },
+      ],
     },
     {
       name: "Daily Survey",
-      link: "/member/surveys?source=sampledge",
-      description: "Get paid to complete daily surveys.",
-      isAvailable: Boolean(availableSurveys?.sampledge),
-    },
-    {
-      name: "External Survey",
       link: "/member/surveys?source=external",
-      description: "Get paid to complete external surveys.",
+      description:
+        "High-frequency, rotating questionnaires updated constantly throughout the day. Dive in anytime for quick, continuous chances to boost your daily points balance.",
       isAvailable: Boolean(availableSurveys?.external),
+      stat: [
+        {
+          title: "All",
+          filter: null,
+          count: 0,
+          bg: "#2563eb",
+        },
+        {
+          title: "High Reward",
+          filter: "High Reward",
+          count: 0,
+          bg: "#9333ea",
+        },
+        {
+          filter: "Short",
+          title: "Short Surveys",
+          count: 0,
+          bg: "#059669",
+        },
+        {
+          title: "New",
+          filter: "New Surveys",
+          count: 0,
+          bg: "#ea580c",
+        },
+      ],
     },
   ];
   return (
@@ -282,12 +241,13 @@ function Surveys() {
           Available Surveys
         </Typography>
       </Box>
+      {/*<pre>{JSON.stringify(availableSurveys,null,1)}</pre>*/}
       {surveys.map((survey, index) => {
         return (
           <Grid
             container
             key={index}
-            size={{ xs: 12, lg: 4 }}
+            size={{ xs: 12, lg: 6 }}
             direction="column"
             alignItems="center"
             justifyContent="center"
@@ -295,17 +255,25 @@ function Surveys() {
             py={3}
             sx={{
               boxShadow: 3,
-              border: (theme) => `1px solid ${theme.palette.primary.main}`,
+              // border: (theme) => `1px solid ${theme.palette.primary.main}`,
               // bgcolor: (theme) => theme.palette.cardbg.main,
+              background:
+                index === 0
+                  ? "linear-gradient(135deg, #0891b2 0%, #3dbddf  100%)"
+                  : "linear-gradient(90deg, #3dbddf 0%, #3b82f6 100%)",
               borderRadius: 1,
+              color: "#fff",
               overflow: "hidden",
               textAlign: "center",
               transition: "transform 0.35s ease, box-shadow 0.35s ease",
               willChange: "transform",
 
+              pointerEvents: survey.isAvailable ? "auto" : "none",
+              filter: survey.isAvailable ? "grayscale(0)" : "grayscale(1)",
+              userSelect: survey.isAvailable ? "auto" : "none",
               "&:hover": {
                 boxShadow: "0 12px 32px rgba(0,0,0,0.28)",
-                transform: "translateY(-2px) scale(1.01)",
+                // transform: "translateY(-2px) scale(1.01)",
               },
             }}
           >
@@ -317,37 +285,71 @@ function Surveys() {
             >
               {survey.name}
             </Typography>{" "}
-            <Typography sx={{ fontSize: "16px", color: "grey" }}>
+            <Typography sx={{ fontSize: "15px", px: 1 }}>
               {survey?.description}
             </Typography>
-            <Page.Link
-              tabIndex={-1}
-              href={!survey.isAvailable ? "#" : survey.link}
-              sx={{ cursor: !survey.isAvailable ? "not-allowed" : "pointer" }}
+            <Grid
+              container
+              spacing={1.2}
+              justifyContent="center"
+              width="100%"
+              px={2}
+              mt={1}
             >
-              <Button
-                disabled={!survey.isAvailable}
-                variant="contained"
-                color="secondary"
-                sx={{
-                  my: 1,
-                  px: 2,
-                  fontWeight: "600",
-                  color: "white",
-                  borderRadius: 2,
+              {survey?.stat.map((item, statIndex) => (
+                <Grid key={statIndex} size={{ xs: 6, sm: 3 }}>
+                  <Page.Link
+                    href={`${survey.link}&filter=${item.filter}`}
+                    sx={{
+                      textDecoration: "none",
+                      "&:hover": {
+                        textDecoration: "none",
+                      },
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        borderRadius: 2,
+                        background: item.bg,
+                        color: "#fff",
+                        py: 1,
+                        px: 1,
+                        textAlign: "center",
+                        cursor: "pointer",
 
-                  transition: "transform 0.35s ease, box-shadow 0.35s ease",
-                  willChange: "transform",
+                        transition: "all 0.25s ease",
 
-                  "&:hover": {
-                    boxShadow: "0 12px 32px rgba(0,0,0,0.28)",
-                    transform: "translateY(-1px) scale(1.01)",
-                  },
-                }}
-              >
-                TAKE SURVEY
-              </Button>
-            </Page.Link>
+                        "&:hover": {
+                          transform: "translateY(-2px)",
+                          boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
+                        },
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontSize: "12px",
+                          fontWeight: 600,
+                          opacity: 0.9,
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {item.title}
+                      </Typography>
+
+                      <Typography
+                        sx={{
+                          fontSize: "22px",
+                          fontWeight: 700,
+                          lineHeight: 1.1,
+                        }}
+                      >
+                        {item.count}
+                      </Typography>
+                    </Box>
+                  </Page.Link>
+                </Grid>
+              ))}
+            </Grid>
           </Grid>
         );
       })}
@@ -382,7 +384,11 @@ function SurveyHistory() {
     {
       id: "start time",
       label: "Start time",
-      render: (info) => new Date(info.timeline.start).toLocaleString(),
+      render: (info) => {
+        if (["complete", "terminate", "overquota"].includes(info.status))
+          return new Date(info.timeline.start).toLocaleString();
+        return "";
+      },
       feature: ["sortable", "lockable"],
     },
     {
@@ -390,7 +396,9 @@ function SurveyHistory() {
       label: "Length of Interview",
       width: 220,
       render: (info) =>
-        (new Date(info.updatedAt) - new Date(info.timeline.start))?.toTime(),
+        ["complete", "terminate", "overquota"].includes(info.status)
+          ? (new Date(info.updatedAt) - new Date(info.timeline.start))?.toTime()
+          : "",
       feature: ["sortable", "lockable"],
     },
     {
@@ -435,7 +443,7 @@ function SurveyHistory() {
         pagination={[10, 20, 50, 100]}
         pageSize={20}
         noDataMsg="No Record Found."
-        data={data}
+        data={data.filter((info) => info.status !== "invited")}
         // noBorderRadius={true}
         hideDownload={true}
         hideColumnSelector

@@ -135,8 +135,9 @@ function FAQ() {
                 disableGutters
                 sx={{
                   boxShadow: 0,
-                  bgcolor: "#fff1d9",
-                  border: `1px solid #ecccafff`,
+                  bgcolor: "#385e9e",
+                  // bgcolor: "#fff1d9",
+                  // border: `1px solid #ecccafff`,
                   p: 1.5,
                   borderRadius: 3,
                   minHeight: "50px",
@@ -151,10 +152,10 @@ function FAQ() {
                 }}
               >
                 <AccordionSummary
-                  expandIcon={<ExpandMoreIcon sx={{ color: "black" }} />}
+                  expandIcon={<ExpandMoreIcon sx={{ color: "#fff" }} />}
                   sx={{ borderRadius: 3 }}
                 >
-                  <Typography fontSize={"18px"} fontWeight="500" color="black">
+                  <Typography fontSize={"18px"} fontWeight="500" color="#fff">
                     {faq.que}
                   </Typography>
                 </AccordionSummary>

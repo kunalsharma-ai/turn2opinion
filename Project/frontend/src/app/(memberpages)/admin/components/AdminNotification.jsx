@@ -82,7 +82,7 @@ export default function AdminNotification() {
               },
             }}
           >
-            <NotificationsIcon sx={{ fontSize: "36px", color: "#bdbdbd" }} />
+            <NotificationsIcon sx={{ fontSize: "36px", color: "secondary.main" }} />
           </Badge>
         </IconButton>
       </Tooltip>

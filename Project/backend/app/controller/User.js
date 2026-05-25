@@ -69,7 +69,7 @@ class User extends CrudController {
                 await responseModel.insertMany(autoInvites, { ordered: false });
             }
         } catch (e) {
-            fsLogger.Log("Auto-invite failed for new user", e.message);
+            console.Log("Auto-invite failed for new user", e.message);
         }
 
         return user;

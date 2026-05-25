@@ -104,8 +104,10 @@ function Footer({ sections = [] }) {
             component={"img"}
             src="/images/logo/t2o-logo.png"
             alt="logo"
-            height={{ xs: 26.8, md: 42 }}
-            width={{ xs: 180, md: 282 }}
+            height={80}
+            width={263}
+            // height={{ xs: 26.8, md: 42 }}
+            // width={{ xs: 180, md: 282 }}
           />
           <Typography color="#555" fontSize={16} textAlign="justify">
             Turn2Opinion is a world wide Consumer and Business Community of

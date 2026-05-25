@@ -252,17 +252,20 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                     px: 2,
                   } }
                 >
-                  <Page.Box sx={ { position: "relative", pt: 3 } }>
+                  <Page.Box sx={ { position: "relative", 
+                    pt:2
+                    // pt: 3
+                     } }>
                     <Page.Box
                       sx={ {
                         height: 60,
-                        width: { xs: "180px", md: "300px" },
+                        // width: { xs: "180px", md: "300px" },
                       } }
                     >
                       <img
                         src="/images/logo/t2o-logo.png"
                         alt="logo"
-                        width="100%"
+                        height="100%"
                       />
                     </Page.Box>{ " " }
                   </Page.Box>
@@ -288,17 +291,18 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                   sx={ {
                     px: { xs: 2, md: 4 },
                     pb: 4,
+                  
                   } }
                 >
                   <Page.Text
                     sx={ {
                       alignSelf: "flex-start",
                       textAlign: "center",
-                      fontSize: { xs: "18px", md: "26px" },
+                      fontSize: { xs: "18px", md: "24px" },
                       fontWeight: 600,
                       color: "secondary.main",
 
-                      my: 2,
+                      my: 1,
                     } }
                   >
                     Signup
@@ -310,7 +314,7 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                       direction="row"
                       style={ { alignItems: "flex-end" } }
                     >
-                      <Grid size={ { xs: 12, md: 2 } }>
+                      <Grid size={ { xs: 12, md: 2.2, } }>
                         <Form.Select
                           { ...register("name.salutation") }
                           control={ control }
@@ -325,7 +329,7 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                           labelText="Salutation"
                         />
                       </Grid>
-                      <Grid size={ { xs: 12, md: 5 } }>
+                      <Grid size={ { xs: 12, md: 4.9 } }>
                         <Form.Input
                           { ...register("name.first") }
                           control={ control }
@@ -335,7 +339,7 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                           validations={ user.name.first }
                         />
                       </Grid>
-                      <Grid size={ { xs: 12, md: 5 } }>
+                      <Grid size={ { xs: 12, md: 4.9 } }>
                         <Form.Input
                           { ...register("name.last") }
                           control={ control }

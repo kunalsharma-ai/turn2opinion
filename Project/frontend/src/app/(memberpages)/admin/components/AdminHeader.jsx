@@ -27,7 +27,7 @@ export default function AdminHeader() {
       <AppBar
         position="fixed"
         sx={{
-          bgcolor: "#24292e",
+          // bgcolor: "#24292e",
           boxShadow: 3,
           pt: 1,
           color: "white",
@@ -35,7 +35,8 @@ export default function AdminHeader() {
           zIndex: 1201,
           minHeight: "70px",
 
-          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+          bgcolor: "#c6e3f4",
+          boxShadow: 2,
         }}
       >
         <Toolbar
@@ -63,6 +64,7 @@ export default function AdminHeader() {
                 mb: 1,
                 cursor: "pointer",
                 display: { xs: "block", sm: "none" },
+                filter: "drop-shadow(0 1px 2px rgba(255,255,255,0.25))",
               }}
               onClick={() => {
                 router.push("/admin/dashboard");
@@ -73,11 +75,12 @@ export default function AdminHeader() {
               src="/images/logo/t2o-logo.png"
               alt="logo"
               // height="90px"
-              width="225px"
+              // width="225px"
+              height={60}
               sx={{
                 cursor: "pointer",
                 display: { xs: "none", sm: "block" },
-                scale: 1.1,
+                filter: "drop-shadow(0 1px 2px rgba(255,255,255,0.25))",
               }}
               onClick={() => {
                 router.push("/admin/dashboard");
@@ -102,7 +105,12 @@ export default function AdminHeader() {
                 src={me?.profilePicture ?? ""}
                 sx={{ height: "50px", width: "50px" }}
               />
-              <Typography fontSize={"16px"} fontWeight={600} ml={1}>
+              <Typography
+                fontSize={"16px"}
+                fontWeight={600}
+                ml={1}
+                color={"secondary.main"}
+              >
                 {me?.name?.first ?? "User"}
               </Typography>
             </Button>
@@ -126,7 +134,7 @@ export default function AdminHeader() {
           },
         }}
       >
-                {me?.navbar?.map((link) => (
+        {me?.navbar?.map((link) => (
           <MenuItem
             key={link?.text}
             onClick={() => {

@@ -31,10 +31,9 @@ export default function MemberHeader() {
           width: "100vw",
           zIndex: 1201,
           minHeight: "70px",
-          bgcolor: "white",
-          // bgcolor: "#044236",
-          bgcolor: "#24292e",
-          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+
+          bgcolor: "#c6e3f4",
+          boxShadow: 2,
         }}
       >
         <Toolbar
@@ -64,6 +63,7 @@ export default function MemberHeader() {
                 mb: 1,
                 cursor: "pointer",
                 display: { xs: "block", sm: "none" },
+                filter: "drop-shadow(0 1px 2px rgba(255,255,255,0.25))",
               }}
               onClick={() => {
                 router.push("/member/dashboard");
@@ -74,11 +74,12 @@ export default function MemberHeader() {
               src="/images/logo/t2o-logo.png"
               alt="logo"
               // height="90px"
-              width="225px"
+              // width="225px"
+              height="60px"
               sx={{
                 cursor: "pointer",
                 display: { xs: "none", sm: "block" },
-                scale: 1.1,
+                filter: "drop-shadow(0 1px 2px rgba(255,255,255,0.25))",
               }}
               onClick={() => {
                 router.push("/member/dashboard");
@@ -116,7 +117,8 @@ export default function MemberHeader() {
                   ml: 1,
                   display: { xs: "none", lg: "block" },
                   fontSize: "16px",
-                  color: "white",
+                  color: "secondary.main",
+                  fontWeight: 600,
                 }}
               >
                 {user?.name?.first ?? "User"}
@@ -197,7 +199,7 @@ const QualityScore = ({ value, total }) => {
       gap={0}
     >
       <Box>
-        <Typography sx={{ color: "white", fontSize: "18px" }}>
+        <Typography sx={{ color: "secondary.main", fontSize: "18px", fontWeight:600 }}>
           Quality Score -{" "}
           <Typography
             component={"span"}
@@ -216,7 +218,7 @@ const QualityScore = ({ value, total }) => {
           width: "100%",
           height: 6,
           borderRadius: 4,
-          backgroundColor: "rgba(255,255,255,0.15)",
+          backgroundColor: "rgba(255, 255, 255, 0.77)",
           mt: 0.5,
           "& .MuiLinearProgress-bar": {
             background: progressColor,
