@@ -91,7 +91,7 @@ router
             const emailStatus = await sendMail(
                 { origin: req.origin, "content-type": "application/json" },
                 data.mail,
-                "Turn 2 Opinion: Registration",
+                `${process.env.PROJECT_NAME || "Turn 2 Opinion"}: Registration`,
                 mailer.data
             )
             return { message, data: otp };
@@ -200,7 +200,7 @@ router
                 emailStatus: await sendMail(
                     { origin: req.origin, "content-type": "application/json" },
                     data.mail,
-                    "Turn 2 Opinion: Registration",
+                    `${process.env.PROJECT_NAME || "Turn 2 Opinion"}: Registration`,
                     mailer.data
                 )
             })
@@ -275,7 +275,7 @@ router
                     emailStatus: await sendMail(
                         { origin: req.origin, "content-type": "application/json" },
                         data.mail,
-                        "Turn 2 Opinion: Registration",
+                        `${process.env.PROJECT_NAME || "Turn 2 Opinion"}: Registration`,
                         mailer.data
                     )
                 })
