@@ -134,6 +134,7 @@ function FAQ() {
                 key={index}
                 disableGutters
                 sx={{
+                  width: "100%",
                   boxShadow: 0,
                   bgcolor: "#385e9e",
                   // bgcolor: "#fff1d9",

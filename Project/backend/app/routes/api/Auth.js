@@ -12,7 +12,7 @@ async function getSocialChannels() {
 }
 const router = express.Router();
 router
-  .route(["/socials","/social"])
+  .route(["/socials", "/social"])
   .get(
     expressRoute(async (req) => {
       let { token } = req.query;
@@ -40,7 +40,7 @@ router
         origin: user.origin,
         role: user.role ?? ""
       })
-      return { message: "", data: [], token }
+      return { message: "", data: [], token, redirect: "/member/dashboard" }
     },
       userController
     )

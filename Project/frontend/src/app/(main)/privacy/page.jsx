@@ -21,7 +21,7 @@ function page() {
               mt: 4,
               mb: 2,
               fontWeight: 600,
-              color: "#e48025",
+              color: "secondary.main",
             },
             "& h6": {
               fontSize: 18,

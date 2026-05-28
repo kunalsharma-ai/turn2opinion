@@ -51,7 +51,7 @@ const Contact = () => {
             gap={0.5}
             sx={{
               bgcolor: "whitesmoke",
-              border: `1px solid #ecccafff`,
+              border:  `1px solid #e0e0e0`,
 
               p: 2,
               minHeight: "90px",
@@ -88,7 +88,7 @@ const Contact = () => {
             gap={0.5}
             sx={{
               bgcolor: "whitesmoke",
-              border: `1px solid #ecccafff`,
+              border: `1px solid #e0e0e0`,
 
               p: 2,
               minHeight: "90px",
@@ -125,7 +125,7 @@ const Contact = () => {
             gap={0.5}
             sx={{
               bgcolor: "whitesmoke",
-              border: `1px solid #ecccafff`,
+              border: `1px solid #e0e0e0`,
               p: 2,
               minHeight: "90px",
             }}

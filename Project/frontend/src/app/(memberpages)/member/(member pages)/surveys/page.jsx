@@ -13,6 +13,7 @@ import {
   Button,
   Chip,
   Divider,
+  CircularProgress,
 } from "@mui/material";
 
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -32,10 +33,16 @@ const permittedStatus = ["invited", "dropout"];
 export default function SurveyDashboard() {
   const [query] = [useQuery()];
   const [surveys, setSurveys] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(true);
   React.useEffect(() => {
-    loadData(api.post(`/api/v1/me/survey`, { source: query.source }), (resp) => {
-      setSurveys(resp.data);
-    });
+    setIsLoading(true);
+    loadData(
+      api.post(`/api/v1/me/survey`, { source: query.source }),
+      (resp) => {
+        setSurveys(resp.data);
+      },
+      () => setIsLoading(false),
+    );
   }, [query]);
   const availableSurveys = surveys?.filter((s) =>
     permittedStatus.includes(s.participationStatus),
@@ -77,14 +84,14 @@ export default function SurveyDashboard() {
 
   return (
     <Box sx={{ p: { xs: 1, md: 2.5 }, bgcolor: "#eff3f5" }}>
-      <SurveyStat stats={stats} />
+      <SurveyStat stats={stats} isLoading={isLoading}   />
       <Divider sx={{ my: 3, bgcolor: "#ffe" }} />
-      <SurveyList surveys={surveys} query={query} />
+      <SurveyList surveys={surveys} query={query}  isLoading={isLoading}/>
     </Box>
   );
 }
 
-function SurveyStat({ stats }) {
+function SurveyStat({ stats, isLoading }) {
   return (
     <>
       <Stack
@@ -107,7 +114,7 @@ function SurveyStat({ stats }) {
           </Typography>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <SurveyPoints onUpdate={() => { }} />
+          <SurveyPoints onUpdate={() => {}} />
         </Grid>
 
         {/* <IconButton
@@ -148,9 +155,25 @@ function SurveyStat({ stats }) {
                 borderRadius: 4,
                 border: "1px solid",
                 borderColor: "divider",
+                position: "relative",
+                minHeight: 120,
               }}
             >
               <CardContent sx={{ p: 2.5 }}>
+                  {isLoading ? (
+                            <Box
+                              sx={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                                display: "inline-flex",
+                                zIndex: 10,
+                              }}
+                            >
+                              <CircularProgress sx={{ color: "primary.main" }} thickness={2} />
+                            </Box>
+                          ) : (
                 <Stack direction="row" spacing={2} alignItems="flex-start">
                   <Avatar
                     sx={{
@@ -181,7 +204,7 @@ function SurveyStat({ stats }) {
                       {item.subtitle}
                     </Typography>
                   </Box>
-                </Stack>
+                </Stack>)}
               </CardContent>
             </Card>
           </Grid>
@@ -191,9 +214,11 @@ function SurveyStat({ stats }) {
   );
 }
 
-function SurveyList({ surveys, query }) {
-  const [activeFilter, setActiveFilter] = React.useState(query.filter ?? "All Surveys");
-  console.log(activeFilter)
+function SurveyList({ surveys, query, isLoading }) {
+  const [activeFilter, setActiveFilter] = React.useState(
+    query.filter ?? "All Surveys",
+  );
+  console.log(activeFilter);
   const filters = [
     {
       label: "All Surveys",
@@ -217,7 +242,7 @@ function SurveyList({ surveys, query }) {
     <Box sx={{ mt: 4 }}>
       <DataCards
         data={surveys}
-        isLoading={false}
+        isLoading={isLoading}
         filter={filters.find((filter) => filter.label === activeFilter)}
         pageSize={5}
         getSearchText={(row) => row.name}
@@ -329,7 +354,8 @@ function SurveyCard({ survey }) {
       { name: "gaming", icon: "fa-gamepad", color: "#7C3AED" },
     ];
 
-    const surveyCategory = survey.category || survey.slug || survey.name || survey.type || "";
+    const surveyCategory =
+      survey.category || survey.slug || survey.name || survey.type || "";
 
     return (
       categories.find(
@@ -346,14 +372,119 @@ function SurveyCard({ survey }) {
 
   return (
     <Box
-      sx={{
+      sx={(theme) => ({
         p: 2,
         display: "flex",
         flexDirection: "column",
         gap: 2,
         minHeight: 220,
         position: "relative",
-      }}
+        borderRadius: 4,
+        bgcolor: "card.main",
+        transition: "all 0.3s ease",
+
+        "& .survey-icon": {
+          width: 56,
+          height: 56,
+          bgcolor: lightBg,
+          color: darkColor,
+          border: "1px solid",
+          borderColor: `${darkColor}40`,
+          boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
+          transition: "all 0.3s ease",
+        },
+
+        "& .survey-title": {
+          color: "text.primary",
+          transition: "all 0.3s ease",
+        },
+
+        "& .survey-subtext": {
+          color: "text.secondary",
+          transition: "all 0.3s ease",
+        },
+
+        "& .survey-reward-icon": {
+          color: "success.main",
+          transition: "all 0.3s ease",
+        },
+
+        "& .survey-time-icon": {
+          color: "secondary.main",
+          transition: "all 0.3s ease",
+        },
+
+        "& .survey-reward-text": {
+          color: "success.main",
+          transition: "all 0.3s ease",
+        },
+
+        "& .survey-time-text": {
+          color: "text.primary",
+          transition: "all 0.3s ease",
+        },
+
+        "& .survey-button": {
+          borderRadius: 2,
+          textTransform: "none",
+          fontWeight: 700,
+          transition: "all 0.3s ease",
+        },
+
+        "& hr": {
+          transition: "all 0.3s ease",
+          borderColor: "rgba(0,0,0,0.08)",
+        },
+
+        "&:hover": {
+          bgcolor: "secondary.main",
+          transform: "translateY(-4px)",
+          boxShadow: 6,
+
+          "& .survey-icon": {
+            bgcolor: "#fff",
+            color: theme.palette.secondary.main,
+            borderColor: "#fff",
+          },
+
+          "& .survey-title": {
+            color: "#fff",
+          },
+
+          "& .survey-subtext": {
+            color: "rgba(255,255,255,0.75)",
+          },
+
+          "& .survey-reward-icon": {
+            color: "#fff",
+          },
+
+          "& .survey-time-icon": {
+            color: "#fff",
+          },
+
+          "& .survey-reward-text": {
+            color: "#fff",
+          },
+
+          "& .survey-time-text": {
+            color: "#fff",
+          },
+
+          "& hr": {
+            borderColor: "rgba(255,255,255,0.18)",
+          },
+
+          "& .survey-button": {
+            bgcolor: "#fff",
+            color: theme.palette.secondary.main,
+
+            "&:hover": {
+              bgcolor: "rgba(255,255,255,0.92)",
+            },
+          },
+        },
+      })}
     >
       <Box
         sx={{
@@ -370,20 +501,7 @@ function SurveyCard({ survey }) {
             transform: "translateX(-50%)",
           }}
         >
-          <Avatar
-            sx={{
-              width: 56,
-              height: 56,
-              bgcolor: lightBg,
-              color: darkColor,
-              border: "1px solid",
-              borderColor: `${darkColor}40`,
-              boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <Avatar className="survey-icon">
             <i
               className={`fa-solid ${category.icon}`}
               style={{ fontSize: 22 }}
@@ -426,6 +544,7 @@ function SurveyCard({ survey }) {
 
       <Box>
         <Typography
+          className="survey-title"
           title={survey.name}
           variant="h6"
           fontWeight={700}
@@ -451,46 +570,57 @@ function SurveyCard({ survey }) {
         px={3}
       >
         <Stack direction="row" spacing={1} alignItems="center">
-          <AccountBalanceWalletOutlinedIcon
-            sx={{ fontSize: 24, color: "success.main" }}
-          />
+          <AccountBalanceWalletOutlinedIcon className="survey-reward-icon" />
+
           <Box>
-            <Typography fontSize={26} fontWeight={700} color="success.main">
+            <Typography
+              className="survey-reward-text"
+              fontSize={26}
+              fontWeight={700}
+            >
               {survey.points} pts
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+
+            <Typography className="survey-subtext" variant="body2">
               Reward
             </Typography>
           </Box>
         </Stack>
 
         <Stack direction="row" spacing={1} alignItems="center">
-          <AccessTimeRoundedIcon
-            sx={{ fontSize: 24, color: "secondary.main" }}
-          />
+          <AccessTimeRoundedIcon className="survey-time-icon" />
+
           <Box>
-            <Typography variant="body1" fontWeight={700}>
+            <Typography
+              className="survey-time-text"
+              variant="body1"
+              fontWeight={700}
+            >
               {survey.loi} min
             </Typography>
-            <Typography variant="body2" color="text.secondary">
+
+            <Typography className="survey-subtext" variant="body2">
               Time
             </Typography>
           </Box>
         </Stack>
       </Stack>
 
-      <Box sx={{ mt: "auto" }}>
+      <Box
+        sx={{
+          mt: "auto",
+          minHeight: 40,
+          display: "flex",
+          alignItems: "flex-end",
+        }}
+      >
         {permittedStatus.includes(survey?.participationStatus) && (
           <Button
+            className="survey-button"
             fullWidth
             variant="contained"
             href={`/survey?name=${survey.slug}`}
             color="secondary"
-            sx={{
-              borderRadius: 2,
-              textTransform: "none",
-              fontWeight: 700,
-            }}
           >
             Start Survey
           </Button>

@@ -118,7 +118,7 @@ export default function HomeClient() {
               sx={{
                 position: "fixed",
                 bottom: 35,
-                left: 35,
+                right: 35,
                 zIndex: 999,
               }}
             >

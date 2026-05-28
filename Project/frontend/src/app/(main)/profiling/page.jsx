@@ -265,14 +265,14 @@ function page() {
         <Grid size={12} container p={{ md: 3 }} spacing={{ md: 1 }}>
           <Grid size={{ xs: 12, md: 6 }}>
             <img
-              src="./images/home/profiling/t2o_profiles.png"
+              src="./images/home/profiling/profiles.png"
               alt="profiles"
               width={"100%"}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <img
-              src="./images/home/profiling/t2o_dashboard.png"
+              src="./images/home/profiling/dashboard.png"
               alt="dashboard"
               width={"100%"}
             />

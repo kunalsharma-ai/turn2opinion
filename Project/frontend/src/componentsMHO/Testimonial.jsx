@@ -103,8 +103,8 @@ function Testimonial() {
           content: '""',
           position: "absolute",
           inset: 0,
-          background: "#ffdba2",
-          opacity: 0.7,
+      background: "#8cbcff",
+opacity: 0.6,
           zIndex: 1,
         },
       }}

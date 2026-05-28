@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
-import { Avatar, Box, Button, Grid, Typography } from "@mui/material";
+import { Avatar, Box, Button, Grid, Typography, CircularProgress } from "@mui/material";
 import { api, loadData } from "@/util";
 
 export default function SurveyPoints({ onUpdate }) {
@@ -32,9 +32,7 @@ export default function SurveyPoints({ onUpdate }) {
       conversionRate,
     });
   }, [threshold, conversionRate]);
-  return isLoading ? (
-    <></>
-  ) : (
+  return (
     <Grid
       size={{ xs: 12, md: 6 }}
       container
@@ -57,57 +55,75 @@ export default function SurveyPoints({ onUpdate }) {
 
           minWidth: { xs: "100%", md: 320 },
           textAlign: { xs: "center", md: "right" },
+          position: "relative",
+          minHeight: 111,
         }}
       >
-        <Typography
-          fontSize={{ xs: "16px", md: "20px" }}
-          color="secondary.main"
-          fontWeight={"500"}
-        >
-          Earned Points :{"  "}
+          {isLoading ? (
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        display: "inline-flex",
+                        zIndex: 10,
+                      }}
+                    >
+                      <CircularProgress sx={{ color: "primary.main" }} thickness={2} />
+                    </Box>
+                  ) : (
+        <>
           <Typography
-            component="span"
             fontSize={{ xs: "16px", md: "20px" }}
+            color="secondary.main"
+            fontWeight={"500"}
+          >
+            Earned Points :{"  "}
+            <Typography
+              component="span"
+              fontSize={{ xs: "16px", md: "20px" }}
+              color="primary.main"
+              fontWeight={"500"}
+            >
+              {points} Points
+            </Typography>
+          </Typography>
+          <Typography
+            fontSize={{ xs: "14px", md: "18px" }}
             color="primary.main"
             fontWeight={"500"}
           >
-            {points} Points
+            ( {(Number(points) * Number(conversionRate)).toMoney("USD")} )
           </Typography>
-        </Typography>
-        <Typography
-          fontSize={{ xs: "14px", md: "18px" }}
-          color="primary.main"
-          fontWeight={"500"}
-        >
-          ( {(Number(points) * Number(conversionRate)).toMoney("USD")} )
-        </Typography>
-        {threshold > points ? (
-          <>
-            <Typography fontSize="13px">
-              Get <b>{threshold - points}</b> more points to redeem
-            </Typography>
-          </>
-        ) : (
-          <>
-            <Button
-              variant="contained"
-              size="small"
-              color="secondary"
-              sx={{
-                color: "white",
-                mt: 1,
-                px: 2,
-                fontWeight: 600,
-                borderRadius: 2,
-              }}
-              onClick={(e) => {
-                // todo: open redeem form
-              }}
-            >
-              Redeem Points
-            </Button>
-          </>
-        )}
+          {threshold > points ? (
+            <>
+              <Typography fontSize="13px">
+                Get <b>{threshold - points}</b> more points to redeem
+              </Typography>
+            </>
+          ) : (
+            <>
+              <Button
+                variant="contained"
+                size="small"
+                color="secondary"
+                sx={{
+                  color: "white",
+                  mt: 1,
+                  px: 2,
+                  fontWeight: 600,
+                  borderRadius: 2,
+                }}
+                onClick={(e) => {
+                  // todo: open redeem form
+                }}
+              >
+                Redeem Points
+              </Button>
+            </>
+          )}
+        </>)}
       </Box>
     </Grid>
   );

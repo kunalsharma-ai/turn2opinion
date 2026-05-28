@@ -10,6 +10,7 @@ import {
     User as userController,
     OTP as otpController,
     Answer as answerController,
+    Response as responseController
 } from "../../controller/index.js";
 import {
     Mutate,
@@ -21,7 +22,6 @@ import {
     sendMail,
     Token
 } from "../../utils/index.js"
-import responseController from "../../controller/Response.js";
 
 const router = express.Router();
 router
@@ -222,6 +222,24 @@ router
         },
         userController
     ))
+router
+    .route("/response/:id")
+    .post(
+        expressRoute(
+            async req => {
+
+                return {
+                    message: "under development",
+                    data: []
+                }
+            },
+            responseController
+        )
+    )
+    .all((req, res, next) => {
+        console.log(req)
+        next()
+    })
 router
     .route('/:id')
     .get(expressRoute(

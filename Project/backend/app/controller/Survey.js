@@ -51,6 +51,7 @@ class Survey extends CrudController {
     }
     async getQuestions(slug) {
         let survey = await this.openBySlug(slug)
+        console.log({ survey });
         let questions = survey.pages.map(page => {
             page.shift();
             return page;
@@ -78,7 +79,7 @@ class Survey extends CrudController {
         const query = {
             ...this.commonFilters
         };
-        
+
         if (!filters.all) {
             query.category = survey.category;
         }
@@ -102,6 +103,15 @@ class Survey extends CrudController {
             fsLogger.Log("Bulk invite partial completion", e.message);
         }
         return { count: users.length };
+    }
+    async receive(data) {
+        // check if survey exists
+        let temp = await super.findOne({ name: data.name })
+        if (temp) {
+            throw new Error("Survey already launched through this panel");
+        }
+        let survey = await super.create(data);
+        return survey;
     }
 }
 

@@ -6,7 +6,12 @@ Date.prototype.isMinor = function (cn = "IN") {
 }
 
 import { CrudController, Mutate } from "../utils/index.js";
-import { User as userModel, Invites as invitesModel, Answers, Survey,Response as responseModel } from "../model/index.js";
+import {
+    User as userModel,
+    Invites as invitesModel, Answers,
+    Survey as modelSurvey,
+    Response as responseModel
+} from "../model/index.js";
 import fs from "fs"
 class User extends CrudController {
     fixUserIssue() {
@@ -21,7 +26,7 @@ class User extends CrudController {
         let user
         if (!phone)
             user = await super.list({ mail });
-        if (!mail) user = await super.list({ phone:phone.replace(/\D/g,"") });
+        if (!mail) user = await super.list({ phone: phone.replace(/\D/g, "") });
 
         if (user.length !== 1) throw new Error(`${!phone ? "E-Mail id" : "Phone no."} or Password is invalid`)
         let temp = await userModel.findById(user[0]._id).select("+role");
@@ -44,7 +49,7 @@ class User extends CrudController {
             isActive: false
         })
         const user = await super.create(data);
-        
+
         // Auto-invite to active surveys with autoInvite enabled
         try {
             const surveys = await modelSurvey.find({
@@ -53,7 +58,7 @@ class User extends CrudController {
                 status: "active",
                 ...this.commonFilters
             });
-            
+
             if (surveys.length > 0) {
                 const autoInvites = surveys.map(s => ({
                     user: user._id,
@@ -69,7 +74,8 @@ class User extends CrudController {
                 await responseModel.insertMany(autoInvites, { ordered: false });
             }
         } catch (e) {
-            console.Log("Auto-invite failed for new user", e.message);
+            console.log(e);
+            console.log("Auto-invite failed for new user", e.message);
         }
 
         return user;
@@ -81,7 +87,7 @@ class User extends CrudController {
     async read(id) {
         let temp = Mutate(await userModel.findById(id).select("+role"))
         let dob = new Date(temp.dob);
-        return {...temp, isMinor: dob.isMinor()};
+        return { ...temp, isMinor: dob.isMinor() };
     }
     async delete(id) {
         this.fixUserIssue();

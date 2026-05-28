@@ -20,8 +20,7 @@ const theme = createTheme({
   //     main: "#fff1d9",
   //   },
   // },
-    palette: {
-
+  palette: {
     primary: {
       main: "#0c5adb",
     },
@@ -34,16 +33,16 @@ const theme = createTheme({
     card: {
       main: "#ffffff",
     },
-    cardbg:{
-      main:   "#c6e3f4"  //   "#8cb2f333",
-    }
+    cardbg: {
+      main: "#c6e3f4", //   "#8cb2f333",
+    },
   },
   gradients: {
     bgprimary: {
-      main: "linear-gradient(rgb(227, 16, 72), #e48025)",
+      main: "linear-gradient(#04142f, #0c5adb)",
     },
     bgsecondary: {
-      main: "linear-gradient(#e48025, rgb(227, 16, 72))",
+      main: "linear-gradient(#0c5adb, #7cc4ff)",
     },
   },
   typography: {

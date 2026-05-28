@@ -19,10 +19,14 @@ import { setOrigin, expressRoute, fsLogger } from "./utils/index.js";
         .set("view-engine", "twig")
         .set('views', "views")
         .use([
+            (req, res, next) => {
+                console.log("Request received at", req.path);
+                next()
+            },
             compression(),
             express.static("/src/public"),
             cors({
-                origin: ["https://t2o.sampledge.duckdns.org", "https://admin.sampledge.duckdns.org"],
+                origin: ["https://t2o.sampledge.duckdns.org", "https://admin.sampledge.duckdns.org", "http://localhost:3001"],
                 credentials: true,
                 allowedHeaders: ["Content-Type", "Authorization", "test"],
                 methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
@@ -42,8 +46,9 @@ import { setOrigin, expressRoute, fsLogger } from "./utils/index.js";
             async (req) => {
                 fsLogger.Log("Fallback route", {
                     ...req.headers,
-                    endpoint:req.path,
-                    origin: req.origin
+                    endpoint: req.path,
+                    origin: req.origin,
+                    method: req.method
                 })
                 return { message: `Fallback route: ${req.path} is not available`, status: "error" }
             },

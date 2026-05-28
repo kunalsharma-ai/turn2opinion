@@ -3,8 +3,10 @@
   --foreground: #171717;
   --primary: #e48025;
   --secondary: #124d86;
---bg-primary-gradient: linear-gradient(#0844a5, #0c5adb);
---bg-secondary-gradient: linear-gradient(#0c5adb, #0a4fc2);
+  /* --bg-primary-gradient: linear-gradient(rgb(227, 16, 72), #e48025);
+  --bg-secondary-gradient: linear-gradient(#e48025, rgb(227, 16, 72)); */
+--bg-primary-gradient: linear-gradient(#04142f, #0c5adb);
+--bg-secondary-gradient: linear-gradient(#0c5adb, #7cc4ff);
 }
 
 html,

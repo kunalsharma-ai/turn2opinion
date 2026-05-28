@@ -52,12 +52,12 @@ export default mongooseModel(
                 type: Date
             }
         },
-        status:{
-            type:String,
-            lowercase:true,
-            trim:true,
-            required:true,
-            default:"draft"
+        status: {
+            type: String,
+            lowercase: true,
+            trim: true,
+            required: true,
+            default: "draft"
         },
         loi: {
             type: Number,
@@ -73,30 +73,34 @@ export default mongooseModel(
         },
         link: {
             type: String
+        },
+        surveyCategory: {
+            type: String,
+            default: "basic"
         }
     },
     [
         [
             {
                 name: 1,
-                category:1,
+                category: 1,
                 origin: 1
             },
             {
-                unique:true
+                unique: true
             }
         ],
         [
             {
                 slug: 1,
-                category:1,
+                category: 1,
                 origin: 1
             },
             {
-                unique:true
+                unique: true
             }
         ],
-        
+
     ]
 );
 

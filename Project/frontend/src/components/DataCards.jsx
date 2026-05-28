@@ -198,10 +198,10 @@ export default function DataCards({
                   borderRadius: "8px",
                   overflow: "hidden",
                   transition: "all 0.2s ease",
-                  border: "1px solid rgba(0,0,0,0.01)",
+                  // border: "1px solid rgba(0,0,0,0.01)",
                   "&:hover": {
                     transform: "translateY(-2px)",
-                    boxShadow: 4,
+                    // boxShadow: 4,
                   },
                   ...cardProps?.sx,
                 } }

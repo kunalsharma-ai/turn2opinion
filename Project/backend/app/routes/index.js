@@ -15,6 +15,7 @@ import projectRouter from "./api/ProjectLaunch.js";
 import supportRouter from "./api/Support.js";
 import meResponse from "./api/Response.js";
 import llmRouter from "./api/llm.js"
+import integrationRoutes from "./api/integrationRoutes.js";
 
 import { isAuthenticated } from "../utils/index.js";
 
@@ -22,8 +23,9 @@ import meRouter from "./api/Me.js";
 import changeEmail from "./api/changeEmail.js"
 const router = express.Router();
 router
+
     .use("/api/v1/llm", llmRouter)
-    .use("/api/v1/auth",authRouter)
+    .use("/api/v1/auth", authRouter)
     .use("/api/v1/answers", ansRouter)
     .use("/api/v1/category", categoryRouter)
     .use("/api/v1/survey", surveyRouter)
@@ -44,7 +46,7 @@ router
     .use("/api/v1/support", isAuthenticated, supportRouter)
     .use("/api/v1/project", isAuthenticated, projectRouter)
     .use("/api/v1/batch", isAuthenticated, batchRouter)
-
+    .use("/api/v1/newsurvey", isAuthenticated, integrationRoutes)
 
 // router
 //     .use("/api/v1/respondent",respondentRouter)

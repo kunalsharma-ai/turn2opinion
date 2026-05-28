@@ -52,7 +52,7 @@ export default function MemberNotification() {
   const [user] = [useMember()];
   const [notifAnchorEl, setNotifAnchorEl] = React.useState();
   const [notificationMessages, setNotificationMessages] = React.useState([
-    ...mockupNotifications,
+    // ...mockupNotifications,
   ]);
   const { messages, emit } = useSharedSocket(user);
   const notificationCount = notificationMessages.length ?? 0;
@@ -60,7 +60,7 @@ export default function MemberNotification() {
     if(messages instanceof Array)
     setNotificationMessages(messages.filter(msg=>msg.type==="notification").map(msg=>msg.data));
   },[messages])
-  if (!user) return <></>;
+  // if (!user) return <></>;
   return (
     <>
       <Tooltip title="Notifications">

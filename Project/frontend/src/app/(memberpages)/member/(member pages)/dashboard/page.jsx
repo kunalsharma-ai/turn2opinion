@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { useMember, useQuery } from "@/Context";
 import { Datatable } from "@/components";
+import { DateRangeSelector } from "@/components/Form";
 import LoadingOverlay from "@/componentsMHO/LoadingOverlay";
 import { api, loadData, Page } from "@/util";
 import { useToast } from "@/hooks";
@@ -358,21 +359,31 @@ function Surveys() {
 }
 
 function SurveyHistory() {
+  const [isLoading, setIsLoading] = React.useState(true);
   const [user] = [useMember()];
   const [data, setData] = React.useState([]);
   const [dateRange, setDateRange] = React.useState([]);
   React.useEffect(() => {
     if (!user) return;
-    let filters = {};
+    setIsLoading(true);
+    let filters = {
+      status: {
+        $nin: ["invited"]
+      }
+    };
     if (
       Boolean(dateRange) &&
       Boolean(dateRange instanceof Array) &&
       dateRange.length === 2
     )
       filters = { ...filters, dateRange };
-    api.post(`/api/v1/response`, filters).then((resp) => {
-      setData(resp.data);
-    });
+    loadData(
+      api.post(`/api/v1/response`, filters),
+      (resp) => {
+        setData(resp?.data)
+      },
+      () => { setIsLoading(false) }
+    )
   }, [user, dateRange]);
   const columns = [
     {
@@ -447,17 +458,17 @@ function SurveyHistory() {
         // noBorderRadius={true}
         hideDownload={true}
         hideColumnSelector
-        // extra={
-        //   <Box px={ { xs: 0, md: 2 } } my={ { xs: 1, md: 0 } }>
-        //     <DateRangeSelector
-        //       onUpdate={ (e) => {
-        //         setDateRange(
-        //           e.map((d) => new Date(d.toDate()).toISOString().split("T")[0])
-        //         );
-        //       } }
-        //     />
-        //   </Box>
-        // }
+        extra={
+          <Box px={{ xs: 0, md: 2 }} my={{ xs: 1, md: 0 }}>
+            <DateRangeSelector
+              onUpdate={(e) => {
+                setDateRange(
+                  e.map((d) => new Date(d.toDate()).toISOString().split("T")[0])
+                );
+              }}
+            />
+          </Box>
+        }
         title={
           <Typography
             sx={{

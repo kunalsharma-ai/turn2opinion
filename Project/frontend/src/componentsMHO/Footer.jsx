@@ -81,7 +81,7 @@ function Footer({ sections = [] }) {
   return (
     <Grid
       size={12}
-      sx={{ bgcolor: "#fff1d9", color: "white" }}
+      sx={{ bgcolor: "#c6e3f4", color: "white" }}
       container
       justifyContent="center"
       // px={3}

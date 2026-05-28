@@ -61,7 +61,7 @@ export default function MainLayout({ children }) {
       style={{
         height: "100vh",
         overflowY: "auto",
-        background: "linear-gradient(90deg, #fff 0, #fff1d8 100%)",
+        background: "linear-gradient(90deg, #fff 0, #c6e3f4 100%)",
       }}
     >
       <ContextProviders>

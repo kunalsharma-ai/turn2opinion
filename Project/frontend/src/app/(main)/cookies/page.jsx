@@ -69,8 +69,9 @@ const CookiePolicy = () => {
               disableGutters
               sx={{
                 boxShadow: 0,
-                bgcolor: "#fff1d9",
-                border: `1px solid #ecccafff`,
+                // color:"#fff",
+                bgcolor: "#385e9e",
+                // border: `1px solid #ecccafff`,
                 p: 1,
                 borderRadius: 3,
                 minHeight: "40px",
@@ -86,7 +87,7 @@ const CookiePolicy = () => {
             >
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
-                sx={{ bgcolor: "#fff1d9" }}
+                sx={{ color: "#fff" }}
               >
                 <Typography fontSize={"18px"}>Essentials</Typography>
               </AccordionSummary>
@@ -191,8 +192,9 @@ const CookiePolicy = () => {
               disableGutters
               sx={{
                 boxShadow: 0,
-                bgcolor: "#fff1d9",
-                border: `1px solid #ecccafff`,
+                // color: "#fff",
+                bgcolor: "#385e9e",
+                // border: `1px solid #ecccafff`,
                 p: 1,
                 borderRadius: 3,
                 minHeight: "40px",
@@ -206,7 +208,7 @@ const CookiePolicy = () => {
                 },
               }}
             >
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{color:"#fff"}}>
                 <Typography fontSize={"18px"}>
                   Performance And Functionality
                 </Typography>
@@ -301,8 +303,9 @@ const CookiePolicy = () => {
               disableGutters
               sx={{
                 boxShadow: 0,
-                bgcolor: "#fff1d9",
-                border: `1px solid #e0e0e0`,
+                // color: "#fff",
+                bgcolor: "#385e9e",
+                // border: `1px solid #e0e0e0`,
                 p: 1,
                 borderRadius: 3,
                 minHeight: "40px",
@@ -316,7 +319,7 @@ const CookiePolicy = () => {
                 },
               }}
             >
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{color:"#fff"}}>
                 <Typography fontSize={"18px"}>Social Networking</Typography>
               </AccordionSummary>
               <AccordionDetails sx={{ bgcolor: "white", borderRadius: 2 }}>
@@ -333,8 +336,9 @@ const CookiePolicy = () => {
               disableGutters
               sx={{
                 boxShadow: 0,
-                bgcolor: "#fff1d9",
-                border: `1px solid #e0e0e0`,
+                // color: "#fff",
+                bgcolor: "#385e9e",
+                // border: `1px solid #e0e0e0`,
                 p: 1,
                 borderRadius: 3,
                 minHeight: "40px",
@@ -348,7 +352,7 @@ const CookiePolicy = () => {
                 },
               }}
             >
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{color:"#fff"}}>
                 <Typography fontSize={"18px"}>Unclassified</Typography>
               </AccordionSummary>
               <AccordionDetails sx={{ bgcolor: "white", borderRadius: 2 }}>

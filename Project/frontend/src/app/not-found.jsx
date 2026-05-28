@@ -15,14 +15,22 @@ function page() {
       sx={{
         textAlign: "center",
         minHeight: "100vh",
-        background: "linear-gradient(90deg, #fff 0, #fff1d8 100%)",
+       background: "linear-gradient(90deg, #fff 0, #9fb0caff 100%)",
       }}
     >
       <Container maxWidth="lg">
-        <img src="/imagest2o/shook.png" alt="error" height={120} width={120} />
+        <img
+          src="/imagest2o/shook.png"
+          alt="error"
+          height={120}
+          width={120}
+          style={{
+            filter: "brightness(0.9) sepia(1) hue-rotate(180deg) saturate(4)",
+          }}
+        />
         <Typography
           sx={{
-            mt:6,
+            mt: 6,
             fontSize: 48,
             fontWeight: "bold",
             background: (theme) => theme.gradients.bgprimary.main,
@@ -30,7 +38,6 @@ function page() {
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             color: "transparent",
-  
           }}
         >
           Page Not Found
@@ -56,7 +63,7 @@ function page() {
             lineHeight: 1.5,
             mt: 4,
             mb: 2,
-            color: "#777",
+            color: "#444",
           }}
         >
           Go to home page using button below

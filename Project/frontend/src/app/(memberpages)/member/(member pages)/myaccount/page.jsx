@@ -123,13 +123,6 @@ function Stats() {
   }, []);
 
   const stats = [
-    // {
-    //   title: "Current Rewards",
-    //   value: `${statistics?.totalRewards ?? 0} pts`,
-    //   subtitle: "Available reward balance",
-    //   icon: "/images/myaccount/currentreward.png",
-    //   bg: "rgba(255, 152, 0, 0.12)",
-    // },
     {
       title: "Claimed Rewards",
       value: `0 pts`,
@@ -301,6 +294,7 @@ function UserInfo({ user }) {
       value: `+${user?.phone}`,
     },
   ];
+  // return <pre>{JSON.stringify(user, null, 2)}</pre>
   return (
     <Grid
       size={12}
@@ -313,12 +307,7 @@ function UserInfo({ user }) {
       justifyContent={"space-between"}
       sx={{
         border: (theme) => `1px solid ${theme.palette.primary.main}`,
-        // bgcolor: (theme) => theme.palette.cardbg.main,
-        // background: "linear-gradient(180deg,#3B1F1A 0%,#6B341F 50%,#B45309 100%)",
-        // background: "linear-gradient(180deg,#2A1810 0%,#4A2C1D 45%,#8B4513 100%)",
-        // background: "linear-gradient(180deg,#24140D 0%,#4B2E24 50%,#9A5B2A 100%)",
-
-        background: "linear-gradient(to bottom right, #0c5adb, #052b6e)",
+        background: "var(--bg-primary-gradient)",
         borderRadius: 4,
         color: "white",
       }}
@@ -383,10 +372,6 @@ function UserInfo({ user }) {
             </Typography>
             {getGenderIcon(user?.gender)}
           </Box>
-
-          {/* <Typography fontWeight={600} fontSize={{ xs: 12, md: 14 }}>
-            {user?.mail}
-          </Typography> */}
           {user?.isMinor && (
             <>
               <Box display={"flex"} alignItems="center" mt={1}>
@@ -410,8 +395,8 @@ function UserInfo({ user }) {
           )}
           <Rating
             name="account-rating"
-            value={4}
-            // precision={0.5}
+            value={5 * ((user?.qualityScore ?? 0) / 200)}
+            precision={0.5}
             readOnly
             size="large"
             emptyIcon={
@@ -496,9 +481,6 @@ function Payment() {
     // console.log({value})
     setPayment({ method, value });
     setOpenPayment(false);
-    // setPayment({ method, value });
-    // setOpenPayment(false);
-    // console.log({ method, value });
   };
 
   return (
@@ -543,8 +525,6 @@ function Payment() {
         px={2}
         py={2}
         sx={{
-          // border: (theme) => `1px solid ${theme.palette.primary.main}`,
-          // bgcolor: (theme) => theme.palette.cardbg.main,
           background: "rgba(255, 255, 255, 0.1)",
           borderRadius: 2,
         }}
@@ -1157,8 +1137,8 @@ function Summary() {
         setThreshold(data.threshold);
         setConversionRate(data.conversionRate);
       })
-      .catch((err) => {})
-      .finally(() => {});
+      .catch((err) => { })
+      .finally(() => { });
   }, []);
   const rewardSummary = [
     {
@@ -1176,14 +1156,6 @@ function Summary() {
   ];
   const [activeTab, setActiveTab] = React.useState(0);
   const tabs = [
-    // {
-    //   label: "Rewards Summary",
-    //   render: (
-    //     <Grid size={12}>
-    //       <DataList dataList={rewardSummary} />
-    //     </Grid>
-    //   ),
-    // },
     {
       label: "Rewards Processed Summary",
       render: (

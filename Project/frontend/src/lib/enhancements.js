@@ -262,7 +262,7 @@ Number.prototype.toMoney = function (currency = "INR", locale = "en-IN") {
 };
 
 Number.prototype.toLocalCurrency = function (currency = "INR", locale = "en-IN") {
-  if (!localStorage) return "";
+  if (typeof localStorage === "undefined") return "";
   const format = new Intl.NumberFormat(locale, {
     style: "currency",
     currency: currency,

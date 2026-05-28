@@ -4,7 +4,7 @@ export default function expressRoute(callback, Controller) {
         try {
             Controller.request = req;
             const { message, data, token, redirect } = await callback(req);
-            if (redirect) return res.redirect(redirect)
+
             if (!token)
                 return res.json(APIResponse.Success(message, data))
             res.cookie("authorization", `Bearer ${token}`, {
@@ -14,7 +14,11 @@ export default function expressRoute(callback, Controller) {
                 maxAge: 7 * 24 * 60 * 60 * 1000
             });
 
-            return res.redirect(`/member/dashboard`)
+            if (redirect) return res.redirect(redirect)
+            return res.json({
+                status: "success",
+                message
+            })
         } catch (error) {
             console.log(error)
             res.status(404).json(APIResponse.Error(error.message))
