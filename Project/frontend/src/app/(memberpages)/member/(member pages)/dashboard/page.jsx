@@ -60,7 +60,15 @@ export default function page() {
       </Grid>
       <Stats threshold={threshold} conversionRate={conversionRate} />
       <Surveys />
-      <SurveyHistory />
+      <Grid
+        size={12}
+        px={{ xs: 2, md: 3 }}
+        py={2}
+        justifyContent="center"
+        sx={{ border: `1px solid #e0e0e0` }}
+      >
+        <SurveyHistory />
+      </Grid>
     </Grid>
   );
 }
@@ -128,7 +136,6 @@ function Stats({ threshold, conversionRate }) {
       />
     </Grid>
   );
-
 }
 
 function Surveys() {
@@ -358,7 +365,7 @@ function Surveys() {
   );
 }
 
-function SurveyHistory() {
+export function SurveyHistory() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [user] = [useMember()];
   const [data, setData] = React.useState([]);
@@ -368,8 +375,8 @@ function SurveyHistory() {
     setIsLoading(true);
     let filters = {
       status: {
-        $nin: ["invited"]
-      }
+        $nin: ["invited"],
+      },
     };
     if (
       Boolean(dateRange) &&
@@ -380,10 +387,12 @@ function SurveyHistory() {
     loadData(
       api.post(`/api/v1/response`, filters),
       (resp) => {
-        setData(resp?.data)
+        setData(resp?.data);
       },
-      () => { setIsLoading(false) }
-    )
+      () => {
+        setIsLoading(false);
+      },
+    );
   }, [user, dateRange]);
   const columns = [
     {
@@ -442,51 +451,42 @@ function SurveyHistory() {
     },
   ];
   return (
-    <Grid
-      size={12}
-      px={{ xs: 2, md: 3 }}
-      py={2}
-      justifyContent="center"
-      sx={{ border: `1px solid #e0e0e0` }}
-    >
-      <Datatable
-        isLoading={false}
-        pagination={[10, 20, 50, 100]}
-        pageSize={20}
-        noDataMsg="No Record Found."
-        data={data.filter((info) => info.status !== "invited")}
-        // noBorderRadius={true}
-        hideDownload={true}
-        hideColumnSelector
-        extra={
-          <Box px={{ xs: 0, md: 2 }} my={{ xs: 1, md: 0 }}>
-            <DateRangeSelector
-              onUpdate={(e) => {
-                setDateRange(
-                  e.map((d) => new Date(d.toDate()).toISOString().split("T")[0])
-                );
-              }}
-            />
-          </Box>
-        }
-        title={
-          <Typography
-            sx={{
-              fontSize: "16px",
-              display: "inline-block",
-              fontWeight: "600",
-              borderBottom: (theme) =>
-                `2px solid ${theme.palette.primary.main}`,
-              pb: 0.5,
-              my: 1,
+    <Datatable
+      isLoading={false}
+      pagination={[10, 20, 50, 100]}
+      pageSize={20}
+      noDataMsg="No Record Found."
+      data={data.filter((info) => info.status !== "invited")}
+      // noBorderRadius={true}
+      hideDownload={true}
+      hideColumnSelector
+      extra={
+        <Box px={{ xs: 0, md: 2 }} my={{ xs: 1, md: 0 }}>
+          <DateRangeSelector
+            onUpdate={(e) => {
+              setDateRange(
+                e.map((d) => new Date(d.toDate()).toISOString().split("T")[0]),
+              );
             }}
-          >
-            Survey Participation History
-          </Typography>
-        }
-        columns={columns}
-      />
-    </Grid>
+          />
+        </Box>
+      }
+      title={
+        <Typography
+          sx={{
+            fontSize: "16px",
+            display: "inline-block",
+            fontWeight: "600",
+            borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
+            pb: 0.5,
+            my: 1,
+          }}
+        >
+          Survey Participation History
+        </Typography>
+      }
+      columns={columns}
+    />
   );
 }
 

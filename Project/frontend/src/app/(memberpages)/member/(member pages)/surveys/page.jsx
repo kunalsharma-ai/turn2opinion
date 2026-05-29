@@ -14,6 +14,7 @@ import {
   Chip,
   Divider,
   CircularProgress,
+  Collapse,
 } from "@mui/material";
 
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -23,11 +24,12 @@ import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import CardGiftcardOutlinedIcon from "@mui/icons-material/CardGiftcardOutlined";
 
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
-
 import DataCards from "@/components/DataCards";
+
 import { loadData, api } from "@/util";
-import { SurveyPoints } from "../../components";
 import { useQuery } from "@/Context";
+import { SurveyPoints } from "../../components";
+import { SurveyHistory } from "../dashboard/page";
 
 const permittedStatus = ["invited", "dropout"];
 export default function SurveyDashboard() {
@@ -37,7 +39,7 @@ export default function SurveyDashboard() {
   React.useEffect(() => {
     setIsLoading(true);
     loadData(
-      api.post(`/api/v1/me/survey`, { source: query.source }),
+      api.post(`/api/v1/me/survey`, { source: query.source, status: "active" }),
       (resp) => {
         setSurveys(resp.data);
       },
@@ -58,7 +60,10 @@ export default function SurveyDashboard() {
     },
     {
       title: "Total Earning Opportunity",
-      value: `${availableSurveys?.reduce((sum, survey) => sum + survey.points, 0)} pts`,
+      value:
+        availableSurveys.length === 0
+          ? `-`
+          : `${availableSurveys?.reduce((sum, survey) => sum + survey.points, 0)} pts`,
       subtitle: "Across all surveys",
       icon: <AccountBalanceWalletOutlinedIcon />,
       color: "#16A34A",
@@ -66,7 +71,10 @@ export default function SurveyDashboard() {
     },
     {
       title: "Estimated Time",
-      value: `${Math.round(availableSurveys?.reduce((sum, survey) => sum + survey.loi, 0) / availableSurveys?.length)} min`,
+      value:
+        availableSurveys.length === 0
+          ? `-`
+          : `${Math.round(availableSurveys?.reduce((sum, survey) => sum + survey.loi, 0) / availableSurveys?.length)} min`,
       subtitle: "On average",
       icon: <AccessTimeOutlinedIcon />,
       color: "#7C3AED",
@@ -74,7 +82,10 @@ export default function SurveyDashboard() {
     },
     {
       title: "Average Reward",
-      value: `${availableSurveys?.reduce((sum, survey) => sum + survey.points, 0) / availableSurveys?.length} pts`,
+      value:
+        availableSurveys.length === 0
+          ? `-`
+          : `${Math.round(availableSurveys?.reduce((sum, survey) => sum + survey.points, 0) / availableSurveys?.length)} pts`,
       subtitle: "Per survey",
       icon: <CardGiftcardOutlinedIcon />,
       color: "#F59E0B",
@@ -84,21 +95,11 @@ export default function SurveyDashboard() {
 
   return (
     <Box sx={{ p: { xs: 1, md: 2.5 }, bgcolor: "#eff3f5" }}>
-      <SurveyStat stats={stats} isLoading={isLoading}   />
-      <Divider sx={{ my: 3, bgcolor: "#ffe" }} />
-      <SurveyList surveys={surveys} query={query}  isLoading={isLoading}/>
-    </Box>
-  );
-}
-
-function SurveyStat({ stats, isLoading }) {
-  return (
-    <>
       <Stack
         direction="row"
         justifyContent="space-between"
         alignItems="flex-start"
-        mb={4}
+        mb={3}
       >
         <Grid size={{ xs: 12, md: 6 }}>
           <Typography
@@ -116,27 +117,25 @@ function SurveyStat({ stats, isLoading }) {
         <Grid size={{ xs: 12, md: 6 }}>
           <SurveyPoints onUpdate={() => {}} />
         </Grid>
-
-        {/* <IconButton
-          onClick={() => {}}
-          sx={{
-            border: "1px solid",
-            borderColor: "divider",
-            borderRadius: 3,
-            bgcolor: "#fff",
-            px: 2,
-            py: 1,
-            gap: 1,
-            color: "primary.main",
-          }}
-        >
-          <RefreshIcon fontSize="small" />
-
-          <Typography variant="button" fontWeight={600}>
-            Refresh
-          </Typography>
-        </IconButton> */}
       </Stack>
+      <Collapse
+        in={availableSurveys.length !== 0 && !isLoading}
+        timeout="auto"
+        unmountOnExit
+      >
+        <SurveyStat stats={stats} isLoading={isLoading} />
+      </Collapse>
+      <Divider sx={{ my: 2, bgcolor: "#ffe" }} />
+      <SurveyList surveys={surveys} query={query} isLoading={isLoading} />
+      <Divider sx={{ my: 2, bgcolor: "#ffe" }} />
+      <SurveyHistory />
+    </Box>
+  );
+}
+
+function SurveyStat({ stats, isLoading }) {
+  return (
+    <>
       <Grid container spacing={3}>
         {stats.map((item, index) => (
           <Grid
@@ -160,51 +159,59 @@ function SurveyStat({ stats, isLoading }) {
               }}
             >
               <CardContent sx={{ p: 2.5 }}>
-                  {isLoading ? (
-                            <Box
-                              sx={{
-                                position: "absolute",
-                                top: "50%",
-                                left: "50%",
-                                transform: "translate(-50%, -50%)",
-                                display: "inline-flex",
-                                zIndex: 10,
-                              }}
-                            >
-                              <CircularProgress sx={{ color: "primary.main" }} thickness={2} />
-                            </Box>
-                          ) : (
-                <Stack direction="row" spacing={2} alignItems="flex-start">
-                  <Avatar
+                {isLoading ? (
+                  <Box
                     sx={{
-                      width: 56,
-                      height: 56,
-                      bgcolor: item.bg,
-                      color: item.color,
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      display: "inline-flex",
+                      zIndex: 10,
                     }}
                   >
-                    {item.icon}
-                  </Avatar>
-
-                  <Box>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      fontWeight={600}
-                      mb={1}
-                    >
-                      {item.title}
-                    </Typography>
-
-                    <Typography variant="h5" fontWeight={700}>
-                      {item.value}
-                    </Typography>
-
-                    <Typography variant="body2" color="text.secondary" mt={0.5}>
-                      {item.subtitle}
-                    </Typography>
+                    <CircularProgress
+                      sx={{ color: "primary.main" }}
+                      thickness={2}
+                    />
                   </Box>
-                </Stack>)}
+                ) : (
+                  <Stack direction="row" spacing={2} alignItems="flex-start">
+                    <Avatar
+                      sx={{
+                        width: 56,
+                        height: 56,
+                        bgcolor: item.bg,
+                        color: item.color,
+                      }}
+                    >
+                      {item.icon}
+                    </Avatar>
+
+                    <Box>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        fontWeight={600}
+                        mb={1}
+                      >
+                        {item.title}
+                      </Typography>
+
+                      <Typography variant="h5" fontWeight={700}>
+                        {item.value}
+                      </Typography>
+
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        mt={0.5}
+                      >
+                        {item.subtitle}
+                      </Typography>
+                    </Box>
+                  </Stack>
+                )}
               </CardContent>
             </Card>
           </Grid>
@@ -239,13 +246,14 @@ function SurveyList({ surveys, query, isLoading }) {
   ];
 
   return (
-    <Box sx={{ mt: 4 }}>
+    <Box sx={{ mt: 2 }}>
       <DataCards
         data={surveys}
         isLoading={isLoading}
         filter={filters.find((filter) => filter.label === activeFilter)}
         pageSize={5}
         getSearchText={(row) => row.name}
+        emptyMessage="No surveys available."
         renderToolbar={() => (
           <Box
             sx={{

@@ -1131,7 +1131,6 @@ function Summary() {
       .get(`/api/v1/me/points`)
       .then((resp) => {
         if (resp.status === "error") router.replace("/survey?name=welcome");
-        // if (!resp.data) return useToast(resp);
         let data = resp.data;
         setPoints(data.totalPoints);
         setThreshold(data.threshold);

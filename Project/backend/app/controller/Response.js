@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 import { CrudController, Mutate } from "../utils/index.js";
 import { Response as responseModel, Survey as surveyModel } from "../model/index.js";
-const threshold={
-    rewards:1000,
-    loi:10
+const threshold = {
+    rewards: 1000,
+    loi: 10
 }
 class Response extends CrudController {
     async setStatus(responseID, status) {
@@ -63,7 +63,7 @@ class Response extends CrudController {
                     total: {
                         $sum: { $cond: [{ $eq: ["$status", "invited"] }, 0, 1] }
                     },
-                    available:{
+                    available: {
                         $sum: { $cond: [{ $eq: ["$status", "invited"] }, 1, 0] }
                     },
                     complete: {
@@ -101,7 +101,7 @@ class Response extends CrudController {
                     total: {
                         $sum: { $cond: [{ $eq: ["$status", "invited"] }, 0, 1] }
                     },
-                    available:{
+                    available: {
                         $sum: { $cond: [{ $eq: ["$status", "invited"] }, 1, 0] }
                     },
                     complete: {
@@ -155,10 +155,18 @@ class Response extends CrudController {
         let userID = new mongoose.Types.ObjectId(this.request.user._id);
 
         let participationFilters = {};
-        if (filter.status === "active") {
-            participationFilters.status = { $in: ["invited", "dropout"] };
+        if (filter.status) {
+            switch (filter.status) {
+                case "active":
+                    participationFilters.status = { $in: ["invited", "dropout"] };
+                    break;
+                case "new":
+                    participationFilters.status = { $in: ["invited"] };
+                    break;
+            }
             delete filter.status;
         }
+
 
         let pipeline = [
             {
@@ -205,6 +213,7 @@ class Response extends CrudController {
             }
         });
         //*/
+        console.log({ aggregation: pipeline })
         let surveys = Mutate(await responseModel.aggregate(pipeline));
         console.log(surveys);
         return surveys;
@@ -241,30 +250,30 @@ class Response extends CrudController {
                     all: {
                         $sum: 1
                     },
-                    highRewards:{
-                        $sum:{
-                            $cond: [{ $gte: ["$surveyDetails.points", threshold.rewards] }, 1,0]
+                    highRewards: {
+                        $sum: {
+                            $cond: [{ $gte: ["$surveyDetails.points", threshold.rewards] }, 1, 0]
                         }
                     },
-                    short:{
-                        $sum:{
-                            $cond: [{ $gte: ["$surveyDetails.loi", threshold.loi] }, 1,0]
+                    short: {
+                        $sum: {
+                            $cond: [{ $gte: ["$surveyDetails.loi", threshold.loi] }, 1, 0]
                         }
                     },
-                    newSurveys:{
-                        $sum:{
-                        $cond: [{ $eq: ["$status", "invited"] }, 1,0]
+                    newSurveys: {
+                        $sum: {
+                            $cond: [{ $eq: ["$status", "invited"] }, 1, 0]
                         }
                     }
                 }
             }
         ]))
-//        console.log(surveys);
-//        if (surveys.length === 1) return surveys[0];
-        return surveys.reduce((a,c)=>{
-            a[c._id]=c;
+        //        console.log(surveys);
+        //        if (surveys.length === 1) return surveys[0];
+        return surveys.reduce((a, c) => {
+            a[c._id] = c;
             return a;
-        },{})
+        }, {})
     }
 }
 

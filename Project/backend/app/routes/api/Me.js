@@ -360,9 +360,7 @@ router
         async req => {
             let message = "";
             const { dateRange, source, status } = req.body;
-            console.log({
-                dateRange, source, status
-            })
+
             let filters = {}
             if (dateRange && (dateRange instanceof Array) && dateRange.length === 2) {
                 const start = new Date(dateRange[0]);
