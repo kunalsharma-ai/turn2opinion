@@ -359,7 +359,7 @@ router
     .post(expressRoute(
         async req => {
             let message = "";
-            const { dateRange, source, status } = req.body;
+            const { dateRange, source, status, slug } = req.body;
 
             let filters = {}
             if (dateRange && (dateRange instanceof Array) && dateRange.length === 2) {
@@ -387,6 +387,13 @@ router
                     status
                 }
             }
+            if (slug) {
+                filters = {
+                    ...filters,
+                    slug
+                }
+            }
+
             let data = await responseController.mySurveys(filters);
             // throw new Error("Under development")
             return { message, data }

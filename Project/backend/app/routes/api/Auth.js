@@ -31,6 +31,7 @@ router
           redirect: `/?signup=1&${searchParams.toString()}`
         };
       }
+      if (user?.isVerified?.email === "unverified") return { message: 'your email is not verified', data: user, redirect: `/?verifyemail=${user.mail}` }
       token = Token.generate({
         _id: user._id,
         category: user.category,
@@ -40,7 +41,7 @@ router
         origin: user.origin,
         role: user.role ?? ""
       })
-      return { message: "", data: [], token, redirect: "/member/dashboard" }
+      return { message: "", data: ["a"], token, redirect: "/member/dashboard" }
     },
       userController
     )

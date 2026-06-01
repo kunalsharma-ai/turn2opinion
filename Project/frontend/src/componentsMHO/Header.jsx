@@ -24,7 +24,11 @@ import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import { useMember, useQuery } from "@/Context";
 
-export default function Header({ setOpenLogin, setOpenSignUp }) {
+export default function Header({
+  setOpenLogin,
+  setOpenSignUp,
+  setEmailUnverified,
+}) {
   const [profileAnchorEl, setProfileAnchorEl] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -35,6 +39,14 @@ export default function Header({ setOpenLogin, setOpenSignUp }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const query = useQuery();
+
+  React.useEffect(() => {
+    if (!query) return;
+    if (![null, undefined].includes(query.verifyemail)) {
+      setOpenSignUp(true);
+      setEmailUnverified(query.verifyemail);
+    }
+  }, [query]);
 
   useEffect(() => {
     if (!query) return;

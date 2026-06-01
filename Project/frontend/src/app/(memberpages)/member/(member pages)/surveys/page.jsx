@@ -95,11 +95,13 @@ export default function SurveyDashboard() {
 
   return (
     <Box sx={{ p: { xs: 1, md: 2.5 }, bgcolor: "#eff3f5" }}>
-      <Stack
-        direction="row"
+      <Grid
+        size={12}
+        container
         justifyContent="space-between"
         alignItems="flex-start"
         mb={3}
+        spacing={{ xs: 3, md: 0 }}
       >
         <Grid size={{ xs: 12, md: 6 }}>
           <Typography
@@ -114,10 +116,9 @@ export default function SurveyDashboard() {
             Complete surveys, share your opinion and earn rewards.
           </Typography>
         </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <SurveyPoints onUpdate={() => {}} />
-        </Grid>
-      </Stack>
+
+        <SurveyPoints onUpdate={() => {}} />
+      </Grid>
       <Collapse
         in={availableSurveys.length !== 0 && !isLoading}
         timeout="auto"

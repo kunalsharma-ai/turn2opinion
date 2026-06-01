@@ -161,8 +161,7 @@ export default function Survey({
           maxWidth: "100%",
           overflowY: "auto",
           borderRadius: 2,
-          // bgcolor: "#8cb2f333",
-
+          bgcolor: "#8cb2f333",
           border: "1px solid #f4f4f4",
           py: 2,
           px: { xs: 0, md: 2 },

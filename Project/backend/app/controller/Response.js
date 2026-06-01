@@ -151,7 +151,6 @@ class Response extends CrudController {
         throw new Error("Invalid request");
     }
     async mySurveys(filter = {}) {
-        console.log(filter)
         let userID = new mongoose.Types.ObjectId(this.request.user._id);
 
         let participationFilters = {};
@@ -198,6 +197,9 @@ class Response extends CrudController {
         if (filter.source) {
             pipeline.push({ $match: { "surveyInfo.source": filter.source } });
         }
+        if (filter.slug) {
+            pipeline.push({ $match: { "surveyInfo.slug": filter.slug } });
+        }
 
         pipeline.push({
             $project: {
@@ -213,9 +215,7 @@ class Response extends CrudController {
             }
         });
         //*/
-        console.log({ aggregation: pipeline })
         let surveys = Mutate(await responseModel.aggregate(pipeline));
-        console.log(surveys);
         return surveys;
     }
     async mySurveyCounts() {

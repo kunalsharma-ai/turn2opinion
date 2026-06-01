@@ -62,14 +62,19 @@ function capitalizeName(str) {
 }
 const today = new Date();
 
-export default function SignUp({ open, onClose, setOpenLogin }) {
+export default function SignUp({
+  open,
+  onClose,
+  setOpenLogin,
+  emailUnverified,
+}) {
   const [query, member, telemetry, router] = [
     useQuery(),
     useMember(),
     useTelemetry(),
     useRouter(),
   ];
-  const [status, setStatus] = React.useState("signup"); // signup, success, duplicate
+  const [status, setStatus] = React.useState("signup"); // signup, success, duplicate, unverified
   const [isLoading, setIsLoading] = React.useState(false);
   const [country, setCountry] = React.useState("");
   const form = useForm({
@@ -121,12 +126,16 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
   };
 
   const authProviders = providers.map((provider) => ({
-    label: `Continue with ${
-      provider.name.charAt(0).toUpperCase() + provider.name.slice(1)
-    }`,
+    label: `Continue with ${provider.name.charAt(0).toUpperCase() + provider.name.slice(1)
+      }`,
     icon: providerIcons[provider.name?.toLowerCase()] || <LoginIcon />,
     href: provider.authUrl,
   }));
+  React.useEffect(() => {
+    if (emailUnverified) {
+      setStatus("unverified");
+    }
+  }, [emailUnverified]);
 
   React.useEffect(() => {
     if (!telemetry) return;
@@ -808,6 +817,128 @@ export default function SignUp({ open, onClose, setOpenLogin }) {
                     onClick={async () => {
                       let resp = await api.post(`/api/v1/user/resend`, {
                         ...form.watch(),
+                        action: "resend-otp",
+                      });
+                      useToast(resp);
+                      setCooldown(RESEND_SECONDS);
+                    }}
+                  >
+                    {cooldown > 0
+                      ? `Resend Email Again in ${cooldown}s`
+                      : "Resend Verification Email"}
+                  </Page.MuiButton>
+
+                  <Page.MuiButton
+                    variant="outlined"
+                    color="secondary"
+                    sx={{ fontWeight: "bold", mt: 2, borderWidth: 3 }}
+                    onClick={onClose}
+                  >
+                    Go To Home
+                  </Page.MuiButton>
+                </Page.Box>
+              </Grid>
+            </Grid>
+          )}
+
+          {status == "unverified" && (
+            <Grid
+              size={12}
+              container
+              alignItems="center"
+              sx={{
+                minHeight: { xs: "90vh", lg: "80vh" },
+                p: { xs: 1, md: 6 },
+                border: 1.5,
+                borderColor: "#33aaca",
+              }}
+            >
+              <Grid
+                size={12}
+                container
+                spacing={4}
+                alignItems="center"
+                direction="column"
+              >
+                <ErrorIcon color="primary" sx={{ fontSize: "80px" }} />
+                <Page.Text
+                  component="span"
+                  sx={{
+                    color: "secondary.main",
+                    fontSize: { xs: "18px", md: "26px" },
+                    fontWeight: 600,
+                  }}
+                >
+                  Email Already Registered
+                </Page.Text>{" "}
+                <Page.Box
+                  sx={{
+                    textAlign: "center",
+                    borderRadius: 5,
+                    bgcolor: "#8cb2f333",
+                    border: "1px solid #f4f4f4",
+                    p: 4,
+                  }}
+                >
+                  <Page.Text
+                    sx={{
+                      fontSize: "16px",
+                      fontWeight: 500,
+                    }}
+                  >
+                    Please check your inbox/Spam and{" "}
+                    <strong>click the verification link</strong> to confirm your
+                    email and <strong>activate your account.</strong> Once
+                    verified, you will be able to create your password and
+                    access available surveys and research opportunities surveys
+                    made just for you!
+                  </Page.Text>
+                  <Page.Text
+                    sx={{
+                      mt: 2,
+                      fontSize: "16px",
+                      fontWeight: 500,
+                    }}
+                  >
+                    In case, verification link is expired, please request a new
+                    one by clicking on{" "}
+                    <strong>Resend Verification Email</strong> button below.
+                  </Page.Text>
+                </Page.Box>
+                <Page.Box sx={{ display: "flex", gap: 2 }}>
+                  <Page.MuiButton
+                    variant="contained"
+                    color="secondary"
+                    disabled={cooldown > 0}
+                    sx={{
+                      position: "relative",
+                      fontWeight: "bold",
+                      mt: 2,
+                      color: "white",
+                      background:
+                        cooldown > 0
+                          ? `linear-gradient(to right,
+            #437ad4 ${progress}%,
+            rgba(255,255,255,0.2) ${progress}%
+          )`
+                          : undefined,
+                      padding: "12px 24px",
+                      "&::before": {
+                        content: '""',
+                        position: "absolute",
+                        inset: 3,
+                        backgroundColor: "#063686",
+                        borderRadius: "999px",
+                        zIndex: -1,
+                      },
+                      "& > span": {
+                        position: "relative",
+                        zIndex: 1,
+                      },
+                    }}
+                    onClick={async () => {
+                      let resp = await api.post(`/api/v1/user/resend`, {
+                        mail: query.verifyemail,
                         action: "resend-otp",
                       });
                       useToast(resp);

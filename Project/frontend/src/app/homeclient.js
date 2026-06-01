@@ -27,25 +27,13 @@ export default function HomeClient() {
   const [visible, setVisible] = React.useState(false);
   const [openLogin, setOpenLogin] = React.useState(false);
   const [openSignUp, setOpenSignUp] = React.useState(false);
+  const [emailUnverified, setEmailUnverified] = React.useState(null);
 
   const sections = [
     { label: "About", id: "about" },
     { label: "Steps to Join", id: "how-it-works" },
     { label: "Contact Us", isExternalPage: true, path: "/contact" },
   ];
-
-  React.useEffect(() => {
-    if (query && query.signup !== undefined) {
-      setOpenSignUp(true);
-    }
-  }, [query]);
-
-  React.useEffect(() => {
-    if (!query) return;
-    if (![null, undefined].includes(query.login)) {
-      setOpenLogin(true);
-    }
-  }, [query]);
 
   React.useEffect(() => {
     const scrollContainer = document.getElementById("scroll-container");
@@ -86,6 +74,7 @@ export default function HomeClient() {
                 sections={sections}
                 setOpenLogin={setOpenLogin}
                 setOpenSignUp={setOpenSignUp}
+                setEmailUnverified={setEmailUnverified}
               />
             </React.Suspense>
           </ContextProviders>
@@ -131,6 +120,7 @@ export default function HomeClient() {
             open={openSignUp}
             onClose={() => setOpenSignUp(false)}
             setOpenLogin={setOpenLogin}
+            emailUnverified={emailUnverified}
           />
 
           <Login

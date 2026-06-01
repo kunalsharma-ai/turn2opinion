@@ -83,7 +83,6 @@ function Stats({ threshold, conversionRate }) {
       (resp) => {
         if (!resp.data) return useToast(resp);
         let data = resp.data;
-        console.table(data);
         setStatistics(data);
       },
       () => {
@@ -150,7 +149,6 @@ function Surveys() {
         if (!resp || resp.status === "error") return;
         const { data } = resp;
         setAvailableSurveys(data);
-        console.table(data);
       },
       () => {
         setIsLoading(false);
@@ -238,12 +236,12 @@ function Surveys() {
       <Box width="100%">
         <Typography
           sx={{
-            fontSize: "16px",
-            display: "inline-block",
-            fontWeight: "600",
-            borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
+            fontSize: "18px",
+            fontWeight: "700",
+            color: "secondary.main",
+            letterSpacing: "-0.5px",
             pb: 0.5,
-            my: 2,
+            my: 1,
           }}
         >
           Available Surveys
@@ -260,11 +258,9 @@ function Surveys() {
             alignItems="center"
             justifyContent="center"
             spacing={1}
-            py={3}
+            p={{ xs: 3, md: 4 }}
             sx={{
               boxShadow: 3,
-              // border: (theme) => `1px solid ${theme.palette.primary.main}`,
-              // bgcolor: (theme) => theme.palette.cardbg.main,
               background:
                 index === 0
                   ? "linear-gradient(135deg, #0891b2 0%, #3dbddf  100%)"
@@ -275,89 +271,205 @@ function Surveys() {
               textAlign: "center",
               transition: "transform 0.35s ease, box-shadow 0.35s ease",
               willChange: "transform",
-
-              pointerEvents: survey.isAvailable ? "auto" : "none",
-              filter: survey.isAvailable ? "grayscale(0)" : "grayscale(1)",
-              userSelect: survey.isAvailable ? "auto" : "none",
+              position: "relative",
+              minHeight: 310,
               "&:hover": {
                 boxShadow: "0 12px 32px rgba(0,0,0,0.28)",
                 // transform: "translateY(-2px) scale(1.01)",
               },
             }}
           >
-            <Typography
-              sx={{
-                fontWeight: "600",
-                fontSize: "20px",
-              }}
-            >
-              {survey.name}
-            </Typography>{" "}
-            <Typography sx={{ fontSize: "15px", px: 1 }}>
-              {survey?.description}
-            </Typography>
-            <Grid
-              container
-              spacing={1.2}
-              justifyContent="center"
-              width="100%"
-              px={2}
-              mt={1}
-            >
-              {survey?.stat.map((item, statIndex) => (
-                <Grid key={statIndex} size={{ xs: 6, sm: 3 }}>
-                  <Page.Link
-                    href={`${survey.link}&filter=${item.filter}`}
+            {isLoading ? (
+              <Page.Box
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  display: "inline-flex",
+                  zIndex: 10,
+                }}
+              >
+                <CircularProgress sx={{ color: "white" }} thickness={2} />
+              </Page.Box>
+            ) : survey.isAvailable ? (
+              <>
+                <Typography
+                  sx={{
+                    fontWeight: "700",
+                    fontSize: "22px",
+                    letterSpacing: "-0.5px",
+                    mb: 1,
+                  }}
+                >
+                  {survey.name}
+                </Typography>{" "}
+                <Typography
+                  sx={{
+                    fontSize: "14px",
+                    px: 2,
+                    lineHeight: 1.6,
+                    opacity: 0.85,
+                    mb: 3,
+                    maxWidth: "500px",
+                  }}
+                >
+                  {survey?.description}
+                </Typography>
+                <Grid
+                  container
+                  spacing={1.2}
+                  justifyContent="center"
+                  width="100%"
+                  px={2}
+                  mt={1}
+                >
+                  {survey?.stat.map((item, statIndex) => (
+                    <Grid key={statIndex} size={{ xs: 6, sm: 3 }}>
+                      <Page.Link
+                        href={`${survey.link}&filter=${item.filter}`}
+                        sx={{
+                          textDecoration: "none",
+                          "&:hover": {
+                            textDecoration: "none",
+                          },
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            borderRadius: 2,
+                            background: item.bg,
+                            color: "#fff",
+                            py: 1.5,
+                            px: 1,
+                            textAlign: "center",
+                            cursor: "pointer",
+
+                            transition: "all 0.25s ease",
+
+                            "&:hover": {
+                              transform: "translateY(-2px)",
+                              boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
+                            },
+                          }}
+                        >
+                          <Typography
+                            sx={{
+                              fontSize: "11px",
+                              fontWeight: "700",
+                              opacity: 0.9,
+                              whiteSpace: "nowrap",
+                              textTransform: "uppercase",
+                              letterSpacing: "0.5px",
+                              mb: 0.5,
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            {item.title}
+                          </Typography>
+
+                          <Typography
+                            sx={{
+                              fontSize: "24px",
+                              fontWeight: 800,
+                              lineHeight: 1.1,
+                            }}
+                          >
+                            {item.count}
+                          </Typography>
+                        </Box>
+                      </Page.Link>
+                    </Grid>
+                  ))}
+                </Grid>
+              </>
+            ) : (
+              <Box
+                width={"100%"}
+                display="flex"
+                alignItems="center"
+                flexDirection={{ xs: "column", xl: "row" }}
+                justifyContent="space-between"
+                gap={1}
+                mb={2}
+                textAlign="center"
+                px={3}
+                position={"relative"}
+                zIndex={2}
+              >
+                <Box
+                  component="img"
+                  src={
+                    index === 0
+                      ? "/images/no-survey.png"
+                      : "/images/no-daily-survey.png"
+                  }
+                  alt="No surveys"
+                  sx={{
+                    width: 220,
+                    maxWidth: "100%",
+                    objectFit: "contain",
+                    mb: 2,
+                    filter: "drop-shadow(0 8px 18px rgba(0,0,0,0.12))",
+                  }}
+                />
+
+                <Box display="flex" flexDirection="column" alignItems="center">
+                  <Typography
                     sx={{
-                      textDecoration: "none",
-                      "&:hover": {
-                        textDecoration: "none",
-                      },
+                      fontSize: "20px",
+                      fontWeight: 800,
+                      lineHeight: 1.1,
+                      mb: 1,
                     }}
                   >
-                    <Box
-                      sx={{
-                        borderRadius: 2,
-                        background: item.bg,
-                        color: "#fff",
-                        py: 1,
-                        px: 1,
-                        textAlign: "center",
-                        cursor: "pointer",
+                    {index === 0
+                      ? "No surveys right now"
+                      : "No daily surveys yet"}
+                  </Typography>
 
-                        transition: "all 0.25s ease",
+                  <Typography
+                    sx={{
+                      fontSize: "15px",
+                      opacity: 0.92,
+                      maxWidth: 360,
+                      lineHeight: 1.7,
+                      mb: 3,
+                    }}
+                  >
+                    {index === 0
+                      ? "Keep your profile details updated regularly to unlock more relevant survey opportunities and higher reward matches."
+                      : "Quick surveys and earning opportunities will appear throughout the day."}
+                  </Typography>
+
+                  {index === 0 && (
+                    <Button
+                      href="/member/profiles"
+                      variant="contained"
+                      disableElevation
+                      sx={{
+                        borderRadius: "14px",
+                        px: 3,
+                        py: 1,
+                        background: "rgba(255,255,255,0.18)",
+                        backdropFilter: "blur(12px)",
+                        border: "1px solid rgba(255,255,255,0.25)",
+                        color: "#ffffff",
+                        fontWeight: 700,
+                        textTransform: "none",
 
                         "&:hover": {
-                          transform: "translateY(-2px)",
-                          boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
+                          background: "rgba(255,255,255,0.24)",
                         },
                       }}
                     >
-                      <Typography
-                        sx={{
-                          fontSize: "12px",
-                          fontWeight: 600,
-                          opacity: 0.9,
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {item.title}
-                      </Typography>
-
-                      <Typography
-                        sx={{
-                          fontSize: "22px",
-                          fontWeight: 700,
-                          lineHeight: 1.1,
-                        }}
-                      >
-                        {item.count}
-                      </Typography>
-                    </Box>
-                  </Page.Link>
-                </Grid>
-              ))}
-            </Grid>
+                      Update Profile
+                    </Button>
+                  )}
+                </Box>
+              </Box>
+            )}
           </Grid>
         );
       })}
@@ -394,11 +506,99 @@ export function SurveyHistory() {
       },
     );
   }, [user, dateRange]);
+
+  const renderStatusBadge = (status, source, slug) => {
+    if (source === "internal" && status === "dropout") {
+      return (
+        <Page.Link
+          href={`/survey?name=${slug}`}
+          sx={{
+            display: "inline-block",
+            textDecoration: "none",
+            bgcolor: "primary.main",
+            color: "#fff !important",
+            px: 2,
+            py: 0.4,
+            borderRadius: "20px",
+            fontSize: "12px",
+            fontWeight: "600",
+            textAlign: "center",
+            boxShadow: "0 2px 8px rgba(12, 90, 219, 0.2)",
+            transition: "all 0.25s ease",
+            "&:hover": {
+              textDecoration: "none",
+              transform: "translateY(-1px)",
+              boxShadow: "0 4px 12px rgba(12, 90, 219, 0.4)",
+              bgcolor: "secondary.main",
+            },
+          }}
+        >
+          Continue
+        </Page.Link>
+      );
+    }
+
+    const config = {
+      complete: {
+        bg: "#e6f4ea",
+        color: "#137333",
+        border: "rgba(19, 115, 51, 0.15)",
+      },
+      terminate: {
+        bg: "#fce8e6",
+        color: "#c5221f",
+        border: "rgba(197, 34, 31, 0.15)",
+      },
+      overquota: {
+        bg: "#fef7e0",
+        color: "#b06000",
+        border: "rgba(176, 96, 0, 0.15)",
+      },
+      dropout: {
+        bg: "#f3f4f6",
+        color: "#4b5563",
+        border: "rgba(75, 85, 99, 0.15)",
+      },
+    };
+
+    const style = config[status] || {
+      bg: "#f3f4f6",
+      color: "#4b5563",
+      border: "rgba(75, 85, 99, 0.15)",
+    };
+
+    return (
+      <Box
+        sx={{
+          display: "inline-block",
+          bgcolor: style.bg,
+          color: style.color,
+          border: `1px solid ${style.border}`,
+          borderRadius: "20px",
+          px: 1.8,
+          py: 0.4,
+          fontSize: "12px",
+          fontWeight: "600",
+          textTransform: "capitalize",
+          textAlign: "center",
+        }}
+      >
+        {status}
+      </Box>
+    );
+  };
+
   const columns = [
     {
       id: "surveyname",
       label: "Survey Name",
-      render: (info) => info?.survey?.name,
+      render: (info) => (
+        <Typography
+          sx={{ fontWeight: "600", color: "primary.main", fontSize: "14px" }}
+        >
+          {info?.survey?.name}
+        </Typography>
+      ),
       feature: ["searchable", "sortable", "lockable"],
     },
     {
@@ -406,7 +606,11 @@ export function SurveyHistory() {
       label: "Start time",
       render: (info) => {
         if (["complete", "terminate", "overquota"].includes(info.status))
-          return new Date(info.timeline.start).toLocaleString();
+          return (
+            <Typography sx={{ color: "text.secondary", fontSize: "13px" }}>
+              {new Date(info.timeline.start).toLocaleString()}
+            </Typography>
+          );
         return "";
       },
       feature: ["sortable", "lockable"],
@@ -415,49 +619,65 @@ export function SurveyHistory() {
       id: "loi",
       label: "Length of Interview",
       width: 220,
-      render: (info) =>
-        ["complete", "terminate", "overquota"].includes(info.status)
-          ? (new Date(info.updatedAt) - new Date(info.timeline.start))?.toTime()
-          : "",
+      render: (info) => {
+        if (["complete", "terminate", "overquota"].includes(info.status)) {
+          const loi = (
+            new Date(info.updatedAt) - new Date(info.timeline.start)
+          )?.toTime();
+          return (
+            <Typography sx={{ color: "text.secondary", fontSize: "13px" }}>
+              {loi}
+            </Typography>
+          );
+        }
+        return "";
+      },
       feature: ["sortable", "lockable"],
     },
     {
       id: "status",
       label: "Status",
       render: (info) =>
-        info.source === "internal" && info.status === "dropout" ? (
-          <Page.Link href={`/survey?name=${info.survey.slug}`}>
-            Continue
-          </Page.Link>
-        ) : (
-          <Page.Text
-            sx={{
-              fontSize: 13,
-              textTransform: "capitalize",
-              color: info.status === "dropout" ? "red" : "black",
-            }}
-          >
-            {info.status}
-          </Page.Text>
-        ),
+        renderStatusBadge(info.status, info.source, info.survey?.slug),
       feature: ["filterable", "sortable", "lockable"],
     },
     {
       id: "rewards",
       label: "Rewards",
-      render: (info) => (
-        <span>{info.status === "complete" ? info.points : 0} Points</span>
-      ),
+      render: (info) => {
+        const isComplete = info.status === "complete";
+        return (
+          <Box display="flex" alignItems="center" gap={1}>
+            <Box
+              sx={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                bgcolor: isComplete ? "#d97706" : "text.disabled",
+              }}
+            />
+            <Typography
+              sx={{
+                fontWeight: isComplete ? "700" : "500",
+                color: isComplete ? "#d97706" : "text.secondary",
+                fontSize: "13px",
+              }}
+            >
+              {isComplete ? `${info.points} Points` : "0 Points"}
+            </Typography>
+          </Box>
+        );
+      },
     },
   ];
+
   return (
     <Datatable
-      isLoading={false}
+      isLoading={isLoading}
       pagination={[10, 20, 50, 100]}
       pageSize={20}
       noDataMsg="No Record Found."
       data={data.filter((info) => info.status !== "invited")}
-      // noBorderRadius={true}
       hideDownload={true}
       hideColumnSelector
       extra={
@@ -474,10 +694,10 @@ export function SurveyHistory() {
       title={
         <Typography
           sx={{
-            fontSize: "16px",
-            display: "inline-block",
-            fontWeight: "600",
-            borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
+            fontSize: "18px",
+            fontWeight: "700",
+            color: "secondary.main",
+            letterSpacing: "-0.5px",
             pb: 0.5,
             my: 1,
           }}

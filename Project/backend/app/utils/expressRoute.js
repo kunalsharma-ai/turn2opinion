@@ -5,7 +5,7 @@ export default function expressRoute(callback, Controller) {
             Controller.request = req;
             const { message, data, token, redirect } = await callback(req);
 
-            if (!token)
+            if (!token && !redirect)
                 return res.json(APIResponse.Success(message, data))
             res.cookie("authorization", `Bearer ${token}`, {
                 httpOnly: true,

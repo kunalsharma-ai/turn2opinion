@@ -108,6 +108,7 @@ class Survey extends CrudController {
         // check if survey exists
         let temp = await super.findOne({ name: data.name })
         if (temp) {
+            console.log(temp);
             throw new Error("Survey already launched through this panel");
         }
         let survey = await super.create(data);

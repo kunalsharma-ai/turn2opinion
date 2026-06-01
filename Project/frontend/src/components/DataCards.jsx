@@ -31,8 +31,10 @@ export default function DataCards({
   pagination = [1, 5, 10, 25, 50],
   cardProps = {},
 }) {
-
-  const rawdata = ([null, undefined].indexOf(filter?.filter) === -1) ? data.filter(filter.filter) : data;
+  const rawdata =
+    [null, undefined].indexOf(filter?.filter) === -1
+      ? data.filter(filter.filter)
+      : data;
   const [page, setPage] = React.useState(0);
 
   const [pageSize, setPageSize] = React.useState(defaultPageSize);
@@ -40,7 +42,6 @@ export default function DataCards({
   const [search, setSearch] = React.useState("");
 
   const filteredRows = React.useMemo(() => {
-
     if (!search?.trim()) return rawdata;
 
     return rawdata.filter((row) => {
@@ -176,42 +177,42 @@ export default function DataCards({
         >
           {isLoading
             ? [...Array(8)].map((_, i) => (
-              <Card
-                key={i}
-                sx={{
-                  borderRadius: "12px",
-                  p: 2,
-                }}
-              >
-                <Skeleton height={40} />
-                <Skeleton height={20} />
-                <Skeleton height={20} />
-                <Skeleton height={20} />
-              </Card>
-            ))
+                <Card
+                  key={i}
+                  sx={{
+                    borderRadius: "12px",
+                    p: 2,
+                  }}
+                >
+                  <Skeleton height={40} />
+                  <Skeleton height={20} />
+                  <Skeleton height={20} />
+                  <Skeleton height={20} />
+                </Card>
+              ))
             : visibleRows.map((row, index) => (
-              <Card
-                key={row.id || `card-${index}`}
-                elevation={2}
-                {...cardProps}
-                sx={{
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  transition: "all 0.2s ease",
-                  // border: "1px solid rgba(0,0,0,0.01)",
-                  "&:hover": {
-                    transform: "translateY(-2px)",
-                    // boxShadow: 4,
-                  },
-                  ...cardProps?.sx,
-                }}
-              >
-                {card(row)}
-              </Card>
-            ))}
+                <Card
+                  key={row.id || `card-${index}`}
+                  elevation={2}
+                  {...cardProps}
+                  sx={{
+                    borderRadius: "8px",
+                    overflow: "hidden",
+                    transition: "all 0.2s ease",
+                    // border: "1px solid rgba(0,0,0,0.01)",
+                    "&:hover": {
+                      transform: "translateY(-2px)",
+                      // boxShadow: 4,
+                    },
+                    ...cardProps?.sx,
+                  }}
+                >
+                  {card(row)}
+                </Card>
+              ))}
         </Box>
 
-        {!isLoading && visibleRows.length === 0 && (
+        {/* {!isLoading && visibleRows.length === 0 && (
           <Box
             sx={{
               height: "300px",
@@ -224,6 +225,47 @@ export default function DataCards({
             }}
           >
             <Typography color="text.secondary">{emptyMessage}</Typography>
+          </Box>
+        )} */}
+
+        {!isLoading && visibleRows.length === 0 && (
+          <Box
+            sx={{
+              minHeight: { xs: 180, md: 360 },
+              border: "1px solid rgba(0,0,0,0.06)",
+              borderRadius: "20px",
+              background: "#fff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden",
+              position: "relative",
+            }}
+          >
+            <Box
+              sx={{
+                position: "relative",
+                zIndex: 2,
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Box
+                component="img"
+                src="/images/empty-state.png"
+                alt="No data found"
+                sx={{
+                  transform:"scale(0.8)",
+                  width: "100%",
+                  maxWidth: 720,
+                  objectFit: "contain",
+                  userSelect: "none",
+                  pointerEvents: "none",
+                  // filter: "drop-shadow(0 12px 30px rgba(0,0,0,0.08))",
+                }}
+              />
+            </Box>
           </Box>
         )}
       </Box>
@@ -259,16 +301,37 @@ export default function DataCards({
               `Showing ${from} - ${to} of ${count}`
             }
             sx={{
-              "& .MuiTablePagination-toolbar": {
-                padding: 0,
-                flexWrap: "wrap",
-                justifyContent: "center",
-              },
-              "& .MuiTablePagination-selectLabel, & .MuiTablePagination-select":
-              {
-                display: { xs: "none", sm: "block" },
-              },
-            }}
+                  height: "auto",
+                  p: 0,
+                  m: 0,
+
+                  "& .MuiTablePagination-toolbar": {
+                    minHeight: "30px",
+                    padding: 0,
+                    margin: 0,
+                    width: "100%",
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                  },
+                  "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows":
+                    {
+                      margin: 0,
+                      padding: 0,
+                      fontSize: "13px !important",
+                    },
+                  "& .MuiTablePagination-select": {
+                    fontSize: "13px !important",
+                  },
+                  "& .MuiInputBase-root": {
+                    fontSize: "13px !important",
+                  },
+                  "& .MuiTablePagination-actions": {
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "4px",
+                    margin: 0,
+                  },
+                }}
           />
         </Box>
       )}

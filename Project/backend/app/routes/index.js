@@ -32,10 +32,7 @@ router
     .use("/api/v1/question", questionRouter)
     .use("/api/v1/option", optionRouter)
     .use("/api/v1/options", optionsRouter)
-    .use("/api/v1/user", (req, res, next) => {
-        console.log("user route called");
-        next()
-    }, userRouter)
+    .use("/api/v1/user", userRouter)
     .use("/api/v1/profile", profileRouter)
     .use("/api/v1/forgot-password", forgotPassword)
     .use("/api/v1/change-email", changeEmail)

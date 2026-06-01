@@ -26,7 +26,7 @@ import { setOrigin, expressRoute, fsLogger } from "./utils/index.js";
             compression(),
             express.static("/src/public"),
             cors({
-                origin: ["https://t2o.sampledge.duckdns.org", "https://admin.sampledge.duckdns.org", "http://localhost:3001"],
+                origin: ["https://t2o.sampledge.duckdns.org", "https://admin.sampledge.duckdns.org", "http://localhost:3001", "https://survey.sampledge.com"],
                 credentials: true,
                 allowedHeaders: ["Content-Type", "Authorization", "test"],
                 methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
