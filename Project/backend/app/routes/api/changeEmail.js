@@ -19,7 +19,7 @@ router
         async req => {
             let info = Token.verify(req.body.token);
             const data = await userController.read(info.user);
-            let message=`Please check your email ${info.email} to find a verification link on it and click to confirm the change of email address.`
+            let message = `Please check your email ${info.email} to find a verification link on it and click to confirm the change of email address.`
             let status = await otpController.verify(info.user, "email", req.origin, info.otp);
             let otp = await otpController.generate(
                 info.user,
@@ -44,7 +44,7 @@ router
             await sendMail(
                 { origin: req.origin, "content-type": "application/json" },
                 info.email,
-                "My Frequent Rewards: Update E-Mail Address",
+                `${process.env.PROJECT_NAME}: Update E-Mail Address`,
                 mailer.data
             )
             return { message, data };

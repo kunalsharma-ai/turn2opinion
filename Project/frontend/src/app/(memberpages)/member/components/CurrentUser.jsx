@@ -1,7 +1,15 @@
 "use client";
 
-import React from "react";
-import { Avatar, Box, Button, Grid, Typography } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Avatar,
+  Box,
+  Grid,
+  Typography,
+  IconButton,
+} from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useMember } from "@/Context";
 
 const maskEmail = (email) => {
@@ -15,11 +23,13 @@ const maskEmail = (email) => {
 
 export default function CurrentUser() {
   const [user] = [useMember()];
+  const [showEmail, setShowEmail] = useState(false);
+
   return (
     <Grid
       size={{ xs: 12, md: 6 }}
       container
-      alignItems={"center"}
+      alignItems="center"
       justifyContent={{ xs: "center", md: "flex-start" }}
       spacing={2}
       pb={{ xs: 2, md: 0 }}
@@ -37,6 +47,7 @@ export default function CurrentUser() {
           bgcolor: user?.profilePicture ? "transparent" : "primary.main",
         }}
       />
+
       <Box
         sx={{
           display: "flex",
@@ -51,9 +62,27 @@ export default function CurrentUser() {
         >
           {user?.fullName}
         </Typography>
-        <Typography fontSize={{ xs: "14px", md: "18px" }} fontWeight={500}>
-          {maskEmail(user?.mail)}
-        </Typography>
+
+        <Box display="flex" alignItems="center">
+          <Typography
+            fontSize={{ xs: "14px", md: "18px" }}
+            fontWeight={500}
+          >
+            {showEmail ? user?.mail : maskEmail(user?.mail)}
+          </Typography>
+
+          <IconButton
+            size="small"
+            onClick={() => setShowEmail((prev) => !prev)}
+            aria-label={showEmail ? "Hide email" : "Show email"}
+          >
+            {showEmail ? (
+              <VisibilityOffIcon fontSize="small" />
+            ) : (
+              <VisibilityIcon fontSize="small" />
+            )}
+          </IconButton>
+        </Box>
       </Box>
     </Grid>
   );

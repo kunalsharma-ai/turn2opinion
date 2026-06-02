@@ -95,7 +95,7 @@ router
             await sendMail(
                 { origin: req.origin, "content-type": "application/json" },
                 issueRaisedBy.email,
-                "My Frequent Rewards: Support Ticket Created",
+                `${process.env.PROJECT_NAME}: Support Ticket Created`,
                 toUser.data
             )
             let toTeam = await getMailer(
@@ -112,7 +112,7 @@ router
                 await sendMail(
                     { origin: req.origin, "content-type": "application/json" },
                     member.mail,
-                    "My Frequent Rewards: Support Ticket Created",
+                    `${process.env.PROJECT_NAME}: Support Ticket Created`,
                     toTeam.data
                 )
             }
@@ -198,7 +198,7 @@ router
             await sendMail(
                 { origin: req.origin, "content-type": "application/json" },
                 ticket.issueRaisedBy.email,
-                "Re: My Frequent Rewards: Support Ticket Created",
+                `Re: ${process.env.PROJECT_NAME}: Support Ticket Created`,
                 toUser.data
             )
             User.request = req;
@@ -221,7 +221,7 @@ router
                 await sendMail(
                     { origin: req.origin, "content-type": "application/json" },
                     member.mail,
-                    "My Frequent Rewards: Support Ticket Created",
+                    `${process.env.PROJECT_NAME}: Support Ticket Created`,
                     toTeam.data
                 )
             }

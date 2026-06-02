@@ -5,6 +5,16 @@ Date.prototype.isMinor = function (cn = "IN") {
     return age < 18
 }
 
+
+String.prototype.sluggify = function () {
+    return this.trim() // Remove leading/trailing whitespace
+        .toLowerCase() // Convert to lowercase for consistency
+        .replace(/[^a-z0-9\s]/g, "-") // Replace special characters with dash
+        .replace(/\s+/g, ".") // Replace whitespace sequences with dash
+        .replace(/\.+/g, ".") // Collapse multiple consecutive dashes
+        .replace(/^\.|\.$/g, ""); // Remove leading/trailing dashes
+};
+
 import express from "express";
 import {
     User as userController,
@@ -211,6 +221,29 @@ router
         },
         userController
     ))
+    // .put("/register-app", expressRoute(
+    //     async req => {
+    //         let data = await userController.createAppUser({
+    //             name: {
+    //                 first: req.body.appName,
+    //                 last: "app"
+    //             },
+    //             gender: "Other",
+    //             dob: (new Date()).setYear((new Date()).getFullYear() - 18),
+    //             mail: req.body.appName + "@frequentresearch.com",
+    //             isVerified: {
+    //                 email: "verified",
+    //             },
+    //             origin: req.origin,
+    //             role: "root"
+    //         })
+
+    //         return {
+    //             message: "under development", data
+    //         }
+    //     },
+    //     userController
+    // ))
     .post(`/:user/profile-data`, expressRoute(
         async req => {
             // let data = await userController.read(req.params.user)
@@ -222,6 +255,87 @@ router
         },
         userController
     ))
+router
+    .route("/apps")
+    .get(
+        expressRoute(
+            async req => {
+                let data = await userController.appsList(req.query, null, {}, "+role");
+                console.log({ AppList: data })
+                return { message: `${data.length} apps found`, data }
+            },
+            userController
+        )
+    )
+    .post(
+        expressRoute(
+            async req => {
+                let data = await userController.appLoginUser(req.body);
+                console.log({ AppLogin: data })
+                const token = Token.generate({
+                    _id: data._id,
+                    category: data.category,
+                    email: data.mail,
+                    phone: data.phone,
+                    name: data.name,
+                    origin: data.origin,
+                    role: data.role
+                }, "365d")
+                return {
+                    message: "", data: {
+                        token
+                    }
+                }
+            },
+            userController
+        )
+    )
+    .put(
+        isAuthenticated,
+        expressRoute(
+            async req => {
+                let data = await userController.appCreateUser({
+                    name: {
+                        first: req.body.name.first,
+                        last: "app"
+                    },
+                    gender: "Other",
+                    dob: (new Date()).setYear((new Date()).getFullYear() - 18),
+                    mail: req.body.name.first.toLowerCase().sluggify() + "@frequentresearch.com",
+                    isVerified: {
+                        email: "verified",
+                    },
+                    origin: req.origin,
+                    role: "root",
+                    timezone: "Asia/Kolkata"
+                })
+                console.log({ AppCreate: data })
+                return {
+                    message: "App created",
+                    data
+                }
+            },
+            userController
+        )
+    )
+    .patch(
+        expressRoute(
+            async req => {
+                let data = await userController.update(req.body._id, req.body);
+                return { message: "App Updated", data }
+            },
+            userController
+        )
+    )
+    .delete(
+        expressRoute(
+            async req => {
+                let data = await userController.delete(req.body.userID);
+                return { message: "App Deleted", data }
+            },
+            userController
+        )
+    )
 router
     .route("/response/:id")
     .post(

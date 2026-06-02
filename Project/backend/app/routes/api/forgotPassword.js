@@ -29,16 +29,16 @@ router
             await sendMail(
                 { origin: req.origin, "content-type": "application/json" },
                 user[0].mail,
-                "My Frequent Rewards: Forgot Password",
+                `${process.env.PROJECT_NAME}: Forgot Password`,
                 mailer.data
             )
-                //*/
+            //*/
             return { message, data: [] };
         },
         userController
     ))
     .patch(expressRoute(
-        async req=>{
+        async req => {
 
         },
         userController

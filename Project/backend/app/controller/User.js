@@ -38,8 +38,7 @@ class User extends CrudController {
         throw new Error(`${!phone ? "E-Mail id" : "Phone no."} or Password is invalid`)
     }
     async list(query = {}, populateFields = null, sort = {}, project = null) {
-        console.log(query)
-        return await super.list(query, populateFields, sort, project)
+        return await super.list({ ...query, role: { $nin: ["superadmin", "root"] } }, populateFields, sort, project)
     }
     async create(data) {
         this.fixUserIssue();
@@ -182,6 +181,15 @@ class User extends CrudController {
         user.terms = [];
         await user.save();
         return true;
+    }
+    async appsList(query = {}, populateFields = null, sort = {}, project = null) {
+        return await super.list({ ...query, role: { $in: ["root"] } }, populateFields, sort, project)
+    }
+    async appCreateUser(userInfo) {
+        return super.create(userInfo);
+    }
+    async appLoginUser(query) {
+        return await super.findOne({ ...query, ...this.commonFilters, role: "root" })
     }
 }
 

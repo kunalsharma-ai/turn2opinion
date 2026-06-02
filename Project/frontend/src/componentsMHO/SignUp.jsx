@@ -438,6 +438,7 @@ export default function SignUp({
                         {...register("phone")}
                         control={control}
                         labelText="Phone"
+                        required={true}
                         // onlyCountries={ [country] }
                         selectedCountry={country}
                         disableDropdown={Boolean(country)}

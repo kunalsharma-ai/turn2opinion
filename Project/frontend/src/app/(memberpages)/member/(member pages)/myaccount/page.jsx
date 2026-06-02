@@ -37,6 +37,8 @@ import CakeIcon from "@mui/icons-material/Cake";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useForm } from "react-hook-form";
 
 import { Form } from "@/components";
@@ -93,11 +95,11 @@ export default function page() {
       sx={{ border: `1px solid #e0e0e0` }}
       spacing={2}
     >
-      <Grid container size={{ xs: 12, md: 4, lg: 3 }} alignSelf={"flex-start"}>
+      <Grid container size={{ xs: 12, md: 6, xl: 3 }} alignSelf={"flex-start"}>
         <UserInfo user={user} />
       </Grid>
 
-      <Grid container size={{ xs: 12, md: 8, lg: 9 }} alignContent="flex-start">
+      <Grid container size={{ xs: 12, md: 6, xl: 9 }} alignContent="flex-start">
         <MyAccountPoints />
         <Stats user={user} />
         <Summary />
@@ -189,7 +191,6 @@ function Stats() {
           size={{
             xs: 12,
             sm: 6,
-            md: 4,
             xl: 3,
           }}
         >
@@ -266,6 +267,20 @@ function Stats() {
 
 function UserInfo({ user }) {
   const form = useForm();
+
+  const [visibleFields, setVisibleFields] = React.useState({});
+
+  const toggleField = (index) => {
+    setVisibleFields((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
+
+  const maskValue = (value) => {
+    return value ? "xxxxxx" : "";
+  };
+
   React.useEffect(() => {
     if (!user) return;
     form.reset({
@@ -434,9 +449,37 @@ function UserInfo({ user }) {
                 <Typography sx={{ color: "#eee", pr: 0.5 }}>
                   {user.label}:
                 </Typography>
-                <Typography component="span" color="#fff">
-                  {user.value}
-                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    flex: 1,
+                  }}
+                >
+                  <Typography
+                    component="span"
+                    sx={{
+                      color: "#fff",
+                      fontWeight: 600,
+                      wordBreak: "break-word",
+                      flex: 1,
+                    }}
+                  >
+                    {visibleFields[index] ? user.value : maskValue(user.value)}
+                  </Typography>
+
+                  <IconButton
+                    size="small"
+                    onClick={() => toggleField(index)}
+                    sx={{ color: "#fff", ml: 1 }}
+                  >
+                    {visibleFields[index] ? (
+                      <VisibilityOffIcon fontSize="small" />
+                    ) : (
+                      <VisibilityIcon fontSize="small" />
+                    )}
+                  </IconButton>
+                </Box>
               </Grid>
             );
           })}
@@ -547,11 +590,11 @@ function Payment() {
                   size={12}
                   container
                   alignItems="center"
-                  borderBottom={"1px solid #fff"}
+                  borderBottom={"1px solid rgba(255, 255, 255, 0.3)"}
                   py={1}
                 >
                   <Typography
-                    width={{ xs: "100%", lg: "40%" }}
+                    width={{ xs: "100%", xl: "40%" }}
                     fontWeight={500}
                   >
                     Bank:
@@ -564,11 +607,11 @@ function Payment() {
                   size={12}
                   container
                   alignItems="center"
-                  borderBottom={"1px solid #fff"}
+                  borderBottom={"1px solid rgba(255, 255, 255, 0.3)"}
                   py={1}
                 >
                   <Typography
-                    width={{ xs: "100%", lg: "40%" }}
+                    width={{ xs: "100%", xl: "40%" }}
                     fontWeight={500}
                   >
                     IFSC/IBAN/SWIFT Code:
@@ -579,7 +622,7 @@ function Payment() {
                 </Grid>
                 <Grid size={12} container alignItems="center" py={1}>
                   <Typography
-                    width={{ xs: "100%", lg: "40%" }}
+                    width={{ xs: "100%", xl: "40%" }}
                     fontWeight={500}
                   >
                     Account Number:
@@ -592,11 +635,12 @@ function Payment() {
             )}
           </Grid>
         ) : (
-          <Typography py={1}>
+          <Typography py={1} fontSize={12}>
             No Payment method selected yet.{" "}
             <Typography
               component={"span"}
               fontWeight={700}
+              fontSize={12}
               sx={{ cursor: "pointer" }}
               onClick={() => setOpenPayment(true)}
             >
@@ -913,12 +957,12 @@ function SocialAccounts({ user }) {
   };
 
   const contactIcons = {
-    WhatsApp: <WhatsAppIcon sx={{ color: "#25D366" }} />,
-    Instagram: <InstagramIcon sx={{ color: "#C13584" }} />,
-    Facebook: <FacebookIcon sx={{ color: "#3b5998" }} />,
-    Linkedin: <LinkedInIcon sx={{ color: "#0e76a8" }} />,
-    YouTube: <YouTubeIcon sx={{ color: "#FF0000" }} />,
-    Twitter: <XIcon sx={{ color: "black" }} />,
+    whatsapp: <WhatsAppIcon sx={{ color: "#fff" }} />,
+    instagram: <InstagramIcon sx={{ color: "#fff" }} />,
+    facebook: <FacebookIcon sx={{ color: "#fff" }} />,
+    linkedin: <LinkedInIcon sx={{ color: "#fff" }} />,
+    youtube: <YouTubeIcon sx={{ color: "#fff" }} />,
+    twitter: <XIcon sx={{ color: "#fff" }} />,
   };
 
   const socialChannels = [
@@ -985,55 +1029,23 @@ function SocialAccounts({ user }) {
         )}
       </Box>
 
-      <Grid
-        container
-        size={12}
-        direction="column"
-        spacing={0}
-        px={1}
-        py={1}
-        sx={{
-          // border: (theme) => `1px solid ${theme.palette.primary.main}`,
-          // bgcolor: (theme) => theme.palette.cardbg.main,
-          background: "rgba(255, 255, 255, 0.1)",
-          borderRadius: 2,
-        }}
-      >
+      <Grid container size={12} spacing={2}>
         {Object.entries(contact).filter(([_, value]) => value?.trim())
           .length ? (
           Object.entries(contact)
             .filter(([_, value]) => value?.trim())
             .map(([key, value], index, arr) => (
-              <Grid
-                key={index}
-                container
-                size={12}
-                alignItems="center"
-                borderBottom={
-                  index !== arr.length - 1 ? "1px solid #fff" : "none"
-                }
-                py={1}
-                px={2}
-              >
-                <Grid
-                  size={{ xs: 12, lg: 4 }}
-                  alignItems="center"
-                  container
-                  gap={1}
-                >
-                  {contactIcons[key]}
-                  <Typography fontWeight={500}>{key}</Typography>
-                </Grid>
-
-                <Typography fontWeight={600}>{value}</Typography>
-              </Grid>
+              <Tooltip title={`${key} :  ${value}`} key={index} placement="top">
+                <Page.Box px={0.75}>{contactIcons[key]}</Page.Box>
+              </Tooltip>
             ))
         ) : (
-          <Typography py={1}>
+          <Typography py={1} fontSize={12}>
             No social contact method added.{" "}
             <Typography
               component={"span"}
               fontWeight={700}
+              fontSize={12}
               sx={{ cursor: "pointer" }}
               onClick={() => setOpenContact(true)}
             >
@@ -1136,8 +1148,8 @@ function Summary() {
         setThreshold(data.threshold);
         setConversionRate(data.conversionRate);
       })
-      .catch((err) => { })
-      .finally(() => { });
+      .catch((err) => {})
+      .finally(() => {});
   }, []);
   const rewardSummary = [
     {

@@ -12,6 +12,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import DownloadIcon from "@mui/icons-material/Download";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { Page } from "@/util";
 import { SectionTitle } from "..";
 
@@ -100,6 +101,20 @@ export default function Popup(attr) {
                 size="small"
               >
                 <DownloadIcon />
+              </IconButton>
+            )}{" "}
+            {attr.onCopy && (
+              <IconButton
+                aria-label="Copy"
+                onClick={attr.onCopy}
+                sx={{
+                  color: "grey",
+                  mr: 2,
+                  "&:hover": { color: "success.light" },
+                }}
+                size="small"
+              >
+                <ContentCopyIcon />
               </IconButton>
             )}
             <IconButton

@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import {useForm} from "react-hook-form"
+import { useForm } from "react-hook-form";
 import { useRouter, usePathname } from "next/navigation";
 import {
   Grid,
@@ -48,8 +48,8 @@ export default function page() {
           sx={{
             // height: { xs: 26.8, lg: 42 },
             // width: { xs: 180, lg: 282 },
-            height:60,
-            mb: 1,
+            height: 60,
+            mb: 2,
           }}
         >
           <img
@@ -68,7 +68,12 @@ export function Terms({
   width = { xs: "90vw", lg: "80vw", xl: "70vw" },
   hideLoading = false,
 }) {
-  const [user, router, pathName,form] = [useMember(), useRouter(), usePathname(),useForm()];
+  const [user, router, pathName, form] = [
+    useMember(),
+    useRouter(),
+    usePathname(),
+    useForm(),
+  ];
   const [category, setCategory] = React.useState({});
   const [isLoading, setIsLoading] = React.useState(true);
   const [termOptions, setTermsOptions] = React.useState([
@@ -93,7 +98,8 @@ export function Terms({
   React.useEffect(() => {
     if (!user) return;
     setIsLoading(true);
-    if (pathName === "/auth/terms" && user?.terms?.length > 0) router.push("/survey?name=welcome");
+    if (pathName === "/auth/terms" && user?.terms?.length > 0)
+      router.push("/survey?name=welcome");
     setAcceptedTerms(user.terms);
     setInitialTerms(user.terms || []);
     api
@@ -161,17 +167,17 @@ export function Terms({
     return <LoadingOverlay />;
   }
 
-  if(user?.isMinor && [null,undefined,""].includes(user?.parent?.email)){
-    return <form 
-      onSubmit={
-        form.handleSubmit(async data=>{
-          let resp=await api.patch(`/api/v1/me/parent-details`,data)
-          user.update(resp.data)
-        })
-      }
+  if (user?.isMinor && [null, undefined, ""].includes(user?.parent?.email)) {
+    return (
+      <form
+        onSubmit={form.handleSubmit(async (data) => {
+          let resp = await api.patch(`/api/v1/me/parent-details`, data);
+          user.update(resp.data);
+        })}
       >
-      <ParentDetailsForm form={form} submitLabel={"Submit"}/>
-    </form>
+        <ParentDetailsForm form={form} submitLabel={"Submit"} />
+      </form>
+    );
   }
   return (
     <>
@@ -267,9 +273,8 @@ export function Terms({
           {termOptions.map((option, index) => (
             <Page.Box
               key={index}
-              className={option.required ? "required" : "not-required"}
               sx={{
-                borderBottom: "2px solid #fcfcfc",
+                borderBottom: "1px solid #fcfcfc",
               }}
             >
               <FormControlLabel
@@ -289,7 +294,23 @@ export function Terms({
                     }
                   />
                 }
-                label={option.label}
+                label={
+                  <Page.Box display="flex" alignItems="flex-start" gap={0.5}>
+                    <Page.Box>{option.label}</Page.Box>
+                    {option.required && (
+                      <Page.Text
+                        component="span"
+                        sx={{
+                          color: "error.main",
+                          fontWeight: 700,
+                          lineHeight: 1,
+                        }}
+                      >
+                        *
+                      </Page.Text>
+                    )}
+                  </Page.Box>
+                }
                 sx={{
                   alignItems: "flex-start",
                   "& .MuiFormControlLabel-label": {

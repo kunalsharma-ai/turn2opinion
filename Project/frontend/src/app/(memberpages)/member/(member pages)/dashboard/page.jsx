@@ -228,7 +228,7 @@ function Surveys() {
       size={12}
       container
       spacing={2}
-      px={{ xs: 1, md: 2 }}
+      px={{ xs: 2, md: 3 }}
       py={2}
       justifyContent="center"
       sx={{ border: `1px solid #e0e0e0` }}
@@ -258,7 +258,7 @@ function Surveys() {
             alignItems="center"
             justifyContent="center"
             spacing={1}
-            p={{ xs: 3, md: 4 }}
+            p={{ xs: 1, md: 3 }}
             sx={{
               boxShadow: 3,
               background:
@@ -322,7 +322,7 @@ function Surveys() {
                   justifyContent="center"
                   width="100%"
                   px={2}
-                  mt={1}
+                  my={1}
                 >
                   {survey?.stat.map((item, statIndex) => (
                     <Grid key={statIndex} size={{ xs: 6, sm: 3 }}>

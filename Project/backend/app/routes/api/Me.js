@@ -219,7 +219,7 @@ router
                 const emailStatus = await sendMail(
                     { origin: req.origin, "content-type": "application/json" },
                     user?.parent?.email,
-                    "My Frequent Rewards: Child Registration",
+                    `${process.env.PROJECT_NAME}: Child Registration`,
                     mailer.data
                 )
                 console.log(emailStatus)
@@ -262,7 +262,7 @@ router
             await sendMail(
                 { origin: req.origin, "content-type": "application/json" },
                 data.mail,
-                `My Frequent Rewards: Update E-Mail Address`,
+                `${process.env.PROJECT_NAME}: Update E-Mail Address`,
                 mailer.data
             )
             message = `Please check your inbox and spam folders of email (${data.mail}) to proceed further in the process.`
@@ -301,7 +301,7 @@ router
                         "content-type": "application/json"
                     },
                     email,
-                    `Invitation from ${me.fullName} to join My Frequent Rewards, A survey portal for Business 2 Business Industry`,
+                    `Invitation from ${me.fullName} to join ${process.env.PROJECT_NAME}, A survey portal for Business 2 Business Industry`,
                     mailer.data
                 )
             }
