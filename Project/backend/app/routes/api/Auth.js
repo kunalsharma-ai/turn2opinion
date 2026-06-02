@@ -50,7 +50,7 @@ router
     asyncHandler(
       async (req, res) => {
         let socialUrl = process.env.socials;
-        if (!socialUrl) throw HttpError(404, "Social signon is not allowed")
+        if (!socialUrl) throw new HttpError(404, "Social signon is not allowed")
         let temp = new URL(socialUrl);
         let api = new API(
           {

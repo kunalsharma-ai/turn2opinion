@@ -8,7 +8,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 const testimonialsData = [
   {
     content:
-      "Earn money is never been so easy before, It's very good to share my opinion and get excellent rewards point. I'm so happy to earn money from Frequent Reward.",
+      "Earn money is never been so easy before, It's very good to share my opinion and get excellent rewards point. I'm so happy to earn money from Turn2Opinion",
     user: "Praveen Mehta",
     country: "India",
   },
@@ -103,8 +103,8 @@ function Testimonial() {
           content: '""',
           position: "absolute",
           inset: 0,
-      background: "#8cbcff",
-opacity: 0.6,
+          background: "#8cbcff",
+          opacity: 0.6,
           zIndex: 1,
         },
       }}

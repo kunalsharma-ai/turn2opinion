@@ -99,7 +99,7 @@ export default function Survey({
       let dob = new Date(user.dob);
       if (new Date().getFullYear() !== dob.getFullYear() + Number(age)) {
         onError({
-          title: "Security Check",
+          title: "Invalid Age",
           btns: {
             ok: "Try Again",
             cancel: "Go Back",
@@ -113,11 +113,9 @@ export default function Survey({
           message: (
             <>
               <p>
-                For security reasons, the age entered must match your registered
-                information.
+                It looks like the age entered does not match with the data on your profile. Please check and correct your age and try again.
               </p>
               <p>&nbsp;</p>
-              <p>Please check and re-enter the correct age.</p>
             </>
           ),
         })
@@ -130,28 +128,28 @@ export default function Survey({
     {
       (hideSteps || [undefined, null].includes(currentPage))
         ? <></>
-        : <SurveySteps currentPage={ currentPage } steps={ pages.map(p => p[0]) } />
+        : <SurveySteps currentPage={currentPage} steps={pages.map(p => p[0])} />
     }
     <Grid
       component="form"
-      onFocus={ () => {
+      onFocus={() => {
         setValidationError(null);
-      } }
-      onSubmit={ form.handleSubmit(onSubmit) }
-      size={ 12 }
+      }}
+      onSubmit={form.handleSubmit(onSubmit)}
+      size={12}
       container
       direction="column"
       justifyContent="space-between"
-      sx={ {
+      sx={{
         minHeight: ([undefined, null].includes(currentPage)) ? "calc(90vh - 170px)" : "calc(90vh - 214px)",
         // steps[currentGroupIndex] !== "Welcome"
         //   ? "calc(90vh - 230px)"
-      } }
+      }}
     >
       <Grid
-        size={ 12 }
+        size={12}
         container
-        sx={ {
+        sx={{
           maxHeight: {
             md: editMode ? "calc(90vh - 240px)" : "calc(90vh - 185px)"
             // steps[currentGroupIndex] !== "Welcome"
@@ -169,55 +167,55 @@ export default function Survey({
           // flexDirection: "column",
           justifyContent: "space-between",
           alignContent: "flex-start"
-        } }
+        }}
       >
         {
           ([null, undefined].includes(currentPage))
-            ? <SurveyDescription survey={ survey } />
+            ? <SurveyDescription survey={survey} />
             : pages[currentPage]?.slice(1)?.map(
               (que, index) => <Question
-                key={ `${que}-${index}` }
-                que={ que }
-                user={ user }
-                form={ form }
-                disabled={ !editMode }
+                key={`${que}-${index}`}
+                que={que}
+                user={user}
+                form={form}
+                disabled={!editMode}
               />)
         }
       </Grid>
-      { editMode && <Grid
+      {editMode && <Grid
         container
-        size={ 12 }
-        spacing={ 2 }
-        sx={ {
+        size={12}
+        spacing={2}
+        sx={{
           justifyContent: "flex-end",
           py: 2,
           px: isProfile ? 2 : 0,
-        } }
+        }}
       >
-        { isProfile && <Page.MuiButton onClick={ () => { setEditMode(false) } } variant="outlined" sx={ { fontWeight: 600 } }>
+        {isProfile && <Page.MuiButton onClick={() => { setEditMode(false) }} variant="outlined" sx={{ fontWeight: 600 }}>
           Cancel
-        </Page.MuiButton> }
-        { ((currentPage + 1) === pages.length) ? <Page.MuiButton
+        </Page.MuiButton>}
+        {((currentPage + 1) === pages.length) ? <Page.MuiButton
           variant="contained"
           color="secondary"
-          sx={ {
+          sx={{
             fontWeight: 600,
-          } }
-          loading={ saveOrUpdateAnswers?.isPending }
-          onClick={ form.handleSubmit(onSubmit) }
+          }}
+          loading={saveOrUpdateAnswers?.isPending}
+          onClick={form.handleSubmit(onSubmit)}
         >
           Submit
         </Page.MuiButton> : <Page.MuiButton
           variant="contained"
           color="secondary"
-          sx={ {
+          sx={{
             fontWeight: 600,
-          } }
-          onClick={ onNext }
+          }}
+          onClick={onNext}
         >
           Next
-        </Page.MuiButton> }
-      </Grid> }
+        </Page.MuiButton>}
+      </Grid>}
     </Grid>
   </>
 }
@@ -229,24 +227,24 @@ function SurveySteps({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  return <Grid size={ 12 }>
-    { !isMobile ? (
+  return <Grid size={12}>
+    {!isMobile ? (
       <Stepper
-        activeStep={ currentPage }
+        activeStep={currentPage}
         alternativeLabel
-        connector={ <StepConnector /> }
-        sx={ {
+        connector={<StepConnector />}
+        sx={{
           my: 1,
           width: "100%",
-        } }
+        }}
       >
-        { steps.map((label) => (
-          <Step key={ label }>
+        {steps.map((label) => (
+          <Step key={label}>
             <StepLabel
-              StepIconComponent={ (props) => (
-                <CustomStepIcon { ...props } />
-              ) }
-              sx={ {
+              StepIconComponent={(props) => (
+                <CustomStepIcon {...props} />
+              )}
+              sx={{
                 "& .MuiStepLabel-label": {
                   fontSize: "12px",
 
@@ -254,35 +252,35 @@ function SurveySteps({
                     fontWeight: "bold",
                   },
                 },
-              } }
+              }}
             >
-              { label }
+              {label}
             </StepLabel>
           </Step>
-        )) }
+        ))}
       </Stepper>
     ) : (
-      <Grid size={ 12 } container justifyContent={ "center" }>
+      <Grid size={12} container justifyContent={"center"}>
         <MobileStepper
           variant="dots"
-          steps={ steps.length }
+          steps={steps.length}
           position="static"
-          activeStep={ currentPage }
-          sx={ { my: 1 } }
+          activeStep={currentPage}
+          sx={{ my: 1 }}
         />
       </Grid>
-    ) }
+    )}
   </Grid>
 }
 
 function SurveyDescription({ survey }) {
   return <Page.Box
     component="div"
-    sx={ {
+    sx={{
       textAlign: "justify",
       p: 3,
       textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
-    } }
-    dangerouslySetInnerHTML={ { __html: survey.description } }
+    }}
+    dangerouslySetInnerHTML={{ __html: survey.description }}
   />
 }

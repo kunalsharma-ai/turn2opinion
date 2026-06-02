@@ -4,6 +4,15 @@ import React from "react";
 import { Avatar, Box, Button, Grid, Typography } from "@mui/material";
 import { useMember } from "@/Context";
 
+const maskEmail = (email) => {
+  if (!email) return "";
+
+  const [name, domain] = email.split("@");
+  if (!domain) return "xxxx";
+
+  return `${name.slice(0, 2)}xxxx@${domain}`;
+};
+
 export default function CurrentUser() {
   const [user] = [useMember()];
   return (
@@ -43,7 +52,7 @@ export default function CurrentUser() {
           {user?.fullName}
         </Typography>
         <Typography fontSize={{ xs: "14px", md: "18px" }} fontWeight={500}>
-          {user?.mail}
+          {maskEmail(user?.mail)}
         </Typography>
       </Box>
     </Grid>

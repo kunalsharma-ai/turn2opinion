@@ -4,9 +4,9 @@ export default function SurveyStart({
     category: "CATEGORY",
     points: "POINTS",
     time: "TIME",
-    link:"#"
+    link: "#"
   }
-  
+
 }) {
   return (
     <div style={{ padding: "10px", background: "#ffffff" }}>
@@ -16,7 +16,7 @@ export default function SurveyStart({
             <td align="center">
               <img
                 src="/images/logo/logo-300w.png"
-                alt="Turn 2 Opinion"
+                alt="Turn2Opinion"
                 style={{ width: 320, height: "auto", margin: 0, padding: 0 }}
               />
             </td>

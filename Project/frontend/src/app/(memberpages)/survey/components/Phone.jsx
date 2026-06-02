@@ -42,57 +42,57 @@ export default function PhoneElement({ question, form, disabled }) {
   });
   let validations;
   if (question.required)
-    validations={required:"This field is required"}
+    validations = { required: "This field is required" }
   return <Grid
-    size={ { xs: 12, md: Number(question?.size) } }
+    size={{ xs: 12, md: Number(question?.size) }}
     alignSelf="flex-end"
-    sx={ {
+    sx={{
       px: 2,
       py: 1,
-    } }
+    }}
   >
     <Page.Text
-      sx={ { fontWeight: 600, mb: 0.5, color: "secondary.main" } }
+      sx={{ fontWeight: 600, mb: 0.5, color: "secondary.main" }}
     >
-      { question.label }{ " " }
-      { question.required && (
-        <span style={ { color: "red", fontWeight: 600 } }>*</span>
-      ) }
+      {question.label}{" "}
+      {question.required && (
+        <span style={{ color: "red", fontWeight: 600 }}>*</span>
+      )}
     </Page.Text>
     <Form.Phone
-      name={ question.name }
-      control={ form.control }
-      disabled={ isQuestionDisabled && Boolean(value) }
-      validations={ validations }
-      selectedCountry={ country }
-      disableDropdown={ Boolean(country) }
-      errors={ errors?.[question.name] }
+      name={question.name}
+      control={form.control}
+      disabled={isQuestionDisabled && Boolean(value)}
+      validations={validations}
+      selectedCountry={country}
+      disableDropdown={Boolean(country)}
+      errors={errors?.[question.name]}
     />
     {
       Boolean(value) &&
       !Boolean(errors[question.name]) &&
       <Controller
-        name={ `${question.name}-whatsapp` }
-        control={ form.control }
-        defaultValue={ false }
-        render={ ({ field }) => (
+        name={`${question.name}-whatsapp`}
+        control={form.control}
+        defaultValue={false}
+        render={({ field }) => (
           <FormControlLabel
-            sx={ { mt: 1, display: "flex", alignItems: "flex-start" } }
+            sx={{ mt: 1, display: "flex", alignItems: "flex-start" }}
             control={
               <Checkbox
-                { ...field }
-                checked={ Boolean(field.value) }
-                sx={ {
+                {...field}
+                checked={Boolean(field.value)}
+                sx={{
                   py: 0,
                   "& .MuiSvgIcon-root": {
                     color: "secondary.main",
                   },
-                } }
+                }}
               />
             }
-            label="I agree to receive updates, alerts, and support messages on WhatsApp from My Frequent Rewards"
+            label="I agree to receive updates, alerts, and support messages on WhatsApp from Turn2Opinion"
           />
-        ) }
+        )}
       />
     }
   </Grid>

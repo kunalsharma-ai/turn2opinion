@@ -25,6 +25,7 @@ import {
   X,
   Apple,
   Microsoft,
+  YouTube,
   Login as LoginIcon,
 } from "@mui/icons-material";
 import { api, Page, submitWithAjax } from "@/util";
@@ -35,6 +36,29 @@ import "react-phone-input-2/lib/material.css";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useTelemetry } from "@/Context";
 import { useToast } from "@/hooks";
+
+const socials = [
+  {
+    name: "linkedin",
+    link: "https://in.linkedin.com/company/frequentresearch",
+    icon: <LinkedIn sx={{ color: "#0077B5", fontSize: "28px" }} />,
+  },
+  {
+    name: "facebook",
+    link: "https://www.facebook.com/frequentrfs/",
+    icon: <Facebook sx={{ color: "#1877F2", fontSize: "28px" }} />,
+  },
+  {
+    name: "youtube",
+    link: "https://www.youtube.com/channel/UCLxmn2kq4aACAHaL2eT6QIQ",
+    icon: <YouTube sx={{ color: "#FF0000", fontSize: "28px" }} />,
+  },
+  {
+    name: "twitter",
+    link: "https://twitter.com/frequentrfs",
+    icon: <X sx={{ color: "black", fontSize: "22px" }} />,
+  },
+];
 
 function Login({ open, onClose, setOpenSignUp }) {
   const [cardType, setCardType] = React.useState("login");
@@ -169,8 +193,8 @@ function LoginCard({ onClose, setCardType, setOpenSignUp }) {
         display: "flex",
         flexDirection: "column",
         alignSelf: "center",
-        minHeight: authProviders.length > 0 ? "620px" : "520px",
-        width: { xs: "95vw", sm: "440px" },
+        minHeight: authProviders.length > 0 ? "720px" : "600px",
+        width: { xs: "95vw", sm: "480px" },
         px: { xs: 1.5, sm: 3 },
         position: "relative",
       }}
@@ -486,7 +510,7 @@ function LoginCard({ onClose, setCardType, setOpenSignUp }) {
               p: 0,
               fontWeight: 500,
               fontSize: 13,
-
+              mt: -0.1,
               ml: -0.5,
               textTransform: "none",
               "&:hover": {
@@ -502,6 +526,50 @@ function LoginCard({ onClose, setCardType, setOpenSignUp }) {
             Sign up
           </Page.MuiButton>
         </Box>
+
+        <Grid
+          container
+          alignItems="center"
+          justifyContent="center"
+          spacing={4}
+          sx={{
+            position: "absolute",
+            bottom: 10,
+            left: 0,
+            right: 0,
+            zIndex: 2,
+            borderTop: "1px solid",
+            borderColor: "divider",
+            pt: 2,
+          }}
+        >
+          <Page.Text sx={{ fontSize: "13px", color: "text.secondary" }}>
+            Follow us on
+          </Page.Text>
+          <Page.Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "20px",
+
+              justifyContent: "center",
+              alignItems: "center",
+              listStyle: "none",
+              textDecoration: "none",
+            }}
+          >
+            {socials.map((social) => (
+              <Page.Link
+                key={social.name}
+                href={social.link}
+                underline="none"
+                target="_blank"
+              >
+                {social.icon}
+              </Page.Link>
+            ))}
+          </Page.Box>
+        </Grid>
       </Box>
     </Card>
   );

@@ -25,11 +25,41 @@ import { setOrigin, expressRoute, fsLogger } from "./utils/index.js";
             },
             compression(),
             express.static("/src/public"),
+            // cors({
+            //     origin: ["https://t2o.sampledge.duckdns.org", "https://admin.sampledge.duckdns.org", "http://localhost:3001", "https://survey.sampledge.com"],
+            //     credentials: true,
+            //     allowedHeaders: ["Content-Type", "Authorization", "test"],
+            //     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+            // }),
             cors({
-                origin: ["https://t2o.sampledge.duckdns.org", "https://admin.sampledge.duckdns.org", "http://localhost:3001", "https://survey.sampledge.com"],
+                origin: function (origin, callback) {
+                    const allowedOrigins = [
+                        "https://t2o.sampledge.duckdns.org",
+                        "https://admin.sampledge.duckdns.org",
+                        "http://localhost:3001",
+                        "https://survey.sampledge.com",
+                        "https://www.turn2opinion.com",
+                        "https://turn2opinion.com",
+                        "https://mfr.sampledge.duckdns.org",
+                        "https://www.myfrequentrewards.com",
+                        "https://myfrequentrewards.com",
+                    ];
+
+                    // allow non-browser requests
+                    if (!origin) return callback(null, true);
+
+                    if (allowedOrigins.includes(origin)) {
+                        callback(null, true);
+                    } else {
+                        callback(new Error("Not allowed by CORS"));
+                    }
+                },
                 credentials: true,
-                allowedHeaders: ["Content-Type", "Authorization", "test"],
-                methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+                methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+                allowedHeaders: [
+                    "Content-Type",
+                    "Authorization"
+                ]
             }),
             express.json(),
             express.urlencoded({

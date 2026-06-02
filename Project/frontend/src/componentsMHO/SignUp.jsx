@@ -33,6 +33,7 @@ import {
   GitHub,
   Google,
   LinkedIn,
+  YouTube,
   X,
   Apple,
   Microsoft,
@@ -61,6 +62,29 @@ function capitalizeName(str) {
     .join("");
 }
 const today = new Date();
+
+const socials = [
+  {
+    name: "linkedin",
+    link: "https://in.linkedin.com/company/frequentresearch",
+    icon: <LinkedIn sx={{ color: "#0077B5", fontSize: "28px" }} />,
+  },
+  {
+    name: "facebook",
+    link: "https://www.facebook.com/frequentrfs/",
+    icon: <Facebook sx={{ color: "#1877F2", fontSize: "28px" }} />,
+  },
+  {
+    name: "youtube",
+    link: "https://www.youtube.com/channel/UCLxmn2kq4aACAHaL2eT6QIQ",
+    icon: <YouTube sx={{ color: "#FF0000", fontSize: "28px" }} />,
+  },
+  {
+    name: "twitter",
+    link: "https://twitter.com/frequentrfs",
+    icon: <X sx={{ color: "black", fontSize: "22px" }} />,
+  },
+];
 
 export default function SignUp({
   open,
@@ -126,8 +150,9 @@ export default function SignUp({
   };
 
   const authProviders = providers.map((provider) => ({
-    label: `Continue with ${provider.name.charAt(0).toUpperCase() + provider.name.slice(1)
-      }`,
+    label: `Continue with ${
+      provider.name.charAt(0).toUpperCase() + provider.name.slice(1)
+    }`,
     icon: providerIcons[provider.name?.toLowerCase()] || <LoginIcon />,
     href: provider.authUrl,
   }));
@@ -337,7 +362,7 @@ export default function SignUp({
                   spacing={0}
                   sx={{
                     px: { xs: 2, md: 4 },
-                    pb: 4,
+                    pb: 2,
                   }}
                 >
                   <Page.Text
@@ -468,8 +493,8 @@ export default function SignUp({
                       <Typography
                         sx={{ flex: 1, ml: -1.5, textAlign: "justify" }}
                       >
-                        I agree for Turn 2 Opinion Panel to use my information
-                        for the purposes of determining my eligibility and for
+                        I agree for Turn2Opinion Panel to use my information for
+                        the purposes of determining my eligibility and for
                         contacting me in relation to participation in market
                         research surveys. Also, I am agreeing to{" "}
                         <Typography
@@ -645,6 +670,48 @@ export default function SignUp({
                         Log in
                       </Page.Text>
                     </Grid>
+
+                    <Grid
+                      container
+                      alignItems="center"
+                      justifyContent="center"
+                      spacing={4}
+                      sx={{
+                        borderTop: "1px solid",
+                        borderColor: "divider",
+                        pt: 2,
+                        mt: 1,
+                      }}
+                    >
+                      <Page.Text
+                        sx={{ fontSize: "13px", color: "text.secondary" }}
+                      >
+                        Follow us on
+                      </Page.Text>
+                      <Page.Box
+                        sx={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "20px",
+
+                          justifyContent: "center",
+                          alignItems: "center",
+                          listStyle: "none",
+                          textDecoration: "none",
+                        }}
+                      >
+                        {socials.map((social) => (
+                          <Page.Link
+                            key={social.name}
+                            href={social.link}
+                            underline="none"
+                            target="_blank"
+                          >
+                            {social.icon}
+                          </Page.Link>
+                        ))}
+                      </Page.Box>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
@@ -686,7 +753,7 @@ export default function SignUp({
                       fontWeight: 600,
                     }}
                   >
-                    Turn 2 Opinion
+                    Turn2Opinion
                   </Page.Text>{" "}
                   - A Frequent Research Panel Community.{" "}
                 </Page.Text>

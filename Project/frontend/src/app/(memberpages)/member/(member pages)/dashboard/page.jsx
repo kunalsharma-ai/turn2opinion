@@ -164,25 +164,25 @@ function Surveys() {
       isAvailable: Boolean(availableSurveys?.internal),
       stat: [
         {
-          title: "All",
+          title: "All Surveys",
           filter: null,
           count: availableSurveys?.internal?.all ?? 0,
           bg: "#2563eb",
         },
         {
-          title: "High Reward",
+          title: "High Reward Surveys",
           filter: "High Reward",
           count: availableSurveys?.internal?.highRewards ?? 0,
           bg: "#9333ea",
         },
         {
           filter: "Short",
-          title: "Short",
+          title: "Short Surveys",
           count: availableSurveys?.internal?.short ?? 0,
           bg: "#059669",
         },
         {
-          title: "New",
+          title: "New Surveys",
           filter: "New Survey",
           count: availableSurveys?.internal?.newSurveys ?? 0,
           bg: "#ea580c",
@@ -197,25 +197,25 @@ function Surveys() {
       isAvailable: Boolean(availableSurveys?.external),
       stat: [
         {
-          title: "All",
+          title: "All Surveys",
           filter: null,
           count: 0,
           bg: "#2563eb",
         },
         {
-          title: "High Reward",
+          title: "High Reward Surveys",
           filter: "High Reward",
           count: 0,
           bg: "#9333ea",
         },
         {
-          filter: "Short",
           title: "Short Surveys",
+          filter: "Short",
           count: 0,
           bg: "#059669",
         },
         {
-          title: "New",
+          title: "New Surveys",
           filter: "New Surveys",
           count: 0,
           bg: "#ea580c",
@@ -228,7 +228,7 @@ function Surveys() {
       size={12}
       container
       spacing={2}
-      px={{ xs: 2, md: 3 }}
+      px={{ xs: 1, md: 2 }}
       py={2}
       justifyContent="center"
       sx={{ border: `1px solid #e0e0e0` }}
