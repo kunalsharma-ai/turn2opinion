@@ -446,7 +446,7 @@ function Footer({ sections = [] }) {
         >
           <IconButton
             component="a"
-            href="https://in.linkedin.com/company/frequentresearch"
+            href="https://www.linkedin.com/company/turn2opinionpanel/"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="linkedin"

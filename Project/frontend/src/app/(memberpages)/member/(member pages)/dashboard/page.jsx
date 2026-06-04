@@ -171,19 +171,19 @@ function Surveys() {
         },
         {
           title: "High Reward Surveys",
-          filter: "High Reward",
+          filter: "High Reward Surveys",
           count: availableSurveys?.internal?.highRewards ?? 0,
           bg: "#9333ea",
         },
         {
-          filter: "Short",
+          filter: "Short Surveys",
           title: "Short Surveys",
           count: availableSurveys?.internal?.short ?? 0,
           bg: "#059669",
         },
         {
           title: "New Surveys",
-          filter: "New Survey",
+          filter: "New Surveys",
           count: availableSurveys?.internal?.newSurveys ?? 0,
           bg: "#ea580c",
         },
@@ -204,13 +204,13 @@ function Surveys() {
         },
         {
           title: "High Reward Surveys",
-          filter: "High Reward",
+          filter: "High Reward Surveys",
           count: 0,
           bg: "#9333ea",
         },
         {
           title: "Short Surveys",
-          filter: "Short",
+          filter: "Short Surveys",
           count: 0,
           bg: "#059669",
         },
@@ -592,9 +592,18 @@ export function SurveyHistory() {
     {
       id: "surveyname",
       label: "Survey Name",
+      width: 300,
       render: (info) => (
         <Typography
-          sx={{ fontWeight: "600", color: "primary.main", fontSize: "14px" }}
+          sx={{
+            fontWeight: "600",
+            color: "primary.main",
+            fontSize: "14px",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            maxWidth: 280,
+          }}
         >
           {info?.survey?.name}
         </Typography>

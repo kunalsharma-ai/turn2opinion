@@ -122,7 +122,7 @@ export default function page() {
                     width: "100%",
                     minHeight: "calc(90vh - 215px)",
                     // bgcolor: "#8cb2f333",
-                    border: "1px solid #f4f4f4",
+                    border: theme => `1px solid ${theme.palette.divider}`,
                     textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
                   } }
                   dangerouslySetInnerHTML={ { __html: survey.thankyou } }
@@ -171,7 +171,7 @@ export default function page() {
                     sx={ {
                       flex: 1,
                       textAlign: "center",
-                      ml: { xs: 0, md: "-320px" },
+                      ml: { xs: 0, md: "-220px" },
                       fontSize: { xs: "18px", lg: "24px" },
                       fontWeight: 600,
                       color: "secondary.main",

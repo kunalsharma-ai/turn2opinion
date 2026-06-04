@@ -43,7 +43,8 @@ router
     .use("/api/v1/support", isAuthenticated, supportRouter)
     .use("/api/v1/project", isAuthenticated, projectRouter)
     .use("/api/v1/batch", isAuthenticated, batchRouter)
-    .use("/api/v1/newsurvey", isAuthenticated, integrationRoutes)
+    .use("/api/v1/integration", integrationRoutes)
+
 
 // router
 //     .use("/api/v1/respondent",respondentRouter)

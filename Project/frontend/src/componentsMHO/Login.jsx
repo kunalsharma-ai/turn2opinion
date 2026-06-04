@@ -40,7 +40,7 @@ import { useToast } from "@/hooks";
 const socials = [
   {
     name: "linkedin",
-    link: "https://in.linkedin.com/company/frequentresearch",
+    link: "https://www.linkedin.com/company/turn2opinionpanel/",
     icon: <LinkedIn sx={{ color: "#0077B5", fontSize: "28px" }} />,
   },
   {

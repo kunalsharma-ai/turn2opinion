@@ -58,7 +58,7 @@ router
             useHttps: (temp.protocol === "https:")
           }
         )
-        let resp = await api.get(temp.pathname);
+        let resp = await api.get(temp.pathname.replace(/^\//, ""));
         return res.json({
           status: "success",
           data: resp?.data?.data?.providers

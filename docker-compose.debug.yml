@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  backend:
+    ports:
+      # Bind only to host's localhost (127.0.0.1) so it is NOT exposed to the public internet,
+      # but remains fully accessible from the host machine for debugging.
+      - "127.0.0.1:9229:9229"
+    # Run the server in inspect mode after ensuring packages are installed
+    command: sh -c "npm install && node --inspect=0.0.0.0:9229 app/server.js"
+
+  frontend:
+    ports:
+      # Bind only to host's localhost (127.0.0.1) so it is NOT exposed to the public internet,
+      # but remains fully accessible from the host machine for debugging.
+      - "127.0.0.1:9230:9230"
+    # Run Next.js in development mode with Node inspect enabled
+    environment:
+      - NODE_OPTIONS=--inspect=0.0.0.0:9230

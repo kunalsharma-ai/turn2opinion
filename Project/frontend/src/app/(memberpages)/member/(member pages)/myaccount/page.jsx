@@ -565,8 +565,8 @@ function Payment() {
         size={12}
         direction="column"
         spacing={0}
-        px={2}
-        py={2}
+        px={1.5}
+        py={1}
         sx={{
           background: "rgba(255, 255, 255, 0.1)",
           borderRadius: 2,
@@ -1029,29 +1029,39 @@ function SocialAccounts({ user }) {
         )}
       </Box>
 
-      <Grid container size={12} spacing={2}>
+      <Grid container size={12} spacing={1.5}>
         {Object.entries(contact).filter(([_, value]) => value?.trim())
           .length ? (
           Object.entries(contact)
             .filter(([_, value]) => value?.trim())
             .map(([key, value], index, arr) => (
-              <Tooltip title={`${key} :  ${value}`} key={index} placement="top">
-                <Page.Box px={0.75}>{contactIcons[key]}</Page.Box>
+              <Tooltip title={`${key?.Capitalize()} :  ${value}`} key={index} placement="top">
+                <Page.Box px={1.5}>{contactIcons[key]}</Page.Box>
               </Tooltip>
             ))
         ) : (
-          <Typography py={1} fontSize={12}>
-            No social contact method added.{" "}
-            <Typography
-              component={"span"}
-              fontWeight={700}
-              fontSize={12}
-              sx={{ cursor: "pointer" }}
-              onClick={() => setOpenContact(true)}
-            >
-              Click to add
+          <Page.Box
+            px={1.5}
+            py={1}
+            sx={{
+              width: "100%",
+              background: "rgba(255, 255, 255, 0.1)",
+              borderRadius: 2,
+            }}
+          >
+            <Typography py={1} fontSize={12}>
+              No social contact method added.{" "}
+              <Typography
+                component={"span"}
+                fontWeight={700}
+                fontSize={12}
+                sx={{ cursor: "pointer" }}
+                onClick={() => setOpenContact(true)}
+              >
+                Click to add
+              </Typography>
             </Typography>
-          </Typography>
+          </Page.Box>
         )}
       </Grid>
 

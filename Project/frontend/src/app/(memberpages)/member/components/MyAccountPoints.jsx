@@ -107,7 +107,7 @@ export default function MyAccountPoints() {
             <Typography
               sx={{
                 mt: 1,
-                fontSize: { xs: "34px", md: "52px" },
+                fontSize: { xs: "34px", xl: "52px" },
                 lineHeight: 1,
                 fontWeight: 800,
                 background: "linear-gradient(180deg, #a5d6ff 0%, #60a5fa 100%)",
