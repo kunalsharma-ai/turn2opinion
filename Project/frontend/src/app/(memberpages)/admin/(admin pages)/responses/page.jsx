@@ -1,14 +1,17 @@
 "use client";
 import React from "react";
 import { Grid, Typography } from "@mui/material";
-import { Datatable } from "@/components";
+import { Datatable, Popup } from "@/components";
 import { useQuery } from "@/Context";
 import { useToast } from "@/hooks";
 import { api, Page } from "@/util";
+import { MuiButton } from "@/util/page";
+
 
 export default function page() {
   const [data, setData] = React.useState([]);
   const [reload, setReload] = React.useState(1);
+  const [reviewInfo, setReviewInfo] = React.useState(null)
   const query = useQuery();
   React.useEffect(() => {
     api.get(`/api/v1/survey/responses/${query.survey}`).then((resp) => {
@@ -34,14 +37,23 @@ export default function page() {
     {
       id: "status",
       label: "Status",
-      render: (info) => info.status,
+      render: (info) => {
+        if ("forReview" in info) {
+          return (<MuiButton onClick={() => {
+            setReviewInfo({ ...info.forReview, _id: info.user })
+          }}>
+            Review
+          </MuiButton>)
+        }
+        return info.status
+      },
     },
     {
       id: "user",
       label: "User",
       render: (info) => (
         <Page.Link href={`/api/v1/user/${info.user}`}>{info.user}</Page.Link>
-      ),
+      )
     },
     {
       id: "actions",
@@ -83,7 +95,7 @@ export default function page() {
               fontSize: "16px",
               display: "inline-block",
               fontWeight: "600",
-             borderBottom:(theme)=> `2px solid ${theme.palette.primary.main}`,
+              borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
               pb: 0.5,
               my: 1,
             }}
@@ -92,6 +104,12 @@ export default function page() {
           </Typography>
         }
       />
+      <Popup.SideDrawer open={!!reviewInfo} onClose={() => {
+        setReviewInfo(null)
+      }}>
+        ye side drawer hai,
+        <pre>{JSON.stringify(reviewInfo, null, 2)}</pre>
+      </Popup.SideDrawer>
     </Grid>
   );
 }

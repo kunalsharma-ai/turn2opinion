@@ -11,7 +11,7 @@ export default mongooseModel(
         },
         timeline: {
             start: { type: Date },
-            end: { type: Date,required:false,default:null },
+            end: { type: Date, required: false, default: null },
         },
         telemetry: [
             {
@@ -23,7 +23,7 @@ export default mongooseModel(
             type: String,
             trim: true,
             lowercase: true,
-            default:"invited"
+            default: "invited"
         },
         loi: {
             type: Number,
@@ -34,18 +34,21 @@ export default mongooseModel(
         },
         points: {
             type: Number,
-            required:true,
-            default:0
+            required: true,
+            default: 0
+        },
+        forReview: {
+            type: mongoose.Schema.Types.Mixed
         }
     },
     [
         [
             {
-                "survey.slug":1,
-                user:1
+                "survey.slug": 1,
+                user: 1
             },
             {
-                unique:1
+                unique: 1
             }
         ]
     ],

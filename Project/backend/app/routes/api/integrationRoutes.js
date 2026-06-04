@@ -1,19 +1,14 @@
 import express from "express";
-import { expressRoute, Mutate } from "../../utils/index.js";
+import { expressRoute, isAuthenticated, Mutate } from "../../utils/index.js";
 import { Survey, Category, Response as ResponseController, User as userController, Answer as answerController } from "../../controller/index.js"
 const router = express.Router();
 
-/**
- * 
-Respondent profile
-Question-Options
-Publish Survey
- */
 router
     .route('/new-survey')
     .get(async (req, res) => { return res.status(502).json({ status: "success", message: "Not implemented" }) })
     .post(async (req, res) => { return res.status(502).json({ status: "success", message: "Not implemented" }) })
     .put(
+        isAuthenticated,
         expressRoute(
             async (req) => {
                 Category.request = req;
@@ -66,12 +61,30 @@ router
     .delete(async (req, res) => { return res.status(502).json({ status: "success", message: "Not implemented" }) })
     .copy(async (req, res) => { return res.status(502).json({ status: "success", message: "Not implemented" }) })
 router
-    .route('/response')
-    .get(async (req, res) => { return res.status(502).json({ status: "success", message: "Not implemented" }) })
-    .post(async (req, res) => { return res.status(502).json({ status: "success", message: "Not implemented" }) })
-    .put(async (req, res) => { return res.status(502).json({ status: "success", message: "Not implemented" }) })
-    .patch(async (req, res) => { return res.status(502).json({ status: "success", message: "Not implemented" }) })
-    .delete(async (req, res) => { return res.status(502).json({ status: "success", message: "Not implemented" }) })
+    .route('/response/:responseID')
+    .get(async (req, res) => { return res.status(502).json({ status: "success", message: "1Not implemented" }) })
+    .post(
+        expressRoute(
+            async req => {
+                const response = await ResponseController.read(req.params.responseID)
+                // console.log(response)
+                req.user = {
+                    _id: response.user
+                }
+                // console.log(`${req.params.responseID}, { forReview: ${JSON.stringify(req.body.data)} }`)
+                const data = await ResponseController.update(req.params.responseID, { forReview: req.body.data });
+                return { message: "Status updated", data }
+            },
+            ResponseController
+        )
+    )
+    .post(async (req, res) => {
+
+        return res.status(502).json({ status: "success", message: "2Not implemented" })
+    })
+    .put(async (req, res) => { return res.status(502).json({ status: "success", message: "3Not implemented" }) })
+    .patch(async (req, res) => { return res.status(502).json({ status: "success", message: "4Not implemented" }) })
+    .delete(async (req, res) => { return res.status(502).json({ status: "success", message: "5Not implemented" }) })
     .copy(async (req, res) => { return res.status(502).json({ status: "success", message: "Not implemented" }) })
 
 export default router;
