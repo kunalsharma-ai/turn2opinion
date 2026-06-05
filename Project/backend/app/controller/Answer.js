@@ -30,7 +30,6 @@ class Answer extends CrudController {
                 }
             }
         })
-        console.log({ temp })
         return await answerModel.bulkWrite(temp, { ordered: true });
         // await answerModel.update
         throw new Error("Unable to save data")

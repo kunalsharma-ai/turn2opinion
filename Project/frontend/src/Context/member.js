@@ -33,23 +33,20 @@ class ValidUser {
     return ("isVerified" in this.userinfo && "email" in this.userinfo.isVerified && this.userinfo.isVerified.email === "verified")
   }
   async hasCompletedWelcomeSurvey() {
-    try {
-      let temp = await api.post(`/api/v1/me/survey`, {
-        slug: "welcome"
-      });
-      if (temp.status === "error") {
-        console.error(temp.message);
-        return false;
+     try {
+          let temp = await api.post(`/api/v1/response`, {
+            ["survey.slug"]: "welcome",
+            "status": "complete"
+          });
+          if (temp.status === "error") {
+            return false;
+          }
+          return ("data" in temp && Array.isArray(temp.data) && temp.data.length === 1)
+        } catch (error) {
+          console.error(error);
+          return false;
+        }
       }
-      if ("data" in temp && Array.isArray(temp.data) && temp.data.length === 1) {
-        return temp.data[0].participationStatus === "complete"
-      }
-      return false;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  }
   isAdmin() {
     return ("role" in this.userinfo && ["root", "admin"].includes(this.userinfo.role))
   }

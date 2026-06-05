@@ -13,3 +13,4 @@ export { default as setOrigin } from "./setOrigin.js";
 export { default as Token } from "./token.js";
 export { default as getMailer } from "./getMailer.js";
 export { default as sendMail } from "./sendMail.js";
+export { default as translate } from "./translate.js";

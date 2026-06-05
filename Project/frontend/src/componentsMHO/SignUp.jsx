@@ -17,6 +17,7 @@ import {
   Tooltip,
   ToggleButtonGroup,
   ToggleButton,
+  Collapse,
 } from "@mui/material";
 
 import {
@@ -46,6 +47,7 @@ import { api, Page } from "@/util";
 import user from "@/validators/user";
 import { useToast } from "@/hooks";
 import { useMember, useQuery, useTelemetry } from "@/Context";
+import Captcha from "./Captcha";
 function capitalizeName(str) {
   if (!str) return "";
 
@@ -101,6 +103,7 @@ export default function SignUp({
   const [status, setStatus] = React.useState("signup"); // signup, success, duplicate, unverified
   const [isLoading, setIsLoading] = React.useState(false);
   const [country, setCountry] = React.useState("");
+  const [btnDisabled, setBtnDisabled] = React.useState(true);
   const form = useForm({
     defaultValues: {
       category: "b2c",
@@ -479,12 +482,34 @@ export default function SignUp({
                         />
                       </Grid>
                     </Grid>
+                    <Collapse in={!!btnDisabled} sx={{ width: "100%" }}>
+                      <Grid
+                        sx={{
+                          py: 1,
+                          my: 1,
+                          px: 2,
+                          border: "1px solid",
+                          borderColor: "divider",
+                          bgcolor: "#fff",
+                          borderRadius: 2,
+                        }}
+                        size={12}
+                        container
+                        direction="row"
+                        alignItems="center"
+                      >
+                        <Captcha
+                          onVerified={() => {
+                            setBtnDisabled(false);
+                          }}
+                        />
+                      </Grid>
+                    </Collapse>
                     <Grid
                       size={12}
                       container
                       spacing={0}
                       alignItems="flex-start"
-                      mt={3}
                     >
                       <Form.Checkbox
                         size="medium"
@@ -530,8 +555,9 @@ export default function SignUp({
                       loading={isLoading}
                       loadingIndicator="Signing Up..."
                       disabled={
-                        !Boolean(form.watch("agreedtoterms")) &&
-                        !Boolean(form.watch("parent.email"))
+                        // !Boolean(form.watch("agreedtoterms")) &&
+                        // !Boolean(form.watch("parent.email")) &&
+                        !!btnDisabled
                       }
                       sx={{
                         bgcolor: "secondary.main",

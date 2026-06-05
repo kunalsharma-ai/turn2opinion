@@ -1,5 +1,5 @@
 import express from "express";
-import { expressRoute, isAuthenticated, Mutate } from "../../utils/index.js";
+import { expressRoute, isAuthenticated, Mutate, translate } from "../../utils/index.js";
 import { Survey, Category, Response as ResponseController, User as userController, Answer as answerController } from "../../controller/index.js"
 const router = express.Router();
 
@@ -66,22 +66,40 @@ router
     .post(
         expressRoute(
             async req => {
+
                 const response = await ResponseController.read(req.params.responseID)
-                // console.log(response)
-                req.user = {
-                    _id: response.user
+                const user=await userController.read(response.user);
+                
+                let translatedData = translate(response.survey.slug, req.body.data);
+                let security = ["age", "gender"]
+                for (let i = 0; i < security.length; i++) {
+                    const element = security[i];
+                    if (!(element in translatedData)) continue;
+                    if(element ==="age"){
+                        let age=translatedData["age"];
+                        if(typeof age ==="number" && age.diff(user?.age?.years??0)<1)continue;
+                        if(typeof age === "string")continue; // Shall be thought latter
+                    }
+                    if(translatedData[element]===user[element])throw new Error(element)
                 }
-                // console.log(`${req.params.responseID}, { forReview: ${JSON.stringify(req.body.data)} }`)
+
+                req.user = user
+                answerController.request = req
+
+                let answers = Object.entries(translatedData).map(tmp => {
+                    return {
+                        user: response.user.toString(),
+                        question: tmp[0],
+                        answer: tmp[1]
+                    }
+                })
+                await answerController.save(answers)
                 const data = await ResponseController.update(req.params.responseID, { forReview: req.body.data });
                 return { message: "Status updated", data }
             },
             ResponseController
         )
     )
-    .post(async (req, res) => {
-
-        return res.status(502).json({ status: "success", message: "2Not implemented" })
-    })
     .put(async (req, res) => { return res.status(502).json({ status: "success", message: "3Not implemented" }) })
     .patch(async (req, res) => { return res.status(502).json({ status: "success", message: "4Not implemented" }) })
     .delete(async (req, res) => { return res.status(502).json({ status: "success", message: "5Not implemented" }) })

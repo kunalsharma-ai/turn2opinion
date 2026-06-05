@@ -55,7 +55,8 @@ export default function SelectElement({ question, form, options, disabled }) {
           };
         return {
           label: opt.label,
-          value: opt.value
+          value: opt.value,
+          img: opt.img,
         };
       }) }
       // api={question.api}

@@ -1,6 +1,6 @@
 import express from "express";
 import { Option as optionController } from "../../controller/index.js";
-import { expressRoute, expressView, isAuthenticated, fsLogger } from "../../utils/index.js"
+import { expressRoute, expressView, isAuthenticated, fsLogger,Mutate } from "../../utils/index.js"
 
 const router = express.Router();
 router
@@ -33,8 +33,15 @@ router
         async req => {
             // Read all entries
             let message = "";
-            let data = await optionController.list({ question: req.params.parent })
-            console.log(data)
+            let data = Mutate( await optionController.list({ question: req.params.parent }))
+            switch(req.params.parent){
+                case "country":
+                    data=data.map(cn=>{
+                        cn["img"]=`/images/flags/${cn.value.toLowerCase()}.svg`
+                        return cn;
+                    })
+                    break;
+            }
             return { message, data };
         },
         optionController

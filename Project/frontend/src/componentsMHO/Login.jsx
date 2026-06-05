@@ -12,6 +12,7 @@ import {
   Fade,
   ToggleButton,
   ToggleButtonGroup,
+  Collapse,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
@@ -36,6 +37,7 @@ import "react-phone-input-2/lib/material.css";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useTelemetry } from "@/Context";
 import { useToast } from "@/hooks";
+import Captcha from "./Captcha";
 
 const socials = [
   {
@@ -144,6 +146,7 @@ function LoginCard({ onClose, setCardType, setOpenSignUp }) {
   const [loading, setLoading] = React.useState(false);
   const [loginType, setLoginType] = React.useState("mail");
   const [phone, setPhone] = React.useState("");
+  const [btnDisabled, setBtnDisabled] = React.useState(true);
 
   const [providers, setProviders] = React.useState([]);
   useEffect(() => {
@@ -193,7 +196,15 @@ function LoginCard({ onClose, setCardType, setOpenSignUp }) {
         display: "flex",
         flexDirection: "column",
         alignSelf: "center",
-        minHeight: authProviders.length > 0 ? "720px" : "600px",
+        minHeight:
+          authProviders.length > 0
+            ? btnDisabled
+              ? "838px" // providers exist + button disabled
+              : "780px" // providers exist + button enabled
+            : btnDisabled
+              ? "720px" // no providers + button disabled
+              : "600px", // no providers + button enabled
+        transition: "min-height 300ms ease-in-out",
         width: { xs: "95vw", sm: "480px" },
         px: { xs: 1.5, sm: 3 },
         position: "relative",
@@ -379,9 +390,17 @@ function LoginCard({ onClose, setCardType, setOpenSignUp }) {
             </Page.MuiButton>
           </Box>
         </Grid>
+        <Collapse in={!!btnDisabled} sx={{ width: "100%" }}>
+          <Captcha
+            onVerified={() => {
+              setBtnDisabled(false);
+            }}
+          />
+        </Collapse>
         {errorMessage && <Page.Error message={errorMessage} />}
 
         <Page.MuiButton
+          disabled={btnDisabled}
           type="submit"
           fullWidth
           variant="contained"

@@ -52,6 +52,7 @@ export default function MultiSelectElement({ question, form, options, disabled }
           return {
             label: opt.label,
             value: opt.value,
+            img: opt.img,
             isExclusive: opt.isExclusive,
             requiredDescribe: opt.describeLabel !== "",
             describeLabel: opt.describeLabel,
