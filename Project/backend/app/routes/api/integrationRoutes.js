@@ -66,10 +66,11 @@ router
     .post(
         expressRoute(
             async req => {
-
                 const response = await ResponseController.read(req.params.responseID)
                 const user=await userController.read(response.user);
-                
+                req.user = user
+                ResponseController.request=req;
+                const data = await ResponseController.update(req.params.responseID, { forReview: req.body.data });
                 let translatedData = translate(response.survey.slug, req.body.data);
                 let security = ["age", "gender"]
                 for (let i = 0; i < security.length; i++) {
@@ -83,7 +84,7 @@ router
                     if(translatedData[element]===user[element])throw new Error(element)
                 }
 
-                req.user = user
+                
                 answerController.request = req
 
                 let answers = Object.entries(translatedData).map(tmp => {
@@ -94,7 +95,7 @@ router
                     }
                 })
                 await answerController.save(answers)
-                const data = await ResponseController.update(req.params.responseID, { forReview: req.body.data });
+                
                 return { message: "Status updated", data }
             },
             ResponseController

@@ -363,8 +363,7 @@ function SurveyCard({ survey }) {
       { name: "gaming", icon: "fa-gamepad", color: "#7C3AED" },
     ];
 
-    const surveyCategory =
-      survey.category || survey.slug || survey.name || survey.type || "";
+    const surveyCategory = survey.surveyCategory || "";
 
     return (
       categories.find(

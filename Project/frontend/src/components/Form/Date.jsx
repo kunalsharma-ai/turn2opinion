@@ -122,8 +122,8 @@ export default function DateField({
                   error: !!errors,
                   helperText: errors?.message,
                   onBlur: handleBlur,
-                  onFocus: () => setOpen(true),
-                  onClick: () => setOpen(true),
+                  onFocus: !disabled ? () => setOpen(true) : undefined,
+                  onClick: !disabled ? () => setOpen(true) : undefined,
                   sx: {
                     backgroundColor: "white",
                     "& .MuiInputBase-input": {

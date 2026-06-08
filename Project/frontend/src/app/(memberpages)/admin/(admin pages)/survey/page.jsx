@@ -92,7 +92,8 @@ export default function () {
     {
       id: "points",
       label: "Survey Points",
-      render: info => (info.points === 0) ? "Edit survey before launch" : `${info.points} pts`,
+      render: (info) =>
+        info.points === 0 ? "Edit survey before launch" : `${info.points} pts`,
       width: 140,
       feature: ["sortable"],
     },
@@ -100,52 +101,55 @@ export default function () {
       id: "responses",
       label: "Responses",
       width: 150,
-      render: (info) => (["active", "closed", "hold"].includes(info.status)) ? (
-        <Page.Link
-          href={`/admin/responses?survey=${info.slug}`}
-          target="_blank"
-          sx={{ color: "secondary.main", fontWeight: 500, p: 0 }}
-        >
-          View Responses
-        </Page.Link>
-      ) : null,
+      render: (info) =>
+        ["active", "closed", "hold"].includes(info.status) ? (
+          <Page.Link
+            href={`/admin/responses?survey=${info.slug}`}
+            target="_blank"
+            sx={{ color: "secondary.main", fontWeight: 500, p: 0 }}
+          >
+            View Responses
+          </Page.Link>
+        ) : null,
     },
     {
       id: "questionsList",
       label: "Questions List",
       width: 150,
-      render: (info) => (info.status !== "active") ? null : (
-        <Page.MuiButton
-          sx={{
-            color: "secondary.main",
-            fontWeight: 500,
-            p: 0,
-            textTransform: "none",
-          }}
-          onClick={() => {
-            setOpenQuestions({ open: true, id: info._id });
-          }}
-        >
-          View Questions
-        </Page.MuiButton>
-      ),
+      render: (info) =>
+        info.status !== "active" ? null : (
+          <Page.MuiButton
+            sx={{
+              color: "secondary.main",
+              fontWeight: 500,
+              p: 0,
+              textTransform: "none",
+            }}
+            onClick={() => {
+              setOpenQuestions({ open: true, id: info._id });
+            }}
+          >
+            View Questions
+          </Page.MuiButton>
+        ),
     },
     {
       id: "invite",
       label: "Invite",
       width: 80,
-      render: (info) => (info.status !== "active") ? null : (
-        <Tooltip title="Invite Panelists">
-          <IconButton
-            sx={{ p: 0 }}
-            onClick={() => {
-              setOpenInvite({ open: true, id: info._id });
-            }}
-          >
-            <PeopleIcon fontSize="small" color="secondary" />
-          </IconButton>
-        </Tooltip>
-      ),
+      render: (info) =>
+        info.status !== "active" ? null : (
+          <Tooltip title="Invite Panelists">
+            <IconButton
+              sx={{ p: 0 }}
+              onClick={() => {
+                setOpenInvite({ open: true, id: info._id });
+              }}
+            >
+              <PeopleIcon fontSize="small" color="secondary" />
+            </IconButton>
+          </Tooltip>
+        ),
     },
     {
       id: "action",
@@ -162,7 +166,7 @@ export default function () {
         </IconButton>
       ),
     },
-  ]
+  ];
 
   return (
     <Page.Box
@@ -279,8 +283,13 @@ function SurveyInvite({ surveyID = null, close }) {
     close();
   };
 
-  const totalRespondents = Array.isArray(summary) ? (summary.find((s) => s.label === "Total Panelists")?.value || 0) : 0;
-  const categoryCount = (surveyData && Array.isArray(summary)) ? (summary.find((s) => s.label === surveyData.category)?.value || 0) : 0;
+  const totalRespondents = Array.isArray(summary)
+    ? summary.find((s) => s.label === "Total Panelists")?.value || 0
+    : 0;
+  const categoryCount =
+    surveyData && Array.isArray(summary)
+      ? summary.find((s) => s.label === surveyData.category)?.value || 0
+      : 0;
 
   return (
     <Grid
@@ -321,11 +330,11 @@ function SurveyInvite({ surveyID = null, close }) {
                 options={[
                   {
                     label: `Match Category Only (${surveyData?.category?.toUpperCase()}: ${categoryCount} users)`,
-                    value: "category"
+                    value: "category",
                   },
                   {
                     label: `All Respondents (${totalRespondents} users)`,
-                    value: "all"
+                    value: "all",
                   },
                 ]}
               />
@@ -338,8 +347,12 @@ function SurveyInvite({ surveyID = null, close }) {
               />
             </Grid>
             <Grid size={12} sx={{ mt: 1 }}>
-              <Page.Text fontSize={13} sx={{ color: "text.secondary", fontStyle: "italic" }}>
-                Note: Clicking "Send Invitations" will immediately create invitations for existing users based on the selected scope.
+              <Page.Text
+                fontSize={13}
+                sx={{ color: "text.secondary", fontStyle: "italic" }}
+              >
+                Note: Clicking "Send Invitations" will immediately create
+                invitations for existing users based on the selected scope.
               </Page.Text>
             </Grid>
           </>
@@ -388,6 +401,7 @@ function CreateOrEditSurvey({ surveyID = null, close }) {
       description: "",
       link: "",
       pages: [],
+      surveyCategory: "",
     },
   });
 
@@ -443,11 +457,44 @@ function CreateOrEditSurvey({ surveyID = null, close }) {
         </IconButton>
       </SectionTitle>
       <Grid container size={12} spacing={1.4} sx={{ px: 2 }}>
-        <Form.Input
-          control={control}
-          {...form.register("slug")}
-          label="Survey URL"
-        />
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Form.Input
+            control={control}
+            {...form.register("slug")}
+            label="Survey URL"
+          />
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Form.Select
+            control={control}
+            {...form.register("surveyCategory")}
+            label="Survey Category"
+            options={[
+              { label: "Basic", value: "basic" },
+              { label: "Professional", value: "professional" },
+              { label: "Educational", value: "educational" },
+              { label: "Survey and Rewards", value: "Survey and Rewards" },
+              { label: "Financial", value: "financial" },
+              { label: "Parenting", value: "parenting" },
+              {
+                label: "Home and Pet Ownership",
+                value: "Home and Pet Ownership",
+              },
+              { label: "Shopping", value: "shopping" },
+              { label: "Lifestyle and food", value: "Lifestyle and food" },
+              { label: "Travel", value: "travel" },
+              { label: "Automobile", value: "automobile" },
+              { label: "Health", value: "health" },
+              { label: "Beauty & Fashion", value: "beauty & fashion" },
+              {
+                label: "Media, Electronics, Mobile & Technology",
+                value: "media, electronics, mobile & technology",
+              },
+              { label: "Sports", value: "sports" },
+              { label: "Gaming", value: "gaming" },
+            ]}
+          />
+        </Grid>
         <Form.Input
           control={control}
           {...form.register("name")}

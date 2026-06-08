@@ -143,14 +143,14 @@ export default function page() {
           Share the below link with your colleagues and let them enjoy the
           benefits of being a Turn2Opinion - In Community member.
         </Typography>
-        <Box display={"flex"} alignItems="center" gap={1} width={"100%"}>
+        <Grid container size={12} alignItems="center" spacing={1} >
           <Typography fontSize={15} fontWeight={600}>
             {referralLink}
           </Typography>
           <IconButton onClick={handleCopy}>
             <ContentCopyIcon />
           </IconButton>
-        </Box>
+        </Grid>
       </Grid>{" "}
       <Grid size={12} container>
         <Grid size={{ xs: 12, lg: 6 }} container spacing={2} mt={2}>

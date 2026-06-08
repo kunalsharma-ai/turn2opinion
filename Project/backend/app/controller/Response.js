@@ -207,6 +207,7 @@ class Response extends CrudController {
                 name: "$surveyInfo.name",
                 slug: "$surveyInfo.slug",
                 points: "$surveyInfo.points",
+                surveyCategory: "$surveyInfo.surveyCategory",
                 loi: "$surveyInfo.loi",
                 source: "$surveyInfo.source",
                 createdAt: "$surveyInfo.createdAt",

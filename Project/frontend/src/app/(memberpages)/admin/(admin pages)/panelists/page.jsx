@@ -599,7 +599,7 @@ function UserData({ userId, onClose }) {
                 setReload(!reload);
               }}
             >
-              {user?.role}
+              {/* {user?.role} */}
               {["admin", "superadmin", "root"].includes(user?.role)
                 ? "Admin"
                 : "Respondent"}
