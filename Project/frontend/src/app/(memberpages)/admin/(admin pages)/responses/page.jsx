@@ -6,12 +6,12 @@ import { useQuery } from "@/Context";
 import { useToast } from "@/hooks";
 import { api, Page } from "@/util";
 import { MuiButton } from "@/util/page";
-
+import DataList from "@/componentsMHO/DataList";
 
 export default function page() {
   const [data, setData] = React.useState([]);
   const [reload, setReload] = React.useState(1);
-  const [reviewInfo, setReviewInfo] = React.useState(null)
+  const [reviewInfo, setReviewInfo] = React.useState(null);
   const query = useQuery();
   React.useEffect(() => {
     api.get(`/api/v1/survey/responses/${query.survey}`).then((resp) => {
@@ -21,12 +21,12 @@ export default function page() {
   const columns = [
     {
       id: "points",
-      label: "points",
+      label: "Points",
       render: (info) => info.points,
     },
     {
       id: "source",
-      label: "source",
+      label: "Source",
       render: (info) => info.source,
     },
     {
@@ -39,13 +39,24 @@ export default function page() {
       label: "Status",
       render: (info) => {
         if ("forReview" in info) {
-          return (<MuiButton onClick={() => {
-            setReviewInfo({ ...info.forReview, _id: info.user })
-          }}>
-            Review
-          </MuiButton>)
+          return (
+            <MuiButton
+              variant="contained"
+              color="secondary"
+              sx={{
+                px: 2,
+                py: 0.2,
+                borderRadius: "20px",
+              }}
+              onClick={() => {
+                setReviewInfo({ ...info.forReview, _id: info.user });
+              }}
+            >
+              Review
+            </MuiButton>
+          );
         }
-        return info.status
+        return info.status;
       },
     },
     {
@@ -53,7 +64,7 @@ export default function page() {
       label: "User",
       render: (info) => (
         <Page.Link href={`/api/v1/user/${info.user}`}>{info.user}</Page.Link>
-      )
+      ),
     },
     {
       id: "actions",
@@ -62,7 +73,13 @@ export default function page() {
         return (
           <>
             <Page.MuiButton
+              variant="contained"
               color="error"
+              sx={{
+                px: 2,
+                py: 0.2,
+                borderRadius: "20px",
+              }}
               onClick={async (e) => {
                 let cnf = confirm("Do you want to delete this?");
                 if (!cnf) return;
@@ -78,6 +95,12 @@ export default function page() {
       },
     },
   ];
+  const dataList = Object.entries(reviewInfo || {})
+    .filter(([key]) => key !== "_id")
+    .map(([key, value]) => ({
+      label: key,
+      value: Array.isArray(value) ? value.join(", ") : value,
+    }));
   return (
     <Grid size={12} p={{ xs: 2, md: 3 }} sx={{ border: `1px solid #e0e0e0` }}>
       <Datatable
@@ -95,7 +118,8 @@ export default function page() {
               fontSize: "16px",
               display: "inline-block",
               fontWeight: "600",
-              borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
+              borderBottom: (theme) =>
+                `2px solid ${theme.palette.primary.main}`,
               pb: 0.5,
               my: 1,
             }}
@@ -104,11 +128,15 @@ export default function page() {
           </Typography>
         }
       />
-      <Popup.SideDrawer open={!!reviewInfo} onClose={() => {
-        setReviewInfo(null)
-      }}>
-        ye side drawer hai,
-        <pre>{JSON.stringify(reviewInfo, null, 2)}</pre>
+      <Popup.SideDrawer
+        open={!!reviewInfo}
+        title="Review Response"
+        onClose={() => {
+          setReviewInfo(null);
+        }}
+      >
+        <DataList title="Survey Responses" dataList={dataList} />
+        {/* <pre>{JSON.stringify(reviewInfo, null, 2)}</pre> */}
       </Popup.SideDrawer>
     </Grid>
   );
