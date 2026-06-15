@@ -2,7 +2,8 @@
 import { useRouter, useSearchParams, redirect } from "next/navigation";
 import React from "react";
 import Avatar from "@mui/material/Avatar";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Rating } from "@mui/material";
+import StarIcon from "@mui/icons-material/Star";
 
 import {
   HighlightOff as HighlightOffIcon,
@@ -64,7 +65,7 @@ function page() {
           minWidth: { xs: 300, md: 400 },
           minHeight: 300,
           textAlign: "center",
-          p: 3,
+          p: { xs: 1, md: 3 },
           mx: 1,
           BoxShadow: 4,
           borderRadius: 4,
@@ -189,7 +190,15 @@ function StatusMessage({ type, points, link }) {
 
   return (
     <>
-      <Page.Box mb={2}>
+      <Page.Box
+        mb={2}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Page.Box
           sx={{
             display: "flex",
@@ -236,12 +245,27 @@ function StatusMessage({ type, points, link }) {
         </Page.Text>
       </Page.Box>
 
+      <Page.Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        mb={2}
+      >
+        <Page.Text mb={1}>
+          Your feedback helps us improve future surveys. Please rate your
+          experience.
+        </Page.Text>
+        <StarRating />
+      </Page.Box>
+
       {link && (
         <Page.MuiButton
           variant="contained"
           color="primary"
           sx={{
             fontWeight: 600,
+            mt: 1,
             mb: 2,
           }}
           onClick={() => redirect(link)}
@@ -251,14 +275,21 @@ function StatusMessage({ type, points, link }) {
       )}
 
       {availableSurveys.length !== 0 && (
-        <>
+        <Page.Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <Page.Divider sx={{ mb: 2, width: "90%", mx: "auto" }} />
           <Page.Text
             color="text.secondary"
             mt={1}
             sx={{
-              maxWidth: { xs: "320px", md: "640px" },
-
+              maxWidth: { xs: "320px", sm: "640px" },
+              textAlign: "center",
               fontWeight: 500,
             }}
           >
@@ -272,9 +303,10 @@ function StatusMessage({ type, points, link }) {
               mt: 2,
               border: "1px solid rgba(0,0,0,0.12)",
               borderRadius: 2,
-              overflow: "hidden",
-              maxWidth: { xs: "320px", md: "640px" },
+              maxWidth: { xs: "98vw", sm: "640px" },
               background: "#fff",
+              maxHeight: 200,
+              overflow: "auto",
             }}
           >
             <table
@@ -288,13 +320,21 @@ function StatusMessage({ type, points, link }) {
                 borderCollapse: "collapse",
               }}
             >
-              <thead>
+              <thead
+                style={{
+                  position: "sticky",
+                  top: 0,
+                  background: "#f8fafc",
+                  zIndex: 2,
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.08)",
+                }}
+              >
                 <tr
                   style={{
                     background: "#f8fafc",
                   }}
                 >
-                  <td
+                  <th
                     style={{
                       width: "35%",
                       padding: "4px 8px",
@@ -304,8 +344,8 @@ function StatusMessage({ type, points, link }) {
                     }}
                   >
                     Survey Name
-                  </td>
-                  <td
+                  </th>
+                  <th
                     style={{
                       width: "25%",
                       padding: "4px 8px",
@@ -315,19 +355,21 @@ function StatusMessage({ type, points, link }) {
                     }}
                   >
                     Time Required
-                  </td>{" "}
-                  <td
+                  </th>
+                  <th
                     style={{
                       width: "15%",
                       padding: "4px 8px",
                       fontWeight: 700,
+                      textOverflow: "ellipsis",
+                      overflow: "hidden",
                       borderBottom: "1px solid rgba(0,0,0,0.12)",
                       borderRight: "1px solid rgba(0,0,0,0.08)",
                     }}
                   >
                     Points
-                  </td>
-                  <td
+                  </th>
+                  <th
                     style={{
                       width: "25%",
                       padding: "4px 8px",
@@ -340,7 +382,7 @@ function StatusMessage({ type, points, link }) {
               <tbody>
                 {availableSurveys.map((survey, index, arr) => (
                   <tr
-                    key={survey.id}
+                    key={index}
                     style={{
                       borderBottom:
                         index !== arr.length - 1
@@ -374,10 +416,12 @@ function StatusMessage({ type, points, link }) {
                         whiteSpace: "nowrap",
                         verticalAlign: "middle",
                         borderRight: "1px solid rgba(0,0,0,0.08)",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                       }}
                     >
                       {survey.loi} minutes (approx)
-                    </td>{" "}
+                    </td>
                     <td
                       style={{
                         padding: "4px 8px",
@@ -385,6 +429,8 @@ function StatusMessage({ type, points, link }) {
                         whiteSpace: "nowrap",
                         verticalAlign: "middle",
                         borderRight: "1px solid rgba(0,0,0,0.08)",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                       }}
                     >
                       {survey.points || 50} pts
@@ -418,9 +464,52 @@ function StatusMessage({ type, points, link }) {
               </tbody>
             </table>
           </Page.Box>
-        </>
+        </Page.Box>
       )}
     </>
   );
 }
 export default page;
+
+function StarRating() {
+  const [value, setValue] = React.useState(3.5);
+  const [hover, setHover] = React.useState(-1);
+
+  const labels = {
+    0.5: "Useless",
+    1: "Useless+",
+    1.5: "Poor",
+    2: "Poor+",
+    2.5: "Ok",
+    3: "Ok+",
+    3.5: "Good",
+    4: "Good+",
+    4.5: "Excellent",
+    5: "Excellent+",
+  };
+
+  return (
+    <Page.Box
+      sx={{ width: 200, display: "flex", alignItems: "center", ml: "60px" }}
+    >
+      <Rating
+        name="hover-feedback"
+        value={value}
+        precision={0.5}
+        onChange={(event, newValue) => {
+          setValue(newValue);
+          // todo: api call to add rating value to response
+        }}
+        onChangeActive={(event, newHover) => {
+          setHover(newHover);
+        }}
+        emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+      />
+      {value !== null && (
+        <Page.Box sx={{ ml: 2 }}>
+          {labels[hover !== -1 ? hover : value]}
+        </Page.Box>
+      )}
+    </Page.Box>
+  );
+}

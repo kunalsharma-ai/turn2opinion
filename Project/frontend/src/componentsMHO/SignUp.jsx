@@ -400,7 +400,7 @@ export default function SignUp({
                             { value: "Prof.", label: "Prof." },
                             { value: "Mx. ", label: "Mx." },
                           ]}
-                          labelText="Salutation"
+                          labelText="Sal."
                         />
                       </Grid>
                       <Grid size={{ xs: 12, md: 4.9 }}>
@@ -750,23 +750,42 @@ export default function SignUp({
               container
               alignItems="center"
               sx={{
-                minHeight: { xs: "90vh", lg: "80vh" },
+                minHeight: { xs: "80vh", sm: "70vh" },
                 p: { xs: 1, md: 6 },
                 border: 1.5,
                 borderColor: "#33aaca",
               }}
             >
+              <Page.Box
+                sx={{
+                  width: "100%",
+                  height: 60,
+                  display: "flex",
+                  justifyContent: "center",
+                  mb: 1.5,
+                }}
+              >
+                <img src="/images/logo/t2o-logo.png" alt="logo" height="100%" />
+              </Page.Box>
               <Grid
                 size={12}
                 container
-                spacing={4}
+                spacing={{ xs: 1, sm: 3 }}
                 alignItems="center"
                 direction="column"
+                justifyContent="center"
+                sx={{
+                  border: "1px solid #ddd",
+                  borderRadius: 3,
+                  p: { xs: 3, sm: 6 },
+                  bgcolor: "#8cb2f333",
+                  flex: 1,
+                }}
               >
-                <CheckCircleIcon color="primary" sx={{ fontSize: "80px" }} />
+                <CheckCircleIcon color="primary" sx={{ fontSize: "60px" }} />
                 <Page.Text
                   sx={{
-                    fontSize: { xs: "18px", md: "26px" },
+                    fontSize: { xs: "18px", md: "22px" },
                     fontWeight: 600,
                     textAlign: "center",
                   }}
@@ -776,7 +795,7 @@ export default function SignUp({
                     component="span"
                     sx={{
                       color: "secondary.main",
-                      fontSize: { xs: "18px", md: "26px" },
+                      fontSize: { xs: "18px", md: "22px" },
                       fontWeight: 600,
                     }}
                   >
@@ -786,11 +805,11 @@ export default function SignUp({
                 </Page.Text>
                 <Page.Text
                   sx={{
-                    fontSize: "16px",
+                    fontSize: "15px",
                     fontWeight: 500,
                     textAlign: "center",
                     borderRadius: 5,
-                    bgcolor: "#8cb2f333",
+                    bgcolor: "#fff",
                     border: "1px solid #f4f4f4",
                     p: 4,
                   }}

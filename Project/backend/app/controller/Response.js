@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 import { CrudController, Mutate } from "../utils/index.js";
 import { Response as responseModel, Survey as surveyModel } from "../model/index.js";
 const threshold = {
-    rewards: 1000,
-    loi: 10
+    rewards: 500,
+    loi: 5
 }
 class Response extends CrudController {
     async setStatus(responseID, status) {

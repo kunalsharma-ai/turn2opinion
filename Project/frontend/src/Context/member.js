@@ -33,20 +33,20 @@ class ValidUser {
     return ("isVerified" in this.userinfo && "email" in this.userinfo.isVerified && this.userinfo.isVerified.email === "verified")
   }
   async hasCompletedWelcomeSurvey() {
-     try {
-          let temp = await api.post(`/api/v1/response`, {
-            ["survey.slug"]: "welcome",
-            "status": "complete"
-          });
-          if (temp.status === "error") {
-            return false;
-          }
-          return ("data" in temp && Array.isArray(temp.data) && temp.data.length === 1)
-        } catch (error) {
-          console.error(error);
-          return false;
-        }
+    try {
+      let temp = await api.post(`/api/v1/response`, {
+        ["survey.slug"]: "welcome",
+        "status": "complete"
+      });
+      if (temp.status === "error") {
+        return false;
       }
+      return ("data" in temp && Array.isArray(temp.data) && temp.data.length === 1)
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
   isAdmin() {
     return ("role" in this.userinfo && ["root", "admin"].includes(this.userinfo.role))
   }
@@ -56,9 +56,9 @@ class ValidUser {
     }
     if (pathname.startsWith("/member")) {
       if (!this.emailVerified()) return this.router.replace(`/?verifyemail=${this.userinfo.mail}`)
+      if (!this.termsAccepted()) return this.router.replace("/auth/terms")
+      if (!(await this.hasCompletedWelcomeSurvey())) return this.router.replace("/survey?name=welcome")
     }
-    if (!this.termsAccepted()) return this.router.replace("/auth/terms")
-    if (!(await this.hasCompletedWelcomeSurvey())) return this.router.replace("/survey?name=welcome")
   }
 }
 export function MemberProvider({ children }) {

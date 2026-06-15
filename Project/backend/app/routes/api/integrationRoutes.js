@@ -75,41 +75,52 @@ router
                 const user = await userController.read(response.user);
                 req.user = user
                 ResponseController.request = req;
+                answerController.request = req;
                 const data = await ResponseController.update(req.params.responseID, { forReview: req.body.data });
-                let translatedData = translate(response.survey.slug, req.body.data);
-                let security = ["age", "gender"]
-                for (let i = 0; i < security.length; i++) {
-                    const element = security[i];
-                    if (!(element in translatedData)) continue;
-                    if (element === "age") {
-                        let age = translatedData["age"];
-                        if (typeof age === "number" && age.diff(user?.age?.years ?? 0) < 1) continue;
-                        if (typeof age === "string") continue; // Shall be thought latter
-                    }
-                    if (translatedData[element] === user[element]) throw new Error(element)
-                }
-
-
-                answerController.request = req
-
-                let answers = Object.entries(translatedData).map(tmp => {
+                let profileAnswers = Mutate(await answerController.list({ user: user._id.toString() }, null, {}, "+answer")).reduce((a, c) => {
+                    if ("question" in c) a[c.question] = (c.answer instanceof Array && c.answer.length === 1) ? c.answer[0] : c.answer;
+                    return a;
+                }, {});
+                let answers = Object.entries(req.body.data).map(tmp => {
+                    if (["age", "gender", "country", "empstat"].includes(tmp[0])) return null
                     return {
                         user: response.user.toString(),
                         question: tmp[0],
                         answer: tmp[1]
                     }
-                })
+                }).filter(a => Boolean(a))
                 await answerController.save(answers)
+                function userInfo(element) {
+                    if (element in user) return user[element];
+                    if (element in profileAnswers) return profileAnswers[element];
+                }
+                let security = ["age", "gender", "country", "empstat"]
+                for (let i = 0; i < security.length; i++) {
+                    const element = security[i];
+                    if (!(element in req.body.data)) continue;
+                    if (element === "age") {
+                        let age = req.body.data["age"];
+                        if (typeof age === "number" && age.diff(user?.age?.years ?? 0) < 1) continue;
+                        age = age.split("-");
+                        if (age instanceof Array && age.length === 2) {
+                            let minAge = parseInt(age[0]);
+                            let maxAge = parseInt(age[1]);
+                            if ((minAge - 1) <= user?.age?.years && user?.age?.years <= (maxAge + 1)) continue;
+                        }
+                        age = age.join("");
+                        if (age.includes("18") && user?.age?.years <= 18) continue;
+                        if (age.includes("+") && user?.age?.years >= parseInt(age.replace("+", ""))) continue;
+                        throw new Error(element)
+                    }
+                    if (req.body.data[element] === userInfo(element)) continue;
+                    throw new Error(element)
+                }
 
                 return { message: "Status updated", data }
             },
             ResponseController
         )
     )
-    .put(async (req, res) => { return res.status(502).json({ status: "success", message: "3Not implemented" }) })
-    .patch(async (req, res) => { return res.status(502).json({ status: "success", message: "4Not implemented" }) })
-    .delete(async (req, res) => { return res.status(502).json({ status: "success", message: "5Not implemented" }) })
-    .copy(async (req, res) => { return res.status(502).json({ status: "success", message: "Not implemented" }) })
 
 export default router;
 

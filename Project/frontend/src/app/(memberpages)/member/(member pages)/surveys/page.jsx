@@ -117,7 +117,7 @@ export default function SurveyDashboard() {
           </Typography>
         </Grid>
 
-        <SurveyPoints onUpdate={() => {}} />
+        <SurveyPoints onUpdate={() => { }} />
       </Grid>
       <Collapse
         in={availableSurveys.length !== 0 && !isLoading}
@@ -224,26 +224,29 @@ function SurveyStat({ stats, isLoading }) {
 
 function SurveyList({ surveys, query, isLoading }) {
   const [activeFilter, setActiveFilter] = React.useState(
-    query.filter ?? "All Surveys",
+    !query.filter || query.filter === "null" || query.filter === "undefined"
+      ? "All New Surveys"
+      : query.filter,
   );
   console.log(activeFilter);
   const filters = [
     {
-      label: "All Surveys",
+      label: "All New Surveys",
+      badge: "New",
     },
     {
       label: "High Reward Surveys",
-      filter: (survey) => survey.points > 1500,
+      filter: (survey) => survey.points > 500,
     },
     {
       label: "Short Surveys",
-      filter: (survey) => survey.loi < 15,
+      filter: (survey) => survey.loi <= 5,
     },
-    {
-      label: "New Surveys",
-      badge: "New",
-      filter: (survey) => survey.participationStatus === "invited",
-    },
+    // {
+    //   label: "New Surveys",
+    //   badge: "New",
+    //   filter: (survey) => survey.participationStatus === "invited",
+    // },
   ];
 
   return (

@@ -164,7 +164,7 @@ function Surveys() {
       isAvailable: Boolean(availableSurveys?.internal),
       stat: [
         {
-          title: "All Surveys",
+          title: "All New Surveys",
           filter: null,
           count: availableSurveys?.internal?.all ?? 0,
           bg: "#2563eb",
@@ -181,12 +181,12 @@ function Surveys() {
           count: availableSurveys?.internal?.short ?? 0,
           bg: "#059669",
         },
-        {
-          title: "New Surveys",
-          filter: "New Surveys",
-          count: availableSurveys?.internal?.newSurveys ?? 0,
-          bg: "#ea580c",
-        },
+        // {
+        //   title: "New Surveys",
+        //   filter: "New Surveys",
+        //   count: availableSurveys?.internal?.newSurveys ?? 0,
+        //   bg: "#ea580c",
+        // },
       ],
     },
     {
@@ -197,7 +197,7 @@ function Surveys() {
       isAvailable: Boolean(availableSurveys?.external),
       stat: [
         {
-          title: "All Surveys",
+          title: "All New Surveys",
           filter: null,
           count: 0,
           bg: "#2563eb",
@@ -214,12 +214,12 @@ function Surveys() {
           count: 0,
           bg: "#059669",
         },
-        {
-          title: "New Surveys",
-          filter: "New Surveys",
-          count: 0,
-          bg: "#ea580c",
-        },
+        // {
+        //   title: "New Surveys",
+        //   filter: "New Surveys",
+        //   count: 0,
+        //   bg: "#ea580c",
+        // },
       ],
     },
   ];
@@ -325,7 +325,7 @@ function Surveys() {
                   my={1}
                 >
                   {survey?.stat.map((item, statIndex) => (
-                    <Grid key={statIndex} size={{ xs: 6, sm: 3 }}>
+                    <Grid key={statIndex} size={{ xs: 6, sm: 4 }}>
                       <Page.Link
                         href={`${survey.link}&filter=${item.filter}`}
                         sx={{

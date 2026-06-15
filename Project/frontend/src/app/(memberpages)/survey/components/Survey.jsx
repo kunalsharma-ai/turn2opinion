@@ -117,10 +117,7 @@ export default function Survey({
             <>
               <p>
                 The age you entered doesn't match the information on your
-                profile.
-              </p>
-              <p>Please check and correct your age and try again.</p>
-              <p>&nbsp;</p>
+                profile. Please check and correct your age and try again.</p>
             </>
           ),
         });
@@ -236,7 +233,7 @@ export default function Survey({
                 }}
                 onClick={onNext}
               >
-                Next
+              { [null, undefined].includes(currentPage) ? "Start": "Next "}
               </Page.MuiButton>
             )}
           </Grid>
