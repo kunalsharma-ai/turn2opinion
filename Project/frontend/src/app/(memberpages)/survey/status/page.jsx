@@ -32,7 +32,12 @@ function page() {
       },
     );
   }, [query]);
-
+  async function starRatingChanged(value) {
+    api.put(`/api/v1/survey/response`, {
+      sid: query.sid,
+      rating: value,
+    })
+  }
   return (
     <Page.Box
       display="flex"
@@ -101,6 +106,7 @@ function page() {
               type={status?.type ?? ""}
               points={status?.points ?? 0}
               link="/member/dashboard"
+              starRatingChanged={starRatingChanged}
             />
           </Page.Box>
         )}
@@ -109,7 +115,7 @@ function page() {
   );
 }
 
-function StatusMessage({ type, points, link }) {
+function StatusMessage({ type, points, link, starRatingChanged }) {
   const [availableSurveys, setAvailableSurveys] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [query, setQuery] = [useQuery()];
@@ -256,7 +262,9 @@ function StatusMessage({ type, points, link }) {
           Your feedback helps us improve future surveys. Please rate your
           experience.
         </Page.Text>
-        <StarRating />
+        <StarRating onChange={value => {
+          starRatingChanged(value)
+        }} />
       </Page.Box>
 
       {link && (
@@ -471,7 +479,7 @@ function StatusMessage({ type, points, link }) {
 }
 export default page;
 
-function StarRating() {
+function StarRating({ onChange, }) {
   const [value, setValue] = React.useState(3.5);
   const [hover, setHover] = React.useState(-1);
 
@@ -498,6 +506,7 @@ function StarRating() {
         precision={0.5}
         onChange={(event, newValue) => {
           setValue(newValue);
+          onChange(newValue);
           // todo: api call to add rating value to response
         }}
         onChangeActive={(event, newHover) => {

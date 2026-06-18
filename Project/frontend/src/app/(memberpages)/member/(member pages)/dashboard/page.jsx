@@ -8,7 +8,9 @@ import {
   Grid,
   Typography,
   CircularProgress,
+  Rating,
 } from "@mui/material";
+import StarIcon from "@mui/icons-material/Star";
 import { useMember, useQuery } from "@/Context";
 import { Datatable } from "@/components";
 import { DateRangeSelector } from "@/components/Form";
@@ -678,6 +680,13 @@ export function SurveyHistory() {
         );
       },
     },
+    {
+      id: "surveyFeedback",
+      label: "Survey Feedback",
+      render: (info) => {
+        return <StarRating onChange={() => {}} />;
+      },
+    },
   ];
 
   return (
@@ -936,3 +945,45 @@ const StatCards = ({ statistics, isLoading, conversionRate }) => {
     </Page.Box>
   );
 };
+
+function StarRating({ onChange }) {
+  const [value, setValue] = React.useState(3.5);
+  const [hover, setHover] = React.useState(-1);
+
+  const labels = {
+    0.5: "Useless",
+    1: "Useless+",
+    1.5: "Poor",
+    2: "Poor+",
+    2.5: "Ok",
+    3: "Ok+",
+    3.5: "Good",
+    4: "Good+",
+    4.5: "Excellent",
+    5: "Excellent+",
+  };
+
+  return (
+    <Page.Box sx={{ width: 200, display: "flex", alignItems: "center" }}>
+      <Rating
+        name="hover-feedback"
+        value={value}
+        precision={0.5}
+        onChange={(event, newValue) => {
+          setValue(newValue);
+          onChange(newValue);
+          // todo: api call to add rating value to response
+        }}
+        onChangeActive={(event, newHover) => {
+          setHover(newHover);
+        }}
+        emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+      />
+      {value !== null && (
+        <Page.Box sx={{ ml: 1 }}>
+          {labels[hover !== -1 ? hover : value]}
+        </Page.Box>
+      )}
+    </Page.Box>
+  );
+}

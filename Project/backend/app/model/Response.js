@@ -39,6 +39,10 @@ export default mongooseModel(
         },
         forReview: {
             type: mongoose.Schema.Types.Mixed
+        },
+        rating: {
+            type: Number,
+            default: 3
         }
     },
     [

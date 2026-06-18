@@ -30,7 +30,6 @@ router
                 let data = Mutate(await questionController.list(
                     { ...req.body, category: req.user.category }
                 ))
-
                 return { message, data };
             },
             questionController

@@ -71,6 +71,9 @@ class Question extends CrudController {
             const que = data[index];
             que["children"] = children[que.name];
             que["required"] = que.isRequired;
+            if(["",null,undefined].includes(que.parent)){
+                delete(que.parent)
+            }
         }
         return data;
     }

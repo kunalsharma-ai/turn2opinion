@@ -37,9 +37,9 @@ export default function Survey({
     mode: "onChange",
   });
   let questions = pages[currentPage];
-  if (questions?.includes("phone")) questions.push("phone-whatsapp");
-  if (questions?.includes("alternate-phone"))
-    questions.push("alternate-phone-whatsapp");
+  // if (questions?.includes("phone")) questions.push("phone-whatsapp");
+  // if (questions?.includes("alternate-phone"))
+  //   questions.push("alternate-phone-whatsapp");
   questions = questions?.unique();
   const { data: me } = useQuery({
     queryKey: ["answers", pages?.[currentPage]?.[0], currentPage],
@@ -51,10 +51,6 @@ export default function Survey({
         Object.entries(resp.data)
           .filter((ans) => questions.includes(ans[0]))
           .map(([key, value]) => {
-            console.log({
-              key,
-              value,
-            });
             form.setValue(key, value);
             if (key === "age") {
               form.setValue(key, "");
@@ -117,7 +113,8 @@ export default function Survey({
             <>
               <p>
                 The age you entered doesn't match the information on your
-                profile. Please check and correct your age and try again.</p>
+                profile. Please check and correct your age and try again.
+              </p>
             </>
           ),
         });
@@ -144,6 +141,8 @@ export default function Survey({
         direction="column"
         justifyContent="space-between"
         sx={{
+          bgcolor: (theme) => theme.palette.cardbgdark.main,
+          borderRadius: 2,
           minHeight: [undefined, null].includes(currentPage)
             ? "calc(90vh - 170px)"
             : "calc(90vh - 214px)",
@@ -163,9 +162,10 @@ export default function Survey({
             },
             maxWidth: "100%",
             overflowY: "auto",
-            borderRadius: 2,
-            bgcolor: "#8cb2f333",
-            border: theme => `1px solid ${theme.palette.divider}`,
+            // bgcolor: "#8cb2f333",
+            bgcolor: (theme) => theme.palette.cardbgdark.main,
+            color: (theme) => theme.palette.cardtext.main,
+            border: (theme) => `1px solid ${theme.palette.divider}`,
             py: 2,
             px: { xs: 0, md: 2 },
             flex: 1,
@@ -199,6 +199,8 @@ export default function Survey({
               justifyContent: "flex-end",
               py: 2,
               px: isProfile ? 2 : 0,
+              bgcolor: isProfile ? "transparent" : "white",
+              borderTop: "1px solid rgba(254,254,254,0.3)",
             }}
           >
             {isProfile && (
@@ -207,7 +209,7 @@ export default function Survey({
                   setEditMode(false);
                 }}
                 variant="outlined"
-                sx={{ fontWeight: 600 }}
+                sx={{ fontWeight: 600, bgcolor: "white" }}
               >
                 Cancel
               </Page.MuiButton>
@@ -215,7 +217,7 @@ export default function Survey({
             {currentPage + 1 === pages.length ? (
               <Page.MuiButton
                 variant="contained"
-                color="secondary"
+                color="primary"
                 sx={{
                   fontWeight: 600,
                 }}
@@ -227,13 +229,13 @@ export default function Survey({
             ) : (
               <Page.MuiButton
                 variant="contained"
-                color="secondary"
+                color="primary"
                 sx={{
                   fontWeight: 600,
                 }}
                 onClick={onNext}
               >
-              { [null, undefined].includes(currentPage) ? "Start": "Next "}
+                {[null, undefined].includes(currentPage) ? "Start" : "Next "}
               </Page.MuiButton>
             )}
           </Grid>

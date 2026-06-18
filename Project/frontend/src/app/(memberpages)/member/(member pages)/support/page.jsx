@@ -136,7 +136,7 @@ function FAQ() {
                 sx={{
                   width: "100%",
                   boxShadow: 0,
-                  bgcolor: "#385e9e",
+                  bgcolor: (theme) => theme.palette.cardbgdark.main,
                   // bgcolor: "#fff1d9",
                   // border: `1px solid #ecccafff`,
                   p: 1.5,

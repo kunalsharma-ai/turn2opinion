@@ -9,11 +9,11 @@ import {
 } from "@mui/material";
 
 export default function SelectElement({ question, form, options, disabled }) {
-  const [showSpecify,setShowSpecify]=React.useState(false)
+  const [showSpecify, setShowSpecify] = React.useState(false)
   const isQuestionDisabled = disabled || !(question.isEditable ?? true);
   const errors = form?.formState?.errors
-  function onChange(e,v) {
-    setShowSpecify(v?.value==="others")
+  function onChange(e, v) {
+    setShowSpecify(v?.value === "others")
     question?.children.map(child => {
       form.setValue(child, null)
     })
@@ -25,7 +25,13 @@ export default function SelectElement({ question, form, options, disabled }) {
     if (!country) return null;
     formattedOptions = options.sortRange("asc").map(range => ({ ...range, label: range.label.toMoneyRange(getCurrency(country), "en-IN") }))
   }
-
+  console.log({
+    name:question.name,
+    question,
+    form,
+    formattedOptions,
+    disabled
+  })
   return <><Grid
     size={ { xs: 12, md: Number(question?.size) } }
     alignSelf="flex-end"
@@ -35,7 +41,7 @@ export default function SelectElement({ question, form, options, disabled }) {
     } }
   >
     <Page.Text
-      sx={ { fontWeight: 600, mb: 0.5, color: "secondary.main" } }
+      sx={ { fontWeight: 600, mb: 0.5, color: (theme) => theme.palette.cardtext.main, } }
     >
       { question.label }{ " " }
       { question.required && (
@@ -75,12 +81,12 @@ export default function SelectElement({ question, form, options, disabled }) {
       hasOthers={ question.hasOthers }
     />
   </Grid>
-  {showSpecify && <TextElement  form={ form } question={ {
-    label:`Please Specify`,
-    name:`${question.name}_specify`,
-    type:"text",
-    isEditable:true,
-    size:question.size
-  } } />}
+    { showSpecify && <TextElement form={ form } question={ {
+      label: `Please Specify`,
+      name: `${question.name}_specify`,
+      type: "text",
+      isEditable: true,
+      size: question.size
+    } } /> }
   </>
 }

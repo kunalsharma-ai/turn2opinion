@@ -778,7 +778,9 @@ export default function SignUp({
                   border: "1px solid #ddd",
                   borderRadius: 3,
                   p: { xs: 3, sm: 6 },
-                  bgcolor: "#8cb2f333",
+                  // bgcolor: "#8cb2f333",
+                     color: (theme) => theme.palette.cardtext.main,
+                    bgcolor: (theme) => theme.palette.cardbgdark.main,
                   flex: 1,
                 }}
               >
@@ -794,14 +796,15 @@ export default function SignUp({
                   <Page.Text
                     component="span"
                     sx={{
-                      color: "secondary.main",
+                      color: "#fff",
                       fontSize: { xs: "18px", md: "22px" },
-                      fontWeight: 600,
+                      fontWeight: 700,
                     }}
                   >
                     Turn2Opinion
                   </Page.Text>{" "}
-                  - A Frequent Research Panel Community.{" "}
+                  - A Business and Consumer Research Panel Community of Frequent Research Fieldwork Solutions Private Limited
+                  {/* - A Frequent Research Panel Community.{" "} */}
                 </Page.Text>
                 <Page.Text
                   sx={{
@@ -809,7 +812,9 @@ export default function SignUp({
                     fontWeight: 500,
                     textAlign: "center",
                     borderRadius: 5,
-                    bgcolor: "#fff",
+                    color: (theme) => theme.palette.cardtext.main,
+                    bgcolor: (theme) => theme.palette.cardbgdark.main,
+                    // bgcolor: "#fff",
                     border: "1px solid #f4f4f4",
                     p: 4,
                   }}
@@ -823,7 +828,7 @@ export default function SignUp({
                 </Page.Text>
                 <Page.MuiButton
                   variant="contained"
-                  color="secondary"
+                  // color="secondary"
                   sx={{ fontWeight: "bold", mt: 2, color: "white" }}
                   onClick={onClose}
                 >
@@ -866,7 +871,9 @@ export default function SignUp({
                   sx={{
                     textAlign: "center",
                     borderRadius: 5,
-                    bgcolor: "#8cb2f333",
+                    // bgcolor: "#8cb2f333",
+                    color: (theme) => theme.palette.cardtext.main,
+                    bgcolor: (theme) => theme.palette.cardbgdark.main,
                     border: "1px solid #f4f4f4",
                     p: 4,
                   }}
@@ -988,7 +995,9 @@ export default function SignUp({
                   sx={{
                     textAlign: "center",
                     borderRadius: 5,
-                    bgcolor: "#8cb2f333",
+                    // bgcolor: "#8cb2f333",
+                    color: (theme) => theme.palette.cardtext.main,
+                    bgcolor: (theme) => theme.palette.cardbgdark.main,
                     border: "1px solid #f4f4f4",
                     p: 4,
                   }}

@@ -92,7 +92,8 @@ function ChangePassword() {
         py={2}
         sx={{
           border: (theme) => `1px solid ${theme.palette.primary.main}`,
-          bgcolor: (theme) => theme.palette.cardbg.main,
+          bgcolor: (theme) => theme.palette.cardbgdark.main,
+          color: (theme) => theme.palette.cardtext.main,
           borderRadius: 2,
         }}
       >
@@ -103,7 +104,16 @@ function ChangePassword() {
           onChange={(e) => {
             setInputs({ ...inputs, oldPassword: e?.target?.value ?? "" });
           }}
-          sx={{ bgcolor: "white" }}
+          sx={{
+            backgroundColor: "white",
+            "& label.MuiInputLabel-shrink": {
+              backgroundColor: "white",
+              fontSize: "16px !important",
+              borderRadius: "4px",
+              px: 2,
+              ml: -1.5,
+            },
+          }}
         />
         <Page.Input
           label="New Password"
@@ -113,14 +123,32 @@ function ChangePassword() {
           onChange={(e) => {
             setInputs({ ...inputs, newPassword: e?.target?.value ?? "" });
           }}
-          sx={{ bgcolor: "white" }}
+          sx={{
+            backgroundColor: "white",
+            "& label.MuiInputLabel-shrink": {
+              backgroundColor: "white",
+              fontSize: "16px !important",
+              borderRadius: "4px",
+              px: 2,
+              ml: -1.5,
+            },
+          }}
         />
         <Page.Input
           label="Confirm New Password"
           type="password"
           name="cnfPassword"
           match="newPassword"
-          sx={{ bgcolor: "white" }}
+          sx={{
+            backgroundColor: "white",
+            "& label.MuiInputLabel-shrink": {
+              backgroundColor: "white",
+              fontSize: "16px !important",
+              borderRadius: "4px",
+              px: 2,
+              ml: -1.5,
+            },
+          }}
           onChange={(e) => {
             setInputs({ ...inputs, cnfPassword: e?.target?.value ?? "" });
           }}
@@ -211,7 +239,8 @@ function SurveyNotification() {
         py={2}
         sx={{
           border: (theme) => `1px solid ${theme.palette.primary.main}`,
-          bgcolor: (theme) => theme.palette.cardbg.main,
+          bgcolor: (theme) => theme.palette.cardbgdark.main,
+          color: (theme) => theme.palette.cardtext.main,
           borderRadius: 2,
         }}
       >
@@ -232,7 +261,12 @@ function SurveyNotification() {
                       )
                     : setSelected([...selected, option.value]);
                 }}
-                sx={{ color: "secondary.main" }}
+                sx={{
+                  color: "#fff",
+                  "&.Mui-checked": {
+                    color: "#fff",
+                  },
+                }}
               />
             }
             label={option.label}

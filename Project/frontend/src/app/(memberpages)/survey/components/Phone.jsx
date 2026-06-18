@@ -52,7 +52,7 @@ export default function PhoneElement({ question, form, disabled }) {
     }}
   >
     <Page.Text
-      sx={{ fontWeight: 600, mb: 0.5, color: "secondary.main" }}
+      sx={{ fontWeight: 600, mb: 0.5, color: (theme) => theme.palette.cardtext.main, }}
     >
       {question.label}{" "}
       {question.required && (
@@ -68,7 +68,7 @@ export default function PhoneElement({ question, form, disabled }) {
       disableDropdown={Boolean(country)}
       errors={errors?.[question.name]}
     />
-    {
+    {/* {
       Boolean(value) &&
       !Boolean(errors[question.name]) &&
       <Controller
@@ -94,6 +94,6 @@ export default function PhoneElement({ question, form, disabled }) {
           />
         )}
       />
-    }
+    } */}
   </Grid>
 }

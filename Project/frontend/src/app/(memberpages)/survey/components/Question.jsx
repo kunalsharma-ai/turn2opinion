@@ -65,7 +65,7 @@ function Que({ question, form, disabled }) {
     enabled: !Boolean(question.parent) || Boolean(parentValue)
   })
   if (isLoading) return <></>
-
+// todo: automobile22 is not rendering properly
   switch (question.type) {
     case "checkbox":
       return <CheckboxElement disabled={ disabled } form={ form } options={ options } question={ question } />
@@ -74,7 +74,6 @@ function Que({ question, form, disabled }) {
       return <TextElement disabled={ disabled } form={ form } question={ question } />
 
     case "phone":
-      console.log(question)
       return <PhoneElement disabled={ disabled } form={ form } question={ question } />
 
     case "select":
@@ -121,7 +120,7 @@ function DateElement({ question, form, disabled }) {
   >
     <FormControl fullWidth required={ question.required }>
       <Page.Text
-        sx={ { fontWeight: 600, mb: 0.5, color: "secondary.main" } }
+        sx={ { fontWeight: 600, mb: 0.5, color: (theme) => theme.palette.cardtext.main, } }
       >
         { question.label }{ " " }
         { question.required && (

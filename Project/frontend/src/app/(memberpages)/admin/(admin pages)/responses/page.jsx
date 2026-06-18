@@ -63,7 +63,7 @@ export default function page() {
       id: "user",
       label: "User",
       render: (info) => (
-        <Page.Link href={`/api/v1/user/${info.user}`}>{info.user}</Page.Link>
+        <Page.Link href={`/api/v1/user/${info?.user?._id}`}>{info?.user?.mail}</Page.Link>
       ),
     },
     {

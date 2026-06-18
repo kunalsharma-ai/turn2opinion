@@ -137,7 +137,9 @@ export default function page() {
                   p: 3,
                   width: "100%",
                   minHeight: "calc(90vh - 215px)",
-                  bgcolor: "#8cb2f333",
+                  // bgcolor: "#8cb2f333",
+                  color: (theme) => theme.palette.cardtext.main,
+                  bgcolor: (theme) => theme.palette.cardbgdark.main,
                   border: (theme) => `1px solid ${theme.palette.divider}`,
                   textShadow: "1px 1px 1px rgba(0, 0, 0, 0.1)",
                 }}
@@ -146,7 +148,7 @@ export default function page() {
               <Grid size={12} container justifyContent="center" mt={2}>
                 <Page.MuiButton
                   variant="contained"
-                  color="secondary"
+                  // color="secondary"
                   sx={{
                     height: "36px",
                     fontWeight: 600,

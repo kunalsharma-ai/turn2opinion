@@ -193,7 +193,8 @@ export function Terms({
         sx={{
           borderRadius: 2,
           border: (theme) => `1px solid ${theme.palette.primary.main}`,
-          bgcolor: (theme) => theme.palette.cardbg.main,
+          bgcolor: (theme) => theme.palette.cardbgdark.main,
+          color: (theme) => theme.palette.cardtext.main,
           py: 2,
           px: 2,
           width: width,
@@ -223,7 +224,8 @@ export function Terms({
               mb: 1,
             },
             "& a": {
-              color: "#063686",
+              color: "#fff",
+              fontWeight:700,
               textDecoration: "none",
             },
           }}
@@ -273,15 +275,17 @@ export function Terms({
           {termOptions.map((option, index) => (
             <Page.Box
               key={index}
-              sx={{
-                borderBottom: "1px solid #fcfcfc",
-              }}
+              sx={
+                {
+                  // borderBottom: "1px solid #fcfcfc",
+                }
+              }
             >
               <FormControlLabel
                 control={
                   <Checkbox
                     size="small"
-                    color="secondary"
+                    // color="secondary"
                     checked={
                       option.value === "accept_all"
                         ? isAllChecked
@@ -292,6 +296,12 @@ export function Terms({
                         ? handleAcceptAll()
                         : handleCheckboxChange(option.value)
                     }
+                    sx={{
+                      color: "#fff",
+                      "&.Mui-checked": {
+                        color: "#fff",
+                      },
+                    }}
                   />
                 }
                 label={
@@ -337,7 +347,10 @@ export function Terms({
               <Page.Text
                 component="a"
                 href="mailto:support@turn2opinion.com"
-                sx={{ color: "secondary.main", fontWeight: 600 }}
+                sx={{
+                  color: (theme) => theme.palette.cardtext.main,
+                  fontWeight: 700,
+                }}
               >
                 support@turn2opinion.com
               </Page.Text>
@@ -351,7 +364,7 @@ export function Terms({
               onClick={handleSubmit}
               disabled={!allRequiredSelected || !isTermsChanged}
               variant="contained"
-              color="secondary"
+              // color="secondary"
               sx={{
                 ml: 1,
                 fontWeight: 600,

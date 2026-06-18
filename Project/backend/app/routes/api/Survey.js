@@ -41,7 +41,7 @@ router
         async req => {
             let data = await responseController.list({
                 "survey.slug": req.params.slug
-            })
+            },"user")
             return { message: "", data }
         },
         responseController
@@ -50,22 +50,38 @@ router
     .route("/response")
     .patch(expressRoute(
         async req => {
-            responseController.request={
-                user:{}
+            responseController.request = {
+                user: {}
             }
             let data = await responseController.read(req.body.sid);
-            if(!data)throw new Error("Invalid request");
-            if(data.status !== req.body.status && ["invited","dropout",""].includes(data.status)){
-                await responseController.update(req.body.sid,{
-                   status:req.body.status,
-                   "timeline.end":new Date()
-               });
+            if (!data) throw new Error("Invalid request");
+            if (data.status !== req.body.status && ["invited", "dropout", ""].includes(data.status)) {
+                await responseController.update(req.body.sid, {
+                    status: req.body.status,
+                    "timeline.end": new Date()
+                });
             }
             data = await responseController.read(req.body.sid);
             return { message: "", data }
         },
         responseController
     ))
+    .put(expressRoute(
+        async req => {
+            responseController.request = {
+                user: {}
+            }
+            let data = await responseController.read(req.body.sid);
+            if (!data) throw new Error("Invalid request");
+            await responseController.update(req.body.sid, {
+                rating: req.body.rating
+            });
+            data = await responseController.read(req.body.sid);
+            return { message: "", data }
+        },
+        responseController
+    ))
+
 router
     .route('/:id/invite')
     .post(isAuthenticated, expressRoute(

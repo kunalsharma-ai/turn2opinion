@@ -35,6 +35,12 @@ const theme = createTheme({
     },
     cardbg: {
       main: "#c6e3f4", //   "#8cb2f333",
+    }, 
+    cardbgdark: {
+      main: "#063686", 
+    }, 
+    cardtext: {
+      main: "#fff", 
     },
   },
   gradients: {

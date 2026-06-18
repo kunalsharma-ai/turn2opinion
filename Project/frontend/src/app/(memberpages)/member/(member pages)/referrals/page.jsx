@@ -143,7 +143,7 @@ export default function page() {
           Share the below link with your colleagues and let them enjoy the
           benefits of being a Turn2Opinion - In Community member.
         </Typography>
-        <Grid container size={12} alignItems="center" spacing={1} >
+        <Grid container size={12} alignItems="center" spacing={1}>
           <Typography fontSize={15} fontWeight={600}>
             {referralLink}
           </Typography>
@@ -254,8 +254,8 @@ export default function page() {
                 emails.filter((email) => {
                   return Boolean(
                     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@([A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,}$/.test(
-                      email
-                    )
+                      email,
+                    ),
                   );
                 }).length === 0
               }
@@ -305,6 +305,7 @@ export default function page() {
           data={referrals}
         />
       </Grid>
+      {/* <FollowUs /> */}
       <Snackbar
         open={toastOpen}
         autoHideDuration={3000}
@@ -353,7 +354,7 @@ function InvitedEmails({ sentInvites }) {
       <TableContainer
         sx={{
           border: (theme) => `1px solid ${theme.palette.primary.main}`,
-          bgcolor: (theme) => theme.palette.cardbg.main,
+          bgcolor: (theme) => theme.palette.cardbgdark.main,
           borderRadius: 2,
           maxHeight: { xs: "400px", lg: "132px" },
           minWidth: "500px",
@@ -366,9 +367,10 @@ function InvitedEmails({ sentInvites }) {
             overflow: "scroll",
             tableLayout: "fixed",
             "& tbody td": {
+              color: (theme) => theme.palette.cardtext.main,
               height: "32px",
               fontWeight: 500,
-              border: "1px solid rgba(0, 0, 0, 0.12)",
+              border: "1px solid rgba(255, 255, 255, 0.12)",
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
@@ -380,7 +382,8 @@ function InvitedEmails({ sentInvites }) {
             "& thead th": {
               fontSize: 13.5,
               fontWeight: 600,
-              border: "1px solid rgba(0, 0, 0, 0.12)",
+              border: "1px solid rgba(255, 255, 255, 0.12)",
+              color: (theme) => theme.palette.cardtext.main,
             },
           }}
         >
@@ -396,11 +399,13 @@ function InvitedEmails({ sentInvites }) {
             {users.map((user) => (
               <TableRow
                 key={user.id}
-                sx={{
-                  "&:hover": {
-                    bgcolor: "#dff7e1ff",
-                  },
-                }}
+                sx={
+                  {
+                    // "&:hover": {
+                    //   bgcolor: "#dff7e1ff",
+                    // },
+                  }
+                }
               >
                 <TableCell align="center">
                   <Tooltip title={user.email} placement="left">
@@ -421,5 +426,31 @@ function InvitedEmails({ sentInvites }) {
         </Table>
       </TableContainer>
     </Grid>
+  );
+}
+
+function FollowUs() {
+  return (
+    <>
+      <Grid
+        size={12}
+        sx={{
+          borderBottom: `1px solid #e0e0e0`,
+        }}
+      >
+        <Typography
+          sx={{
+            fontSize: "18px",
+            display: "inline-block",
+            fontWeight: "600",
+            borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
+            pb: 0.5,
+            my: 2,
+          }}
+        >
+          More ways to earn points
+        </Typography>
+      </Grid>
+    </>
   );
 }

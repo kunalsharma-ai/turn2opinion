@@ -37,7 +37,9 @@ export default function SurveyAlreadyTaken({ onExit, timeout }) {
           textAlign: "center",
           py: 7,
           px: 2,
-          bgcolor: "#8cb2f333",
+          // bgcolor: "#8cb2f333",
+          bgcolor: (theme) => theme.palette.cardbgdark.main,
+          color: (theme) => theme.palette.cardtext.main,
           border: `1px solid rgba(51, 169, 202, 0.4)`,
           borderRadius: 2,
         } }

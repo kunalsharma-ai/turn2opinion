@@ -17,7 +17,7 @@ export default function () {
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(true);
   const [profiles, setProfiles] = React.useState([]);
-  const [reload,setReload]=React.useState(0);
+  const [reload, setReload] = React.useState(0);
   const [open, setOpen] = React.useState({ open: false, id: null });
   const [openQuestons, setOpenQuestions] = React.useState({
     open: false,
@@ -28,8 +28,8 @@ export default function () {
     const fetchProfiles = async () => {
       try {
         setIsLoading(true);
-        const resp = await api.post(endpoint,{
-          isActive:[true,false]
+        const resp = await api.post(endpoint, {
+          isActive: [true, false],
         });
         setProfiles(resp.data);
       } catch (err) {
@@ -40,7 +40,7 @@ export default function () {
     };
 
     fetchProfiles();
-  }, [open,reload]);
+  }, [open, reload]);
 
   return (
     <Page.Box
@@ -92,14 +92,14 @@ export default function () {
             label: "Action",
             render: (info) => (
               <>
-              <IconButton
-                sx={{ p: 0 }}
-                onClick={() => {
-                  setOpen({ open: true, id: info._id });
-                }}
-              >
-                <EditIcon fontSize="small" color="secondary" />
-              </IconButton>
+                <IconButton
+                  sx={{ p: 0 }}
+                  onClick={() => {
+                    setOpen({ open: true, id: info._id });
+                  }}
+                >
+                  <EditIcon fontSize="small" color="secondary" />
+                </IconButton>
               </>
             ),
           },
@@ -488,7 +488,7 @@ function QuestionsEditor({ pageIndex, control, register, watch }) {
               spacing={1}
               size={12}
             >
-              <Grid size={9}>
+              <Grid size={9} my={0.2}>
                 <Form.Select
                   control={control}
                   {...register(`pages.${pageIndex}.${index}`)}
@@ -497,6 +497,15 @@ function QuestionsEditor({ pageIndex, control, register, watch }) {
                   )}]`}
                   // label={`Question ${index + 1}`}
                   api="question"
+                  sx={{
+                    "& label.MuiInputLabel-shrink": {
+                      fontSize: "15px !important",
+                      backgroundColor: "white",
+                      borderRadius: "4px",
+                      px: 2,
+                      ml: -1.5,
+                    },
+                  }}
                 />
               </Grid>
               <Grid container size={3} spacing={0.5} alignItems="center">
