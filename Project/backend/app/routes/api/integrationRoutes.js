@@ -1,5 +1,5 @@
 import express from "express";
-import { expressRoute, isAuthenticated, Mutate, translate } from "../../utils/index.js";
+import { expressRoute, fsLogger, isAuthenticated, Mutate, translate } from "../../utils/index.js";
 import { Survey, Category, Response as ResponseController, User as userController, Answer as answerController } from "../../controller/index.js"
 import { Option as optionModel, Question as questionModel } from "../../model/index.js";
 import { surveyQuestions } from "../../utils/translate.js";
@@ -11,6 +11,7 @@ router
         isAuthenticated,
         expressRoute(
             async (req) => {
+                fsLogger.Log(`Request to add new survey`, req.body);
                 Category.request = req;
                 let category = await Category.findOne({ name: { $in: ["b2c", "b2b"] } });
 

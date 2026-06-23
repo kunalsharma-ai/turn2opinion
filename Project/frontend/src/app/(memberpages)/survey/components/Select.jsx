@@ -25,13 +25,6 @@ export default function SelectElement({ question, form, options, disabled }) {
     if (!country) return null;
     formattedOptions = options.sortRange("asc").map(range => ({ ...range, label: range.label.toMoneyRange(getCurrency(country), "en-IN") }))
   }
-  console.log({
-    name:question.name,
-    question,
-    form,
-    formattedOptions,
-    disabled
-  })
   return <><Grid
     size={ { xs: 12, md: Number(question?.size) } }
     alignSelf="flex-end"
@@ -65,7 +58,6 @@ export default function SelectElement({ question, form, options, disabled }) {
           img: opt.img,
         };
       }) }
-      // api={question.api}
       parent={ question.parent }
       validations={ {
         required: question.required ? "This field is required" : false,

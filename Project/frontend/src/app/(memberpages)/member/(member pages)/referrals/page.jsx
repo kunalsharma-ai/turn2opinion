@@ -23,11 +23,18 @@ import AddIcon from "@mui/icons-material/Add";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import RemoveIcon from "@mui/icons-material/Remove";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import YouTubeIcon from "@mui/icons-material/YouTube";
+import XIcon from "@mui/icons-material/X";
 
 import { api, Page } from "@/util";
 import { Datatable } from "@/components";
 import { useMember } from "@/Context";
 import { useToast } from "@/hooks";
+import PopUp from "@/componentsMHO/PopUp";
 
 export default function page() {
   const [user] = [useMember()];
@@ -273,38 +280,40 @@ export default function page() {
 
         <InvitedEmails sentInvites={sentInvites} />
       </Grid>
-      <Grid size={12}>
-        <Datatable
-          isLoading={false}
-          pagination={[10, 20, 50, 100]}
-          pageSize={20}
-          hideColumnSelector
-          hideDownload
-          noDataMsg="No Record Found."
-          // extra={
-          //   <Box px={2}>
-          //     <DateRangeSelector onUpdate={() => {}} />
-          //   </Box>
-          // }
-          title={
-            <Typography
-              sx={{
-                fontSize: "18px",
-                display: "inline-block",
-                fontWeight: "600",
-                borderBottom: (theme) =>
-                  `2px solid ${theme.palette.primary.main}`,
-                pb: 0.5,
-                my: 1,
-              }}
-            >
-              Referral History
-            </Typography>
-          }
-          columns={columns}
-          data={referrals}
-        />
-      </Grid>
+      {referrals?.length > 0 && (
+        <Grid size={12}>
+          <Datatable
+            isLoading={false}
+            pagination={[10, 20, 50, 100]}
+            pageSize={20}
+            hideColumnSelector
+            hideDownload
+            noDataMsg="No Record Found."
+            // extra={
+            //   <Box px={2}>
+            //     <DateRangeSelector onUpdate={() => {}} />
+            //   </Box>
+            // }
+            title={
+              <Typography
+                sx={{
+                  fontSize: "18px",
+                  display: "inline-block",
+                  fontWeight: "600",
+                  borderBottom: (theme) =>
+                    `2px solid ${theme.palette.primary.main}`,
+                  pb: 0.5,
+                  my: 1,
+                }}
+              >
+                Referral History
+              </Typography>
+            }
+            columns={columns}
+            data={referrals}
+          />
+        </Grid>
+      )}
       {/* <FollowUs /> */}
       <Snackbar
         open={toastOpen}
@@ -430,11 +439,87 @@ function InvitedEmails({ sentInvites }) {
 }
 
 function FollowUs() {
+  const [verifyOpen, setVerifyOpen] = React.useState(false);
+  const [selectedSocial, setSelectedSocial] = React.useState(null);
+  const [screenshot, setScreenshot] = React.useState(null);
+  const [socialId, setSocialId] = React.useState("");
+
+  const [socials, setSocials] = React.useState([
+    {
+      name: "Facebook",
+      icon: <FacebookIcon sx={{ color: "#1877F2", fontSize: 32 }} />,
+      link: "#",
+      points: 50,
+      status: "not_started",  // not_started | followed | pending | rewarded
+      actionLabel: "Like Page",
+      verificationLabel: "Facebook Profile Name or Profile URL",
+    },
+    {
+      name: "Instagram",
+      icon: <InstagramIcon sx={{ color: "#E4405F", fontSize: 32 }} />,
+      link: "#",
+      points: 50,
+      status: "followed",
+      actionLabel: "Follow Profile",
+      verificationLabel: "Instagram Username",
+    },
+    {
+      name: "YouTube",
+      icon: <YouTubeIcon sx={{ color: "#FF0000", fontSize: 32 }} />,
+      link: "#",
+      points: 50,
+      status: "pending",
+      actionLabel: "Subscribe",
+      verificationLabel: "YouTube Channel Name / Handle",
+    },
+    {
+      name: "LinkedIn",
+      icon: <LinkedInIcon sx={{ color: "#0A66C2", fontSize: 32 }} />,
+      link: "#",
+      points: 50,
+      status: "rewarded",
+      actionLabel: "Follow Company",
+      verificationLabel: "LinkedIn Profile URL",
+    },
+  ]);
+
+  const handleSubmitVerification = async () => {
+    if (!selectedSocial || !screenshot || !socialId.trim()) return;
+
+    const formData = new FormData();
+    formData.append("platform", selectedSocial.name);
+    formData.append("socialId", socialId);
+    formData.append("screenshot", screenshot);
+
+    // await api.post("/api/v1/social-follow/verify", formData);
+
+    setSocials((prev) =>
+      prev.map((item) =>
+        item.name === selectedSocial.name
+          ? { ...item, status: "pending" }
+          : item,
+      ),
+    );
+
+    setVerifyOpen(false);
+    setSelectedSocial(null);
+    setScreenshot(null);
+    setSocialId("");
+  };
+
+  const closeVerifyPopup = () => {
+    setVerifyOpen(false);
+    setSelectedSocial(null);
+    setScreenshot(null);
+    setSocialId("");
+  };
+
   return (
     <>
       <Grid
         size={12}
         sx={{
+          mt: 2,
           borderBottom: `1px solid #e0e0e0`,
         }}
       >
@@ -448,9 +533,197 @@ function FollowUs() {
             my: 2,
           }}
         >
-          More ways to earn points
+          Get Rewarded for Staying Connected
         </Typography>
       </Grid>
+
+      <Grid size={12}>
+        <Typography fontSize={15} mb={3}>
+          Follow us on social media to earn bonus reward points and stay updated
+          with the latest opportunities, surveys, and community updates.
+        </Typography>
+
+        <Grid container spacing={2}>
+          {socials.map((social) => (
+            <Grid key={social.name}>
+              <Box
+                sx={{
+                  width: 220,
+                  p: 2,
+                  border: "1px solid",
+                  borderColor:
+                    social.status === "rewarded"
+                      ? "success.main"
+                      : social.status === "pending"
+                        ? "warning.main"
+                        : "divider",
+                  borderRadius: 2,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 1.5,
+                }}
+              >
+                {social.icon}
+
+                <Typography fontWeight={600}>{social.name}</Typography>
+
+                <Typography
+                  fontSize={16}
+                  fontWeight={600}
+                  color={
+                    social.status === "rewarded"
+                      ? "success.main"
+                      : social.status === "pending"
+                        ? "warning.main"
+                        : "secondary"
+                  }
+                >
+                  {social.status === "rewarded"
+                    ? `${social.points} Points Awarded`
+                    : social.status === "pending"
+                      ? "Verification Pending"
+                      : `+${social.points} Points`}
+                </Typography>
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                    width: "100%",
+                  }}
+                >
+                  <Button
+                    component="a"
+                    href={social.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variant="outlined"
+                    size="small"
+                    onClick={() => {
+                      if (social.status === "not_started") {
+                        setSocials((prev) =>
+                          prev.map((item) =>
+                            item.name === social.name
+                              ? { ...item, status: "followed" }
+                              : item,
+                          ),
+                        );
+                      }
+                    }}
+                  >
+                    {social.actionLabel}
+                  </Button>
+
+                  {social.status === "rewarded" ? (
+                    <Button
+                      variant="contained"
+                      color="success"
+                      size="small"
+                      startIcon={<CheckIcon />}
+                      disabled
+                    >
+                      Reward Claimed
+                    </Button>
+                  ) : social.status === "pending" ? (
+                    <Button
+                      variant="contained"
+                      color="warning"
+                      size="small"
+                      disabled
+                    >
+                      Pending Review
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      size="small"
+                      disabled={social.status === "not_started"}
+                      onClick={() => {
+                        setSelectedSocial(social);
+                        setVerifyOpen(true);
+                      }}
+                    >
+                      Verify Follow
+                    </Button>
+                  )}
+                </Box>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      </Grid>
+
+      <PopUp
+        open={verifyOpen}
+        onClose={closeVerifyPopup}
+        title={`Verify ${selectedSocial?.name || ""} Follow`}
+        maxWidth="sm"
+      >
+        <Box p={3}>
+          <Typography mb={2}>
+            Follow our <strong>{selectedSocial?.name}</strong> page and submit
+            your profile information for verification.
+          </Typography>
+
+          <Page.Input
+            fullWidth
+            label={selectedSocial?.verificationLabel}
+            placeholder={selectedSocial?.verificationLabel}
+            value={socialId}
+            onChange={(e) => setSocialId(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+
+          <Button
+            component="label"
+            variant="outlined"
+            fullWidth
+            sx={{ height: 48 }}
+          >
+            {screenshot ? "Change Screenshot" : "Upload Screenshot"}
+
+            <input
+              hidden
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                if (e.target.files?.[0]) {
+                  setScreenshot(e.target.files[0]);
+                }
+              }}
+            />
+          </Button>
+
+          <Typography mt={1} fontSize={12} color="text.secondary">
+            Upload a screenshot showing that you have followed, subscribed, or
+            connected with our page.
+          </Typography>
+
+          {screenshot && (
+            <Typography mt={2} fontSize={14} color="success.main">
+              Selected: {screenshot.name}
+            </Typography>
+          )}
+
+          <Box mt={3} display="flex" justifyContent="flex-end" gap={1}>
+            <Button variant="outlined" onClick={closeVerifyPopup}>
+              Cancel
+            </Button>
+
+            <Button
+              variant="contained"
+              color="secondary"
+              disabled={!socialId.trim() || !screenshot}
+              onClick={handleSubmitVerification}
+            >
+              Submit Verification
+            </Button>
+          </Box>
+        </Box>
+      </PopUp>
     </>
   );
 }

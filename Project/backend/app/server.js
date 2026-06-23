@@ -31,6 +31,7 @@ import { setOrigin, expressRoute, fsLogger } from "./utils/index.js";
                         "https://t2o.sampledge.duckdns.org",
                         "https://admin.sampledge.duckdns.org",
                         "https://survey.sampledge.com",
+                        "https://survey.sampledge.duckdns.org",
                         "https://www.turn2opinion.com",
                         "https://turn2opinion.com",
                         "https://mfr.sampledge.duckdns.org",
@@ -60,8 +61,8 @@ import { setOrigin, expressRoute, fsLogger } from "./utils/index.js";
             pureIP,
             fileUpload(),
             setOrigin,
+            appRoute,
             errorRoute,
-            appRoute
         ])
         .use(expressRoute(
             async (req) => {

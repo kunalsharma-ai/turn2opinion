@@ -17,7 +17,7 @@ import MultiSelectElement from "./MultiSelect";
 export default function Question({
   que, user, form, disabled
 }) {
-  if(que==="alternate-phone-whatsapp")return <></>
+  if (que === "alternate-phone-whatsapp") return <></>
   const question = useQuery({
     queryKey: ["question", que],
     queryFn: async () => {
@@ -41,37 +41,44 @@ export default function Question({
   )
 }
 function Que({ question, form, disabled }) {
-  if(!question || !question.name )return <></>
+  if (!question || !question.name) return <></>
   const parentValue = question.parent ? form.watch(question.parent) : null;
   const { data: options, isLoading } = useQuery({
     queryKey: [
-      "options",
+      hasOption(question.type) ? "option" : "validation",
       question?.name,
       parentValue,
       question?.parent
     ],
     queryFn: async ({ queryKey }) => {
-      if (!hasOption(question.type)) return [];
-      if (question.parent) {
-        if ([null, undefined, "", []].includes(parentValue)) return [];
-        let resp = await api.post(`/api/v1/option/${question.name}`, {
+      const [endpoint, name, parentValue, parent] = queryKey;
+      const method = typeof parent === "undefined" ? "get" : "post";
+      console.table({
+        endpoint,
+        name,
+        parentValue,
+        parent,
+        method
+      })
+      if (![null, undefined, ""].includes(parent) && [null, "", [], undefined].includes(parentValue)) return [];
+      let resp = (method === "get")
+        ? await api[method](`/api/v1/${endpoint}/${name}`)
+        : await api[method](`/api/v1/${endpoint}/${name}`, {
           parentValue
         });
-        return resp.data;
-      }
-      let resp = await api.get(`/api/v1/option/${question.name}`);
-      return resp.data;
+      return resp?.data ?? []
     },
     enabled: !Boolean(question.parent) || Boolean(parentValue)
   })
   if (isLoading) return <></>
-// todo: automobile22 is not rendering properly
+  // todo: automobile22 is not rendering properly
   switch (question.type) {
     case "checkbox":
       return <CheckboxElement disabled={ disabled } form={ form } options={ options } question={ question } />
 
     case "text":
-      return <TextElement disabled={ disabled } form={ form } question={ question } />
+      let pattern = Boolean(options?.pattern) ? new RegExp(options.pattern) : null;
+      return <TextElement disabled={ disabled } form={ form } question={ question } pattern={ pattern } />
 
     case "phone":
       return <PhoneElement disabled={ disabled } form={ form } question={ question } />

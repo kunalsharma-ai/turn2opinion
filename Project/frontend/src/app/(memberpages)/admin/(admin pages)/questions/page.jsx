@@ -29,13 +29,13 @@ export default function () {
 
   return (
     <Page.Box
-      sx={{
+      sx={ {
         bgcolor: (theme) => theme.palette.page.main,
         p: { xs: 2, md: 3 },
-      }}
+      } }
     >
       <Datatable
-        columns={[
+        columns={ [
           {
             id: "adminLabel",
             data: "adminLabel",
@@ -49,12 +49,12 @@ export default function () {
             render: (info) => {
               return info?.category?.map((cat, i) => (
                 <Chip
-                  key={i}
+                  key={ i }
                   size="small"
-                  label={cat}
+                  label={ cat }
                   variant="contained"
-                  color={cat == "b2c" ? "secondary" : "primary"}
-                  sx={{ mr: 0.5, color: "white", textTransform: "uppercase" }}
+                  color={ cat == "b2c" ? "secondary" : "primary" }
+                  sx={ { mr: 0.5, color: "white", textTransform: "uppercase" } }
                 />
               ));
             },
@@ -78,12 +78,12 @@ export default function () {
             label: "Parent Question",
             render: (info) => (
               <>
-                {info.parent ? (
+                { info.parent ? (
                   <>
-                    {info.parent}
+                    { info.parent }
                     <IconButton
-                      sx={{ p: 0, ml: 1 }}
-                      onClick={async () => {
+                      sx={ { p: 0, ml: 1 } }
+                      onClick={ async () => {
                         setIsLoading(true);
                         try {
                           let resp = await api.patch(
@@ -99,17 +99,17 @@ export default function () {
                         } finally {
                           setIsLoading(false);
                         }
-                      }}
+                      } }
                     >
                       <DeleteIcon
                         fontSize="small"
-                        sx={{ "&:hover": { color: "red" } }}
+                        sx={ { "&:hover": { color: "red" } } }
                       />
                     </IconButton>
                   </>
                 ) : (
                   "-"
-                )}
+                ) }
               </>
             ),
             width: "300px",
@@ -144,16 +144,29 @@ export default function () {
             render: (info) =>
               ["radio", "checkbox", "select", "multiselect"].includes(
                 info?.type,
-              ) && (
-                <Page.Text
-                  component="a"
-                  href={`/admin/options?id=${info._id}`}
-                  target="_blank"
-                  sx={{ color: "secondary.main", fontWeight: 500, p: 0 }}
-                >
-                  View Options
-                </Page.Text>
-              ),
+              )
+                ? (
+                  <Page.Text
+                    component="a"
+                    href={ `/admin/options?id=${info._id}` }
+                    target="_blank"
+                    sx={ { color: "secondary.main", fontWeight: 500, p: 0 } }
+                  >
+                    View Options
+                  </Page.Text>
+                )
+                : Boolean(info.type==="text")
+                  ? <>
+                    <Page.Text
+                      component="a"
+                      href={ `/admin/validations?que=${info._id}` }
+                      target="_blank"
+                      sx={ { color: "secondary.main", fontWeight: 500, p: 0 } }
+                    >
+                      Validations
+                    </Page.Text>
+                  </>
+                  : <>N/A</>,
           },
           {
             id: "action",
@@ -161,45 +174,45 @@ export default function () {
             width: "120px",
             render: (info) => (
               <IconButton
-                sx={{ p: 0 }}
-                onClick={() => {
+                sx={ { p: 0 } }
+                onClick={ () => {
                   setOpen({ open: true, id: info._id });
-                }}
+                } }
               >
                 <EditIcon fontSize="small" color="secondary" />
               </IconButton>
             ),
           },
-        ]}
-        data={questions}
-        isLoading={isLoading}
-        pagination={[10, 20, 50, 100]}
-        pageSize={50}
+        ] }
+        data={ questions }
+        isLoading={ isLoading }
+        pagination={ [10, 20, 50, 100] }
+        pageSize={ 50 }
         hideColumnSelector
         hideDownload
         noDataMsg="No Record Found."
-        add={() => {
+        add={ () => {
           setOpen({ open: true, id: null });
-        }}
+        } }
         extra={
           <Page.MuiButton
-            onClick={() => {
+            onClick={ () => {
               router.push("/admin/profiles");
-            }}
+            } }
             variant="contained"
             color="secondary"
             size="small"
-            sx={{
+            sx={ {
               fontWeight: "bold",
               mr: 2,
-            }}
+            } }
           >
             Show Profiles
           </Page.MuiButton>
         }
         title={
           <Page.Text
-            sx={{
+            sx={ {
               fontSize: "18px",
               display: "inline-block",
               fontWeight: "600",
@@ -207,22 +220,22 @@ export default function () {
                 `2px solid ${theme.palette.primary.main}`,
               pb: 0.5,
               my: 1,
-            }}
+            } }
           >
             Questions List
           </Page.Text>
         }
       />
       <SideDrawer
-        open={open.open}
-        hideTitleBar={true}
-        onClose={() => setOpen({ open: false, id: null })}
+        open={ open.open }
+        hideTitleBar={ true }
+        onClose={ () => setOpen({ open: false, id: null }) }
       >
         <CreateOrEditQuestion
-          questionID={open.id}
-          close={() => {
+          questionID={ open.id }
+          close={ () => {
             setOpen({ open: false, id: null });
-          }}
+          } }
         />
       </SideDrawer>
     </Page.Box>
@@ -273,62 +286,62 @@ function CreateOrEditQuestion({ questionID = null, close }) {
   return (
     <Grid
       component="form"
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={ handleSubmit(onSubmit) }
       container
-      spacing={2}
-      size={12}
-      sx={{
+      spacing={ 2 }
+      size={ 12 }
+      sx={ {
         bgcolor: "white",
         overflow: "hidden",
         borderRadius: "10px",
         boxShadow: 1,
         pb: 2,
         alignSelf: "flex-start",
-      }}
+      } }
     >
       <SectionTitle
-        title={questionID ? "Edit Question" : "Add Question"}
-        sx={{ justifyContent: "space-between" }}
+        title={ questionID ? "Edit Question" : "Add Question" }
+        sx={ { justifyContent: "space-between" } }
       >
-        <IconButton onClick={close} color="secondary">
+        <IconButton onClick={ close } color="secondary">
           <CloseIcon />
         </IconButton>
       </SectionTitle>
 
-      <Grid container size={12} spacing={1.4} sx={{ px: 2 }}>
-        <Grid size={12}>
+      <Grid container size={ 12 } spacing={ 1.4 } sx={ { px: 2 } }>
+        <Grid size={ 12 }>
           <Form.Select
-            control={control}
-            {...form.register("category")}
+            control={ control }
+            { ...form.register("category") }
             label="Category"
-            multiple={true}
+            multiple={ true }
             api="category"
           />
-        </Grid>{" "}
-        <Grid size={12}>
+        </Grid>{ " " }
+        <Grid size={ 12 }>
           <Form.Select
-            control={control}
-            {...form.register("parent")}
+            control={ control }
+            { ...form.register("parent") }
             label="Parent Question"
             api="question"
           />
-        </Grid>{" "}
+        </Grid>{ " " }
         <Form.Input
-          control={control}
-          {...form.register("name")}
+          control={ control }
+          { ...form.register("name") }
           label="Question Name"
         />
         <Form.Input
-          control={control}
-          {...form.register("label")}
+          control={ control }
+          { ...form.register("label") }
           label="Question Label"
         />
-        <Grid size={12}>
+        <Grid size={ 12 }>
           <Form.Select
-            control={control}
-            {...form.register("type")}
+            control={ control }
+            { ...form.register("type") }
             label="Question Type"
-            options={[
+            options={ [
               { label: "Note", value: "note" },
               { label: "Openend Single Line", value: "text" },
               { label: "Openend Multi-line", value: "textarea" },
@@ -341,99 +354,99 @@ function CreateOrEditQuestion({ questionID = null, close }) {
               { label: "Dropdown Multiple", value: "multiselect" },
               { label: "Document", value: "document" },
               { label: "address", value: "address" },
-            ]}
+            ] }
           />
         </Grid>
-        {form.watch("type") == "date" && (
-          <Grid size={12} container alignItems="center">
-            <Page.Text color={"grey"}>Date Range: </Page.Text>
-            <Page.Box sx={{ flex: 1 }}>
+        { form.watch("type") == "date" && (
+          <Grid size={ 12 } container alignItems="center">
+            <Page.Text color={ "grey" }>Date Range: </Page.Text>
+            <Page.Box sx={ { flex: 1 } }>
               <Controller
-                name={"dateRange"}
-                control={control}
-                render={({ field }) => {
+                name={ "dateRange" }
+                control={ control }
+                render={ ({ field }) => {
                   return (
                     <DateRangeSelector
-                      sx={{ color: "grey" }}
-                      onUpdate={field.onChange}
+                      sx={ { color: "grey" } }
+                      onUpdate={ field.onChange }
                     />
                   );
-                }}
+                } }
               />
             </Page.Box>
           </Grid>
-        )}
+        ) }
         <Form.TextEditor
-          control={control}
+          control={ control }
           name="description"
           label="Question Description"
-          editorId={id}
+          editorId={ id }
           dialogScoped
-        />{" "}
+        />{ " " }
         <Form.Input
-          control={control}
-          {...form.register("size")}
+          control={ control }
+          { ...form.register("size") }
           label="Question Width (out of 12)"
           type="number"
-          inputProps={{
+          inputProps={ {
             min: 1,
             max: 12,
-          }}
+          } }
         />
-        <Grid size={12} direction="column" container pl={2}>
+        <Grid size={ 12 } direction="column" container pl={ 2 }>
           <Form.Checkbox
-            control={control}
-            {...form.register("isMoney")}
+            control={ control }
+            { ...form.register("isMoney") }
             label="Money"
-          />{" "}
+          />{ " " }
           <Form.Checkbox
-            control={control}
-            {...form.register("isRequired")}
+            control={ control }
+            { ...form.register("isRequired") }
             label="Required"
-          />{" "}
+          />{ " " }
           <Form.Checkbox
-            control={control}
-            {...form.register("isEditable")}
+            control={ control }
+            { ...form.register("isEditable") }
             label="Editable"
           />
-          {["multiselect", "select"].includes(form.watch("type")) ? (
+          { ["multiselect", "select"].includes(form.watch("type")) ? (
             <>
               <Form.Checkbox
-                control={control}
-                {...form.register("hasOthers")}
+                control={ control }
+                { ...form.register("hasOthers") }
                 label="Has Others"
               />
               <Form.Checkbox
-                control={control}
-                {...form.register("hasNone")}
+                control={ control }
+                { ...form.register("hasNone") }
                 label="Has None"
               />
               <Form.Checkbox
-                control={control}
-                {...form.register("hasSkip")}
+                control={ control }
+                { ...form.register("hasSkip") }
                 label="Has Prefer not to say"
               />
             </>
           ) : (
             <></>
-          )}
+          ) }
         </Grid>
       </Grid>
       <Grid
         container
-        size={12}
-        sx={{
+        size={ 12 }
+        sx={ {
           justifyContent: "flex-end",
           mr: 2,
-        }}
+        } }
       >
         <Page.MuiButton
           type="submit"
           variant="contained"
           color="secondary"
-          sx={{
+          sx={ {
             fontWeight: "bold",
-          }}
+          } }
         >
           Submit
         </Page.MuiButton>

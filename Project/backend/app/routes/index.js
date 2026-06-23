@@ -16,6 +16,7 @@ import supportRouter from "./api/Support.js";
 import meResponse from "./api/Response.js";
 import llmRouter from "./api/llm.js"
 import integrationRoutes from "./api/integrationRoutes.js";
+import validationRoutes from "./api/Validation.js";
 
 import { isAuthenticated } from "../utils/index.js";
 
@@ -32,6 +33,7 @@ router
     .use("/api/v1/question", questionRouter)
     .use("/api/v1/option", optionRouter)
     .use("/api/v1/options", optionsRouter)
+    .use("/api/v1/validation",validationRoutes)
     .use("/api/v1/user", userRouter)
     .use("/api/v1/profile", profileRouter)
     .use("/api/v1/forgot-password", forgotPassword)

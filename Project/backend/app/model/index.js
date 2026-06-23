@@ -13,6 +13,7 @@ export { default as SupportTicket } from "./SupportTicket.js";
 export { default as SupportComment } from "./SupportComment.js";
 export { default as SupportActions } from "./SupportActions.js";
 export { default as Batch } from "./Batch.js";
+export { default as Validation } from "./Validation.js";
 /*
 export { default as ProfileQuestions } from "./ProfileQuestions.js";
 export { default as ProfileOptions } from "./ProfileOptions.js";

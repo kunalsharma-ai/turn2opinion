@@ -46,6 +46,7 @@ function TabLabel({ label, progress = 0, icon, selected }) {
             alignItems: "center",
             justifyContent: "space-between",
             mb: 0.5,
+            gap: 0.3
           }}
         >
           <Typography
