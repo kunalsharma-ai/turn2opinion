@@ -35,6 +35,16 @@ export default mongooseModel(
         adminLabel: {
             type: String,
         },
+        icon:{
+            type:String,
+            default:null
+        },
+        iconspecs:{
+            color:{
+                type:String,
+                default:"#000000"
+            }
+        },
         isMoney: {
             type: Boolean,
             default: false,

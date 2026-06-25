@@ -72,7 +72,7 @@ export default function () {
             label: "Value of Parent Question",
             // data: "label",
             feature: ["searchable"],
-            render: info => (info.parentVaue instanceof Array) ? info.parentVaue.join(",") : info.parentValue
+            render: info => (info.parentValue instanceof Array) ? info.parentValue.join(", ") : info.parentValue
           },
 
           {

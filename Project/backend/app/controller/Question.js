@@ -71,6 +71,8 @@ class Question extends CrudController {
             const que = data[index];
             que["children"] = children[que.name];
             que["required"] = que.isRequired;
+            // que["icon"]="fa-brands fa-google"
+            // que["iconspecs"]={color:"red"}
             if(["",null,undefined].includes(que.parent)){
                 delete(que.parent)
             }

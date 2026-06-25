@@ -71,6 +71,7 @@ router
             data = { ...Mutate(data), ...req.user, navbar }
             data.firstname = data.name.first;
             data.lastname = data.name.last;
+
             return { message, data };
         },
         userController
@@ -326,6 +327,53 @@ router
     ))
 router
     .route("/profile")
+    .get(expressRoute(
+        async req => {
+            if (!req.user || !req.user._id) throw new Error("Invalid request");
+            answerController.request = req;
+            let message = "";
+            let data = Mutate(await userController.read(req.user._id))
+            let navbar = [
+                {
+                    link: "/admin/dashboard",
+                    text: "Admin Zone",
+                    icon: "fa-solid fa-gear",
+                    roles: ["admin", "superadmin", "root"]
+                },
+                {
+                    link: "/member/dashboard",
+                    text: "Dashboard",
+                    icon: "icon-drawer",
+                    roles: ["admin", "superadmin", "root", "respondent"]
+                },
+                {
+                    link: "/member/myaccount",
+                    text: "My Account",
+                    icon: "icon-user",
+                    roles: ["admin", "superadmin", "root", "respondent"]
+                },
+                {
+                    link: "/member/settings",
+                    text: "Settings",
+                    icon: "icon-settings",
+                    roles: ["admin", "superadmin", "root", "respondent"]
+                }
+            ]
+                .map(link => link.roles.includes(data.role) ? ({
+                    link: link.link,
+                    text: link.text,
+                    icon: link.icon
+                }) : null)
+                .filter(link => Boolean(link));
+            let profileData = Mutate(await answerController.getAnswers({ user: req.user._id }))
+            data = { ...profileData, ...Mutate(data),  ...req.user, navbar }
+            data.firstname = data.name.first;
+            data.lastname = data.name.last;
+
+            return { message, data };
+        },
+        userController
+    ))
     .patch(expressRoute(
         async req => {
             const user = req.user;

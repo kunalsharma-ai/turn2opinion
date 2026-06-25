@@ -45,6 +45,7 @@ export default function TextElement({ question, form, disabled, pattern }) {
         api={ question.name }
         label={ question.label }
         showLabel={ false }
+        prefix={Boolean(question.icon) && <i className={`fa-brands ${question.icon}`} style={{color:"blue", fontSize:20,...question.iconspecs}}/>}
         onHide={ (e) => {
           setHideLabel(e);
         } }

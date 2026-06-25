@@ -4,6 +4,7 @@ import { CssBaseline } from "@mui/material";
 import Providers from "./providers";
 import { Toast } from "@/components";
 import { GoogleTagManager } from "@next/third-parties/google";
+import Script from "next/script";
 
 export default function RootLayout({ children }) {
   return (
@@ -49,11 +50,18 @@ export default function RootLayout({ children }) {
         <main>
           <Providers>
             <CssBaseline />
-            {children}
+            { children }
             <Toast />
           </Providers>
         </main>
         <GoogleTagManager gtmId="GTM-MBPP77RX" />
+        <Script
+          async
+          defer
+          crossOrigin="anonymous"
+          src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v23.0"
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   );

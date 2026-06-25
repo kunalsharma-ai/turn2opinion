@@ -500,9 +500,15 @@ export default function Select({
                               <span>{option.label}</span>
                             </div>
                           ) : (
-                            option.label
+                            <div className={attr.className}>
+                              {" "}
+                              {option.label}
+                            </div>
                           )}
                         </li>
+                      )}
+                      renderValue={(value) => (
+                        <span className={attr.className}>{value?.label}</span>
                       )}
                       renderInput={(params) => {
                         return (

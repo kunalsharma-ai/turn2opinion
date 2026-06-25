@@ -43,12 +43,18 @@ import { useForm } from "react-hook-form";
 
 import { Form } from "@/components";
 import PopUp from "@/componentsMHO/PopUp";
-import { api, Page } from "@/util";
+import { api, loadData, Page } from "@/util";
 import DataList from "@/componentsMHO/DataList";
 import { useMember } from "@/Context";
 import LoadingOverlay from "@/componentsMHO/LoadingOverlay";
 import { useToast } from "@/hooks";
 import MyAccountPoints from "../../components/MyAccountPoints";
+const paymentMethods = {
+  paypal: "/images/payment/paypal.png",
+  "wire-transfer": "/images/payment/wire-transfer.png",
+  "amazon-gift-card": "/images/payment/amazone.png",
+  upi: "/images/payment/upi.png",
+};
 
 const iconStyle = {
   color: "#fff",
@@ -309,7 +315,7 @@ function UserInfo({ user }) {
       value: `+${user?.phone}`,
     },
   ];
-  // return <pre>{JSON.stringify(user, null, 2)}</pre>
+
   return (
     <Grid
       size={12}
@@ -494,38 +500,108 @@ function UserInfo({ user }) {
 }
 
 function Payment() {
+  const [paymentOptions, setPaymentOptions] = React.useState([]);
   const [openPayment, setOpenPayment] = React.useState(false);
   const [selectedMethod, setSelectedMethod] = React.useState("Wire Transfer");
   const [payment, setPayment] = React.useState({});
+
+  const [visibleFields, setVisibleFields] = React.useState({});
+
+  const toggleField = (index) => {
+    setVisibleFields((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
+
+  const maskValue = (value) => {
+    return value ? "xxxxxx" : "";
+  };
+
   const member = useMember();
+  React.useState(() => {
+    loadData(
+      api.get(`/api/v1/option/payment-method`),
+      (resp) => {
+        setPaymentOptions(resp.data);
+      },
+      () => {},
+    );
+  }, []);
   React.useEffect(() => {
     if (!member) return;
+
     setPayment({
-      ...member.paymentMethod,
-      value: member?.paymentMethod?.details,
+      method: member["payment-method"],
+      ifsc: member["payment-method-bank-ifsc"],
+      bankAccount: member["payment-method-bank-account"],
+      bankName: member["payment-method-bank-name"],
+      amazonAccount: member["payment-method-amazon"],
+      paypalAccount: member["payment-method-paypal"],
+      upiAccount: member["payment-method-upi"],
     });
   }, [member]);
 
-  const paymentMethods = [
-    { name: "PayPal", icon: "/images/payment/paypal.png" },
-    { name: "Wire Transfer", icon: "/images/payment/wire-transfer.png" },
-    { name: "Amazon", icon: "/images/payment/amazone.png" },
-    { name: "UPI", icon: "/images/payment/upi.png" },
-  ];
-
   const handleSave = async (method, value) => {
-    let resp = await api.patch("/api/v1/me/payment-method", {
-      method,
-      details: {
-        ...value,
-      },
+    const resp = await api.patch(`/api/v1/me/answer`, {
+      "payment-method": payment.method,
+      "payment-method-bank-ifsc": payment.ifsc,
+      "payment-method-bank-account": payment.bankAccount,
+      "payment-method-bank-name": payment.bankName,
+      "payment-method-amazon": payment.amazonAccount,
+      "payment-method-paypal": payment.paypalAccount,
+      "payment-method-upi": payment.upiAccount,
     });
-    console.log(resp);
-    // console.log({value})
-    setPayment({ method, value });
+    await member.Reload();
+    useToast(resp);
     setOpenPayment(false);
   };
-
+  const accountDetails = React.useMemo(() => {
+    switch (payment.method) {
+      case "wire-transfer":
+        return [
+          {
+            name: "Bank",
+            value: payment.bankName,
+          },
+          {
+            name: "IFSC / Swift / IBAN Code",
+            value: payment.ifsc,
+          },
+          {
+            name: "Account Number",
+            value: payment.bankAccount,
+          },
+        ];
+        break;
+      case "upi":
+        return [
+          {
+            name: "Virtual Payment Address (VPA)",
+            value: payment.upiAccount,
+          },
+        ];
+        break;
+      case "paypal":
+        return [
+          {
+            name: "Paypal Account",
+            value: payment.paypalAccount,
+          },
+        ];
+        break;
+      case "amazon-gift-card":
+        return [
+          {
+            name: "Amazon ID",
+            value: payment.amazonAccount,
+          },
+        ];
+        break;
+      default:
+        break;
+    }
+  }, [payment]);
   return (
     <Grid size={12} container spacing={2} justifyContent="center">
       {/* Header */}
@@ -580,16 +656,14 @@ function Payment() {
             >
               {payment.method}:
             </Typography>
-            {["PayPal", "UPI", "Amazon"].includes(payment?.method) ? (
-              <Typography fontWeight={500}>
-                {payment?.value?.account}
-              </Typography>
-            ) : (
-              <Grid size={12} mt={1.5}>
+
+            <Grid size={12} mt={1.5}>
+              {accountDetails.map((detail, index) => (
                 <Grid
                   size={12}
                   container
                   alignItems="center"
+                  spacing={1}
                   borderBottom={"1px solid rgba(255, 255, 255, 0.3)"}
                   py={1}
                 >
@@ -597,42 +671,45 @@ function Payment() {
                     width={{ xs: "100%", xl: "40%" }}
                     fontWeight={500}
                   >
-                    Bank:
+                    {detail.name}
                   </Typography>
-                  <Typography component="span" fontWeight={500}>
-                    {payment?.value?.bank}
-                  </Typography>{" "}
-                </Grid>
-                <Grid
-                  size={12}
-                  container
-                  alignItems="center"
-                  borderBottom={"1px solid rgba(255, 255, 255, 0.3)"}
-                  py={1}
-                >
-                  <Typography
-                    width={{ xs: "100%", xl: "40%" }}
-                    fontWeight={500}
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      flex: 1,
+                    }}
                   >
-                    IFSC/IBAN/SWIFT Code:
-                  </Typography>
-                  <Typography component="span" fontWeight={500}>
-                    {payment?.value?.ifsc}
-                  </Typography>{" "}
+                    <Typography
+                      component="span"
+                      sx={{
+                        color: "#fff",
+                        fontWeight: 600,
+                        wordBreak: "break-word",
+                        flex: 1,
+                      }}
+                    >
+                      {visibleFields[index]
+                        ? detail.value
+                        : maskValue(detail.value)}
+                    </Typography>
+
+                    <IconButton
+                      size="small"
+                      onClick={() => toggleField(index)}
+                      sx={{ color: "#fff", ml: 1 }}
+                    >
+                      {visibleFields[index] ? (
+                        <VisibilityOffIcon fontSize="small" />
+                      ) : (
+                        <VisibilityIcon fontSize="small" />
+                      )}
+                    </IconButton>
+                  </Box>
                 </Grid>
-                <Grid size={12} container alignItems="center" py={1}>
-                  <Typography
-                    width={{ xs: "100%", xl: "40%" }}
-                    fontWeight={500}
-                  >
-                    Account Number:
-                  </Typography>
-                  <Typography component="span" fontWeight={500}>
-                    {payment?.value?.account}
-                  </Typography>
-                </Grid>
-              </Grid>
-            )}
+              ))}
+            </Grid>
           </Grid>
         ) : (
           <Typography py={1} fontSize={12}>
@@ -655,7 +732,11 @@ function Payment() {
         title="Select Payment Method"
         maxWidth="md"
         open={openPayment}
-        onClose={() => setOpenPayment(false)}
+        onClose={async() => {
+          await member.Reload();
+          setOpenPayment(false)
+          
+        }}
       >
         <Grid
           size={12}
@@ -663,7 +744,6 @@ function Payment() {
           alignItems="center"
           sx={{ bgcolor: (theme) => theme.palette.cardbg.main }}
         >
-          {/* Payment options */}
           <Grid
             container
             size={12}
@@ -675,20 +755,22 @@ function Payment() {
           >
             <RadioGroup
               row
-              value={selectedMethod}
-              onChange={(event) => setSelectedMethod(event.target.value)}
+              value={payment.method}
+              onChange={(event) => {
+                setPayment({ ...payment, method: event.target.value });
+              }}
               style={{ justifyContent: "space-evenly", width: "100%" }}
             >
-              {paymentMethods.map((method, index) => (
+              {paymentOptions.map((method, index) => (
                 <FormControlLabel
                   key={index}
-                  value={method.name}
+                  value={method.value}
                   control={<Radio />}
                   label={
                     <Box
                       component="img"
-                      src={method.icon}
-                      alt={method.name}
+                      src={paymentMethods[method.value]}
+                      alt={method.label}
                       sx={{
                         height: 63,
                         width: 100,
@@ -697,11 +779,11 @@ function Payment() {
                         borderRadius: 2,
                         cursor: "pointer",
                         border: (theme) =>
-                          selectedMethod === method.name
+                          payment.method === method.name
                             ? `2px solid ${theme.palette.primary.main}`
                             : "2px solid transparent",
                         boxShadow: (theme) =>
-                          selectedMethod === method.name
+                          payment.method === method.name
                             ? `0 0 8px ${theme.palette.secondary.main}`
                             : "none",
                         transition: "0.2s",
@@ -717,7 +799,7 @@ function Payment() {
           <Grid size={12} container py={2}>
             {/* PayPal */}
             <Collapse
-              in={selectedMethod === "PayPal"}
+              in={payment.method === "paypal"}
               unmountOnExit
               sx={{ width: "100%" }}
             >
@@ -737,13 +819,11 @@ function Payment() {
                   Enter your PayPal Email
                 </Typography>
                 <Page.Input
-                  value={
-                    payment.method === "PayPal" ? payment?.value?.account : ""
-                  }
+                  value={payment.paypalAccount}
                   onChange={(e) =>
                     setPayment({
-                      method: "PayPal",
-                      value: { account: e.target.value },
+                      ...payment,
+                      paypalAccount: e.target.value,
                     })
                   }
                 />
@@ -760,7 +840,7 @@ function Payment() {
 
             {/* Wire Transfer */}
             <Collapse
-              in={selectedMethod === "Wire Transfer"}
+              in={payment.method === "wire-transfer"}
               unmountOnExit
               sx={{ width: "100%" }}
             >
@@ -777,16 +857,15 @@ function Payment() {
                   </Typography>
                   <Page.Input
                     value={
-                      payment.method === "Wire Transfer"
-                        ? payment.value.bank || ""
-                        : ""
+                      payment.method === "wire-transfer" ? payment.bankName : ""
                     }
-                    onChange={(e) =>
-                      setPayment((prev) => ({
-                        method: "Wire Transfer",
-                        value: { ...prev.value, bank: e.target.value },
-                      }))
-                    }
+                    onChange={(e) => {
+                      let temp = {
+                        ...payment,
+                        bankName: e.target.value,
+                      };
+                      setPayment(temp);
+                    }}
                   />
                 </Grid>
                 <Grid size={6} container spacing={0}>
@@ -795,15 +874,15 @@ function Payment() {
                   </Typography>
                   <Page.Input
                     value={
-                      payment.method === "Wire Transfer"
-                        ? payment.value.ifsc || ""
+                      payment.method === "wire-transfer"
+                        ? payment.ifsc || ""
                         : ""
                     }
                     onChange={(e) =>
-                      setPayment((prev) => ({
-                        method: "Wire Transfer",
-                        value: { ...prev.value, ifsc: e.target.value },
-                      }))
+                      setPayment({
+                        ...payment,
+                        ifsc: e.target.value,
+                      })
                     }
                   />
                 </Grid>
@@ -813,15 +892,15 @@ function Payment() {
                   </Typography>
                   <Page.Input
                     value={
-                      payment.method === "Wire Transfer"
-                        ? payment.value.account || ""
+                      payment.method === "wire-transfer"
+                        ? payment.bankAccount || ""
                         : ""
                     }
                     onChange={(e) =>
-                      setPayment((prev) => ({
-                        method: "Wire Transfer",
-                        value: { ...prev.value, account: e.target.value },
-                      }))
+                      setPayment({
+                        ...payment,
+                        bankAccount: e.target.value,
+                      })
                     }
                   />
                 </Grid>
@@ -838,7 +917,7 @@ function Payment() {
 
             {/* Amazon */}
             <Collapse
-              in={selectedMethod === "Amazon"}
+              in={payment.method === "amazon-gift-card"}
               unmountOnExit
               sx={{ width: "100%" }}
             >
@@ -855,16 +934,14 @@ function Payment() {
                   fontWeight={600}
                   color="secondary"
                 >
-                  Enter your Amazon Email
+                  Enter your Amazon Giftcard ID
                 </Typography>
                 <Page.Input
-                  value={
-                    payment.method === "Amazon" ? payment?.value?.account : ""
-                  }
+                  value={payment.amazonAccount}
                   onChange={(e) =>
                     setPayment({
-                      method: "Amazon",
-                      value: { account: e.target.value },
+                      ...payment,
+                      amazonAccount: e.target.value,
                     })
                   }
                 />
@@ -881,7 +958,7 @@ function Payment() {
 
             {/* UPI */}
             <Collapse
-              in={selectedMethod === "UPI"}
+              in={payment.method === "upi"}
               unmountOnExit
               sx={{ width: "100%" }}
             >
@@ -901,18 +978,16 @@ function Payment() {
                   Enter your UPI ID
                 </Typography>
                 <Page.Input
-                  value={
-                    payment.method === "UPI" ? payment?.value?.account : ""
-                  }
+                  value={payment.upiAccount}
                   onChange={(e) =>
                     setPayment({
-                      method: "UPI",
-                      value: { account: e.target.value },
+                      ...payment,
+                      upiAccount: e.target.value,
                     })
                   }
                 />
                 <Button
-                  onClick={() => handleSave("UPI", payment.value)}
+                  onClick={() => handleSave()}
                   variant="contained"
                   color="secondary"
                   sx={{ my: 2, fontWeight: 600, color: "white", px: 2 }}
@@ -937,18 +1012,19 @@ function SocialAccounts({ user }) {
     facebook: "",
     linkedin: "",
     youtube: "",
-    twitter: "",
+    x: "",
   });
   React.useEffect(() => {
-    if (!user) return;
-    // console.log(user.socials);
+    if (!user) return () => {};
     setContact(
-      user.socials.reduce((a, c) => {
-        a[c.channel] = c.account;
-        return a;
-      }, {}),
+      Object.fromEntries(
+        Object.entries(user)
+          .filter((e) => e[0].startsWith("social-media"))
+          .map((d) => [d[0].replace("social-media-", ""), d[1]]),
+      ),
     );
   }, [user]);
+  console.table(contact);
   const handleChange = (key) => (e) => {
     setContact((prev) => ({
       ...prev,
@@ -962,7 +1038,7 @@ function SocialAccounts({ user }) {
     facebook: <FacebookIcon sx={{ color: "#fff" }} />,
     linkedin: <LinkedInIcon sx={{ color: "#fff" }} />,
     youtube: <YouTubeIcon sx={{ color: "#fff" }} />,
-    twitter: <XIcon sx={{ color: "#fff" }} />,
+    x: <XIcon sx={{ color: "#fff" }} />,
   };
 
   const socialChannels = [
@@ -993,7 +1069,7 @@ function SocialAccounts({ user }) {
     },
     {
       name: "X (formerly Twitter)",
-      key: "twitter",
+      key: "x",
       icon: <XIcon sx={{ color: "black" }} />,
     },
   ];
@@ -1035,7 +1111,11 @@ function SocialAccounts({ user }) {
           Object.entries(contact)
             .filter(([_, value]) => value?.trim())
             .map(([key, value], index, arr) => (
-              <Tooltip title={`${key?.Capitalize()} :  ${value}`} key={index} placement="top">
+              <Tooltip
+                title={`${key?.Capitalize()} :  ${value}`}
+                key={index}
+                placement="top"
+              >
                 <Page.Box px={1.5}>{contactIcons[key]}</Page.Box>
               </Tooltip>
             ))
@@ -1105,11 +1185,13 @@ function SocialAccounts({ user }) {
 
           <Button
             onClick={async () => {
-              const socials = Object.entries(contact).map((c) => ({
-                channel: c[0],
-                account: c[1],
-              }));
-              const resp = await api.put(`/api/v1/me`, { socials });
+              const socials = Object.fromEntries(
+                Object.entries(contact).map((c) => [
+                  `social-media-${c[0]}`,
+                  c[1],
+                ]),
+              );
+              const resp = await api.patch(`/api/v1/me/answer`, socials);
               useToast(resp);
               setOpenContact(false);
               user.Reload();

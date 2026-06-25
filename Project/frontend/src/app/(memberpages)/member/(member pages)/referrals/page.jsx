@@ -106,146 +106,146 @@ export default function page() {
 
   return (
     <Grid
-      size={12}
+      size={ 12 }
       container
-      spacing={2}
-      px={{ xs: 2, md: 3 }}
-      py={2}
+      spacing={ 2 }
+      px={ { xs: 2, md: 3 } }
+      py={ 2 }
       justifyContent="center"
     >
       <Grid
-        size={12}
-        sx={{
+        size={ 12 }
+        sx={ {
           borderBottom: `1px solid #e0e0e0`,
-        }}
+        } }
       >
         <Typography
-          sx={{
+          sx={ {
             fontSize: "18px",
             display: "inline-block",
             fontWeight: "600",
             borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
             pb: 0.5,
             my: 2,
-          }}
+          } }
         >
           Refer a Friend and Earn Rewards!
         </Typography>
       </Grid>
-      <Grid size={12} container spacing={2} mt={1}>
-        <Box width={"100%"}>
+      <Grid size={ 12 } container spacing={ 2 } mt={ 1 }>
+        <Box width={ "100%" }>
           <Typography
             color="secondary"
-            sx={{
+            sx={ {
               fontSize: "16px",
               fontWeight: "700",
-            }}
+            } }
           >
             Refer With Link:
           </Typography>
         </Box>
 
-        <Typography fontSize={15}>
+        <Typography fontSize={ 15 }>
           Sharing is Caring! Why not extend your benefits to your colleagues.
           Share the below link with your colleagues and let them enjoy the
           benefits of being a Turn2Opinion - In Community member.
         </Typography>
-        <Grid container size={12} alignItems="center" spacing={1}>
-          <Typography fontSize={15} fontWeight={600}>
-            {referralLink}
+        <Grid container size={ 12 } alignItems="center" spacing={ 1 }>
+          <Typography fontSize={ 15 } fontWeight={ 600 }>
+            { referralLink }
           </Typography>
-          <IconButton onClick={handleCopy}>
+          <IconButton onClick={ handleCopy }>
             <ContentCopyIcon />
           </IconButton>
         </Grid>
-      </Grid>{" "}
-      <Grid size={12} container>
-        <Grid size={{ xs: 12, lg: 6 }} container spacing={2} mt={2}>
-          <Box width={"100%"}>
+      </Grid>{ " " }
+      <Grid size={ 12 } container>
+        <Grid size={ { xs: 12, lg: 6 } } container spacing={ 2 } mt={ 2 }>
+          <Box width={ "100%" }>
             <Typography
               color="secondary"
-              sx={{
+              sx={ {
                 fontSize: "16px",
                 fontWeight: "700",
-              }}
+              } }
             >
               Invite By Email:
             </Typography>
           </Box>
 
-          <Typography fontSize={15}>
+          <Typography fontSize={ 15 }>
             Add your colleagues email id below and start inviting them to earn
             referral bonus.
           </Typography>
           <Box
-            sx={{
+            sx={ {
               width: "100%",
               display: "flex",
               gap: 2,
               flexDirection: "column",
-            }}
+            } }
           >
-            {emails.map((email, index) => (
+            { emails.map((email, index) => (
               <Box
-                key={index}
+                key={ index }
                 display="flex"
                 alignItems="center"
-                gap={1}
-                sx={{ width: { xs: "100%", lg: "90%" } }}
+                gap={ 1 }
+                sx={ { width: { xs: "100%", lg: "90%" } } }
               >
                 <Page.Input
-                  value={email}
-                  onChange={(e) => {
+                  value={ email }
+                  onChange={ (e) => {
                     handleEmailChange(index, e.target.value);
-                  }}
+                  } }
                   placeholder="Enter email address"
-                  InputProps={{
+                  InputProps={ {
                     endAdornment: (
                       <>
-                        {sentInvites?.invited.includes(email) && (
+                        { sentInvites?.invited.includes(email) && (
                           <Box display="flex" alignItems="center" gap="1">
                             <CheckIcon color="secondary" />
                             <Typography
-                              fontSize={13}
+                              fontSize={ 13 }
                               color="secondary"
-                              fontWeight={600}
+                              fontWeight={ 600 }
                             >
                               invited
                             </Typography>
                           </Box>
-                        )}
-                        {sentInvites?.alreadyRegistered.includes(email) && (
+                        ) }
+                        { sentInvites?.alreadyRegistered.includes(email) && (
                           <Box display="flex" alignItems="center" gap="1">
                             <CloseIcon color="error" />
                             <Typography
-                              fontSize={13}
+                              fontSize={ 13 }
                               color="error"
-                              fontWeight={600}
-                              width={{ md: "150px" }}
+                              fontWeight={ 600 }
+                              width={ { md: "150px" } }
                             >
                               account already exists
                             </Typography>
                           </Box>
-                        )}
+                        ) }
                       </>
                     ),
-                  }}
+                  } }
                 />
-                <IconButton color="secondary" onClick={() => handleAddEmail()}>
+                <IconButton color="secondary" onClick={ () => handleAddEmail() }>
                   <AddIcon />
                 </IconButton>
-                {emails.length !== 1 && (
+                { emails.length !== 1 && (
                   <IconButton
                     color="error"
-                    onClick={() => handleRemoveEmail(index)}
+                    onClick={ () => handleRemoveEmail(index) }
                   >
                     <RemoveIcon />
                   </IconButton>
-                )}
+                ) }
               </Box>
-            ))}
+            )) }
             <Button
-              onClick={async () => {
+              onClick={ async () => {
                 let resp = await api.post(`/api/v1/me/invite`, {
                   emails,
                 });
@@ -254,7 +254,7 @@ export default function page() {
                 } else {
                   useToast(resp);
                 }
-              }}
+              } }
               variant="contained"
               color="secondary"
               disabled={
@@ -266,26 +266,26 @@ export default function page() {
                   );
                 }).length === 0
               }
-              sx={{
+              sx={ {
                 fontWeight: 600,
                 height: 32,
                 width: "120px",
                 color: "#fff",
-              }}
+              } }
             >
               Send Invite
             </Button>
           </Box>
         </Grid>
 
-        <InvitedEmails sentInvites={sentInvites} />
+        <InvitedEmails sentInvites={ sentInvites } />
       </Grid>
-      {referrals?.length > 0 && (
-        <Grid size={12}>
+      { referrals?.length > 0 && (
+        <Grid size={ 12 }>
           <Datatable
-            isLoading={false}
-            pagination={[10, 20, 50, 100]}
-            pageSize={20}
+            isLoading={ false }
+            pagination={ [10, 20, 50, 100] }
+            pageSize={ 20 }
             hideColumnSelector
             hideDownload
             noDataMsg="No Record Found."
@@ -296,7 +296,7 @@ export default function page() {
             // }
             title={
               <Typography
-                sx={{
+                sx={ {
                   fontSize: "18px",
                   display: "inline-block",
                   fontWeight: "600",
@@ -304,29 +304,33 @@ export default function page() {
                     `2px solid ${theme.palette.primary.main}`,
                   pb: 0.5,
                   my: 1,
-                }}
+                } }
               >
                 Referral History
               </Typography>
             }
-            columns={columns}
-            data={referrals}
+            columns={ columns }
+            data={ referrals }
           />
         </Grid>
-      )}
-      {/* <FollowUs /> */}
+      ) }
+      Facebook Like ka button yaha aaega: 
+      <div id="fb-root"></div>
+      <LikeFacebook/>
+      iske pehle
+      <FollowUs />
       <Snackbar
-        open={toastOpen}
-        autoHideDuration={3000}
-        onClose={handleCloseToast}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        open={ toastOpen }
+        autoHideDuration={ 3000 }
+        onClose={ handleCloseToast }
+        anchorOrigin={ { vertical: "bottom", horizontal: "center" } }
       >
         <Alert
-          onClose={handleCloseToast}
+          onClose={ handleCloseToast }
           severity="success"
-          sx={{ width: "100%", fontWeight: 500 }}
+          sx={ { width: "100%", fontWeight: 500 } }
         >
-          {toastMessage}
+          { toastMessage }
         </Alert>
       </Snackbar>
     </Grid>
@@ -342,37 +346,37 @@ function InvitedEmails({ sentInvites }) {
   if (!users || users.length === 0) return null;
   return (
     <Grid
-      size={{ xs: 12, lg: 6 }}
+      size={ { xs: 12, lg: 6 } }
       container
-      mt={2}
+      mt={ 2 }
       alignSelf="flex-start"
-      spacing={2}
+      spacing={ 2 }
     >
-      <Box width={"100%"}>
+      <Box width={ "100%" }>
         <Typography
           color="secondary"
-          sx={{
+          sx={ {
             fontSize: "16px",
             fontWeight: "700",
-          }}
+          } }
         >
           Invite History:
         </Typography>
       </Box>
 
       <TableContainer
-        sx={{
+        sx={ {
           border: (theme) => `1px solid ${theme.palette.primary.main}`,
           bgcolor: (theme) => theme.palette.cardbgdark.main,
           borderRadius: 2,
           maxHeight: { xs: "400px", lg: "132px" },
           minWidth: "500px",
           overflow: "auto",
-        }}
+        } }
       >
         <Table
           size="small"
-          sx={{
+          sx={ {
             overflow: "scroll",
             tableLayout: "fixed",
             "& tbody td": {
@@ -394,7 +398,7 @@ function InvitedEmails({ sentInvites }) {
               border: "1px solid rgba(255, 255, 255, 0.12)",
               color: (theme) => theme.palette.cardtext.main,
             },
-          }}
+          } }
         >
           <TableHead>
             <TableRow>
@@ -405,9 +409,9 @@ function InvitedEmails({ sentInvites }) {
           </TableHead>
 
           <TableBody>
-            {users.map((user) => (
+            { users.map((user) => (
               <TableRow
-                key={user.id}
+                key={ user.id }
                 sx={
                   {
                     // "&:hover": {
@@ -417,20 +421,20 @@ function InvitedEmails({ sentInvites }) {
                 }
               >
                 <TableCell align="center">
-                  <Tooltip title={user.email} placement="left">
-                    {user.email}
+                  <Tooltip title={ user.email } placement="left">
+                    { user.email }
                   </Tooltip>
                 </TableCell>
 
                 <TableCell align="center">
-                  {user.isActive ? "Not Registered" : "Registered"}
+                  { user.isActive ? "Not Registered" : "Registered" }
                 </TableCell>
 
                 <TableCell align="center">
-                  {new Date(user.createdAt).toLocaleString()}
+                  { new Date(user.createdAt).toLocaleString() }
                 </TableCell>
               </TableRow>
-            ))}
+            )) }
           </TableBody>
         </Table>
       </TableContainer>
@@ -447,7 +451,7 @@ function FollowUs() {
   const [socials, setSocials] = React.useState([
     {
       name: "Facebook",
-      icon: <FacebookIcon sx={{ color: "#1877F2", fontSize: 32 }} />,
+      icon: <FacebookIcon sx={ { color: "#1877F2", fontSize: 32 } } />,
       link: "#",
       points: 50,
       status: "not_started",  // not_started | followed | pending | rewarded
@@ -456,7 +460,7 @@ function FollowUs() {
     },
     {
       name: "Instagram",
-      icon: <InstagramIcon sx={{ color: "#E4405F", fontSize: 32 }} />,
+      icon: <InstagramIcon sx={ { color: "#E4405F", fontSize: 32 } } />,
       link: "#",
       points: 50,
       status: "followed",
@@ -465,7 +469,7 @@ function FollowUs() {
     },
     {
       name: "YouTube",
-      icon: <YouTubeIcon sx={{ color: "#FF0000", fontSize: 32 }} />,
+      icon: <YouTubeIcon sx={ { color: "#FF0000", fontSize: 32 } } />,
       link: "#",
       points: 50,
       status: "pending",
@@ -474,7 +478,7 @@ function FollowUs() {
     },
     {
       name: "LinkedIn",
-      icon: <LinkedInIcon sx={{ color: "#0A66C2", fontSize: 32 }} />,
+      icon: <LinkedInIcon sx={ { color: "#0A66C2", fontSize: 32 } } />,
       link: "#",
       points: 50,
       status: "rewarded",
@@ -517,37 +521,37 @@ function FollowUs() {
   return (
     <>
       <Grid
-        size={12}
-        sx={{
+        size={ 12 }
+        sx={ {
           mt: 2,
           borderBottom: `1px solid #e0e0e0`,
-        }}
+        } }
       >
         <Typography
-          sx={{
+          sx={ {
             fontSize: "18px",
             display: "inline-block",
             fontWeight: "600",
             borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
             pb: 0.5,
             my: 2,
-          }}
+          } }
         >
           Get Rewarded for Staying Connected
         </Typography>
       </Grid>
 
-      <Grid size={12}>
-        <Typography fontSize={15} mb={3}>
+      <Grid size={ 12 }>
+        <Typography fontSize={ 15 } mb={ 3 }>
           Follow us on social media to earn bonus reward points and stay updated
           with the latest opportunities, surveys, and community updates.
         </Typography>
 
-        <Grid container spacing={2}>
-          {socials.map((social) => (
-            <Grid key={social.name}>
+        <Grid container spacing={ 2 }>
+          { socials.map((social) => (
+            <Grid key={ social.name }>
               <Box
-                sx={{
+                sx={ {
                   width: 220,
                   p: 2,
                   border: "1px solid",
@@ -562,15 +566,15 @@ function FollowUs() {
                   flexDirection: "column",
                   alignItems: "center",
                   gap: 1.5,
-                }}
+                } }
               >
-                {social.icon}
+                { social.icon }
 
-                <Typography fontWeight={600}>{social.name}</Typography>
+                <Typography fontWeight={ 600 }>{ social.name }</Typography>
 
                 <Typography
-                  fontSize={16}
-                  fontWeight={600}
+                  fontSize={ 16 }
+                  fontWeight={ 600 }
                   color={
                     social.status === "rewarded"
                       ? "success.main"
@@ -579,29 +583,29 @@ function FollowUs() {
                         : "secondary"
                   }
                 >
-                  {social.status === "rewarded"
+                  { social.status === "rewarded"
                     ? `${social.points} Points Awarded`
                     : social.status === "pending"
                       ? "Verification Pending"
-                      : `+${social.points} Points`}
+                      : `+${social.points} Points` }
                 </Typography>
 
                 <Box
-                  sx={{
+                  sx={ {
                     display: "flex",
                     flexDirection: "column",
                     gap: 1,
                     width: "100%",
-                  }}
+                  } }
                 >
                   <Button
                     component="a"
-                    href={social.link}
+                    href={ social.link }
                     target="_blank"
                     rel="noopener noreferrer"
                     variant="outlined"
                     size="small"
-                    onClick={() => {
+                    onClick={ () => {
                       if (social.status === "not_started") {
                         setSocials((prev) =>
                           prev.map((item) =>
@@ -611,17 +615,17 @@ function FollowUs() {
                           ),
                         );
                       }
-                    }}
+                    } }
                   >
-                    {social.actionLabel}
+                    { social.actionLabel }
                   </Button>
 
-                  {social.status === "rewarded" ? (
+                  { social.status === "rewarded" ? (
                     <Button
                       variant="contained"
                       color="success"
                       size="small"
-                      startIcon={<CheckIcon />}
+                      startIcon={ <CheckIcon /> }
                       disabled
                     >
                       Reward Claimed
@@ -640,84 +644,84 @@ function FollowUs() {
                       variant="contained"
                       color="secondary"
                       size="small"
-                      disabled={social.status === "not_started"}
-                      onClick={() => {
+                      disabled={ social.status === "not_started" }
+                      onClick={ () => {
                         setSelectedSocial(social);
                         setVerifyOpen(true);
-                      }}
+                      } }
                     >
                       Verify Follow
                     </Button>
-                  )}
+                  ) }
                 </Box>
               </Box>
             </Grid>
-          ))}
+          )) }
         </Grid>
       </Grid>
 
       <PopUp
-        open={verifyOpen}
-        onClose={closeVerifyPopup}
-        title={`Verify ${selectedSocial?.name || ""} Follow`}
+        open={ verifyOpen }
+        onClose={ closeVerifyPopup }
+        title={ `Verify ${selectedSocial?.name || ""} Follow` }
         maxWidth="sm"
       >
-        <Box p={3}>
-          <Typography mb={2}>
-            Follow our <strong>{selectedSocial?.name}</strong> page and submit
+        <Box p={ 3 }>
+          <Typography mb={ 2 }>
+            Follow our <strong>{ selectedSocial?.name }</strong> page and submit
             your profile information for verification.
           </Typography>
 
           <Page.Input
             fullWidth
-            label={selectedSocial?.verificationLabel}
-            placeholder={selectedSocial?.verificationLabel}
-            value={socialId}
-            onChange={(e) => setSocialId(e.target.value)}
-            sx={{ mb: 2 }}
+            label={ selectedSocial?.verificationLabel }
+            placeholder={ selectedSocial?.verificationLabel }
+            value={ socialId }
+            onChange={ (e) => setSocialId(e.target.value) }
+            sx={ { mb: 2 } }
           />
 
           <Button
             component="label"
             variant="outlined"
             fullWidth
-            sx={{ height: 48 }}
+            sx={ { height: 48 , fontWeight:700 } }
           >
-            {screenshot ? "Change Screenshot" : "Upload Screenshot"}
+            { screenshot ? "Change Screenshot" : "Upload Screenshot" }
 
             <input
               hidden
               type="file"
               accept="image/*"
-              onChange={(e) => {
+              onChange={ (e) => {
                 if (e.target.files?.[0]) {
                   setScreenshot(e.target.files[0]);
                 }
-              }}
+              } }
             />
           </Button>
 
-          <Typography mt={1} fontSize={12} color="text.secondary">
+          <Typography mt={ 1 } fontSize={ 12 } color="text.secondary">
             Upload a screenshot showing that you have followed, subscribed, or
             connected with our page.
           </Typography>
 
-          {screenshot && (
-            <Typography mt={2} fontSize={14} color="success.main">
-              Selected: {screenshot.name}
+          { screenshot && (
+            <Typography mt={ 2 } fontSize={ 14 } color="success.main">
+              Selected: { screenshot.name }
             </Typography>
-          )}
+          ) }
 
-          <Box mt={3} display="flex" justifyContent="flex-end" gap={1}>
-            <Button variant="outlined" onClick={closeVerifyPopup}>
+          <Box mt={ 3 } display="flex" justifyContent="flex-end" gap={ 1 }>
+            <Button variant="outlined" onClick={ closeVerifyPopup }>
               Cancel
             </Button>
 
             <Button
               variant="contained"
               color="secondary"
-              disabled={!socialId.trim() || !screenshot}
-              onClick={handleSubmitVerification}
+              disabled={ !socialId.trim() || !screenshot }
+              onClick={ handleSubmitVerification }
             >
               Submit Verification
             </Button>
@@ -726,4 +730,15 @@ function FollowUs() {
       </PopUp>
     </>
   );
+}
+
+function LikeFacebook() {
+  return <div
+    className="fb-like"
+    data-href="https://www.facebook.com/profile.php?id=61589899902397"
+    data-layout="button_count"
+    data-action="like"
+    data-size="large"
+    data-share="true"
+  />
 }
