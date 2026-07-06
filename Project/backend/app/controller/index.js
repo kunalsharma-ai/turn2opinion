@@ -11,3 +11,5 @@ export { default as Profile } from "./Profile.js"
 export { default as Support } from "./Support.js";
 export { default as ProjectLaunch } from "./ProjectLaunch.js";
 export { default as Validation } from "./Validation.js";
+export { default as Socials } from "./Socials.js";
+export { default as FollowSocial } from "./FollowSocial.js";

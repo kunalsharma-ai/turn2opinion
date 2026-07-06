@@ -2,7 +2,7 @@
 import React from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Datatable, Form, Icon, SectionTitle } from "@/components";
-import { Page, api } from "@/util";
+import { Page, api, loadData } from "@/util";
 
 import { Grid, Tabs, Tab, Fade, IconButton, Button, Chip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -11,6 +11,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useToast } from "@/hooks";
 import { SideDrawer } from "@/components/Popup";
 import PopUp from "@/componentsMHO/PopUp";
+import iconList from "../../components/icons.js";
 
 function TabPanel({ children, value, index }) {
   return (
@@ -28,12 +29,12 @@ export default function () {
   const [activeTab, setActiveTab] = React.useState(0);
   const tabs = [
     {
-      label: "Edit Socials",
-      render: <EditSocials />,
-    },
-    {
       label: "Manage Reward Requests",
       render: <ManageReward />,
+    },
+    {
+      label: "Edit Socials",
+      render: <EditSocials />,
     },
   ];
 
@@ -120,10 +121,18 @@ function EditSocials() {
       <Datatable
         columns={[
           {
-            id: "name",
-            label: "Social Name",
-            data: "name",
-            feature: ["searchable"],
+            id: "platform",
+            label: "Platform Name",
+            render: (info) => (
+              <>
+                <span
+                  className={`fa-brands ${info.icon}`}
+                  style={info.iconspecs}
+                />{" "}
+                {info.platform}
+              </>
+            ),
+            feature: ["searchable", "sortable"],
           },
           {
             id: "url",
@@ -135,7 +144,7 @@ function EditSocials() {
             id: "points",
             label: "Points on Completion",
             data: "points",
-            feature: ["searchable"],
+            feature: ["searchable", "sortable"],
           },
           {
             id: "action",
@@ -199,7 +208,13 @@ function CreateOrEditSocials({ socialID = null, onClose, socials }) {
   const [content, setContent] = React.useState([]);
   const form = useForm({
     defaultValues: {
-      name: "",
+      platform: "",
+      url: "",
+      icon: "",
+      iconspecs: {
+        color: "#000000",
+      },
+      points: 50,
     },
   });
 
@@ -220,7 +235,7 @@ function CreateOrEditSocials({ socialID = null, onClose, socials }) {
     });
   }, [socialID]);
   const onSubmit = async (data) => {
-    setContent((prev) => [...prev, data]);
+    // setContent((prev) => [...prev, data]);
     if (!data._id) {
       useToast(await api.put(`/api/v1/socials`, data));
     } else {
@@ -258,15 +273,26 @@ function CreateOrEditSocials({ socialID = null, onClose, socials }) {
       <Grid container size={12} spacing={1.4} sx={{ px: 2 }}>
         <Form.Input
           control={control}
-          {...form.register("name")}
-          label="Social Name"
+          {...form.register("platform")}
+          label="Social Platform Name"
         />
         <Form.Input control={control} {...form.register("url")} label="URL" />
-        <Form.Input
-          control={control}
-          {...form.register("icon")}
-          label="Icon FA Class"
-        />
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Form.Select
+            control={control}
+            {...form.register("icon")}
+            label="Platform Icon"
+            options={iconList}
+            className="fa-brands"
+          />
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Form.Input
+            control={control}
+            {...form.register("iconspecs.color")}
+            label="Icon Color"
+          />
+        </Grid>
         <Form.Input
           control={control}
           {...form.register("points")}
@@ -302,7 +328,18 @@ function ManageReward() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [users, setUsers] = React.useState([{}]);
   const [open, setOpen] = React.useState({ open: false, id: null });
-
+  React.useEffect(() => {
+    loadData(
+      api.get(`/api/v1/follow-social/verify`),
+      (resp) => {
+        setUsers(resp.data);
+      },
+      () => {
+        // isLoading=false
+      },
+    );
+  }, []);
+  // return <pre>{JSON.stringify(users,null,2)}</pre>
   return (
     <Page.Box
       sx={{
@@ -315,13 +352,27 @@ function ManageReward() {
           {
             id: "name",
             label: "User Name",
-            data: "name",
-            feature: ["searchable"],
+            width: "320px",
+            // data: "name",
+            render: (info) => (
+              <>
+                {info?.created?.By?.name?.first} {info?.created?.By?.name?.last}
+                ({info?.created?.By?.mail})
+              </>
+            ),
+            // feature: ["searchable"],
           },
           {
-            id: "id",
+            id: "platform",
+            data: "platform",
+            label: "Platform",
+            width: 140,
+            feature: ["searchable", "sortable"],
+          },
+          {
+            id: "user",
             label: "User ID",
-            data: "id",
+            data: "user",
             feature: ["searchable"],
           },
           {
@@ -337,7 +388,7 @@ function ManageReward() {
               <Button
                 sx={{ p: 0 }}
                 onClick={() => {
-                  setOpen({ open: true, id: info._id });
+                  setOpen({ open: true, id: info.screenshot });
                 }}
               >
                 View Screenshot
@@ -346,51 +397,28 @@ function ManageReward() {
           },
           {
             id: "status",
-            label: "Approval Status",
-            width: 280,
+            label: "Status",
             render: (d) => (
-              <Page.Box display={"flex"}>
-                <Page.Box display={"flex"} gap={1} alignItems={"center"}>
-                  <Chip
-                    label={d.status}
-                    color={
-                      d.status === "approved"
-                        ? "success"
-                        : d.status === "declined"
-                          ? "error"
-                          : "default"
-                    }
-                    size="small"
-                    sx={{ textTransform: "capitalize", px: 1 }}
-                  />
-                  <IconButton
+              <Page.Box display={"flex"} gap={1} alignItems={"center"}>
+                <Chip
+                  variant="outlined"
+                  label={d.status}
+                  color={
+                    d.status === "approved"
+                      ? "success"
+                      : d.status === "declined"
+                        ? "error"
+                        : "warning"
+                  }
+                  size="small"
+                  sx={{ textTransform: "capitalize", px: 1 }}
+                />
+                {/* <IconButton
                     sx={{ fontSize: 14, color: "error.main" }}
                     title="Undo"
                   >
                     <i className="fa-solid fa-rotate-left" />
-                  </IconButton>
-                </Page.Box>
-
-                <Page.Box display={"flex"} gap={1} alignItems={"center"}>
-                  <Button
-                    onClick={() => {}}
-                    variant="contained"
-                    color="success"
-                    size="small"
-                    sx={{ textTransform: "none", py: 0.1 }}
-                  >
-                    Approve
-                  </Button>
-                  <Button
-                    onClick={() => {}}
-                    variant="contained"
-                    color="error"
-                    size="small"
-                    sx={{ textTransform: "none", py: 0.1 }}
-                  >
-                    Reject
-                  </Button>
-                </Page.Box>
+                  </IconButton> */}
               </Page.Box>
             ),
           },
@@ -424,10 +452,43 @@ function ManageReward() {
       <PopUp
         open={open.open}
         title="Submitted Screenshot"
-        maxWidth="100vw"
+        maxWidth="lg"
         onClose={() => setOpen({ open: false, id: null })}
       >
-        <img src="/images/logo/t2o-logo.png" />
+        <Page.Box p={2}>
+          <img
+            src={`/social/screenshots/${open.id}`}
+            style={{ maxWidth: "100%" }}
+          />
+          <Grid size={12} justifyContent="flex-end" spacing={2} container p={2}>
+            <Page.Select
+              label="status"
+              onChange={() => {}}
+              options={[
+                { label: "Approve", value: "approve" },
+                { label: "Reject", value: "reject" },
+              ]}
+            />
+            <Page.Box display={"flex"} gap={1} alignItems={"center"}>
+              <Page.MuiButton
+                onClick={() => setOpen({ open: false, id: null })}
+                variant="outlined"
+                sx={{ textTransform: "none" }}
+              >
+                Cancel
+              </Page.MuiButton>
+              <Page.MuiButton
+                onClick={() => {
+                  setOpen({ open: false, id: null });
+                }}
+                variant="contained"
+                sx={{ textTransform: "none" }}
+              >
+                Save
+              </Page.MuiButton>
+            </Page.Box>
+          </Grid>
+        </Page.Box>
       </PopUp>
     </Page.Box>
   );

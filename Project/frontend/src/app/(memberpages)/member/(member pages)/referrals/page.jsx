@@ -30,7 +30,7 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import XIcon from "@mui/icons-material/X";
 
-import { api, Page } from "@/util";
+import { api, loadData, Page } from "@/util";
 import { Datatable } from "@/components";
 import { useMember } from "@/Context";
 import { useToast } from "@/hooks";
@@ -314,10 +314,6 @@ export default function page() {
           />
         </Grid>
       ) }
-      Facebook Like ka button yaha aaega: 
-      <div id="fb-root"></div>
-      <LikeFacebook/>
-      iske pehle
       <FollowUs />
       <Snackbar
         open={ toastOpen }
@@ -370,14 +366,14 @@ function InvitedEmails({ sentInvites }) {
           bgcolor: (theme) => theme.palette.cardbgdark.main,
           borderRadius: 2,
           maxHeight: { xs: "400px", lg: "132px" },
-          minWidth: "500px",
+          maxWidth: "100%",
           overflow: "auto",
         } }
       >
         <Table
           size="small"
           sx={ {
-            overflow: "scroll",
+            // overflow: "scroll",
             tableLayout: "fixed",
             "& tbody td": {
               color: (theme) => theme.palette.cardtext.main,
@@ -448,58 +444,31 @@ function FollowUs() {
   const [screenshot, setScreenshot] = React.useState(null);
   const [socialId, setSocialId] = React.useState("");
 
-  const [socials, setSocials] = React.useState([
-    {
-      name: "Facebook",
-      icon: <FacebookIcon sx={ { color: "#1877F2", fontSize: 32 } } />,
-      link: "#",
-      points: 50,
-      status: "not_started",  // not_started | followed | pending | rewarded
-      actionLabel: "Like Page",
-      verificationLabel: "Facebook Profile Name or Profile URL",
-    },
-    {
-      name: "Instagram",
-      icon: <InstagramIcon sx={ { color: "#E4405F", fontSize: 32 } } />,
-      link: "#",
-      points: 50,
-      status: "followed",
-      actionLabel: "Follow Profile",
-      verificationLabel: "Instagram Username",
-    },
-    {
-      name: "YouTube",
-      icon: <YouTubeIcon sx={ { color: "#FF0000", fontSize: 32 } } />,
-      link: "#",
-      points: 50,
-      status: "pending",
-      actionLabel: "Subscribe",
-      verificationLabel: "YouTube Channel Name / Handle",
-    },
-    {
-      name: "LinkedIn",
-      icon: <LinkedInIcon sx={ { color: "#0A66C2", fontSize: 32 } } />,
-      link: "#",
-      points: 50,
-      status: "rewarded",
-      actionLabel: "Follow Company",
-      verificationLabel: "LinkedIn Profile URL",
-    },
-  ]);
-
+  const [socials, setSocials] = React.useState([]);
+  React.useEffect(() => {
+    loadData(
+      api.get(`/api/v1/socials`),
+      resp => {
+        setSocials(resp.data);
+      },
+      () => {
+        // isLoading =  false
+      }
+    )
+  }, [])
   const handleSubmitVerification = async () => {
     if (!selectedSocial || !screenshot || !socialId.trim()) return;
 
     const formData = new FormData();
-    formData.append("platform", selectedSocial.name);
+    formData.append("platform", selectedSocial.platform);
     formData.append("socialId", socialId);
     formData.append("screenshot", screenshot);
 
-    // await api.post("/api/v1/social-follow/verify", formData);
-
+    const resp = await api.post("/api/v1/follow-social/verify", formData);
+    useToast(resp)
     setSocials((prev) =>
       prev.map((item) =>
-        item.name === selectedSocial.name
+        item.platform === selectedSocial.platform
           ? { ...item, status: "pending" }
           : item,
       ),
@@ -517,6 +486,10 @@ function FollowUs() {
     setScreenshot(null);
     setSocialId("");
   };
+
+if (!socials?.length) {
+  return null;
+}
 
   return (
     <>
@@ -548,8 +521,8 @@ function FollowUs() {
         </Typography>
 
         <Grid container spacing={ 2 }>
-          { socials.map((social) => (
-            <Grid key={ social.name }>
+          { socials.map((social, i) => (
+            <Grid key={ i }>
               <Box
                 sx={ {
                   width: 220,
@@ -568,9 +541,9 @@ function FollowUs() {
                   gap: 1.5,
                 } }
               >
-                { social.icon }
+                <i className={ `fa-brands ${social.icon}` } style={ { color: "blue", fontSize: 40, ...social.iconspecs } } />
 
-                <Typography fontWeight={ 600 }>{ social.name }</Typography>
+                <Typography fontWeight={ 600 }>{ social.platform }</Typography>
 
                 <Typography
                   fontSize={ 16 }
@@ -600,16 +573,15 @@ function FollowUs() {
                 >
                   <Button
                     component="a"
-                    href={ social.link }
+                    href={ social.url }
                     target="_blank"
-                    rel="noopener noreferrer"
                     variant="outlined"
                     size="small"
                     onClick={ () => {
                       if (social.status === "not_started") {
                         setSocials((prev) =>
                           prev.map((item) =>
-                            item.name === social.name
+                            item.platform === social.platform
                               ? { ...item, status: "followed" }
                               : item,
                           ),
@@ -617,7 +589,7 @@ function FollowUs() {
                       }
                     } }
                   >
-                    { social.actionLabel }
+                    { social.actionLabel ?? "Like" }
                   </Button>
 
                   { social.status === "rewarded" ? (
@@ -663,12 +635,12 @@ function FollowUs() {
       <PopUp
         open={ verifyOpen }
         onClose={ closeVerifyPopup }
-        title={ `Verify ${selectedSocial?.name || ""} Follow` }
+        title={ `Verify ${selectedSocial?.platform || ""} Follow` }
         maxWidth="sm"
       >
         <Box p={ 3 }>
           <Typography mb={ 2 }>
-            Follow our <strong>{ selectedSocial?.name }</strong> page and submit
+            Follow our <strong>{ selectedSocial?.platform }</strong> page and submit
             your profile information for verification.
           </Typography>
 
@@ -685,7 +657,7 @@ function FollowUs() {
             component="label"
             variant="outlined"
             fullWidth
-            sx={ { height: 48 , fontWeight:700 } }
+            sx={ { height: 48, fontWeight: 700, fontSize: 16 } }
           >
             { screenshot ? "Change Screenshot" : "Upload Screenshot" }
 
@@ -700,6 +672,12 @@ function FollowUs() {
               } }
             />
           </Button>
+
+             { true && (
+            <Typography mt={ 2 } fontSize={ 14 } color="error.main">
+              Maximum 2MB file size allowed
+            </Typography>
+          ) }
 
           <Typography mt={ 1 } fontSize={ 12 } color="text.secondary">
             Upload a screenshot showing that you have followed, subscribed, or

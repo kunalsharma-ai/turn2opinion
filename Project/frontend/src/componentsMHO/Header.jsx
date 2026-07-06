@@ -194,7 +194,7 @@ export default function Header({
       </List>
       <Box sx={{ px: 3, mt: 3 }} position="absolute" bottom="20px">
         {showLogin &&
-          (user === null ? (
+          (user?._id === undefined ? (
             <ButtonGroup
               sx={{
                 height: 56,
@@ -422,7 +422,7 @@ export default function Header({
               }}
             >
               {showLogin &&
-                (user === null ? (
+                (user?._id === undefined ? (
                   <ButtonGroup
                     sx={{
                       height: 56,

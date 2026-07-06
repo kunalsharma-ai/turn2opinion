@@ -12,7 +12,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useToast } from "@/hooks";
 import { SideDrawer } from "@/components/Popup";
 import { DateRangeSelector } from "@/components/Form";
-import iconList from "./icons.js";
+import iconList from "../../components/icons.js";
 const endpoint = `/api/v1/question`;
 
 export default function () {

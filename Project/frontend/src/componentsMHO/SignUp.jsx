@@ -1076,7 +1076,10 @@ export default function SignUp({
                     variant="outlined"
                     color="secondary"
                     sx={{ fontWeight: "bold", mt: 2, borderWidth: 3 }}
-                    onClick={onClose}
+                       onClick={() => {
+                      onClose();
+                      router.push("/");
+                    }}
                   >
                     Go To Home
                   </Page.MuiButton>

@@ -59,7 +59,11 @@ import { setOrigin, expressRoute, fsLogger } from "./utils/index.js";
             }),
             cookieParser(),
             pureIP,
-            fileUpload(),
+            fileUpload({
+                limits: { fileSize: 50 * 1024 * 1024 },
+                abortOnLimit: true,
+                uploadTimeout: 30000
+            }),
             setOrigin,
             appRoute,
             errorRoute,

@@ -17,8 +17,9 @@ import meResponse from "./api/Response.js";
 import llmRouter from "./api/llm.js"
 import integrationRoutes from "./api/integrationRoutes.js";
 import validationRoutes from "./api/Validation.js";
-
+import socialsRouter from "./api/Socials.js";
 import { isAuthenticated } from "../utils/index.js";
+import followSocialRouter from "./api/FollowSocial.js";
 
 import meRouter from "./api/Me.js";
 import changeEmail from "./api/changeEmail.js"
@@ -46,8 +47,8 @@ router
     .use("/api/v1/project", isAuthenticated, projectRouter)
     .use("/api/v1/batch", isAuthenticated, batchRouter)
     .use("/api/v1/integration", integrationRoutes)
-
-
+    .use("/api/v1/socials", socialsRouter)
+    .use("/api/v1/follow-social",isAuthenticated, followSocialRouter)
 // router
 //     .use("/api/v1/respondent",respondentRouter)
 export default router;
