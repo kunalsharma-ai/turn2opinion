@@ -84,7 +84,7 @@ class User extends CrudController {
         return await super.update(id, data);
     }
     async read(id) {
-        let temp = Mutate(await userModel.findById(id).select("+role"))
+        let temp = Mutate(await userModel.findById(id).select("+role +isActive"))
         let dob = new Date(temp.dob);
         return { ...temp, isMinor: dob.isMinor() };
     }
