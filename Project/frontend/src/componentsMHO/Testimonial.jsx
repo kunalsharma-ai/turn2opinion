@@ -65,7 +65,7 @@ const testimonialsData = [
   },
 ];
 
-const MotionPaper = motion(Paper);
+const MotionPaper = motion.create(Paper);
 
 function Testimonial() {
   const [index, setIndex] = useState(0);
@@ -73,7 +73,7 @@ function Testimonial() {
   const next = () => setIndex((prev) => (prev + 1) % testimonialsData.length);
   const prev = () =>
     setIndex(
-      (prev) => (prev - 1 + testimonialsData.length) % testimonialsData.length
+      (prev) => (prev - 1 + testimonialsData.length) % testimonialsData.length,
     );
 
   // optional autoplay

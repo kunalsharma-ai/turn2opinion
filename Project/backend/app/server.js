@@ -73,6 +73,7 @@ import { setOrigin, expressRoute, fsLogger } from "./utils/index.js";
                 fsLogger.Log("Fallback route", {
                     ...req.headers,
                     endpoint: req.path,
+                    method:req.method,
                     origin: req.origin,
                     method: req.method
                 })

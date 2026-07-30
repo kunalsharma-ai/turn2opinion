@@ -16,9 +16,9 @@ router
     ))
     .post(expressRoute(
         async req => {
-            // Read all entries matching filter
             let message = "";
             let filters=Object.fromEntries(Object.entries(req.body).map(fltr=>{
+                console.log(fltr)
                 if(fltr[1] instanceof Array)return fltr;
                 if(fltr[0]==="Country"){
                     return ["country",Object.keys(fltr[1])]
@@ -27,6 +27,7 @@ router
             }))
             if("Age" in filters){
                 let temp=filters.Age.map(age=>{
+                    console.log(age)
                     let start=new Date("0000-01-01")
                     let end=new Date("0000-12-31")
                     let today=new Date();
@@ -40,6 +41,7 @@ router
                 delete(filters.Age);
                 filters["$or"]=temp;
             }
+            console.log(filters["$or"])
             let data = await answerController.feasibility(filters)
             return { message, data:data.length };
         },

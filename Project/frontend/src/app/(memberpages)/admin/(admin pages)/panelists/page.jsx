@@ -151,6 +151,11 @@ export default function () {
       feature: ["filterable", "sortable"],
     },
     {
+      id:"createdAt",
+      label:"Creation Date",
+      render:info=>(new Date(info.createdAt)).toFormat()
+    },
+    {
       id: "category",
       label: "Category",
       render: (info, i) => {

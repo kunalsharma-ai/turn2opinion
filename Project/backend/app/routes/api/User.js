@@ -80,7 +80,6 @@ router
         )
     )
     .put(
-        asyncHandler(isAuthenticated),
         expressRoute(
             async req => {
                 const userInfo = req.body;
@@ -119,7 +118,7 @@ router
         )
     )
     .patch(
-        asyncHandler(isAuthenticated),
+        // asyncHandler(isAuthenticated),
         expressRoute(
             async req => {
                 if (!req?.body?.password || !req?.body?.confirmPassword || req?.body?.password !== req?.body?.confirmPassword) throw new Error("Passwords not matching.")
@@ -251,29 +250,7 @@ router
             userController
         )
     )
-    // .put("/register-app", expressRoute(
-    //     async req => {
-    //         let data = await userController.createAppUser({
-    //             name: {
-    //                 first: req.body.appName,
-    //                 last: "app"
-    //             },
-    //             gender: "Other",
-    //             dob: (new Date()).setYear((new Date()).getFullYear() - 18),
-    //             mail: req.body.appName + "@frequentresearch.com",
-    //             isVerified: {
-    //                 email: "verified",
-    //             },
-    //             origin: req.origin,
-    //             role: "root"
-    //         })
 
-    //         return {
-    //             message: "under development", data
-    //         }
-    //     },
-    //     userController
-    // ))
     .post(
         `/:user/profile-data`,
         asyncHandler(isAuthenticated),
@@ -287,7 +264,8 @@ router
                 }
             },
             userController
-        ))
+        )
+    )
 router
     .route("/apps")
     .get(
@@ -401,7 +379,7 @@ router
         )
     )
     .post(
-        asyncHandler(isAuthenticated),
+        // asyncHandler(isAuthenticated),
         expressRoute(
             async req => {
                 // read single entry
@@ -426,7 +404,7 @@ router
         )
     )
     .patch(
-        asyncHandler(isAuthenticated),
+        // asyncHandler(isAuthenticated),
         expressRoute(
             async req => {
                 // update single entry
@@ -475,4 +453,15 @@ router
             userController
         )
     )
+router.get(
+    "/:id/survey",
+    isAuthenticated,
+    expressRoute(
+        async (req) => {
+            const data = await responseController.list({user:req.params.id})
+            return { message: `Total ${data.length} records found`, status: "success", data }
+        },
+        responseController
+    )
+)
 export default router;
