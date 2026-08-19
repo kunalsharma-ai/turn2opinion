@@ -1,4 +1,5 @@
 export { default as User } from "./User.js";
+export { default as Alerts } from "./Alert.js";
 export { default as Category } from "./Category.js";
 export { default as Invites } from "./Invites.js";
 export { default as OTP } from "./OTP.js";
