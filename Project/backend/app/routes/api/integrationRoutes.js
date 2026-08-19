@@ -18,7 +18,7 @@ router
                 let data = await Survey.receive({
                     slug: req.body.slug ?? "",
                     name: req.body.name ?? "",
-                    category: req.body.category ?? category.name,
+                    category: req.body.category ?? category?.name??"not-defined",
                     source: req.body.source ?? "internal",
                     points: req.body.points ?? 0,
                     status: "draft",

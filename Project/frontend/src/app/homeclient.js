@@ -106,8 +106,8 @@ export default function HomeClient() {
               aria-label="Scroll to top"
               sx={{
                 position: "fixed",
-                bottom: 35,
-                right: 35,
+                bottom: 15,
+                left: 15,
                 zIndex: 999,
               }}
             >

@@ -11,6 +11,10 @@ const resolveMx = promisify(dns.resolveMx)
 export default mongooseModel(
     "User",
     {
+        nayaHai:{
+            type:Boolean,
+            default: true,
+        },
         respondentID: {
             type: String
         },
@@ -225,7 +229,7 @@ export default mongooseModel(
             default: "respondent",
             lowercase: true,
             trim: true,
-            enum: ["respondent", "administrator", "root"],
+            enum: ["respondent", "administrator", "root","admin"],
             select: false
         },
         paymentMethod: {

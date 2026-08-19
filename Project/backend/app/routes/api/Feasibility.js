@@ -10,42 +10,55 @@ router
             // Read all entries
             let message = "";
             let data = await userController.list()
-            return { message, data:data.length };
+            return { message, data: data.length };
         },
         userController
     ))
     .post(expressRoute(
         async req => {
             let message = "";
-            let filters=Object.fromEntries(Object.entries(req.body).map(fltr=>{
+            let filters = Object.fromEntries(Object.entries(req.body).map(fltr => {
                 console.log(fltr)
-                if(fltr[1] instanceof Array)return fltr;
-                if(fltr[0]==="Country"){
-                    return ["country",Object.keys(fltr[1])]
+                if (fltr[1] instanceof Array) return fltr;
+                if (fltr[0] === "Country") {
+                    return ["country", Object.keys(fltr[1])]
                 }
-                return [fltr[0],Object.keys(fltr[1])]
+                return [fltr[0], Object.keys(fltr[1])]
             }))
-            if("Age" in filters){
-                let temp=filters.Age.map(age=>{
+            if ("Age" in filters) {
+                let temp = filters.Age.map(age => {
                     console.log(age)
-                    let start=new Date("0000-01-01")
-                    let end=new Date("0000-12-31")
-                    let today=new Date();
-                    end.setFullYear(today.getFullYear() - age.min )
-                    start.setFullYear(today.getFullYear() - age.max )
-                    return {dob:{
-                        $gt:start,
-                        $lt:end
-                    }}
+                    let start = new Date("0000-01-01")
+                    let end = new Date("0000-12-31")
+                    let today = new Date();
+                    end.setFullYear(today.getFullYear() - age.min)
+                    start.setFullYear(today.getFullYear() - age.max)
+                    return {
+                        dob: {
+                            $gt: start,
+                            $lt: end
+                        }
+                    }
                 })
-                delete(filters.Age);
-                filters["$or"]=temp;
+                delete (filters.Age);
+                filters["$or"] = temp;
             }
             console.log(filters["$or"])
             let data = await answerController.feasibility(filters)
-            return { message, data:data.length };
+            return { message, data: data.length };
         },
         answerController
     ))
+    .put(
 
+        expressRoute(
+            async req => {
+                // Read all entries
+                let message = "";
+                let data = await userController.filterUsers(req.body.query)
+                return { message, data: data };
+            },
+            userController
+        )
+    )
 export default router;

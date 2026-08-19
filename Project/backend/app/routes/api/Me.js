@@ -338,25 +338,25 @@ router
                     link: "/admin/dashboard",
                     text: "Admin Zone",
                     icon: "fa-solid fa-gear",
-                    roles: ["admin", "superadmin", "root"]
+                    roles: ["admin", "superadmin", "root","administrator"]
                 },
                 {
                     link: "/member/dashboard",
                     text: "Dashboard",
                     icon: "icon-drawer",
-                    roles: ["admin", "superadmin", "root", "respondent"]
+                    roles: ["admin", "superadmin", "root", "respondent", "administrator"]
                 },
                 {
                     link: "/member/myaccount",
                     text: "My Account",
                     icon: "icon-user",
-                    roles: ["admin", "superadmin", "root", "respondent"]
+                    roles: ["admin", "superadmin", "root", "respondent", "administrator"]
                 },
                 {
                     link: "/member/settings",
                     text: "Settings",
                     icon: "icon-settings",
-                    roles: ["admin", "superadmin", "root", "respondent"]
+                    roles: ["admin", "superadmin", "root", "respondent", "administrator"]
                 }
             ]
                 .map(link => link.roles.includes(data.role) ? ({

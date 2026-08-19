@@ -118,7 +118,6 @@ router
         )
     )
     .patch(
-        // asyncHandler(isAuthenticated),
         expressRoute(
             async req => {
                 if (!req?.body?.password || !req?.body?.confirmPassword || req?.body?.password !== req?.body?.confirmPassword) throw new Error("Passwords not matching.")
@@ -133,7 +132,20 @@ router
             userController
         )
     )
+
 router
+    .get(
+        "/birthday/today",
+        expressRoute(
+            async req=>{
+                const status="success";
+                let data=await userController.birthday();
+                const message=`Total ${data.length} users found with birthday`;
+                return {message,status,data};
+            },
+            userController
+        )
+    )
     .get(
         "/summarize",
         asyncHandler(isAuthenticated),
@@ -453,6 +465,24 @@ router
             userController
         )
     )
+router.get(
+    "/:id/profile",
+    isAuthenticated,
+    expressRoute(
+        async req=>{
+            const data=Mutate(await userController.read(req.params.id));
+            answerController.request=req;
+            let profileData = Mutate(await answerController.getAnswers({ user: req.params.id }))
+            console.log(profileData)
+            return {
+                data:{...data,...profileData},
+                message:"",
+                status:"success"
+            }
+        },
+        userController
+    )
+)
 router.get(
     "/:id/survey",
     isAuthenticated,

@@ -25,8 +25,17 @@ import meRouter from "./api/Me.js";
 import changeEmail from "./api/changeEmail.js"
 const router = express.Router();
 router
-
+    
     .use("/api/v1/llm", llmRouter)
+    .use("/api/v1/newsletter",(r,s)=>{
+        console.log(r);
+        const {body,files}=r;
+        console.log({body,files})
+        return s.json({
+            status:"error",
+            message:"under development"
+        })
+    })
     .use("/api/v1/auth", authRouter)
     .use("/api/v1/answers", ansRouter)
     .use("/api/v1/category", categoryRouter)
@@ -40,6 +49,7 @@ router
     .use("/api/v1/forgot-password", forgotPassword)
     .use("/api/v1/change-email", changeEmail)
     .use("/api/v1/feasibility", feasibilityRouter)
+    .use("/api/v1/filtered-users",feasibilityRouter)
     .use("/api/v1/project-dev", projectRouter)
     .use("/api/v1/me", isAuthenticated, meRouter)
     .use("/api/v1/response", isAuthenticated, meResponse)

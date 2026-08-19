@@ -4,7 +4,7 @@ Date.prototype.isMinor = function (cn = "IN") {
     let age = (today - this) / (365.25 * 24 * 3600 * 1000);
     return age < 18
 }
-
+import {HttpError} from "express-web-tools";
 import { CrudController, Mutate } from "../utils/index.js";
 import {
     User as userModel,
@@ -84,7 +84,13 @@ class User extends CrudController {
         return await super.update(id, data);
     }
     async read(id) {
-        let temp = Mutate(await userModel.findById(id).select("+role +isActive"))
+        let user = await userModel.findById(id).select("+role +isActive")
+        user.isNew = false;
+        await user.save();
+        let temp = Mutate(
+            user
+        )
+
         let dob = new Date(temp.dob);
         return { ...temp, isMinor: dob.isMinor() };
     }
@@ -190,6 +196,79 @@ class User extends CrudController {
     }
     async appLoginUser(query) {
         return await super.findOne({ ...query, ...this.commonFilters, role: "root" })
+    }
+    async birthday() {
+        return await this.model.aggregate([
+            {
+                $project: {
+                    birthday: {
+                        $dateToString: {
+                            format: "%m-%d",
+                            date: "$dob",
+                            timezone: "Asia/Kolkata"
+                        }
+                    },
+                    today: {
+                        $dateToString: {
+                            format: "%m-%d",
+                            date: "$$NOW",
+                            timezone: "Asia/Kolkata"
+                        }
+                    },
+                    hrs: {
+                        $hour: {
+                            date: "$$NOW",
+                            timezone: "$timezone"
+                        }
+                    },
+                    name: 1,
+                    mail: 1,
+                    gender: 1,
+                    ethnicity: 1
+                }
+            },
+            {
+                $match: {
+                    hrs: {
+                        $gte: 18,
+                        $lt: 23
+                    },
+                    // $expr: {
+                    //     $eq: ["$today", "$birthday"]
+                    // }
+                }
+            }
+        ]);
+    }
+    async filterUsers(filters) {
+        const validFilters = filters.filter(
+            ({ question, answer }) => question && ![null,"",[]].includes(answer)
+        );
+        let userIds=null;
+        for (const [index, filter] of validFilters.entries()) {
+            const {question,answer}=filter;
+            const temp = await Answers.distinct("user", {
+                question: question,
+                answer: { $in: answer },
+            });
+            if(index === 0){
+                userIds=temp
+                continue;
+            }
+            switch (filter.operator) {
+                case "AND":
+                    userIds=userIds.filter(u=>temp.includes(u));
+                    break;
+                case "OR":
+                    userIds = new Set([...userIds, ...temp])
+                    break;
+                default:
+                    break;
+            }
+        }
+        return await this.list({
+            _id: { $in: [...userIds] },
+        })
     }
 }
 

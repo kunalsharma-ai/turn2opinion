@@ -5,6 +5,7 @@ import Providers from "./providers";
 import { Toast } from "@/components";
 import { GoogleTagManager } from "@next/third-parties/google";
 import Script from "next/script";
+import ChatWidget from "@/componentsMHO/ChatWidget";
 
 export default function RootLayout({ children }) {
   return (
@@ -50,7 +51,8 @@ export default function RootLayout({ children }) {
         <main>
           <Providers>
             <CssBaseline />
-            { children }
+            {children}
+            <ChatWidget />
             <Toast />
           </Providers>
         </main>

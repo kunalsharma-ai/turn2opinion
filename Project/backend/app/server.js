@@ -28,6 +28,8 @@ import { setOrigin, expressRoute, fsLogger } from "./utils/index.js";
             cors({
                 origin: function (origin, callback) {
                     const allowedOrigins = [
+                        "https://mho.sampledge.duckdns.org",
+                        "https://www.myhealthopinions.com",
                         "https://t2o.sampledge.duckdns.org",
                         "https://admin.sampledge.duckdns.org",
                         "https://survey.sampledge.com",
