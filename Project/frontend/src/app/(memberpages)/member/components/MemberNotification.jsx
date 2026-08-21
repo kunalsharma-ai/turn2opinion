@@ -389,7 +389,12 @@ export default function MemberNotification() {
         }}
         title="Newsletter"
       >
-        <iframe src={showNewsletter} width="100%" height="480px" />
+        <iframe
+          src={showNewsletter}
+          width="100%"
+          height="480px"
+          style={{ border: "none" }}
+        />
       </Popup>
     </>
   );
@@ -666,121 +671,145 @@ function NotificationDetails({
                         borderColor: "divider",
                       }}
                     >
-                      {group.notifications.map((info) => (
-                        <ListItem
-                          key={info._id}
-                          sx={{
-                            px: 1.5,
-                            py: 1.25,
-                            borderRadius: 2,
-                            alignItems: "flex-start",
-                            textDecoration: "none",
-                            color: "inherit",
-
-                            "&:hover": {
-                              bgcolor: "#f5f8ff",
-                            },
-
-                            "&:hover .close-btn": {
-                              opacity: 1,
-                            },
-                          }}
-                          secondaryAction={
-                            <IconButton
-                              className="close-btn"
-                              size="small"
-                              sx={{
-                                opacity: 0,
-                                transition: ".2s",
-                                mt: 0.25,
-                              }}
-                              onClick={(event) => {
-                                event.preventDefault();
-                                event.stopPropagation();
-
-                                notifications.delete(info._id);
-                              }}
-                            >
-                              <CloseIcon fontSize="small" />
-                            </IconButton>
-                          }
-                        >
-                          <Avatar
+                      {group.notifications.map((info) => {
+                        return (
+                          <ListItem
+                            key={info._id}
                             sx={{
-                              width: 34,
-                              height: 34,
-                              mr: 1.5,
-                              bgcolor: "grey.200",
-                              color: "primary.main",
-                              fontWeight: 700,
-                              fontSize: 12,
-                            }}
-                          >
-                            {info.title?.charAt(0)}
-                          </Avatar>
+                              px: 1.5,
+                              py: 1.25,
+                              borderRadius: 2,
+                              alignItems: "flex-start",
+                              textDecoration: "none",
+                              color: "inherit",
 
-                          <Box
-                            sx={{
-                              flex: 1,
-                              minWidth: 0,
-                              pr: 2.5,
+                              "&:hover": {
+                                bgcolor: "#f5f8ff",
+                              },
+
+                              "&:hover .close-btn": {
+                                opacity: 1,
+                              },
                             }}
-                          >
-                            <Typography fontWeight={600} fontSize={13}>
-                              {info.subtitle}
-                            </Typography>
-                            {info.message && (
-                              <Typography
-                                fontSize={12}
-                                color="text.secondary"
-                                mt={0.25}
+                            secondaryAction={
+                              <IconButton
+                                className="close-btn"
+                                size="small"
                                 sx={{
-                                  display: "-webkit-box",
-                                  overflow: "hidden",
-                                  WebkitBoxOrient: "vertical",
-                                  WebkitLineClamp: 2,
+                                  opacity: 0,
+                                  transition: ".2s",
+                                  mt: 0.25,
+                                }}
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  event.stopPropagation();
+
+                                  notifications.delete(info._id);
                                 }}
                               >
-                                {info.message}
+                                <CloseIcon fontSize="small" />
+                              </IconButton>
+                            }
+                          >
+                            <Avatar
+                              sx={{
+                                width: 34,
+                                height: 34,
+                                mr: 1.5,
+                                bgcolor: "grey.200",
+                                color: "primary.main",
+                                fontWeight: 700,
+                                fontSize: 12,
+                              }}
+                            >
+                              {info.title?.charAt(0)}
+                            </Avatar>
+
+                            <Box
+                              sx={{
+                                flex: 1,
+                                minWidth: 0,
+                                pr: 2.5,
+                              }}
+                            >
+                              <Typography fontWeight={600} fontSize={13}>
+                                {info.subtitle}
                               </Typography>
-                            )}
-                            {info.cta &&
-                              (info.ctaType === "popup" ? (
+
+                              {info.createdAt && (
                                 <Typography
-                                  component="span"
-                                  onClick={() => {
-                                    setShowNewsletter(info.cta);
-                                    setNotifAnchorEl(null);
-                                  }}
                                   fontSize={11}
-                                  color="primary.main"
+                                  color="text.secondary"
+                                  sx={{ whiteSpace: "nowrap" }}
+                                >
+                                  {new Date(info.createdAt).relativeTime()} ago
+                                </Typography>
+                              )}
+                              {info.message && (
+                                <Typography
+                                  fontSize={12}
+                                  color="text.secondary"
+                                  mt={0.25}
                                   sx={{
-                                    display: "inline-block",
-                                    mt: 0.5,
-                                    fontWeight: 600,
-                                    cursor: "pointer",
+                                    display: "-webkit-box",
+                                    overflow: "hidden",
+                                    WebkitBoxOrient: "vertical",
+                                    WebkitLineClamp: 2,
                                   }}
                                 >
-                                  View
+                                  {info.message}
                                 </Typography>
-                              ) : (
-                                <Typography
-                                  component="a"
-                                  href={info.cta}
-                                  fontSize={11}
-                                  color="primary.main"
-                                  sx={{
-                                    display: "inline-block",
-                                    mt: 0.5,
-                                    fontWeight: 600,
-                                  }}
-                                >
-                                  More
-                                </Typography>
-                              ))}
-                          </Box>
-                        </ListItem>
-                      ))}
+                              )}
+                              {info.cta &&
+                                (info.ctaType === "popup" ? (
+                                  <Typography
+                                    component="span"
+                                    onClick={() => {
+                                      setShowNewsletter(info.cta);
+                                      setTimeout(() => {
+                                        notifications.delete(info._id);
+                                      }, 5000);
+                                      setNotifAnchorEl(null);
+                                    }}
+                                    fontSize={11}
+                                    color="primary.main"
+                                    sx={{
+                                      display: "inline-block",
+                                      mt: 0.5,
+                                      fontWeight: 600,
+                                      cursor: "pointer",
+                                    }}
+                                  >
+                                    View
+                                  </Typography>
+                                ) : (
+                                  <div
+                                    onClick={() => {
+                                      setTimeout(() => {
+                                        notifications.delete(info._id);
+                                      }, 5000);
+                                    }}
+                                  >
+                                    <Typography
+                                      component="a"
+                                      href={info.cta}
+                                      fontSize={11}
+                                      color="primary.main"
+                                      target="_blank"
+                                      sx={{
+                                        display: "inline-block",
+                                        mt: 0.5,
+                                        fontWeight: 600,
+                                      }}
+                                    >
+                                      Open
+                                    </Typography>
+                                  </div>
+                                ))}
+                            </Box>
+                          </ListItem>
+                        );
+                      })}
                     </Box>
                   </Collapse>
 
