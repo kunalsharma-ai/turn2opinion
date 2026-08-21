@@ -28,17 +28,21 @@ import { setOrigin, expressRoute, fsLogger } from "./utils/index.js";
             cors({
                 origin: function (origin, callback) {
                     const allowedOrigins = [
-                        "https://mho.sampledge.duckdns.org",
                         "https://www.myhealthopinions.com",
-                        "https://t2o.sampledge.duckdns.org",
+                        "https://www.turn2opinion.com",
+                        "https://www.myfrequentrewards.com",
                         "https://admin.sampledge.duckdns.org",
                         "https://survey.sampledge.com",
                         "https://survey.sampledge.duckdns.org",
-                        "https://www.turn2opinion.com",
                         "https://turn2opinion.com",
-                        "https://mfr.sampledge.duckdns.org",
-                        "https://www.myfrequentrewards.com",
                         "https://myfrequentrewards.com",
+                        "https://t2o.sampledge.duckdns.org",
+                        "https://mfr.sampledge.duckdns.org",
+                        "https://mho.sampledge.duckdns.org",
+                        "http://t2o.localhost",
+                        "http://mfr.localhost",
+                        "http://mho.localhost",
+                        
                     ];
                     if (!origin) return callback(null, true);
 
