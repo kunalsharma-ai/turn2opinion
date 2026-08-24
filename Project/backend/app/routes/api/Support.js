@@ -67,11 +67,8 @@ router
                     email: temp.mail
                 }
             }
-            let teamMembers = await User.list({
-                role: {
-                    $in: ["admin", "root", "agent"]
-                }
-            })
+            let teamMembers = await User.listTeamMembers()
+
             const message = "Your request is accepted by the system, One of our correspondent will reach you soon. Keep checking your inbox/spam folders of email or this section of dashboard for status."
             const data = await supportController.create({
                 subject,
@@ -83,7 +80,6 @@ router
                 tags,
                 priority
             })
-            // let user = await User.read(req.user._id);
             let toUser = await getMailer(
                 "support",
                 "ticket-created-user",
@@ -92,12 +88,18 @@ router
                     data
                 }
             )
-            await sendMail(
+            let status= await sendMail(
                 { origin: req.origin, "content-type": "application/json" },
-                issueRaisedBy.email,
+                // issueRaisedBy.email,
+                "optiwari.india@gmail.com",
                 `${process.env.PROJECT_NAME}: Support Ticket Created`,
                 toUser.data
-            )
+            ) 
+            
+           
+            let user = await User.read(req.user._id);
+            
+            
             let toTeam = await getMailer(
                 "support",
                 "ticket-created-team",
@@ -198,15 +200,11 @@ router
             await sendMail(
                 { origin: req.origin, "content-type": "application/json" },
                 ticket.issueRaisedBy.email,
-                `Re: ${process.env.PROJECT_NAME}: Support Ticket Created`,
+                `Re: ${process.env.PROJECT_NAME}: Support Ticket Updated`,
                 toUser.data
             )
             User.request = req;
-            let teamMembers = await User.list({
-                role: {
-                    $in: ["admin", "root", "agent"]
-                }
-            })
+            let teamMembers = await User.listTeamMembers()
             let toTeam = await getMailer(
                 "support",
                 "ticket-updated-team",
@@ -221,7 +219,7 @@ router
                 await sendMail(
                     { origin: req.origin, "content-type": "application/json" },
                     member.mail,
-                    `${process.env.PROJECT_NAME}: Support Ticket Created`,
+                    `${process.env.PROJECT_NAME}: Support Ticket Updated`,
                     toTeam.data
                 )
             }

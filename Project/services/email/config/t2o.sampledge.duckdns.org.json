@@ -2,9 +2,9 @@
   "from": "support@turn2opinion.com",
   "name": "Turn 2 Opinion",
   "replyTo": "support@turn2opinion.com",
-  "host": "smtppro.zoho.in",
-  "port": 465,
-  "secure": true,
+  "host": "192.168.0.145",
+  "port": 25,
+  "secure": false,
   "auth": {
     "user": "support@turn2opinion.com",
     "pass": "LbwiSa6VqiRX"

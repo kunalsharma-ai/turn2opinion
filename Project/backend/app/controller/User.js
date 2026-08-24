@@ -37,6 +37,9 @@ class User extends CrudController {
         }
         throw new Error(`${!phone ? "E-Mail id" : "Phone no."} or Password is invalid`)
     }
+    async listTeamMembers(query = {}, populateFields = null, sort = {}, project = null){
+        return await super.list({ ...query, role: { $in: ["superadmin", "root","admin","agent"] } }, populateFields, sort, project)
+    }
     async list(query = {}, populateFields = null, sort = {}, project = null) {
         return await super.list({ ...query, role: { $nin: ["superadmin", "root"] } }, populateFields, sort, project)
     }

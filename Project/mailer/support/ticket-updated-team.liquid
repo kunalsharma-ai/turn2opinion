@@ -1,54 +1,464 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>New Support Ticket</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f7f7f7;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            background: #fff;
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 32px 24px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-        }
-        h2 {
-            color: #2d6cdf;
-            margin-top: 0;
-        }
-        .ticket-info {
-            margin: 24px 0;
-            padding: 16px;
-            background: #f0f4fa;
-            border-radius: 6px;
-        }
-        .ticket-info strong {
-            display: inline-block;
-            width: 110px;
-            color: #333;
-        }
-        .footer {
-            margin-top: 32px;
-            color: #888;
-            font-size: 13px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support Ticket Updated</title>
 </head>
-<body>
-    <div class="container">
-        <h2>Support Ticket [{{reply.ticketNo}}] is updated by {{repliedBy.fullName}}</h2>
-        {{reply.message}}
-        <div class="footer">
-            Thank you,<br>
-            {{repliedBy.fullName}}<br>
-            Support Team
-        </div>
-    </div>
+<body style="margin:0; padding:0; background:#f4f4f4;">
+<table
+  width="100%"
+  border="0"
+  cellspacing="0"
+  cellpadding="0"
+  bgcolor="#f4f4f4"
+  style="
+    margin:0;
+    padding:0;
+    background:#f4f4f4;
+    font-family:Arial, Helvetica, sans-serif;
+  "
+>
+  <tr>
+    <td align="center">
+      <table
+        width="920"
+        border="0"
+        cellspacing="0"
+        cellpadding="0"
+        bgcolor="#ffffff"
+        style="max-width:920px; width:100%;"
+      >
+        <!-- TOP BORDER -->
+        <tr>
+          <td height="12" bgcolor="#002b8f"></td>
+        </tr>
+        <!-- LOGO SECTION -->
+        <tr>
+          <td
+            align="center"
+            style="padding:30px 20px; background:#ffffff;"
+          >
+            <img
+              src="https://www.turn2opinion.com/images/logo/t2o-logo.png"
+              alt="Turn2Opinion.com"
+              width="520"
+              style="
+                display:block;
+                max-width:100%;
+                height:auto;
+              "
+            />
+          </td>
+        </tr>
+        <!-- DIVIDER -->
+        <tr>
+          <td height="1" bgcolor="#002b8f"></td>
+        </tr>
+        <!-- INTRO -->
+        <tr>
+          <td style="padding:35px 60px 15px;">
+            <p
+              style="
+                margin:0 0 25px;
+                font-size:28px;
+                color:#063686;
+                font-weight:bold;
+              "
+            >
+              Dear team,
+            </p>
+            <p
+              style="
+                margin:0;
+                font-size:22px;
+                line-height:38px;
+                color:#14245d;
+              "
+            >
+              Support ticket {{reply.ticketNo}} has been updated by {{repliedBy.fullName}}.
+            </p>
+          </td>
+        </tr>
+        <!-- TICKET CARD -->
+        <tr>
+          <td style="padding:30px 55px;">
+            <table
+              width="100%"
+              border="0"
+              cellspacing="0"
+              cellpadding="0"
+              style="
+                border:1px solid #bfdbfe;
+                border-radius:12px;
+                background:#f0f9ff;
+              "
+            >
+              <tr>
+                <!-- ICON -->
+                <td
+                  width="220"
+                  align="center"
+                  valign="middle"
+                  style="padding:40px 10px;"
+                >
+                  <img
+                    src="https://frequentresearch.com/mailer/mail-icons/t2o/mail.png"
+                    width="160"
+                    alt="Support Ticket"
+                    style="
+                      display:block;
+                      max-width:100%;
+                    "
+                  />
+                </td>
+                <!-- TICKET DETAILS -->
+                <td style="padding:35px 25px 35px 10px;">
+                  <h2
+                    style="
+                      margin:0 0 20px;
+                      color:#063686;
+                      font-size:30px;
+                    "
+                  >
+                    Ticket [{{reply.ticketNo}}]
+                  </h2>
+                  <p
+                    style="
+                      margin:0 0 10px;
+                      color:#17285f;
+                      font-size:18px;
+                      line-height:30px;
+                    "
+                  >
+                    Updated by
+                  </p>
+                  <p
+                    style="
+                      margin:0;
+                      color:#063686;
+                      font-size:22px;
+                      font-weight:bold;
+                    "
+                  >
+                    {{repliedBy.fullName}}
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <!-- LATEST RESPONSE -->
+        <tr>
+          <td style="padding:0 55px 35px;">
+            <table
+              width="100%"
+              border="0"
+              cellspacing="0"
+              cellpadding="0"
+              style="
+                border:1px solid #d7e4ff;
+                border-radius:10px;
+                background:#ffffff;
+              "
+            >
+              <tr>
+                <td style="padding:30px;">
+                  <h3
+                    style="
+                      margin:0 0 18px;
+                      color:#063686;
+                      font-size:24px;
+                    "
+                  >
+                    Latest Update
+                  </h3>
+                  <div
+                    style="
+                      font-size:19px;
+                      line-height:32px;
+                      color:#22305f;
+                    "
+                  >
+                    {{reply.message}}
+                  </div>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <!-- ACTION NOTICE -->
+        <tr>
+          <td style="padding:0 55px 35px;">
+            <table
+              width="100%"
+              border="0"
+              cellspacing="0"
+              cellpadding="0"
+              style="
+                background:#f8fbff;
+                border:1px solid #d7e4ff;
+                border-radius:10px;
+              "
+            >
+              <tr>
+                <td
+                  width="120"
+                  align="center"
+                  valign="middle"
+                  style="padding:25px;"
+                >
+                  <img
+                    src="https://frequentresearch.com/mailer/mail-icons/t2o/shield.png"
+                    width="100"
+                    alt="Support"
+                    style="display:block;"
+                  />
+                </td>
+                {% comment %} <td style="padding:25px 25px 25px 0;">
+                  <h3
+                    style="
+                      margin:0 0 10px;
+                      color:#063686;
+                      font-size:22px;
+                    "
+                  >
+                    Action Required
+                  </h3>
+                  <p
+                    style="
+                      margin:0;
+                      font-size:18px;
+                      line-height:30px;
+                      color:#22305f;
+                    "
+                  >
+                    Please review the latest ticket update and follow up
+                    with the panel member if necessary. Any additional
+                    response should be added through the Support Ticket
+                    system.
+                  </p>
+                </td> {% endcomment %}
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <!-- CONTACT -->
+        <tr>
+          <td
+            style="
+              padding:15px 55px;
+              border-top:1px solid #ddd;
+              border-bottom:1px solid #ddd;
+            "
+          >
+            <table
+              width="100%"
+              border="0"
+              cellspacing="0"
+              cellpadding="0"
+            >
+              <tr>
+                <!-- PHONE -->
+                <td align="center" style="padding:8px;">
+                  <img
+                    src="https://frequentresearch.com/mailer/icons/phone.png"
+                    alt="Phone"
+                    width="30"
+                    height="30"
+                    style="
+                      border:0;
+                      display:block;
+                      margin:0 auto 8px;
+                    "
+                  />
+                  <a
+                    href="tel:+919810459700"
+                    style="
+                      color:#000;
+                      text-decoration:none;
+                    "
+                  >
+                    +91 98104 59700
+                  </a>
+                </td>
+                <!-- EMAIL -->
+                <td
+                  align="center"
+                  style="
+                    padding:8px;
+                    border-left:2px solid #ddd;
+                  "
+                >
+                  <img
+                    src="https://frequentresearch.com/mailer/icons/email.png"
+                    alt="Email"
+                    width="30"
+                    height="30"
+                    style="
+                      border:0;
+                      display:block;
+                      margin:0 auto 8px;
+                    "
+                  />
+                  <a
+                    href="mailto:support@turn2opinion.com"
+                    style="
+                      color:#000;
+                      text-decoration:none;
+                    "
+                  >
+                    support@turn2opinion.com
+                  </a>
+                </td>
+                <!-- WEBSITE -->
+                <td
+                  align="center"
+                  style="
+                    padding:8px;
+                    border-left:2px solid #ddd;
+                  "
+                >
+                  <img
+                    src="https://frequentresearch.com/mailer/icons/internet.png"
+                    alt="Website"
+                    width="30"
+                    height="30"
+                    style="
+                      border:0;
+                      display:block;
+                      margin:0 auto 8px;
+                    "
+                  />
+                  <a
+                    href="https://www.turn2opinion.com"
+                    style="
+                      color:#000;
+                      text-decoration:none;
+                    "
+                  >
+                    www.turn2opinion.com
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <!-- TEAM -->
+        <tr>
+          <td
+            align="center"
+            style="padding:35px 20px 20px;"
+          >
+            <p
+              style="
+                margin:0;
+                color:#333;
+                font-size:18px;
+              "
+            >
+              With Regards,
+            </p>
+            <p
+              style="
+                margin:10px 0;
+                color:#063686;
+                font-size:34px;
+                font-weight:bold;
+              "
+            >
+              Turn2Opinion Team
+            </p>
+            <p
+              style="
+                margin:0;
+                color:#666;
+                font-size:22px;
+              "
+            >
+              A Frequent Research Survey Panel
+            </p>
+          </td>
+        </tr>
+        <!-- ACCENT LINE -->
+        <tr>
+          <td align="center">
+            <table
+              role="presentation"
+              cellspacing="0"
+              cellpadding="0"
+              border="0"
+            >
+              <tr>
+                <td
+                  width="60"
+                  height="2"
+                  bgcolor="#1e40af"
+                ></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <!-- SOCIAL -->
+        <tr>
+          <td
+            align="center"
+            style="padding:40px 0;"
+          >
+            <a
+              href="https://www.linkedin.com/company/turn2opinionpanel/"
+              style="
+                margin:0 12px;
+                text-decoration:none;
+              "
+            >
+              <img
+                src="https://frequentresearch.com/mailer/icons/linkedin.png"
+                alt="LinkedIn"
+                width="38"
+                height="38"
+                style="border:0;"
+              />
+            </a>
+            <a
+              href="https://www.facebook.com/FrequentResearchFieldwork/"
+              style="
+                margin:0 12px;
+                text-decoration:none;
+              "
+            >
+              <img
+                src="https://frequentresearch.com/mailer/icons/facebook.png"
+                alt="Facebook"
+                width="38"
+                height="38"
+                style="border:0;"
+              />
+            </a>
+            <a
+              href="https://twitter.com/frequentrfs/"
+              style="
+                margin:0 12px;
+                text-decoration:none;
+              "
+            >
+              <img
+                src="https://frequentresearch.com/mailer/icons/twitter.png"
+                alt="Twitter"
+                width="38"
+                height="38"
+                style="border:0;"
+              />
+            </a>
+          </td>
+        </tr>
+        <!-- BOTTOM BAR -->
+        <tr>
+          <td height="10" bgcolor="#1e40af"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
 </body>
 </html>
