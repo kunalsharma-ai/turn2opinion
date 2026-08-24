@@ -194,7 +194,7 @@ export default function page() {
                   sx={{
                     flex: 1,
                     textAlign: "center",
-                    ml: { xs: 0, md: "-220px" },
+                    // ml: { xs: 0, md: "-220px" },
                     fontSize: { xs: "18px", lg: "24px" },
                     fontWeight: 600,
                     color: "secondary.main",

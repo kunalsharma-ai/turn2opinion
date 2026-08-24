@@ -308,6 +308,7 @@ const HeroSection = ({ setOpenSignUp }) => {
                 <Typography
                   variant="h5"
                   sx={{
+                    color: "text.secondary",
                     fontSize: {
                       xs: 14,
                       sm: 16,
@@ -316,8 +317,7 @@ const HeroSection = ({ setOpenSignUp }) => {
                     fontWeight: 400,
                     lineHeight: 1.6,
                     mt: 2,
-                    mb: 4,
-                    color: "#555",
+                    mb: 3,
                     maxWidth: 700,
                   }}
                 >

@@ -1,0 +1,58 @@
+[
+  {
+    "target": "[data-tour=\"greeting\"]",
+    "title": "{{greeting}} , {{name}} 👋",
+    "content": "This is your dashboard your home base for tracking surveys, rewards, and everything happening on your account. Let's take a quick walkthrough so you know your way around."
+  },
+  {
+    "target": "[data-tour=\"stats\"]",
+    "title": "Your Stats at a Glance",
+    "content": "Here's a snapshot of how you're doing surveys you've participated in, completed, or been disqualified from."
+  },
+  {
+    "target": "[data-tour=\"surveys\"]",
+    "title": "Available Surveys",
+    "content": "New surveys matched to your profile show up right here. Keep an eye out for high-reward ones."
+  },
+  {
+    "target": "[data-tour=\"survey-history\"]",
+    "title": "Recent Activity",
+    "content": "This is where you can track your recent survey activity and see the status of each one."
+  },
+
+  {
+    "target": "[data-tour=\"nav-myaccount\"]",
+    "title": "My Account",
+    "content": "Manage your personal details, email, and login information here."
+  },
+  {
+    "target": "[data-tour=\"nav-profiles\"]",
+    "title": "Profiles",
+    "content": "Complete your health and demographic profile here so you get matched to relevant surveys."
+  },
+  {
+    "target": "[data-tour=\"nav-surveys\"]",
+    "title": "Surveys",
+    "content": "All available surveys live here complete them to earn points."
+  },
+  {
+    "target": "[data-tour=\"nav-rewards\"]",
+    "title": "Rewards",
+    "content": "Check your earned points and their redemption status here."
+  },
+  {
+    "target": "[data-tour=\"nav-referrals\"]",
+    "title": "Referrals",
+    "content": "Refer friends and unlock extra rewards."
+  },
+  {
+    "target": "[data-tour=\"nav-settings\"]",
+    "title": "Settings",
+    "content": "Set your notifications, password, and account preferences here."
+  },
+  {
+    "target": "[data-tour=\"nav-help\"]",
+    "title": "Help & Support",
+    "content": "If you ever run into an issue, reach our support team here. Tour complete! 🎉"
+  }
+]

@@ -13,14 +13,14 @@ import {
 import { useRouter, usePathname } from "next/navigation";
 
 const sidebarItems = [
-  { icon: "icon-drawer", label: "Dashboard", link: "/member/dashboard" },
-  { icon: "icon-user", label: "My Account", link: "/member/myaccount" },
-  { icon: "icon-people", label: "Profiles", link: "/member/profiles" },
-  { icon: "icon-docs", label: "Surveys", link: "/member/surveys" },
-  { icon: "icon-wallet", label: "Rewards", link: "/member/rewards" },
-  { icon: "icon-share-alt", label: "Referrals", link: "/member/referrals" },
-  { icon: "icon-settings", label: "Settings", link: "/member/settings" },
-  { icon: "icon-support", label: "Help", link: "/member/support" },
+  { icon: "icon-drawer", label: "Dashboard", link: "/member/dashboard", tourId: "nav-dashboard" },
+  { icon: "icon-user", label: "My Account", link: "/member/myaccount", tourId: "nav-myaccount" },
+  { icon: "icon-people", label: "Profiles", link: "/member/profiles", tourId: "nav-profiles" },
+  { icon: "icon-docs", label: "Surveys", link: "/member/surveys", tourId: "nav-surveys" },
+  { icon: "icon-wallet", label: "Rewards", link: "/member/rewards", tourId: "nav-rewards" },
+  { icon: "icon-share-alt", label: "Referrals", link: "/member/referrals", tourId: "nav-referrals" },
+  { icon: "icon-settings", label: "Settings", link: "/member/settings", tourId: "nav-settings" },
+  { icon: "icon-support", label: "Help", link: "/member/support", tourId: "nav-help" },
 ];
 
 export default function MemberSidebar({ children }) {
@@ -54,6 +54,7 @@ export default function MemberSidebar({ children }) {
             <Box
               role="button"
               tabIndex={0}
+              data-tour={item.tourId}
               onClick={(e) => router.push(item.link)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {

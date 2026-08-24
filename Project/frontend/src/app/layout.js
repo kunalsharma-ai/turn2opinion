@@ -52,7 +52,7 @@ export default function RootLayout({ children }) {
           <Providers>
             <CssBaseline />
             {children}
-            <ChatWidget />
+            {/* <ChatWidget /> */}
             <Toast />
           </Providers>
         </main>

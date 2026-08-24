@@ -21,6 +21,7 @@ import {
   SurveyPoints,
   CurrentUser,
 } from "@/app/(memberpages)/member/components";
+import OnboardingTour from "../../components/OnboardingTour";
 
 import {
   Poll as PollIcon,
@@ -36,6 +37,7 @@ const formatNumber = (value) =>
 
 export default function page() {
   const user = [];
+  const member = useMember();
   const router = useRouter();
   const [[threshold, setThreshold], [conversionRate, setConversionRate]] = [
     React.useState(15000),
@@ -45,9 +47,16 @@ export default function page() {
     setThreshold(data.threshold);
     setConversionRate(data.conversionRate);
   }
-  if (!user) return <LoadingOverlay />;
+
+  const hour = new Date().getHours();
+  const greeting =
+    hour < 12 ? "Good Morning" : hour < 17 ? "Good Afternoon" : "Good Evening";
+
+  if (!member) return <LoadingOverlay />;
   return (
     <Grid container size={12} sx={{ bgcolor: "#eff3f5" }}>
+      <OnboardingTour greeting={greeting} userName={member?.name?.first} />
+
       <Grid
         size={12}
         container
@@ -56,18 +65,24 @@ export default function page() {
         py={2}
         alignItems={"center"}
         justifyContent={"space-between"}
+        data-tour="greeting"
       >
         <CurrentUser />
         <SurveyPoints onUpdate={onPointsUpdate} />
       </Grid>
-      <Stats threshold={threshold} conversionRate={conversionRate} />
-      <Surveys />
+      <Grid size={12} data-tour="stats">
+        <Stats threshold={threshold} conversionRate={conversionRate} />
+      </Grid>
+      <Grid size={12} data-tour="surveys">
+        <Surveys />
+      </Grid>
       <Grid
         size={12}
         px={{ xs: 2, md: 3 }}
         py={2}
         justifyContent="center"
         sx={{ border: `1px solid #e0e0e0` }}
+        data-tour="survey-history"
       >
         <SurveyHistory />
       </Grid>
@@ -501,7 +516,7 @@ export function SurveyHistory() {
     loadData(
       api.post(`/api/v1/response`, filters),
       (resp) => {
-        setData(resp?.data);
+        setData(resp?.data??[]);
       },
       () => {
         setIsLoading(false);
@@ -695,7 +710,7 @@ export function SurveyHistory() {
       pagination={[10, 20, 50, 100]}
       pageSize={20}
       noDataMsg="No Record Found."
-      data={data.filter((info) => info.status !== "invited")}
+      data={data ??[].filter((info) => info.status !== "invited")}
       hideDownload={true}
       hideColumnSelector
       extra={

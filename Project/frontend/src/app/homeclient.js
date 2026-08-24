@@ -18,6 +18,8 @@ import SignUp from "@/componentsMHO/SignUp";
 import Login from "@/componentsMHO/Login";
 import { useQuery } from "@/Context";
 import { ContextProviders } from "@/Context";
+import FeedbackForm from "@/componentsMHO/FeedbackForm";
+import { Popup } from "@/components/Popup";
 
 export default function HomeClient() {
   const theme = useTheme();
@@ -128,6 +130,9 @@ export default function HomeClient() {
             setOpenSignUp={setOpenSignUp}
             onClose={() => setOpenLogin(false)}
           />
+          {/* <Popup open={true} onClose={() => {}} hideTitle maxWidth="sm">
+          <FeedbackForm />
+        </Popup> */}
         </ContextProviders>
       </div>
     </>
