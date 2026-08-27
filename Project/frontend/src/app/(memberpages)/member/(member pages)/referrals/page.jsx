@@ -427,7 +427,7 @@ function InvitedEmails({ sentInvites }) {
                 </TableCell>
 
                 <TableCell align="center">
-                  { new Date(user.createdAt).toLocaleString() }
+                  { new Date(user.createdAt).toFormat("dd-mmm-yyyy") }
                 </TableCell>
               </TableRow>
             )) }

@@ -43,7 +43,7 @@ import {
 
 import PopUp from "./PopUp";
 import { Form, RequiredLabel } from "@/components";
-import { api, Page } from "@/util";
+import { api, loadData, Page } from "@/util";
 import user from "@/validators/user";
 import { useToast } from "@/hooks";
 import { useMember, useQuery, useTelemetry } from "@/Context";
@@ -64,29 +64,6 @@ function capitalizeName(str) {
     .join("");
 }
 const today = new Date();
-
-const socials = [
-  {
-    name: "linkedin",
-    link: "https://www.linkedin.com/company/turn2opinionpanel/",
-    icon: <LinkedIn sx={{ color: "#0077B5", fontSize: "28px" }} />,
-  },
-  {
-    name: "facebook",
-    link: "https://www.facebook.com/frequentrfs/",
-    icon: <Facebook sx={{ color: "#1877F2", fontSize: "28px" }} />,
-  },
-  {
-    name: "youtube",
-    link: "https://www.youtube.com/channel/UCLxmn2kq4aACAHaL2eT6QIQ",
-    icon: <YouTube sx={{ color: "#FF0000", fontSize: "28px" }} />,
-  },
-  {
-    name: "twitter",
-    link: "https://twitter.com/frequentrfs",
-    icon: <X sx={{ color: "black", fontSize: "22px" }} />,
-  },
-];
 
 export default function SignUp({
   open,
@@ -133,6 +110,52 @@ export default function SignUp({
     reset,
     formState: { errors, isDirty },
   } = form;
+
+  const [socials, setSocials] = React.useState([]);
+
+  React.useEffect(() => {
+    loadData(api.get("/api/v1/socials"), (resp) => setSocials(resp.data || []));
+  }, []);
+
+  const getSocialUrl = (platform, fallback = "#") => {
+    return (
+      socials.find(
+        (social) => social.platform?.toLowerCase() === platform.toLowerCase(),
+      )?.url || fallback
+    );
+  };
+
+  const socialsData = [
+    {
+      name: "linkedin",
+      link: getSocialUrl(
+        "Linkedin",
+        "https://www.linkedin.com/company/turn2opinionpanel/",
+      ),
+      icon: <LinkedIn sx={{ color: "#0077B5", fontSize: "28px" }} />,
+    },
+    {
+      name: "facebook",
+      link: getSocialUrl(
+        "Facebook",
+        "https://www.facebook.com/FrequentResearchFieldwork/",
+      ),
+      icon: <Facebook sx={{ color: "#1877F2", fontSize: "28px" }} />,
+    },
+    {
+      name: "youtube",
+      link: getSocialUrl(
+        "Youtube",
+        "https://www.youtube.com/channel/UCLxmn2kq4aACAHaL2eT6QIQ",
+      ),
+      icon: <YouTube sx={{ color: "#FF0000", fontSize: "28px" }} />,
+    },
+    {
+      name: "twitter",
+      link: getSocialUrl("Twitter", "https://twitter.com/frequentrfs"),
+      icon: <X sx={{ color: "black", fontSize: "22px" }} />,
+    },
+  ];
 
   const [providers, setProviders] = React.useState([]);
   React.useEffect(() => {
@@ -727,7 +750,7 @@ export default function SignUp({
                           textDecoration: "none",
                         }}
                       >
-                        {socials.map((social) => (
+                        {socialsData.map((social) => (
                           <Page.Link
                             key={social.name}
                             href={social.link}
@@ -779,8 +802,8 @@ export default function SignUp({
                   borderRadius: 3,
                   p: { xs: 3, sm: 6 },
                   // bgcolor: "#8cb2f333",
-                     color: (theme) => theme.palette.cardtext.main,
-                    bgcolor: (theme) => theme.palette.cardbgdark.main,
+                  color: (theme) => theme.palette.cardtext.main,
+                  bgcolor: (theme) => theme.palette.cardbgdark.main,
                   flex: 1,
                 }}
               >
@@ -803,7 +826,8 @@ export default function SignUp({
                   >
                     Turn2Opinion
                   </Page.Text>{" "}
-                  - A Business and Consumer Research Panel Community of Frequent Research Fieldwork Solutions Private Limited
+                  - A Business and Consumer Research Panel Community of Frequent
+                  Research Fieldwork Solutions Private Limited
                   {/* - A Frequent Research Panel Community.{" "} */}
                 </Page.Text>
                 <Page.Text
@@ -1076,7 +1100,7 @@ export default function SignUp({
                     variant="outlined"
                     color="secondary"
                     sx={{ fontWeight: "bold", mt: 2, borderWidth: 3 }}
-                       onClick={() => {
+                    onClick={() => {
                       onClose();
                       router.push("/");
                     }}

@@ -10,11 +10,25 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { api, loadData } from "@/util";
 
 function Footer({ sections = [] }) {
+  const [socials, setSocials] = React.useState([]);
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  React.useEffect(() => {
+    loadData(api.get("/api/v1/socials"), (resp) => setSocials(resp.data || []));
+  }, []);
+
+  const getSocialUrl = (platform, fallback = "#") => {
+    return (
+      socials.find(
+        (social) => social.platform?.toLowerCase() === platform.toLowerCase(),
+      )?.url || fallback
+    );
+  };
 
   // Handle scroll for home page sections
   const handleScroll = (ref) => {
@@ -446,7 +460,10 @@ function Footer({ sections = [] }) {
         >
           <IconButton
             component="a"
-            href="https://www.linkedin.com/company/turn2opinionpanel/"
+            href={getSocialUrl(
+              "Linkedin",
+              "https://www.linkedin.com/company/turn2opinionpanel/",
+            )}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="linkedin"
@@ -466,7 +483,10 @@ function Footer({ sections = [] }) {
           <IconButton
             component="a"
             target="_blank"
-            href="https://www.facebook.com/frequentrfs/"
+            href={getSocialUrl(
+              "Facebook",
+              "https://www.facebook.com/FrequentResearchFieldwork/",
+            )}
             rel="noopener noreferrer"
             aria-label="facebook"
             sx={{
@@ -489,7 +509,7 @@ function Footer({ sections = [] }) {
           <IconButton
             component="a"
             target="_blank"
-            href="https://twitter.com/frequentrfs"
+            href={getSocialUrl("Twitter", "https://twitter.com/frequentrfs")}
             rel="noopener noreferrer"
             aria-label="twitter"
             sx={{
@@ -513,7 +533,10 @@ function Footer({ sections = [] }) {
           <IconButton
             component="a"
             target="_blank"
-            href="https://www.youtube.com/channel/UCLxmn2kq4aACAHaL2eT6QIQ"
+            href={getSocialUrl(
+              "Youtube",
+              "https://www.youtube.com/channel/UCLxmn2kq4aACAHaL2eT6QIQ",
+            )}
             rel="noopener noreferrer"
             aria-label="youtube"
             sx={{

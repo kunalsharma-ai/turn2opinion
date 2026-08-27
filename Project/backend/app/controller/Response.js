@@ -157,7 +157,7 @@ class Response extends CrudController {
         if (filter.status) {
             switch (filter.status) {
                 case "active":
-                    participationFilters.status = { $in: ["invited", "dropout"] };
+                    participationFilters.status = { $in: ["invited"] };
                     break;
                 case "new":
                     participationFilters.status = { $in: ["invited"] };

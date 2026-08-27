@@ -15,6 +15,12 @@ export default mongooseModel(
             type:Boolean,
             default: true,
         },
+         tourStatus:{
+              seenRoutes:{
+                type:mongoose.Schema.Types.Mixed,
+                default:{},
+              },
+            },
         respondentID: {
             type: String
         },

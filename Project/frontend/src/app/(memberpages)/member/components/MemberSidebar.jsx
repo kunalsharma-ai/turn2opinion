@@ -11,6 +11,8 @@ import {
   Grow,
 } from "@mui/material";
 import { useRouter, usePathname } from "next/navigation";
+import { useMember } from "@/Context"
+import OnboardingTour from "./OnboardingTour";
 
 const sidebarItems = [
   { icon: "icon-drawer", label: "Dashboard", link: "/member/dashboard", tourId: "nav-dashboard" },
@@ -20,7 +22,7 @@ const sidebarItems = [
   { icon: "icon-wallet", label: "Rewards", link: "/member/rewards", tourId: "nav-rewards" },
   { icon: "icon-share-alt", label: "Referrals", link: "/member/referrals", tourId: "nav-referrals" },
   { icon: "icon-settings", label: "Settings", link: "/member/settings", tourId: "nav-settings" },
-  { icon: "icon-support", label: "Help", link: "/member/support", tourId: "nav-help" },
+  { icon: "icon-support", label: "Help & Support", link: "/member/support", tourId: "nav-support" },
 ];
 
 export default function MemberSidebar({ children }) {
@@ -28,9 +30,13 @@ export default function MemberSidebar({ children }) {
   const pathname = usePathname();
   const theme = useTheme();
   const isLgUp = useMediaQuery(theme.breakpoints.up("lg"));
+  const member=useMember();
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
   return (
     <Box display="flex">
+       <OnboardingTour member ={member} greeting={greeting} userName={member?.name?.first} />
       <Grid
         container
         sx={{

@@ -1,319 +1,361 @@
 "use client";
+
 import React from "react";
-import {
-  Box,
-  Container,
-  Grid,
-  Typography,
-  TextField,
-  Button,
-  Paper,
-  IconButton,
-  useTheme,
-} from "@mui/material";
-
+import { useForm } from "react-hook-form";
+import { Box, Grid, Typography, Button, Stack, Divider } from "@mui/material";
 import SubHeader from "@/componentsMHO/SubHeader";
+import { Form } from "@/components";
+import { useMember, useTelemetry } from "@/Context";
+import contact from "@/validators/contact";
+import { api, Page } from "@/util";
+import { useToast } from "@/hooks";
+
 const Contact = () => {
-  const theme = useTheme();
-  const [formData, setFormData] = React.useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    message: "",
-  });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(e);
-    // Handle form submission
+  const form = useForm();
+  const [member, telemetry] = [useMember(), useTelemetry()];
+  const [country, setCountry] = React.useState("");
+  const errors = form.formState.errors;
+  const inputSx = {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: 2,
+      backgroundColor: "#FFFFFF",
+      "& fieldset": {
+        borderColor: "#D5E3F2",
+      },
+      "&:hover fieldset": {
+        borderColor: "#0C5ADB",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#0C5ADB",
+      },
+    },
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const contactCardSx = {
+    height: "100%",
+    p: { xs: 2.5, md: 3 },
+    borderRadius: 2.5,
+    border: "1px solid #C9DFF2",
+    background: "linear-gradient(135deg, #FFFFFF 0%, #F0F8FF 100%)",
+    boxShadow: "0 6px 20px rgba(12, 90, 219, 0.07)",
+    transition: "all 0.25s ease",
+    "&:hover": {
+      borderColor: "#0C5ADB",
+      boxShadow: "0 10px 28px rgba(12, 90, 219, 0.13)",
+      transform: "translateY(-3px)",
+    },
   };
+  React.useEffect(() => {
+    telemetry.ip().then((resp) => {
+      if (resp.country) {
+        setCountry(resp.country.toLowerCase());
+      }
+    });
+  }, [telemetry]);
 
   return (
-    <Grid size={12} container justifyContent="center" className="scroll-target">
+    <Grid
+      size={12}
+      container
+      justifyContent="center"
+      className="scroll-target"
+      sx={{
+        backgroundColor: "#EEF6FC",
+      }}
+    >
       <SubHeader title="Contact Us" pageName="Contact" />
 
-      <Grid size={12} container justifyContent={"center"} bgcolor="white">
-        <Grid container size={{ xs: 11, md: 10 }} spacing={2} p={4} mt={2}>
-          <Grid
-            container
-            size={{ xs: 12, lg: 4 }}
-            direction="column"
-            alignItems="flex-start"
-            gap={0.5}
-            sx={{
-              bgcolor: "whitesmoke",
-              border:  `1px solid #e0e0e0`,
-
-              p: 2,
-              minHeight: "90px",
-            }}
-          >
-            <Typography
-              variant="h6"
-              gutterBottom
-              sx={{ fontWeight: 600, color: "primary.main" }}
-            >
-              Email
-            </Typography>
-            <Typography
-              component="a"
-              href="mailto:support@frequentresearch.com"
-              sx={{
-                display: "block",
-                color: "secondary.main",
-                fontSize: "16px",
-                fontWeight: 600,
-                textDecoration: "none",
-                "&:hover": {
-                  textDecoration: "underline",
-                },
-              }}
-            >
-              support@frequentresearch.com
-            </Typography>
+      <Box
+        sx={{
+          width: "100%",
+          py: { xs: 4, md: 6 },
+          background: "whitesmoke",
+          background: "linear-gradient(180deg, #EEF6FC 0%, #E5F2FC 100%)",
+        }}
+      >
+        <Grid container size={{ xs: 11, md: 10 }} mx="auto" spacing={2.5}>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Box sx={contactCardSx}>
+              <Stack spacing={1}>
+                <Typography
+                  sx={{
+                    fontSize: 13,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: 1.2,
+                    color: "#0C5ADB",
+                  }}
+                >
+                  Email
+                </Typography>
+                <Typography
+                  component="a"
+                  href="mailto:support@frequentresearch.com"
+                  sx={{
+                    color: "#102A43",
+                    fontSize: { xs: 15, md: 16 },
+                    fontWeight: 600,
+                    textDecoration: "none",
+                    wordBreak: "break-word",
+                    "&:hover": {
+                      color: "#0C5ADB",
+                    },
+                  }}
+                >
+                  support@frequentresearch.com
+                </Typography>
+              </Stack>
+            </Box>
           </Grid>
-          <Grid
-            size={{ xs: 12, lg: 4 }}
-            direction="column"
-            alignItems="flex-start"
-            gap={0.5}
-            sx={{
-              bgcolor: "whitesmoke",
-              border: `1px solid #e0e0e0`,
 
-              p: 2,
-              minHeight: "90px",
-            }}
-          >
-            <Typography
-              variant="h6"
-              gutterBottom
-              sx={{ fontWeight: 600, color: "primary.main" }}
-            >
-              Phone
-            </Typography>
-            <Typography
-              component="a"
-              href="tel:+918130015743"
-              sx={{
-                display: "block",
-                color: "secondary.main",
-                fontSize: "16px",
-                fontWeight: 600,
-                textDecoration: "none",
-                "&:hover": {
-                  textDecoration: "underline",
-                },
-              }}
-            >
-              +91 8130015743
-            </Typography>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Box sx={contactCardSx}>
+              <Stack spacing={1}>
+                <Typography
+                  sx={{
+                    fontSize: 13,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: 1.2,
+                    color: "#0C5ADB",
+                  }}
+                >
+                  Phone
+                </Typography>
+                <Typography
+                  component="a"
+                  href="tel:+918130015743"
+                  sx={{
+                    color: "#102A43",
+                    fontSize: { xs: 15, md: 16 },
+                    fontWeight: 600,
+                    textDecoration: "none",
+                    "&:hover": {
+                      color: "#0C5ADB",
+                    },
+                  }}
+                >
+                  +91 8130015743
+                </Typography>
+              </Stack>
+            </Box>
           </Grid>
-          <Grid
-            size={{ xs: 12, lg: 4 }}
-            direction="column"
-            alignItems="flex-start"
-            gap={0.5}
-            sx={{
-              bgcolor: "whitesmoke",
-              border: `1px solid #e0e0e0`,
-              p: 2,
-              minHeight: "90px",
-            }}
-          >
-            <Typography
-              variant="h6"
-              gutterBottom
-              sx={{ fontWeight: 600, color: "primary.main" }}
-            >
-              Address
-            </Typography>
-            <Typography
-              component="a"
-              href="//goo.gl/maps/omWW4BDscx5fZpFdA"
-              target="_blank"
-              rel="noreferrer"
-              sx={{
-                display: "block",
-                color: "secondary.main",
-                fontSize: "16px",
-                fontWeight: 600,
-                textDecoration: "none",
-                "&:hover": {
-                  textDecoration: "underline",
-                },
-              }}
-            >
-              Mangolpur Kalan, New Delhi - 110085
-            </Typography>
+
+          <Grid size={{ xs: 12, md: 4 }}>
+            <Box sx={contactCardSx}>
+              <Stack spacing={1}>
+                <Typography
+                  sx={{
+                    fontSize: 13,
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: 1.2,
+                    color: "#0C5ADB",
+                  }}
+                >
+                  Address
+                </Typography>
+                <Typography
+                  component="a"
+                  href="//goo.gl/maps/omWW4BDscx5fZpFdA"
+                  target="_blank"
+                  rel="noreferrer"
+                  sx={{
+                    color: "#102A43",
+                    fontSize: { xs: 15, md: 16 },
+                    fontWeight: 600,
+                    lineHeight: 1.5,
+                    textDecoration: "none",
+                    "&:hover": {
+                      color: "#0C5ADB",
+                    },
+                  }}
+                >
+                  Mangolpur Kalan, New Delhi - 110085
+                </Typography>
+              </Stack>
+            </Box>
           </Grid>
         </Grid>
+      </Box>
 
+      <Box
+        sx={{
+          width: "100%",
+          py: { xs: 5, md: 7 },
+          background: "linear-gradient(180deg, #E5F2FC 0%, #D7ECFA 100%)",
+        }}
+      >
         <Grid
           container
           size={{ xs: 11, md: 10 }}
-          spacing={2}
-          p={{ xs: 1, md: 4 }}
-          mb={3}
+          mx="auto"
+          spacing={{ xs: 3, md: 4 }}
+          alignItems="stretch"
         >
           <Grid size={{ xs: 12, lg: 6 }}>
             <Box
               sx={{
-                px: { xs: 0, lg: 4 },
-                borderRadius: 2,
-                mb: { xs: 3, lg: 0 },
-                bgcolor: "background.default",
+                height: "100%",
+                p: { xs: 2.5, sm: 3.5, md: 4 },
+                borderRadius: 3,
+                backgroundColor: "#FFFFFF",
+                border: "1px solid #C9DFF2",
+                boxShadow: "0 12px 35px rgba(12, 90, 219, 0.10)",
               }}
             >
-              <Typography
-                variant="h4"
-                component="h2"
-                gutterBottom
-                sx={{
-                  fontWeight: 700,
-                  my: 3,
-                  color: "text.primary",
-                }}
-              >
-                Get In Touch
-              </Typography>
+              <Stack spacing={1} mb={3}>
+                <Typography
+                  variant="h4"
+                  component="h2"
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: { xs: 28, md: 32 },
+                    color: "#063686",
+                  }}
+                >
+                  Get In Touch
+                </Typography>
 
-              <Box component="form" onSubmit={handleSubmit}>
-                <Grid container spacing={1.5}>
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    <TextField
+                <Typography
+                  sx={{
+                    color: "#52677A",
+                    fontSize: 15,
+                    lineHeight: 1.7,
+                    maxWidth: 500,
+                  }}
+                >
+                  Have a question or need assistance? Fill out the form below
+                  and our team will get back to you shortly.
+                </Typography>
+              </Stack>
+
+              <Divider
+                sx={{
+                  mb: 3,
+                  borderColor: "#DCEAF5",
+                }}
+              />
+
+              <Box
+                component="form"
+                onSubmit={form.handleSubmit(async (data) => {
+                  const resp = await api.put(`/api/v1/quote`, data);
+                  useToast(resp);
+                })}
+              >
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Form.Input
                       size="small"
                       fullWidth
-                      name="firstName"
                       label="First Name"
                       variant="outlined"
-                      required
-                      value={formData.firstName}
-                      onChange={handleInputChange}
-                      inputProps={{
-                        pattern: "^[a-zA-Z]+$",
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: 2,
-                        },
-                      }}
+                      sx={inputSx}
+                      control={form.control}
+                      {...form.register("firstName")}
+                      validations={contact.name.first}
+                      errors={errors.firstName}
                     />
                   </Grid>
 
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    <TextField
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Form.Input
                       size="small"
                       fullWidth
-                      name="lastName"
                       label="Last Name"
                       variant="outlined"
-                      required
-                      value={formData.lastName}
-                      onChange={handleInputChange}
-                      inputProps={{
-                        pattern: "^[a-zA-Z]+$",
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: 2,
-                        },
-                      }}
+                      sx={inputSx}
+                      control={form.control}
+                      {...form.register("lastName")}
+                      validations={contact.name.last}
+                      errors={errors.lastName}
                     />
                   </Grid>
 
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    <TextField
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Form.Input
                       size="small"
                       fullWidth
-                      name="email"
-                      type="email"
-                      label="Email"
+                      label="E-Mail"
                       variant="outlined"
-                      required
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: 2,
-                        },
-                      }}
+                      sx={inputSx}
+                      control={form.control}
+                      {...form.register("email")}
+                      validations={contact.email}
+                      errors={errors.email}
                     />
                   </Grid>
 
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    <TextField
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Form.Phone
                       size="small"
                       fullWidth
-                      name="phone"
-                      type="tel"
-                      label="Contact No"
+                      label="Contact Number"
                       variant="outlined"
-                      required
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: 2,
-                        },
-                      }}
+                      sx={inputSx}
+                      selectedCountry={country}
+                      disableDropdown={Boolean(country)}
+                      control={form.control}
+                      {...form.register("phone")}
+                      validations={contact.phone}
+                      errors={errors.phone}
                     />
                   </Grid>
 
                   <Grid size={12}>
-                    <TextField
+                    <Form.TextEditor
                       size="small"
                       fullWidth
-                      name="message"
                       label="Message"
                       variant="outlined"
-                      multiline
-                      rows={4}
-                      required
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          borderRadius: 2,
-                        },
-                      }}
+                      sx={inputSx}
+                      control={form.control}
+                      {...form.register("message")}
+                      validations={contact.message}
+                      errors={errors.message}
                     />
                   </Grid>
 
                   <Grid size={12}>
-                    <Button
+                    <Page.MuiButton
+                      // <Button
                       type="submit"
                       variant="contained"
                       fullWidth
+                      loading={true}
+                      loadingIndicator={"Sending..."}
                       sx={{
-                        py: 1.5,
+                        mt: 0.5,
+                        py: 1.4,
                         borderRadius: 2,
-                        fontSize: "16px",
+                        fontSize: 16,
                         fontWeight: 600,
-                        color: "white",
-                        border: 1,
-                        borderColor: "secondary.main",
+                        color: "#FFFFFF",
                         textTransform: "none",
-                        background: (theme) => theme.gradients.bgprimary.main,
-                        bgcolor: "transparent",
-
+                        border: 1,
+                        borderColor: "#063686",
+                        background:
+                          "linear-gradient(90deg, #063686 0%, #0C5ADB 100%)",
+                        boxShadow: "0 6px 16px rgba(12, 90, 219, 0.25)",
                         "&:hover": {
-                          background: (theme) =>
-                            theme.gradients.bgsecondary.main,
+                          background:
+                            "linear-gradient(90deg, #052B6C 0%, #084AAE 100%)",
+                          boxShadow: "0 8px 20px rgba(12, 90, 219, 0.32)",
+                        },
+                        "&:disabled": {
+                          background: "lightgrey",
+                          color: "transparent",
+                          borderColor: "#f4f4f4",
+                        },
+                        "& .MuiButton-loadingIndicator": {
+                          color: "#fff",
                         },
                       }}
                     >
                       Send Message
-                    </Button>
+                      {/* </Button> */}
+                    </Page.MuiButton>
                   </Grid>
                 </Grid>
               </Box>
@@ -323,23 +365,34 @@ const Contact = () => {
           <Grid size={{ xs: 12, lg: 6 }}>
             <Box
               sx={{
-                borderRadius: 2,
+                width: "100%",
+                height: { xs: 380, sm: 450, lg: "100%" },
+                minHeight: { lg: 550 },
+                borderRadius: 3,
                 overflow: "hidden",
-                height: "100%",
+                border: "1px solid #C9DFF2",
+                boxShadow: "0 12px 35px rgba(12, 90, 219, 0.10)",
+                backgroundColor: "#FFFFFF",
               }}
             >
-              <iframe
+              <Box
+                component="iframe"
                 src="//www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3499.8222201626054!2d77.1112085!3d28.694964199999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d055691b37e47%3A0xa652bd028161255c!2sFrequent%20Research%20Fieldwork%20Solutions%20Pvt.%20Ltd!5e0!3m2!1sen!2sin!4v1680177657397!5m2!1sen!2sin"
-                style={{ border: 0, width: "100%", height: "400px" }}
-                allowFullScreen=""
+                title="Frequent Research Fieldwork Solutions Location"
+                allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Frequent Research Fieldwork Solutions Location"
+                sx={{
+                  display: "block",
+                  width: "100%",
+                  height: "100%",
+                  border: 0,
+                }}
               />
             </Box>
           </Grid>
         </Grid>
-      </Grid>
+      </Box>
     </Grid>
   );
 };

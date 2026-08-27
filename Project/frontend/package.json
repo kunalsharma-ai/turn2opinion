@@ -31,6 +31,7 @@
     "react-dom": "^19.1.0",
     "react-easy-crop": "^5.5.3",
     "react-hook-form": "^7.63.0",
+    "react-joyride": "^3.2.0",
     "react-phone-input-2": "^2.15.1",
     "socket.io-client": "^4.8.1",
     "tinymce": "^8.5.1"
