@@ -12,13 +12,12 @@ import {
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { useToast } from "@/hooks";
 
-// const ROUTES = [
-//   { label: 'Auto (Domain)', path: '/captcha' },
-//   { label: 'Text', path: '/captcha/text' },
-//   { label: 'Image Selection', path: '/captcha/image_selection' },
-//   { label: 'Puzzle', path: '/captcha/puzzle' },
-//   { label: 'Slider', path: '/captcha/slider' },
-// ]
+const CAPTCHA_ROUTES = [
+  { label: "Text", path: "/captcha/text" },
+  { label: "Image Selection", path: "/captcha/image_selection" },
+  { label: "Puzzle", path: "/captcha/puzzle" },
+  // { label: "Slider", path: "/captcha/slider" },
+];
 
 const addCacheBuster = (url) =>
   `${url}${url.includes("?") ? "&" : "?"}challenge=${Date.now()}`;
@@ -37,7 +36,7 @@ const CaptchaLoader = ({ minHeight }) => (
 );
 
 export default function Captcha({
-  endpoint = "/captcha/text",
+  endpoint = "/captcha/",
   onVerified: onSuccess,
   onError,
   onChallengeLoad,
@@ -63,9 +62,24 @@ export default function Captcha({
   });
 
   const [loading, setLoading] = useState(false);
+  const [currentEndpoint, setCurrentEndpoint] = useState(endpoint);
   const imageRef = useRef("");
 
-  async function refresh() {
+  function switchCaptchaType() {
+    const currentIndex = CAPTCHA_ROUTES.findIndex(
+      (route) => route.path === currentEndpoint,
+    );
+
+    const nextIndex =
+      currentIndex === -1 ? 0 : (currentIndex + 1) % CAPTCHA_ROUTES.length;
+
+    const nextEndpoint = CAPTCHA_ROUTES[nextIndex].path;
+
+    setCurrentEndpoint(nextEndpoint);
+    refresh(nextEndpoint);
+  }
+
+  async function refresh(nextEndpoint = currentEndpoint) {
     setLoading(true);
 
     setAnswer("");
@@ -75,20 +89,25 @@ export default function Captcha({
     setSelectionPromptText("");
     setImageURL("");
     setSliderPiece(null);
+
     try {
-      const response = await fetch(addCacheBuster(endpoint), {
+      const response = await fetch(addCacheBuster(nextEndpoint), {
         credentials: "include",
       });
+
       if (!response.ok) {
         throw new Error("Unable to create CAPTCHA challenge");
       }
+
       const metadata = getCaptchaMetadata(response);
+
       setType(metadata.type);
       setSelectionRows(metadata.selectionRows);
       setSelectionColumns(metadata.selectionColumns);
       setSelectionPromptText(metadata.selectionPromptText);
       setPuzzleChoices(metadata.puzzleChoices);
       setSliderMax(metadata.sliderMax);
+
       setSliderMeta({
         pieceSize: metadata.sliderPieceSize,
         gapY: metadata.sliderGapY,
@@ -96,17 +115,27 @@ export default function Captcha({
         width: 420,
         height: 320,
       });
+
       const blob = await response.blob();
+
       revokeImageURL();
+
       imageRef.current = URL.createObjectURL(blob);
+
       await prepareChallenge(metadata, imageRef.current);
+
       onChallengeLoad?.(metadata);
     } catch (error) {
       const detail =
         error instanceof Error
           ? error
           : new Error("Unable to create CAPTCHA challenge");
-      useToast({ status: "error", message: error });
+
+      useToast({
+        status: "error",
+        message: detail.message,
+      });
+
       onError?.(detail);
     } finally {
       setLoading(false);
@@ -174,7 +203,9 @@ export default function Captcha({
   }
 
   useEffect(() => {
-    refresh();
+    setCurrentEndpoint(endpoint);
+    refresh(endpoint);
+
     return () => {
       revokeImageURL();
     };
@@ -196,7 +227,7 @@ export default function Captcha({
     setLoading(true);
 
     try {
-      const response = await fetch(endpoint, {
+      const response = await fetch(currentEndpoint, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -244,8 +275,8 @@ export default function Captcha({
     fontSize: 12,
     "& img": {
       display: "block",
-      width: "100%",
-      maxHeight: 80,
+      width: "90%",
+      maxHeight: 50,
       objectFit: "cover",
     },
   };
@@ -300,7 +331,7 @@ export default function Captcha({
               borderRadius: 1,
               bgcolor: "#f0f6ff",
               color: "#1e3a8a",
-              fontSize: 10,
+              fontSize: 12,
               fontWeight: 600,
               textAlign: "center",
             }}
@@ -328,7 +359,7 @@ export default function Captcha({
         <Box display="flex" justifyContent="center">
           <Box
             sx={{
-              maxWidth: 200,
+              maxWidth: 170,
               display: "grid",
               gridTemplateColumns: `repeat(${selectionColumns}, minmax(0, 1fr))`,
               gap: "3px",
@@ -389,7 +420,8 @@ export default function Captcha({
             sx={{
               display: "block",
               width: "100%",
-              maxHeight: 300,
+              scale: 1.4,
+              maxHeight: 260,
               objectFit: "contain",
               border: "1px solid #d9e1ed",
               borderRadius: 1,
@@ -636,10 +668,10 @@ export default function Captcha({
         </Box>
         <IconButton
           size="small"
-          onClick={refresh}
+          onClick={switchCaptchaType}
           disabled={loading}
-          aria-label="New challenge"
-          title="New challenge"
+          aria-label="Switch CAPTCHA type"
+          title="Switch CAPTCHA type"
           sx={{
             width: 28,
             height: 28,

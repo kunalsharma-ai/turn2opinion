@@ -1,74 +1,210 @@
-<table width="100%" cellpadding="0" cellspacing="0">
+<table
+  width="100%"
+  border="0"
+  cellspacing="0"
+  cellpadding="0"
+  bgcolor="#f4f4f4"
+  style="
+    margin: 0;
+    padding: 0;
+    background: #f4f4f4;
+    font-family: Arial, Helvetica, sans-serif;
+  "
+>
   <tr>
     <td align="center">
-    <img
-        src="https://www.turn2opinion.com/images/logo/t2o-logo.png"
-        alt="Turn2Opinions"
-        style="width: 282px; height: auto; margin: 20px 0; padding: 0"
-      />
+      <table
+        width="920"
+        border="0"
+        cellspacing="0"
+        cellpadding="0"
+        bgcolor="#ffffff"
+        style="max-width: 920px"
+      >
+        <!-- TOP BORDER -->
+        <tr>
+          <td height="12" bgcolor="#002b8f"></td>
+        </tr>
 
+        <!-- LOGO SECTION -->
+        <tr>
+          <td
+            align="center"
+            style="padding: 30px 20px; background: #ffffff"
+          >
+            <img
+              src="https://www.turn2opinion.com/images/logo/t2o-logo.png"
+              alt="Turn2Opinion.com"
+              width="420"
+              style="display: block; max-width: 100%"
+            />
+          </td>
+        </tr>
+
+        <tr>
+          <td height="1" bgcolor="#002b8f"></td>
+        </tr>
+
+        <!-- INTRO -->
+        <tr>
+          <td style="padding: 35px 60px 15px">
+            <p
+              style="
+                margin: 0 0 25px;
+                font-size: 28px;
+                color: #063686;
+                font-weight: bold;
+              "
+            >
+              Hey {{user.name.first}},
+            </p>
+
+            <p
+              style="
+                margin: 0;
+                font-size: 22px;
+                line-height: 38px;
+                color: #14245d;
+              "
+            >
+              We have received a request to change your registered email
+              address.
+            </p>
+          </td>
+        </tr>
+
+        <!-- CHANGE EMAIL CARD -->
+        <tr>
+          <td style="padding: 30px 55px">
+            <table
+              width="100%"
+              border="0"
+              cellspacing="0"
+              cellpadding="0"
+              style="
+                border: 1px solid #bfdbfe;
+                border-radius: 12px;
+                background: #f0f9ff;
+              "
+            >
+              <tr>
+                <td style="padding: 40px 45px">
+                  <h2
+                    style="
+                      margin: 0 0 20px;
+                      color: #063686;
+                      font-size: 30px;
+                    "
+                  >
+                    Confirm Your Email Change
+                  </h2>
+
+                  <p
+                    style="
+                      margin: 0 0 20px;
+                      color: #17285f;
+                      font-size: 20px;
+                      line-height: 34px;
+                    "
+                  >
+                    Your registered email is being changed from
+                    <strong>{{user.mail}}</strong>
+                    to
+                    <strong>{{email}}</strong>.
+                  </p>
+
+                  <p
+                    style="
+                      margin: 0;
+                      color: #17285f;
+                      font-size: 20px;
+                      line-height: 34px;
+                    "
+                  >
+                    To confirm this request, click the verification button
+                    below. This link will remain valid for 24 hours.
+                  </p>
+
+                  <!-- VERIFY BUTTON -->
+                  <table
+                    width="100%"
+                    border="0"
+                    cellspacing="0"
+                    cellpadding="0"
+                    style="margin-top: 40px"
+                  >
+                    <tr>
+                      <td align="center">
+                        <a
+                          href="https://{{user.origin}}/auth/change-email?updatecode={{token}}"
+                          target="_blank"
+                          style="
+                            display: inline-block;
+                            background: #063686;
+                            color: #ffffff;
+                            padding: 14px 45px;
+                            text-decoration: none;
+                            font-size: 18px;
+                            font-weight: bold;
+                            border-radius: 4px;
+                          "
+                        >
+                          Click to Verify
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- SECURITY NOTICE -->
+        <tr>
+          <td style="padding: 0 55px 35px">
+            <table
+              width="100%"
+              border="0"
+              cellspacing="0"
+              cellpadding="0"
+              style="
+                background: #f8fbff;
+                border: 1px solid #d7e4ff;
+                border-radius: 10px;
+              "
+            >
+              <tr>
+                <td style="padding: 25px">
+                  <h3
+                    style="
+                      margin: 0 0 10px;
+                      color: #063686;
+                      font-size: 22px;
+                    "
+                  >
+                    Didn't Request This Change?
+                  </h3>
+
+                  <p
+                    style="
+                      margin: 0;
+                      font-size: 18px;
+                      line-height: 30px;
+                      color: #22305f;
+                    "
+                  >
+                    If you did not request to change your email address,
+                    please ignore this email and do not click the verification
+                    link. Your current email address will remain unchanged.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+  {% include  "mailer/footer.liquid" %}
+      </table>
     </td>
   </tr>
 </table>
-
-<div
-  style="
-    max-width: 600px;
-    margin: auto;
-    background: #f8f8f8;
-    border: 1px solid rgba(89, 172, 119, 0.3);
-    border-radius: 6px;
-  "
->
-  <div style="padding: 30px 20px; font-family: Roboto, sans-serif">
-    <h2 style="color: #2a3940; font-weight: 400; margin: 0">
-      Hey {{user.name.first}},
-    </h2>
-
-    <p
-      style="
-        font-size: 17px;
-        color: #2a3940;
-        
-        margin: 20px 0;
-      "
-    >
-      We have received a request to change your registered email from
-      <strong>{{user.mail}}</strong> to <strong>{{email}}</strong>.
-    </p>
-
-    <p
-      style="
-        font-size: 17px;
-        color: #2a3940;
-        
-        margin: 20px 0;
-      "
-    >
-      To confirm this request, click the verification link below. The link is
-      valid for 24 hours.
-    </p>
-
-    <div style="text-align: center; margin: 55px 0">
-      <a
-        href="https://{{user.origin}}/auth/change-email?updatecode={{token}}"
-        target="_blank"
-        style="
-          display: inline-block;
-          background: #063686;
-          color: #fff;
-          padding: 12px 40px;
-          text-decoration: none;
-          font-size: 18px;
-          border-radius: 2px;
-        "
-      >
-        Click to verify
-      </a>
-    </div>
-
-    <hr style="border: 0; border-top: 2px solid #e8e8e8; margin: 30px 0" />
-
-        {% include  "mailer/footer.liquid" %}
-  </div>
-</div>

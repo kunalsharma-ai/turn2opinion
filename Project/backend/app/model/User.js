@@ -106,7 +106,7 @@ export default mongooseModel(
             trim: true,
             validate: {
                 validator: function (v) {
-                    if (!v) return false;
+                    if (!v) return true;
                     const phoneNumber = parsePhoneNumberFromString(`+${v}`);
                     return phoneNumber ? phoneNumber.isValid() : false;
                 },

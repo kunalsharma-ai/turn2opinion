@@ -132,16 +132,23 @@ router
             userController
         )
     )
-
+router
+    .post("/check", expressRoute(
+        async req => {
+            let data = await userController.list(req.body);
+            return { message: "", data: data.length }
+        },
+        userController
+    ))
 router
     .get(
         "/birthday/today",
         expressRoute(
-            async req=>{
-                const status="success";
-                let data=await userController.birthday();
-                const message=`Total ${data.length} users found with birthday`;
-                return {message,status,data};
+            async req => {
+                const status = "success";
+                let data = await userController.birthday();
+                const message = `Total ${data.length} users found with birthday`;
+                return { message, status, data };
             },
             userController
         )
@@ -469,15 +476,15 @@ router.get(
     "/:id/profile",
     isAuthenticated,
     expressRoute(
-        async req=>{
-            const data=Mutate(await userController.read(req.params.id));
-            answerController.request=req;
+        async req => {
+            const data = Mutate(await userController.read(req.params.id));
+            answerController.request = req;
             let profileData = Mutate(await answerController.getAnswers({ user: req.params.id }))
             console.log(profileData)
             return {
-                data:{...data,...profileData},
-                message:"",
-                status:"success"
+                data: { ...data, ...profileData },
+                message: "",
+                status: "success"
             }
         },
         userController
@@ -488,7 +495,7 @@ router.get(
     isAuthenticated,
     expressRoute(
         async (req) => {
-            const data = await responseController.list({user:req.params.id})
+            const data = await responseController.list({ user: req.params.id })
             return { message: `Total ${data.length} records found`, status: "success", data }
         },
         responseController

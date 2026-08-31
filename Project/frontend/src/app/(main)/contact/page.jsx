@@ -90,7 +90,7 @@ const Contact = () => {
                 </Typography>
                 <Typography
                   component="a"
-                  href="mailto:support@frequentresearch.com"
+                  href="mailto:support@turn2opinion.com"
                   sx={{
                     color: "#102A43",
                     fontSize: { xs: 15, md: 16 },
@@ -102,7 +102,7 @@ const Contact = () => {
                     },
                   }}
                 >
-                  support@frequentresearch.com
+                  support@turn2opinion.com
                 </Typography>
               </Stack>
             </Box>

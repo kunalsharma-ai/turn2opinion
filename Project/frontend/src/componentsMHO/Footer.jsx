@@ -8,9 +8,19 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import XIcon from "@mui/icons-material/X";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import YouTubeIcon from "@mui/icons-material/YouTube";
+import InstagramIcon from "@mui/icons-material/Instagram";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { api, loadData } from "@/util";
+
+const socialIcons = {
+  linkedin: LinkedInIcon,
+  facebook: FacebookIcon,
+  twitter: XIcon,
+  x: XIcon,
+  youtube: YouTubeIcon,
+  instagram: InstagramIcon,
+};
 
 function Footer({ sections = [] }) {
   const [socials, setSocials] = React.useState([]);
@@ -22,14 +32,13 @@ function Footer({ sections = [] }) {
     loadData(api.get("/api/v1/socials"), (resp) => setSocials(resp.data || []));
   }, []);
 
-  const getSocialUrl = (platform, fallback = "#") => {
-    return (
-      socials.find(
-        (social) => social.platform?.toLowerCase() === platform.toLowerCase(),
-      )?.url || fallback
-    );
-  };
-
+  const availableSocials = socials.filter(
+    (social) =>
+      social?.url &&
+      typeof social.url === "string" &&
+      social.url.trim() !== "" &&
+      socialIcons[social.platform?.toLowerCase()],
+  );
   // Handle scroll for home page sections
   const handleScroll = (ref) => {
     if (ref?.current) {
@@ -383,7 +392,7 @@ function Footer({ sections = [] }) {
             display="flex"
             alignItems="center"
             component="a"
-            href="mailto:support@frequentresearch.com"
+            href="mailto:support@turn2opinion.com"
             sx={{
               color: "black",
               "&:hover": {
@@ -404,7 +413,7 @@ function Footer({ sections = [] }) {
               }}
             />
             <Typography sx={{ fontSize: 16 }}>
-              support@frequentresearch.com
+              support@turn2opinion.com
             </Typography>
           </Box>
         </Grid>
@@ -448,7 +457,6 @@ function Footer({ sections = [] }) {
           </Typography>{" "}
           (d/b/a Turn2Opinion). All Rights Reserved.
         </Grid>
-
         <Grid
           size={{ xs: 12, md: 4 }}
           container
@@ -458,104 +466,37 @@ function Footer({ sections = [] }) {
           pl={1}
           mt={{ xs: 0.5, lg: 0 }}
         >
-          <IconButton
-            component="a"
-            href={getSocialUrl(
-              "Linkedin",
-              "https://www.linkedin.com/company/turn2opinionpanel/",
-            )}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="linkedin"
-            sx={{
-              p: 0,
-              color: "white",
-              "&:hover": { color: "primary.main" },
-              "&:focus-visible": {
-                outline: "2px solid",
-                outlineColor: "primary.main",
-                outlineOffset: "2px",
-              },
-            }}
-          >
-            <LinkedInIcon sx={{ fontSize: 26 }} />
-          </IconButton>
-          <IconButton
-            component="a"
-            target="_blank"
-            href={getSocialUrl(
-              "Facebook",
-              "https://www.facebook.com/FrequentResearchFieldwork/",
-            )}
-            rel="noopener noreferrer"
-            aria-label="facebook"
-            sx={{
-              p: 0,
-              color: "white",
-              "&:hover": { color: "primary.main" },
-              "&:focus-visible": {
-                outline: "2px solid",
-                outlineColor: "primary.main",
-                outlineOffset: "2px",
-              },
-            }}
-          >
-            <FacebookIcon
-              sx={{
-                fontSize: 26,
-              }}
-            />
-          </IconButton>
-          <IconButton
-            component="a"
-            target="_blank"
-            href={getSocialUrl("Twitter", "https://twitter.com/frequentrfs")}
-            rel="noopener noreferrer"
-            aria-label="twitter"
-            sx={{
-              p: 0,
-              color: "white",
-              "&:hover": { color: "primary.main" },
-              "&:focus-visible": {
-                outline: "2px solid",
-                outlineColor: "primary.main",
-                outlineOffset: "2px",
-              },
-            }}
-          >
-            <XIcon
-              sx={{
-                fontSize: 22,
-              }}
-            />
-          </IconButton>
-
-          <IconButton
-            component="a"
-            target="_blank"
-            href={getSocialUrl(
-              "Youtube",
-              "https://www.youtube.com/channel/UCLxmn2kq4aACAHaL2eT6QIQ",
-            )}
-            rel="noopener noreferrer"
-            aria-label="youtube"
-            sx={{
-              p: 0,
-              color: "white",
-              "&:hover": { color: "primary.main" },
-              "&:focus-visible": {
-                outline: "2px solid",
-                outlineColor: "primary.main",
-                outlineOffset: "2px",
-              },
-            }}
-          >
-            <YouTubeIcon
-              sx={{
-                fontSize: 26,
-              }}
-            />
-          </IconButton>
+          {availableSocials.map((social) => {
+            const platform = social.platform?.toLowerCase();
+            const Icon = socialIcons[platform];
+            return (
+              <IconButton
+                key={social._id || platform}
+                component="a"
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={social.platform}
+                sx={{
+                  p: 0,
+                  color: "white",
+                  "&:hover": { color: "primary.main" },
+                  "&:focus-visible": {
+                    outline: "2px solid",
+                    outlineColor: "primary.main",
+                    outlineOffset: "2px",
+                  },
+                }}
+              >
+                <Icon
+                  sx={{
+                    fontSize:
+                      platform === "twitter" || platform === "x" ? 22 : 26,
+                  }}
+                />
+              </IconButton>
+            );
+          })}
         </Grid>
       </Grid>
     </Grid>
