@@ -20,6 +20,7 @@ import { useQuery } from "@/Context";
 import { ContextProviders } from "@/Context";
 import FeedbackForm from "@/componentsMHO/FeedbackForm";
 import { Popup } from "@/components/Popup";
+import RecentActivityPopup from "@/componentsMHO/RecentActivityPopup";
 
 export default function HomeClient() {
   const theme = useTheme();
@@ -117,6 +118,7 @@ export default function HomeClient() {
             </Fab>
           </Zoom>
         )}
+        <RecentActivityPopup ToTopButtonVisible={visible} />
         <ContextProviders>
           <SignUp
             open={openSignUp}

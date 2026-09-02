@@ -319,6 +319,11 @@ export default mongooseModel(
                     .filter(Boolean)
                     .join(" ");
             },
+            fullname: function () {
+                return [this.name.salutation, this.name.first, this.name.middle, this.name.last]
+                    .filter(Boolean)
+                    .join(" ");
+            },
             age: function () {
                 if (!this.dob) return null;
                 const today = new Date();

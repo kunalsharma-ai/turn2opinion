@@ -39,6 +39,7 @@ import {
   Apple,
   Microsoft,
   Login as LoginIcon,
+  Instagram,
 } from "@mui/icons-material";
 
 import PopUp from "./PopUp";
@@ -64,6 +65,15 @@ function capitalizeName(str) {
     .join("");
 }
 const today = new Date();
+
+const socialIcons = {
+  linkedin: <LinkedIn sx={{ color: "#0077B5", fontSize: "28px" }} />,
+  facebook: <Facebook sx={{ color: "#1877F2", fontSize: "28px" }} />,
+  youtube: <YouTube sx={{ color: "#FF0000", fontSize: "28px" }} />,
+  twitter: <X sx={{ color: "black", fontSize: "22px" }} />,
+  x: <X sx={{ color: "black", fontSize: "22px" }} />,
+  instagram: <Instagram sx={{ color: "#E4405F", fontSize: "22px" }} />,
+};
 
 export default function SignUp({
   open,
@@ -117,45 +127,22 @@ export default function SignUp({
     loadData(api.get("/api/v1/socials"), (resp) => setSocials(resp.data || []));
   }, []);
 
-  const getSocialUrl = (platform, fallback = "#") => {
-    return (
-      socials.find(
-        (social) => social.platform?.toLowerCase() === platform.toLowerCase(),
-      )?.url || fallback
-    );
-  };
+  const socialsData = socials
+    .filter(
+      (social) =>
+        social?.url &&
+        typeof social.url === "string" &&
+        social.url.trim() !== "",
+    )
+    .map((social) => {
+      const name = social.platform?.toLowerCase();
 
-  const socialsData = [
-    {
-      name: "linkedin",
-      link: getSocialUrl(
-        "Linkedin",
-        "https://www.linkedin.com/company/turn2opinionpanel/",
-      ),
-      icon: <LinkedIn sx={{ color: "#0077B5", fontSize: "28px" }} />,
-    },
-    {
-      name: "facebook",
-      link: getSocialUrl(
-        "Facebook",
-        "https://www.facebook.com/FrequentResearchFieldwork/",
-      ),
-      icon: <Facebook sx={{ color: "#1877F2", fontSize: "28px" }} />,
-    },
-    {
-      name: "youtube",
-      link: getSocialUrl(
-        "Youtube",
-        "https://www.youtube.com/channel/UCLxmn2kq4aACAHaL2eT6QIQ",
-      ),
-      icon: <YouTube sx={{ color: "#FF0000", fontSize: "28px" }} />,
-    },
-    {
-      name: "twitter",
-      link: getSocialUrl("Twitter", "https://twitter.com/frequentrfs"),
-      icon: <X sx={{ color: "black", fontSize: "22px" }} />,
-    },
-  ];
+      return {
+        name,
+        link: social.url,
+        icon: socialIcons[name] || <LoginIcon />,
+      };
+    });
 
   const [providers, setProviders] = React.useState([]);
   React.useEffect(() => {
@@ -720,48 +707,49 @@ export default function SignUp({
                         Log in
                       </Page.Text>
                     </Grid>
-
-                    <Grid
-                      container
-                      alignItems="center"
-                      justifyContent="center"
-                      spacing={4}
-                      sx={{
-                        borderTop: "1px solid",
-                        borderColor: "divider",
-                        pt: 2,
-                        mt: 1,
-                      }}
-                    >
-                      <Page.Text
-                        sx={{ fontSize: "13px", color: "text.secondary" }}
-                      >
-                        Follow us on
-                      </Page.Text>
-                      <Page.Box
+                    {socialsData.length > 0 && (
+                      <Grid
+                        container
+                        alignItems="center"
+                        justifyContent="center"
+                        spacing={4}
                         sx={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          gap: "20px",
-
-                          justifyContent: "center",
-                          alignItems: "center",
-                          listStyle: "none",
-                          textDecoration: "none",
+                          borderTop: "1px solid",
+                          borderColor: "divider",
+                          pt: 2,
+                          mt: 1,
                         }}
                       >
-                        {socialsData.map((social) => (
-                          <Page.Link
-                            key={social.name}
-                            href={social.link}
-                            underline="none"
-                            target="_blank"
-                          >
-                            {social.icon}
-                          </Page.Link>
-                        ))}
-                      </Page.Box>
-                    </Grid>
+                        <Page.Text
+                          sx={{ fontSize: "13px", color: "text.secondary" }}
+                        >
+                          Follow us on
+                        </Page.Text>
+                        <Page.Box
+                          sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: "20px",
+
+                            justifyContent: "center",
+                            alignItems: "center",
+                            listStyle: "none",
+                            textDecoration: "none",
+                          }}
+                        >
+                          {socialsData.map((social) => (
+                            <Page.Link
+                              key={social.name}
+                              href={social.link}
+                              underline="none"
+                              target="_blank"
+                            >
+                              {social.icon}
+                            </Page.Link>
+                          ))}
+                        </Page.Box>
+                      </Grid>
+                    )}
                   </Grid>
                 </Grid>
               </Grid>

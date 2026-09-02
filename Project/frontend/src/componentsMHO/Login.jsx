@@ -27,6 +27,7 @@ import {
   Apple,
   Microsoft,
   YouTube,
+  Instagram,
   Login as LoginIcon,
 } from "@mui/icons-material";
 import { api, loadData, Page, submitWithAjax } from "@/util";
@@ -39,6 +40,15 @@ import { useTelemetry } from "@/Context";
 import { useToast } from "@/hooks";
 import Captcha from "./Captcha";
 
+const socialIcons = {
+  linkedin: <LinkedIn sx={{ color: "#0077B5", fontSize: "28px" }} />,
+  facebook: <Facebook sx={{ color: "#1877F2", fontSize: "28px" }} />,
+  youtube: <YouTube sx={{ color: "#FF0000", fontSize: "28px" }} />,
+  twitter: <X sx={{ color: "black", fontSize: "22px" }} />,
+  x: <X sx={{ color: "black", fontSize: "22px" }} />,
+  instagram: <Instagram sx={{ color: "#E4405F", fontSize: "28px" }} />,
+};
+
 function Login({ open, onClose, setOpenSignUp }) {
   const [cardType, setCardType] = React.useState("login");
   const router = useRouter();
@@ -50,45 +60,19 @@ function Login({ open, onClose, setOpenSignUp }) {
     loadData(api.get("/api/v1/socials"), (resp) => setSocials(resp.data || []));
   }, []);
 
-  const getSocialUrl = (platform, fallback = "#") => {
-    return (
-      socials.find(
-        (social) => social.platform?.toLowerCase() === platform.toLowerCase(),
-      )?.url || fallback
-    );
-  };
-
-  const socialsData = [
-    {
-      name: "linkedin",
-      link: getSocialUrl(
-        "Linkedin",
-        "https://www.linkedin.com/company/turn2opinionpanel/",
-      ),
-      icon: <LinkedIn sx={{ color: "#0077B5", fontSize: "28px" }} />,
-    },
-    {
-      name: "facebook",
-      link: getSocialUrl(
-        "Facebook",
-        "https://www.facebook.com/FrequentResearchFieldwork/",
-      ),
-      icon: <Facebook sx={{ color: "#1877F2", fontSize: "28px" }} />,
-    },
-    {
-      name: "youtube",
-      link: getSocialUrl(
-        "Youtube",
-        "https://www.youtube.com/channel/UCLxmn2kq4aACAHaL2eT6QIQ",
-      ),
-      icon: <YouTube sx={{ color: "#FF0000", fontSize: "28px" }} />,
-    },
-    {
-      name: "twitter",
-      link: getSocialUrl("Twitter", "https://twitter.com/frequentrfs"),
-      icon: <X sx={{ color: "black", fontSize: "22px" }} />,
-    },
-  ];
+  const socialsData = socials
+    .filter(
+      (social) =>
+        social?.url &&
+        typeof social.url === "string" &&
+        social.url.trim() !== "" &&
+        socialIcons[social.platform?.toLowerCase()],
+    )
+    .map((social) => ({
+      name: social.platform,
+      link: social.url,
+      icon: socialIcons[social.platform?.toLowerCase()],
+    }));
 
   return (
     <Dialog
@@ -220,14 +204,7 @@ function LoginCard({ onClose, setCardType, setOpenSignUp, socials }) {
         display: "flex",
         flexDirection: "column",
         alignSelf: "center",
-        minHeight:
-          authProviders.length > 0
-            ? btnDisabled
-              ? "838px" // providers exist + button disabled
-              : "780px" // providers exist + button enabled
-            : btnDisabled
-              ? "720px" // no providers + button disabled
-              : "600px", // no providers + button enabled
+        overflowY: "auto",
         transition: "min-height 300ms ease-in-out",
         width: { xs: "95vw", sm: "480px" },
         px: { xs: 1.5, sm: 3 },
@@ -569,50 +546,47 @@ function LoginCard({ onClose, setCardType, setOpenSignUp, socials }) {
             Sign up
           </Page.MuiButton>
         </Box>
-
-        <Grid
-          container
-          alignItems="center"
-          justifyContent="center"
-          spacing={4}
-          sx={{
-            position: "absolute",
-            bottom: 10,
-            left: 0,
-            right: 0,
-            zIndex: 2,
-            borderTop: "1px solid",
-            borderColor: "divider",
-            pt: 2,
-          }}
-        >
-          <Page.Text sx={{ fontSize: "13px", color: "text.secondary" }}>
-            Follow us on
-          </Page.Text>
-          <Page.Box
+        {socials.length > 0 && (
+          <Grid
+            container
+            alignItems="center"
+            justifyContent="center"
+            spacing={4}
             sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "20px",
-
-              justifyContent: "center",
-              alignItems: "center",
-              listStyle: "none",
-              textDecoration: "none",
+              borderTop: "1px solid",
+              borderColor: "divider",
+              py: 2,
+              mt: 1,
             }}
           >
-            {socials.map((social) => (
-              <Page.Link
-                key={social.name}
-                href={social.link}
-                underline="none"
-                target="_blank"
-              >
-                {social.icon}
-              </Page.Link>
-            ))}
-          </Page.Box>
-        </Grid>
+            <Page.Text sx={{ fontSize: "13px", color: "text.secondary" }}>
+              Follow us on
+            </Page.Text>
+            <Page.Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "20px",
+
+                justifyContent: "center",
+                alignItems: "center",
+                listStyle: "none",
+                textDecoration: "none",
+              }}
+            >
+              {socials.map((social) => (
+                <Page.Link
+                  key={social.name}
+                  href={social.link}
+                  underline="none"
+                  target="_blank"
+                >
+                  {social.icon}
+                </Page.Link>
+              ))}
+            </Page.Box>
+          </Grid>
+        )}
       </Box>
     </Card>
   );

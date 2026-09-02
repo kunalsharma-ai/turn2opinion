@@ -10,7 +10,6 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { api, loadData } from "@/util";
 
 const socialIcons = {
@@ -24,9 +23,6 @@ const socialIcons = {
 
 function Footer({ sections = [] }) {
   const [socials, setSocials] = React.useState([]);
-  const pathname = usePathname();
-  const router = useRouter();
-  const searchParams = useSearchParams();
 
   React.useEffect(() => {
     loadData(api.get("/api/v1/socials"), (resp) => setSocials(resp.data || []));
@@ -39,67 +35,6 @@ function Footer({ sections = [] }) {
       social.url.trim() !== "" &&
       socialIcons[social.platform?.toLowerCase()],
   );
-  // Handle scroll for home page sections
-  const handleScroll = (ref) => {
-    if (ref?.current) {
-      const element = ref.current;
-      setTimeout(() => {
-        element.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-          inline: "nearest",
-        });
-      }, 150);
-    }
-  };
-
-  // Handle navigation
-  const handleNavigation = (path, sectionLabel = null) => {
-    if (pathname === path) {
-      // If already on the target page
-      if (path === "/" && sectionLabel) {
-        const section = sections.find((s) => s.label === sectionLabel);
-        if (section) handleScroll(section.ref);
-      }
-      return;
-    }
-
-    // If navigating to home with a section
-    if (path === "/" && sectionLabel) {
-      router.push(`/?section=${encodeURIComponent(sectionLabel)}`);
-    } else {
-      router.push(path);
-    }
-  };
-
-  // Handle scrolling when arriving on home page with a section query
-  useEffect(() => {
-    if (pathname === "/") {
-      const sectionLabel = searchParams.get("section");
-      if (sectionLabel) {
-        const section = sections.find(
-          (s) => s.label === decodeURIComponent(sectionLabel),
-        );
-        if (section) {
-          handleScroll(section.ref);
-          // Clear the query parameter after scrolling
-          router.replace("/", { scroll: false });
-        }
-      }
-    }
-  }, [pathname, searchParams, sections, router]);
-
-  // Handle external navigation
-  const handleExternalNavigation = (url) => {
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
-
-  const handleKeyDown = (e, handler) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      handler();
-    }
-  };
 
   return (
     <Grid
@@ -148,7 +83,6 @@ function Footer({ sections = [] }) {
         >
           <Typography
             sx={{
-              fontWeight: "bold",
               fontSize: 24,
               color: "secondary.main",
               fontWeight: 700,
@@ -156,167 +90,53 @@ function Footer({ sections = [] }) {
           >
             QUICK LINKS
           </Typography>
-          <Typography
-            role="button"
-            tabIndex={0}
-            fontSize={16}
-            onClick={() => handleNavigation("/privacy")}
-            onKeyDown={(e) =>
-              handleKeyDown(e, () => handleNavigation("/privacy"))
-            }
-            sx={{
-              color: "black",
-              "&:hover": { cursor: "pointer", color: "primary.main" },
-              "&:focus-visible": {
-                outline: "2px solid",
-                outlineColor: "primary.main",
-                outlineOffset: "2px",
-              },
-            }}
-          >
-            <ChevronRightIcon
-              sx={{ fontSize: 24, mb: -0.7, color: "primary.main" }}
-            />
-            Privacy Policy
-          </Typography>
-          <Typography
-            role="button"
-            tabIndex={0}
-            fontSize={16}
-            onClick={() => handleNavigation("/gdpr")}
-            onKeyDown={(e) => handleKeyDown(e, () => handleNavigation("/gdpr"))}
-            sx={{
-              color: "black",
-              "&:hover": { cursor: "pointer", color: "primary.main" },
-              "&:focus-visible": {
-                outline: "2px solid",
-                outlineColor: "primary.main",
-                outlineOffset: "2px",
-              },
-            }}
-          >
-            <ChevronRightIcon
-              sx={{ fontSize: 24, mb: -0.7, color: "primary.main" }}
-            />
-            GDPR Compliance
-          </Typography>
-          <Typography
-            role="button"
-            tabIndex={0}
-            fontSize={16}
-            onClick={() => handleNavigation("/cookies")}
-            onKeyDown={(e) =>
-              handleKeyDown(e, () => handleNavigation("/cookies"))
-            }
-            sx={{
-              color: "black",
-              "&:hover": { cursor: "pointer", color: "primary.main" },
-              "&:focus-visible": {
-                outline: "2px solid",
-                outlineColor: "primary.main",
-                outlineOffset: "2px",
-              },
-            }}
-          >
-            <ChevronRightIcon
-              sx={{ fontSize: 24, mb: -0.7, color: "primary.main" }}
-            />
-            Cookies Policy
-          </Typography>
-          <Typography
-            role="button"
-            tabIndex={0}
-            fontSize={16}
-            onClick={() => handleNavigation("/terms")}
-            onKeyDown={(e) =>
-              handleKeyDown(e, () => handleNavigation("/terms"))
-            }
-            sx={{
-              color: "black",
-              "&:hover": { cursor: "pointer", color: "primary.main" },
-              "&:focus-visible": {
-                outline: "2px solid",
-                outlineColor: "primary.main",
-                outlineOffset: "2px",
-              },
-            }}
-          >
-            <ChevronRightIcon
-              sx={{ fontSize: 24, mb: -0.7, color: "primary.main" }}
-            />
-            Terms of Use
-          </Typography>{" "}
-          <Typography
-            role="button"
-            tabIndex={0}
-            fontSize={16}
-            onClick={() => handleNavigation("/profiling")}
-            onKeyDown={(e) =>
-              handleKeyDown(e, () => handleNavigation("/profiling"))
-            }
-            sx={{
-              color: "black",
-              "&:hover": { cursor: "pointer", color: "primary.main" },
-              "&:focus-visible": {
-                outline: "2px solid",
-                outlineColor: "primary.main",
-                outlineOffset: "2px",
-              },
-            }}
-          >
-            <ChevronRightIcon
-              sx={{ fontSize: 24, mb: -0.7, color: "primary.main" }}
-            />
-            Profiling and Quality Score
-          </Typography>
-          <Typography
-            role="button"
-            tabIndex={0}
-            fontSize={16}
-            onClick={() =>
-              handleExternalNavigation("//panels.frequentresearch.com/")
-            }
-            onKeyDown={(e) =>
-              handleKeyDown(e, () =>
-                handleExternalNavigation("//panels.frequentresearch.com/"),
-              )
-            }
-            sx={{
-              color: "black",
-              "&:hover": { cursor: "pointer", color: "primary.main" },
-              "&:focus-visible": {
-                outline: "2px solid",
-                outlineColor: "primary.main",
-                outlineOffset: "2px",
-              },
-            }}
-          >
-            <ChevronRightIcon
-              sx={{ fontSize: 24, mb: -0.7, color: "primary.main" }}
-            />
-            Panel Book
-          </Typography>
-          <Typography
-            role="button"
-            tabIndex={0}
-            fontSize={16}
-            onClick={() => handleNavigation("/faq")}
-            onKeyDown={(e) => handleKeyDown(e, () => handleNavigation("/faq"))}
-            sx={{
-              color: "black",
-              "&:hover": { cursor: "pointer", color: "primary.main" },
-              "&:focus-visible": {
-                outline: "2px solid",
-                outlineColor: "primary.main",
-                outlineOffset: "2px",
-              },
-            }}
-          >
-            <ChevronRightIcon
-              sx={{ fontSize: 24, mb: -0.7, color: "primary.main" }}
-            />
-            FAQ
-          </Typography>
+
+          {[
+            { label: "Privacy Policy", href: "/privacy" },
+            { label: "GDPR Compliance", href: "/gdpr" },
+            { label: "Cookies Policy", href: "/cookies" },
+            { label: "Terms of Use", href: "/terms" },
+            {
+              label: "Profiling and Quality Score",
+              href: "/profiling",
+            },
+            {
+              label: "Panel Book",
+              href: "https://panels.frequentresearch.com/",
+            },
+            { label: "FAQ", href: "/faq" },
+          ].map((link) => (
+            <Typography
+              key={link.href}
+              component="a"
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              fontSize={16}
+              sx={{
+                color: "black",
+                textDecoration: "none",
+                "&:hover": {
+                  cursor: "pointer",
+                  color: "primary.main",
+                },
+                "&:focus-visible": {
+                  outline: "2px solid",
+                  outlineColor: "primary.main",
+                  outlineOffset: "2px",
+                },
+              }}
+            >
+              <ChevronRightIcon
+                sx={{
+                  fontSize: 24,
+                  mb: -0.7,
+                  color: "primary.main",
+                }}
+              />
+              {link.label}
+            </Typography>
+          ))}
         </Grid>
 
         <Grid
@@ -366,7 +186,7 @@ function Footer({ sections = [] }) {
             display="flex"
             alignItems="center"
             component="a"
-            href="tel:+919810459700"
+            href="tel:+918130015743"
             sx={{
               color: "black",
               "&:hover": {
@@ -386,7 +206,7 @@ function Footer({ sections = [] }) {
                 fontSize: { xs: "22px", xl: "26px" },
               }}
             />
-            <Typography sx={{ fontSize: 16 }}>+919810459700</Typography>
+            <Typography sx={{ fontSize: 16 }}>+918130015743</Typography>
           </Box>
           <Box
             display="flex"

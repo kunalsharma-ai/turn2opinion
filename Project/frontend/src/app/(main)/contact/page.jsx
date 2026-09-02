@@ -1,8 +1,7 @@
 "use client";
-
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Box, Grid, Typography, Button, Stack, Divider } from "@mui/material";
+import { Box, Grid, Typography, Stack, Divider } from "@mui/material";
 import SubHeader from "@/componentsMHO/SubHeader";
 import { Form } from "@/components";
 import { useMember, useTelemetry } from "@/Context";
@@ -14,6 +13,7 @@ const Contact = () => {
   const form = useForm();
   const [member, telemetry] = [useMember(), useTelemetry()];
   const [country, setCountry] = React.useState("");
+  const [sending, setSending] = React.useState(false);
   const errors = form.formState.errors;
   const inputSx = {
     "& .MuiOutlinedInput-root": {
@@ -240,8 +240,13 @@ const Contact = () => {
               <Box
                 component="form"
                 onSubmit={form.handleSubmit(async (data) => {
-                  const resp = await api.put(`/api/v1/quote`, data);
-                  useToast(resp);
+                  setSending(true);
+                  try {
+                    const resp = await api.put(`/api/v1/quote`, data);
+                    useToast(resp);
+                  } finally {
+                    setSending(false);
+                  }
                 })}
               >
                 <Grid container spacing={2}>
@@ -319,12 +324,12 @@ const Contact = () => {
 
                   <Grid size={12}>
                     <Page.MuiButton
-                      // <Button
                       type="submit"
                       variant="contained"
                       fullWidth
-                      loading={true}
-                      loadingIndicator={"Sending..."}
+                      loading={sending}
+                      loadingIndicator="Sending..."
+                      disabled={sending}
                       sx={{
                         mt: 0.5,
                         py: 1.4,
@@ -354,7 +359,6 @@ const Contact = () => {
                       }}
                     >
                       Send Message
-                      {/* </Button> */}
                     </Page.MuiButton>
                   </Grid>
                 </Grid>
