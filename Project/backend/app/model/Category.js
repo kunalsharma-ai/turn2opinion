@@ -10,26 +10,30 @@ export default mongooseModel(
             trim: true,
             lowercase: true
         },
-        termsMessage:{
-            type:String
+        termsMessage: {
+            type: String
         },
-        terms:[
+        thresholdPoints: {
+            type: Number,
+            default: 15000
+        },
+        terms: [
             {
-                name:{
-                    type:String,
-                    required:true,
-                    lowercase:true,
-                    trim:true
+                name: {
+                    type: String,
+                    required: true,
+                    lowercase: true,
+                    trim: true
                 },
-                body:{
-                    type:String,
-                    required:true
+                body: {
+                    type: String,
+                    required: true
                 },
-                isRequired:{
-                    type:Boolean,
-                    required:true,
-                    default:false
-                }         
+                isRequired: {
+                    type: Boolean,
+                    required: true,
+                    default: false
+                }
             }
         ]
     },
