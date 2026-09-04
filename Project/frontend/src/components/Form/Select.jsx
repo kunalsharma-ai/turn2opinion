@@ -47,6 +47,7 @@ export default function Select({
   hasOthers = false,
   hasSkip = false,
   hasNone = false,
+  maxSelections,
   ...attr
 }) {
   const [newOption, setNewOption] = React.useState("");
@@ -211,12 +212,14 @@ export default function Select({
                               event.preventDefault();
                               field.onChange(
                                 formattedOptions
-                                  .filter(
-                                    (val) =>
+                                  .filter((val) => {
+                                    return (
+                                      !val.isExclusive &&
                                       !isOthersOption(val) &&
                                       !isSkipOption(val) &&
-                                      !isNoneOption(val),
-                                  )
+                                      !isNoneOption(val)
+                                    );
+                                  })
                                   .map((val) => val.value),
                               );
                             }}
@@ -297,13 +300,30 @@ export default function Select({
                       // disableClearable={ !multiple || hasError }
                       options={formattedOptions ?? []}
                       getOptionDisabled={(option) => {
-                        let exclusiveOption = formattedOptions
-                          .filter((option) => {
-                            return field.value?.includes(option.value);
-                          })
-                          .find((v) => v.isExclusive);
+                        const selectedValues = Array.isArray(field.value)
+                          ? field.value
+                          : [];
+
+                        const exclusiveOption = formattedOptions
+                          .filter((option) =>
+                            selectedValues.includes(option.value),
+                          )
+                          .find((option) => option.isExclusive);
+
                         if (exclusiveOption) return true;
+
+                        const isSelected = selectedValues.includes(
+                          option.value,
+                        );
+
+                        const maxReached =
+                          multiple &&
+                          maxSelections &&
+                          maxSelections > 0 &&
+                          selectedValues.length >= maxSelections;
+
                         return !!(
+                          (maxReached && !isSelected) ||
                           (multiple &&
                             hasOthers &&
                             othersSelected &&
@@ -383,14 +403,18 @@ export default function Select({
                             );
                             return;
                           }
-                          let exclusiveOption = newValue.find(
+                          const exclusiveOption = newValue.find(
                             (val) => val.isExclusive,
                           );
-                          if (!exclusiveOption)
-                            return field.onChange(
-                              newValue.map((val) => val.value),
-                            );
-                          field.onChange([exclusiveOption.value]);
+                          if (exclusiveOption) {
+                            field.onChange([exclusiveOption.value]);
+                            return;
+                          }
+                          const limitedValue =
+                            maxSelections && maxSelections > 0
+                              ? newValue.slice(0, maxSelections)
+                              : newValue;
+                          field.onChange(limitedValue.map((val) => val.value));
                           return;
                         }
                         field.onChange(newValue === null ? "" : newValue.value);
@@ -514,6 +538,7 @@ export default function Select({
                         return (
                           <InputTextField
                             {...params}
+                            inputRef={field.ref}
                             label={
                               isDisabled ? (
                                 label

@@ -9,8 +9,7 @@
     padding: 0;
     background: #f4f4f4;
     font-family: Arial, Helvetica, sans-serif;
-  "
->
+  ">
   <tr>
     <td align="center">
       <table
@@ -19,8 +18,7 @@
         cellspacing="0"
         cellpadding="0"
         bgcolor="#ffffff"
-        style="max-width: 920px"
-      >
+        style="max-width: 920px">
         <!-- TOP BORDER -->
         <tr>
           <td height="12" bgcolor="#002b8f"></td>
@@ -28,16 +26,12 @@
 
         <!-- LOGO SECTION -->
         <tr>
-          <td
-            align="center"
-            style="padding: 30px 20px; background: #ffffff"
-          >
+          <td align="center" style="padding: 30px 20px; background: #ffffff">
             <img
               src="https://www.turn2opinion.com/images/logo/t2o-logo.png"
               alt="Turn2Opinion.com"
               width="420"
-              style="display: block; max-width: 100%"
-            />
+              style="display: block; max-width: 100%" />
           </td>
         </tr>
 
@@ -48,26 +42,22 @@
         <!-- INTRO -->
         <tr>
           <td style="padding: 35px 60px 15px">
-            <p
-              style="
+            <p style="
                 margin: 0 0 25px;
                 font-size: 28px;
                 color: #063686;
                 font-weight: bold;
-              "
-            >
-              Hey {{user.name.first}},
+              ">
+              Hey {{ user.name.first }},
             </p>
 
-            <p
-              style="
+            <p style="
                 margin: 0;
                 font-size: 22px;
                 line-height: 38px;
                 color: #14245d;
-              "
-            >
-              We have received a request to change your registered email
+              ">
+              We have received a request to change your registered email 
               address.
             </p>
           </td>
@@ -85,43 +75,36 @@
                 border: 1px solid #bfdbfe;
                 border-radius: 12px;
                 background: #f0f9ff;
-              "
-            >
+              ">
               <tr>
                 <td style="padding: 40px 45px">
-                  <h2
-                    style="
+                  <h2 style="
                       margin: 0 0 20px;
                       color: #063686;
                       font-size: 30px;
-                    "
-                  >
+                    ">
                     Confirm Your Email Change
                   </h2>
 
-                  <p
-                    style="
+                  <p style="
                       margin: 0 0 20px;
                       color: #17285f;
                       font-size: 20px;
                       line-height: 34px;
-                    "
-                  >
+                    ">
                     Your registered email is being changed from
-                    <strong>{{user.mail}}</strong>
+                    <strong>{{ user.mail }}</strong>
                     to
-                    <strong>{{email}}</strong>.
+                    <strong>{{ email }}</strong>.
                   </p>
 
-                  <p
-                    style="
+                  <p style="
                       margin: 0;
                       color: #17285f;
                       font-size: 20px;
                       line-height: 34px;
-                    "
-                  >
-                    To confirm this request, click the verification button
+                    ">
+                    To confirm this request, click the verification button 
                     below. This link will remain valid for 24 hours.
                   </p>
 
@@ -131,8 +114,7 @@
                     border="0"
                     cellspacing="0"
                     cellpadding="0"
-                    style="margin-top: 40px"
-                  >
+                    style="margin-top: 40px">
                     <tr>
                       <td align="center">
                         <a
@@ -147,8 +129,7 @@
                             font-size: 18px;
                             font-weight: bold;
                             border-radius: 4px;
-                          "
-                        >
+                          ">
                           Click to Verify
                         </a>
                       </td>
@@ -172,29 +153,24 @@
                 background: #f8fbff;
                 border: 1px solid #d7e4ff;
                 border-radius: 10px;
-              "
-            >
+              ">
               <tr>
                 <td style="padding: 25px">
-                  <h3
-                    style="
+                  <h3 style="
                       margin: 0 0 10px;
                       color: #063686;
                       font-size: 22px;
-                    "
-                  >
+                    ">
                     Didn't Request This Change?
                   </h3>
 
-                  <p
-                    style="
+                  <p style="
                       margin: 0;
                       font-size: 18px;
                       line-height: 30px;
                       color: #22305f;
-                    "
-                  >
-                    If you did not request to change your email address,
+                    ">
+                    If you did not request to change your email address, 
                     please ignore this email and do not click the verification
                     link. Your current email address will remain unchanged.
                   </p>
@@ -203,7 +179,16 @@
             </table>
           </td>
         </tr>
-  {% include  "mailer/footer.liquid" %}
+        {% include "mailer/footer.liquid" %}
+        <!-- BOTTOM BLUE BAR -->
+        <tr>
+
+          <td
+            height="10"
+            bgcolor="#0c5adb"
+            style="background:#0c5adb;"></td>
+
+        </tr>
       </table>
     </td>
   </tr>

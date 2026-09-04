@@ -314,6 +314,13 @@ export default mongooseModel(
     ],
     {
         virtuals: {
+            country:function(){
+                let {address}=this;
+                if(!address || !Array.isArray(address) || address.length===0)return "";
+                let {country}=address[0];
+                if(!country)return "";
+                return country.toUpperCase();
+            },
             fullName: function () {
                 return [this.name.salutation, this.name.first, this.name.middle, this.name.last]
                     .filter(Boolean)

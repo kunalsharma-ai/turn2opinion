@@ -9,7 +9,7 @@ class Category extends CrudController {
             }
         }
     }
-    async list(query = {}, populateFields = null, sort = {}, project = null) {
+    async list(query = {}, populateFields = null, sort = {}, project = "+sortOrder") {
         return await super.list(query, populateFields, sort, project)
     }
     async create(data){

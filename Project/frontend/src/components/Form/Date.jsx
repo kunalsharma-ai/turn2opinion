@@ -25,6 +25,7 @@ export default function DateField({
   validations,
   disabled,
   dateRange = [null, null],
+  sx = {},
 }) {
   const [validate, setValidate] = React.useState(validations);
   const [minDate, setMinDate] = React.useState(new Date().toString());
@@ -75,6 +76,10 @@ export default function DateField({
           return (
             <DatePicker
               {...field}
+              onChange={(value) => {
+                field.onChange(value ? value.toDate() : null);
+                field.onBlur();
+              }}
               open={open}
               onOpen={() => setOpen(true)}
               onClose={() => setOpen(false)}
@@ -124,15 +129,18 @@ export default function DateField({
                   onBlur: handleBlur,
                   onFocus: !disabled ? () => setOpen(true) : undefined,
                   onClick: !disabled ? () => setOpen(true) : undefined,
-                  sx: {
-                    backgroundColor: "white",
-                    "& .MuiInputBase-input": {
+                  sx: [
+                    {
                       backgroundColor: "white",
+                      "& .MuiInputBase-input": {
+                        backgroundColor: "white",
+                      },
+                      "& .MuiFormHelperText-root": {
+                        fontWeight: "bold",
+                      },
                     },
-                    "& .MuiFormHelperText-root": {
-                      fontWeight: "bold",
-                    },
-                  },
+                    sx,
+                  ],
                 },
               }}
             />
