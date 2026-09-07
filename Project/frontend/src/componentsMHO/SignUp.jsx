@@ -973,7 +973,6 @@ export default function SignUp({
               </Grid>
             </Grid>
           ) }
-
           { status == "duplicate" && (
             <Grid
               size={ 12 }
