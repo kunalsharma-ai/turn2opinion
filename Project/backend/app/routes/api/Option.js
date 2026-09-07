@@ -33,7 +33,9 @@ router
         async req => {
             // Read all entries
             let message = "";
+            
             let data = Mutate( await optionController.list({ question: req.params.parent }))
+            console.log({data})
             switch(req.params.parent){
                 case "country":
                     data=data.map(cn=>{

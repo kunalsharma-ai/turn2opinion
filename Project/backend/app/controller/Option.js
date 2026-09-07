@@ -55,8 +55,7 @@ class Option extends CrudController {
             }
             return fltr;
         }))
-
-        // console.log({query})
+        
         return await super.list(query, populateFields, sort, project)
     }
     async create(data) {

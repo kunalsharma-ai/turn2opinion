@@ -6,6 +6,7 @@ import {
     Answer as answerController,
     Response as responseController
 } from "../../controller/index.js";
+import Category from "../../model/Category.js";
 import {
     Mutate,
     expressRoute,
@@ -121,12 +122,13 @@ router
                 let message = "";
                 let data = []
                 responseController.request = req;
+                let category = await Category.findOne({ name: req.user.category })
                 let respPoints = await responseController.getPoints();
                 data = {
                     respPoints,
                     redeemPoints: 0,
                     totalPoints: (respPoints - 0),
-                    threshold: 15000,
+                    threshold: category.thresholdPoints,
                     conversionRate: 0.001
                 }
                 return { message, data }
@@ -338,7 +340,7 @@ router
                     link: "/admin/dashboard",
                     text: "Admin Zone",
                     icon: "fa-solid fa-gear",
-                    roles: ["admin", "superadmin", "root","administrator"]
+                    roles: ["admin", "superadmin", "root", "administrator"]
                 },
                 {
                     link: "/member/dashboard",
@@ -366,7 +368,7 @@ router
                 }) : null)
                 .filter(link => Boolean(link));
             let profileData = Mutate(await answerController.getAnswers({ user: req.user._id }))
-            data = { ...profileData, ...Mutate(data),  ...req.user, navbar }
+            data = { ...profileData, ...Mutate(data), ...req.user, navbar }
             data.firstname = data.name.first;
             data.lastname = data.name.last;
 
