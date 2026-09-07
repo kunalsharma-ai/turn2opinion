@@ -10,7 +10,8 @@ import {
     User as userModel,
     Invites as invitesModel, Answers,
     Survey as modelSurvey,
-    Response as responseModel
+    Response as responseModel,
+    Alerts as alertModel
 } from "../model/index.js";
 import fs from "fs"
 class User extends CrudController {
@@ -51,7 +52,17 @@ class User extends CrudController {
             isActive: false
         })
         const user = await super.create(data);
-
+        if(user.referredBy){
+            let alert =new alertModel({
+                ...this.commonFilters,
+                user:user.referredBy,
+                title:"New Referral Joined",
+                subtitle:`${user.mail} has joined`,
+                cta:`/member/referrals`,
+                ctaType:"link"
+            })
+            await alert.save();
+        }
         // Auto-invite to active surveys with autoInvite enabled
         try {
             const surveys = await modelSurvey.find({
