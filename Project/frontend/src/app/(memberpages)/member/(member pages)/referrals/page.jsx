@@ -23,12 +23,6 @@ import AddIcon from "@mui/icons-material/Add";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import RemoveIcon from "@mui/icons-material/Remove";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import InstagramIcon from "@mui/icons-material/Instagram";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import YouTubeIcon from "@mui/icons-material/YouTube";
-import XIcon from "@mui/icons-material/X";
 
 import { api, loadData, Page } from "@/util";
 import { Datatable } from "@/components";
@@ -408,13 +402,11 @@ function InvitedEmails({ sentInvites }) {
             {users.map((user) => (
               <TableRow
                 key={user.id}
-                sx={
-                  {
-                    // "&:hover": {
-                    //   bgcolor: "#dff7e1ff",
-                    // },
-                  }
-                }
+                // sx={{
+                //   "&:hover": {
+                //     bgcolor: "#dff7e1ff",
+                //   },
+                // }}
               >
                 <TableCell align="center">
                   <Tooltip title={user.email} placement="left">
@@ -437,6 +429,34 @@ function InvitedEmails({ sentInvites }) {
     </Grid>
   );
 }
+
+const platformConfig = {
+  instagram: {
+    title: "Verify Instagram Follow",
+    message:
+      "Follow our Instagram page and submit your Instagram username for verification.",
+  },
+  youtube: {
+    title: "Verify YouTube Subscription",
+    message:
+      "Subscribe to our YouTube channel and submit your YouTube channel name or handle for verification.",
+  },
+  facebook: {
+    title: "Verify Facebook Like",
+    message:
+      "Like our Facebook page and submit your Facebook profile name for verification.",
+  },
+  twitter: {
+    title: "Verify Twitter Follow",
+    message:
+      "Follow our Twitter profile and submit your Twitter username or handle for verification.",
+  },
+  linkedin: {
+    title: "Verify LinkedIn Follow",
+    message:
+      "Follow our LinkedIn page and submit your LinkedIn profile name or URL for verification.",
+  },
+};
 
 function FollowUs() {
   const [verifyOpen, setVerifyOpen] = React.useState(false);
@@ -490,6 +510,13 @@ function FollowUs() {
   if (!socials?.length) {
     return null;
   }
+
+  const currentPlatform = platformConfig[
+    selectedSocial?.platform?.toLowerCase()
+  ] || {
+    title: `Verify ${selectedSocial?.platform || ""}`,
+    message: `Connect with our ${selectedSocial?.platform || "social media"} page and submit your profile information for verification.`,
+  };
 
   return (
     <>
@@ -629,7 +656,12 @@ function FollowUs() {
                         setVerifyOpen(true);
                       }}
                     >
-                      Verify Follow
+                      Verify{" "}
+                      {social.platform?.toLowerCase() === "facebook"
+                        ? "Like"
+                        : social.platform?.toLowerCase() === "youtube"
+                          ? "Subscription"
+                          : "Follow"}
                     </Button>
                   )}
                 </Box>
@@ -642,14 +674,11 @@ function FollowUs() {
       <PopUp
         open={verifyOpen}
         onClose={closeVerifyPopup}
-        title={`Verify ${selectedSocial?.platform || ""} Follow`}
+        title={currentPlatform.title}
         maxWidth="sm"
       >
         <Box p={3}>
-          <Typography mb={2}>
-            Follow our <strong>{selectedSocial?.platform}</strong> page and
-            submit your profile information for verification.
-          </Typography>
+          <Typography mb={2}>{currentPlatform.message}</Typography>
 
           <Page.Input
             fullWidth
@@ -680,11 +709,9 @@ function FollowUs() {
             />
           </Button>
 
-          {true && (
-            <Typography mt={2} fontSize={14} color="error.main">
-              Maximum 2MB file size allowed
-            </Typography>
-          )}
+          <Typography mt={2} fontSize={12} color="error.main">
+            Maximum 2MB file size allowed
+          </Typography>
 
           <Typography mt={1} fontSize={12} color="text.secondary">
             Upload a screenshot showing that you have followed, subscribed, or
