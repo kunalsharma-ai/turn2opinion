@@ -35,12 +35,12 @@ const theme = createTheme({
     },
     cardbg: {
       main: "#c6e3f4", //   "#8cb2f333",
-    }, 
+    },
     cardbgdark: {
-      main: "#063686", 
-    }, 
+      main: "#063686",
+    },
     cardtext: {
-      main: "#fff", 
+      main: "#fff",
     },
   },
   gradients: {
@@ -73,7 +73,7 @@ const theme = createTheme({
         },
         "*": {
           scrollbarWidth: "thin",
-          scrollbarColor: "#063686 transparent",
+          scrollbarColor: "#063686 #f4f8ff",
         },
         "*::-webkit-scrollbar": {
           width: "8px",

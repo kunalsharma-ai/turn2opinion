@@ -15,6 +15,7 @@ import { api, Page } from "@/util";
 import LoadingOverlay from "@/componentsMHO/LoadingOverlay";
 import { useToast } from "@/hooks";
 import ParentDetailsForm from "../password/ParentDetailsForm";
+import MinorConsentPending from "./MinorConsentPending";
 export default function page() {
   return (
     <Grid
@@ -67,6 +68,7 @@ export default function page() {
 export function Terms({
   width = { xs: "90vw", lg: "80vw", xl: "70vw" },
   hideLoading = false,
+  maxHeight = "calc(100vh - 190px)",
 }) {
   const [user, router, pathName, form] = [
     useMember(),
@@ -98,7 +100,11 @@ export function Terms({
   React.useEffect(() => {
     if (!user) return;
     setIsLoading(true);
-    if (pathName === "/auth/terms" && user?.terms?.length > 0)
+    if (
+      pathName === "/auth/terms" &&
+      user?.terms?.length > 0 &&
+      (!user?.isMinor || user?.parent?.consentStatus === "approved")
+    )
       router.push("/survey?name=welcome");
     setAcceptedTerms(user.terms);
     setInitialTerms(user.terms || []);
@@ -180,6 +186,14 @@ export function Terms({
       </form>
     );
   }
+
+  if (
+    (user?.isMinor && !user?.parent?.consentStatus) ||
+    user?.parent?.consentStatus === "pending"
+  ) {
+    return <MinorConsentPending />;
+  }
+
   return (
     <>
       {/* <Page.Text
@@ -199,6 +213,8 @@ export function Terms({
           py: 2,
           px: 2,
           width: width,
+          maxHeight: { md: maxHeight },
+          overflow: "auto",
         }}
       >
         <Page.Box

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { mongooseModel } from "../utils/index.js";
-import dns from "dns";
 import bcrypt from "bcryptjs";
+import dns from "dns";
 import { promisify } from "util"
 import { parsePhoneNumberFromString } from "libphonenumber-js"
 

@@ -57,7 +57,7 @@ export default function () {
                   setOpen({ open: true, id: info._id });
                 }}
               >
-                <EditIcon fontSize="small" color="secondary"/>
+                <EditIcon fontSize="small" color="secondary" />
               </IconButton>
             ),
           },
@@ -78,7 +78,8 @@ export default function () {
               fontSize: "18px",
               display: "inline-block",
               fontWeight: "600",
-              borderBottom:(theme)=> `2px solid ${theme.palette.primary.main}`,
+              borderBottom: (theme) =>
+                `2px solid ${theme.palette.primary.main}`,
               pb: 0.5,
               my: 1,
             }}
@@ -94,6 +95,7 @@ export default function () {
       >
         <CreateOrEditCategory
           categoryID={open.id}
+          categories={categories}
           close={() => {
             setOpen({ open: false, id: null });
           }}
@@ -103,12 +105,24 @@ export default function () {
   );
 }
 
-function CreateOrEditCategory({ categoryID = null, close }) {
+function CreateOrEditCategory({ categoryID = null, close, categories }) {
   const [content, setContent] = React.useState([]);
   const id = React.useId();
   const id2 = React.useId();
   const form = useForm({
-    defaultValues: { name: "", termsMessage: "", terms: [""] },
+    defaultValues: {
+      name: "",
+      termsMessage: "",
+      age: {
+        min: 18,
+        max: 110,
+        underfall: "",
+        overfall: "",
+      },
+      threshold: "",
+      terms: [],
+      showOnRegistration: false,
+    },
   });
 
   const {
@@ -172,6 +186,63 @@ function CreateOrEditCategory({ categoryID = null, close }) {
           {...form.register("name")}
           label="Category Name"
         />
+        <Grid size={6} container spacing={1.4}>
+          <Form.Input
+            control={control}
+            {...form.register("age.min")}
+            type="number"
+            label="Minimum Age"
+          />
+        </Grid>
+        <Grid size={6}>
+          <Form.Input
+            control={control}
+            {...form.register("age.max")}
+            type="number"
+            label="Maximum Age"
+          />
+        </Grid>
+        <Grid size={6}>
+          <Form.Select
+            control={control}
+            {...form.register("age.underfall")}
+            label="Underfall Category"
+            options={categories
+              .filter((category) => category.name !== watch("name"))
+              .map((category) => ({
+                value: category.name,
+                label: category.name,
+              }))}
+          />
+        </Grid>
+        <Grid size={6}>
+          <Form.Select
+            control={control}
+            {...form.register("age.overfall")}
+            label="Overfall Category"
+            options={categories
+              .filter((category) => category.name !== watch("name"))
+              .map((category) => ({
+                value: category.name,
+                label: category.name,
+              }))}
+          />
+        </Grid>
+        <Grid size={6}>
+          <Form.Input
+            control={control}
+            {...form.register("thresholdPoints")}
+            type="number"
+            label="Threshold to Redeem"
+          />
+        </Grid>
+        <Grid size={6}>
+          <Form.Checkbox
+            control={control}
+            {...form.register(`showOnRegistration`)}
+            label={`Show on signup page`}
+          />
+        </Grid>
         <Form.TextEditor
           control={control}
           name="termsMessage"

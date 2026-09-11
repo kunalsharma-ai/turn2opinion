@@ -46,10 +46,12 @@ class User extends CrudController {
     }
     async create(data) {
         this.fixUserIssue();
-        invitesModel.updateMany({
+        await invitesModel.updateMany({
             email: data.mail
         }, {
-            isActive: false
+            $set:{
+                isActive: false
+            }
         })
         const user = await super.create(data);
         if(user.referredBy){

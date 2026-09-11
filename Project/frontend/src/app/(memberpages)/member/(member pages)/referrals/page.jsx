@@ -17,6 +17,7 @@ import {
   TableRow,
   Tooltip,
   Collapse,
+  Chip,
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import AddIcon from "@mui/icons-material/Add";
@@ -90,7 +91,18 @@ export default function page() {
   const columns = [
     { id: "name", label: "Name", data: "fullName" },
     { id: "email", label: "E-mail", data: "mail" },
-    { id: "status", label: "Status", render: (info) => info.isVerified.email },
+    {
+      id: "status",
+      label: "Status",
+      render: (info) => (
+        <Chip
+          size="small"
+          color={info.isVerified.email == "verified" ? "success" : "error"}
+          label={info.isVerified.email}
+          sx={{ textTransform: "capitalize" }}
+        />
+      ),
+    },
     {
       id: "date",
       label: "Date of Joining",
@@ -435,26 +447,36 @@ const platformConfig = {
     title: "Verify Instagram Follow",
     message:
       "Follow our Instagram page and submit your Instagram username for verification.",
+    inputLabel: "Instagram Username or Handle",
+    inputPlaceholder: "Enter your Instagram username or handle",
   },
   youtube: {
     title: "Verify YouTube Subscription",
     message:
       "Subscribe to our YouTube channel and submit your YouTube channel name or handle for verification.",
+    inputLabel: "YouTube Channel Name or Handle",
+    inputPlaceholder: "Enter your YouTube channel name or handle",
   },
   facebook: {
     title: "Verify Facebook Like",
     message:
       "Like our Facebook page and submit your Facebook profile name for verification.",
+    inputLabel: "Facebook Profile Name",
+    inputPlaceholder: "Enter your Facebook profile name",
   },
   twitter: {
     title: "Verify Twitter Follow",
     message:
       "Follow our Twitter profile and submit your Twitter username or handle for verification.",
+    inputLabel: "Twitter Username or Handle",
+    inputPlaceholder: "Enter your Twitter username or handle",
   },
   linkedin: {
     title: "Verify LinkedIn Follow",
     message:
       "Follow our LinkedIn page and submit your LinkedIn profile name or URL for verification.",
+    inputLabel: "LinkedIn Profile Name or URL",
+    inputPlaceholder: "Enter your LinkedIn profile name or URL",
   },
 };
 
@@ -542,9 +564,41 @@ function FollowUs() {
       </Grid>
 
       <Grid size={12}>
-        <Typography fontSize={15} mb={3}>
+        <Typography
+          sx={{
+            fontSize: 15``,
+            lineHeight: 1.6,
+            mb: 1.5,
+          }}
+        >
           Follow us on social media to earn bonus reward points and stay updated
           with the latest opportunities, surveys, and community updates.
+        </Typography>
+
+        <Typography
+          sx={{
+            fontSize: { xs: 15, sm: 16 },
+            fontWeight: 600,
+            mb: 0.5,
+          }}
+        >
+          How it works
+        </Typography>
+
+        <Typography
+          sx={{
+            fontSize: 14,
+            lineHeight: 1.6,
+            color: "text.secondary",
+            mb: 3,
+            textAlign: "justify",
+          }}
+        >
+          Click the button for the social platform you want to connect with and
+          complete the required action (Like, Follow, or Subscribe). Then click
+          Verify and submit your social media username/handle along with a
+          screenshot showing that you have completed the action. Once your
+          submission is verified, you will receive the displayed bonus points.
         </Typography>
 
         <Grid container spacing={2}>
@@ -607,6 +661,7 @@ function FollowUs() {
                     target="_blank"
                     variant="outlined"
                     size="small"
+                    sx={{ fontWeight: 600 }}
                     onClick={() => {
                       if (social.status === "not_started") {
                         setSocials((prev) =>
@@ -619,11 +674,17 @@ function FollowUs() {
                       }
                     }}
                   >
-                    {social.platform?.toLowerCase() === "instagram"
-                      ? "Follow"
+                    {social.platform?.toLowerCase() === "facebook"
+                      ? "Like on Facebook"
                       : social.platform?.toLowerCase() === "youtube"
-                        ? "Subscribe"
-                        : "Like"}
+                        ? "Subscribe on YouTube"
+                        : social.platform?.toLowerCase() === "instagram"
+                          ? "Follow on Instagram"
+                          : social.platform?.toLowerCase() === "linkedin"
+                            ? "Follow on LinkedIn"
+                            : social.platform?.toLowerCase() === "twitter"
+                              ? "Follow on Twitter"
+                              : `Follow on ${social.platform}`}
                   </Button>
 
                   {social.status === "rewarded" ? (
@@ -682,8 +743,8 @@ function FollowUs() {
 
           <Page.Input
             fullWidth
-            label={selectedSocial?.verificationLabel}
-            placeholder={selectedSocial?.verificationLabel}
+            label={currentPlatform.inputLabel}
+            placeholder={currentPlatform.inputPlaceholder}
             value={socialId}
             onChange={(e) => setSocialId(e.target.value)}
             sx={{ mb: 2 }}
@@ -709,9 +770,9 @@ function FollowUs() {
             />
           </Button>
 
-          <Typography mt={2} fontSize={12} color="error.main">
+          {/* <Typography mt={2} fontSize={12} color="error.main">
             Maximum 2MB file size allowed
-          </Typography>
+          </Typography> */}
 
           <Typography mt={1} fontSize={12} color="text.secondary">
             Upload a screenshot showing that you have followed, subscribed, or

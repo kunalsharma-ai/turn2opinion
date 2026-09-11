@@ -93,7 +93,7 @@
                       line-height: 34px;
                     ">
                     Your child,
-                    <strong>{{ user.name.first }}</strong>, 
+                    <strong>{{ user.name.first }}</strong>,  
                     has registered on
                     <a href="https://{{user.origin}}" style="
                         color: #063686;
@@ -101,7 +101,7 @@
                         font-weight: bold;
                       ">
                       Turn2Opinion
-                    </a>, 
+                    </a>,  
                     an online survey and market research panel platform
                     published by Frequent Research Fieldwork Solutions Pvt.
                     Ltd. As they have indicated that they are under the age
@@ -115,7 +115,7 @@
                       font-size: 20px;
                       line-height: 34px;
                     ">
-                    Turn2Opinion allows members to participate in surveys and 
+                    Turn2Opinion allows members to participate in surveys and  
                     earn rewards by sharing opinions on various topics. We are
                     committed to maintaining a safe and secure environment for
                     all participants, especially minors.
@@ -143,8 +143,8 @@
                 line-height: 30px;
                 color: #22305f;
               ">
-              During registration, your child provided your email address as 
-              the {{ user.parent.relation }}. In accordance with our Child 
+              During registration, your child provided your email address as  
+              the {{ user.parent.relation }}. In accordance with our Child  
               Protection and Privacy Policy, we require verified parental
               approval before allowing access to our platform.
             </p>
@@ -261,43 +261,68 @@
           </td>
         </tr>
 
-        <!-- SUPPORT -->
+        <!-- Verification CTA -->
         <tr>
-          <td style="padding: 0 55px 35px">
+          <td style="padding:25px 55px 20px;">
             <table
               width="100%"
               border="0"
               cellspacing="0"
               cellpadding="0"
               style="
-                background: #f8fbff;
-                border: 1px solid #d7e4ff;
-                border-radius: 10px;
-              ">
+           border: 1px solid #bfdbfe;
+                border-radius: 12px;
+                background: #f0f9ff;
+          ">
               <tr>
-                <td style="padding: 25px">
-                  <h3 style="
-                      margin: 0 0 10px;
-                      color: #063686;
-                      font-size: 22px;
-                    ">
-                    Need Assistance?
-                  </h3>
+                <td align="center" style="
+                padding:38px 35px;
+              ">
+                  <p style="
+                margin:0 0 10px;
+                font-size:17px;
+                font-weight:bold;
+                letter-spacing:1.5px;
+                text-transform:uppercase;
+              ">
+                    Action Required
+                  </p>
+
+                  <h2 style="
+                margin:0 0 14px;
+               color:#002b8f;
+                font-size:30px;
+                line-height:40px;
+              ">
+                    Approve Your Child's Registration
+                  </h2>
 
                   <p style="
-                      margin: 0;
-                      font-size: 18px;
-                      line-height: 30px;
-                      color: #22305f;
-                    ">
-                    For assistance, please contact us at
-                    <a href="mailto:support@{{user.origin}}" style="
-                        color: #063686;
-                        text-decoration: none;
-                        font-weight: bold;
-                      ">
-                      support@{{ user.origin }}</a>
+                margin:0 auto 25px;
+                max-width:650px;
+                              font-size:17px;
+                line-height:28px;
+              ">
+                    Please verify that you are the legal parent or guardian   
+                and approve your child's participation on
+                Turn2Opinion.
                   </p>
+
+                  <a
+                    href="https://{{user.origin}}/auth/parent-consent?user={{user._id}}&code={{otp.code}}"
+                    target="_blank"
+                    style="
+                  display:inline-block;
+                  background:#002b8f;
+                  color:#ffffff;
+                  text-decoration:none;
+                  padding:15px 40px;
+                  border-radius:10px;
+                  font-size:17px;
+                  font-weight:bold;
+                ">
+                    VERIFY &amp; APPROVE
+                  </a>
                 </td>
               </tr>
             </table>
@@ -313,7 +338,7 @@
                 line-height: 30px;
                 color: #22305f;
               ">
-              We appreciate your cooperation in helping us maintain a safe 
+              We appreciate your cooperation in helping us maintain a safe  
               and responsible research environment.
             </p>
           </td>

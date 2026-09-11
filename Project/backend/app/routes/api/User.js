@@ -16,7 +16,7 @@ String.prototype.sluggify = function () {
 };
 
 import express from "express";
-import { asyncHandler } from "express-web-tools"
+import { asyncHandler, HttpError } from "express-web-tools"
 import {
     User as userController,
     OTP as otpController,
@@ -367,6 +367,54 @@ router
         )
     )
 router
+    .put(
+        "/parent-consent/:id",
+        expressRoute(
+            async req => {
+                let message = "Permission updated."
+                let data = [];
+                let otp = await otpController.verify(req.params.id, "parent-consent", req.origin, req.body.code)
+                if (!otp) throw new Error("Link Expired")
+                userController.request.user = {};
+                let user = await userController.update(req.params.id, {
+                    ["parent.consent"]: true,
+                    terms: req.body.terms
+                })
+                let mailer = await getMailer(
+                    "register",
+                    "minor-permitted-parent",
+                    {
+                        user
+                    }
+                );
+                await sendMail(
+                    { origin: req.origin, "content-type": "application/json" },
+                    user?.parent?.email,
+                    `${process.env.PROJECT_NAME}: Child Permitted to take survey`,
+                    mailer.data
+                )
+
+                mailer = await getMailer(
+                    "register",
+                    "minor-permitted-child",
+                    {
+                        user
+                    }
+                );
+                await sendMail(
+                    { origin: req.origin, "content-type": "application/json" },
+                    user?.mail,
+                    `${process.env.PROJECT_NAME}: Your parent granted you access of panel.`,
+                    mailer.data
+                )
+                // throw new HttpError(404,"Something went wrong")
+                await otpController.delete(otp._id);
+                return { message, data };
+            },
+            userController
+        )
+    )
+router
     .route("/response/:id")
     .post(
         expressRoute(
@@ -403,9 +451,11 @@ router
             async req => {
                 // read single entry
                 let message = ""
-                let otp = await otpController.verify(req.params.id, "email", req.origin, req.body.code)
+                let channel = req.body.channel ?? "email"
+                let otp = await otpController.verify(req.params.id, channel, req.origin, req.body.code)
                 if (!otp) throw new Error("Link Expired")
-                return { message, data: {} };
+                let user = await userController.read(req.params.id);
+                return { message, data: user };
             },
             userController
         )

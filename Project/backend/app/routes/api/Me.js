@@ -211,12 +211,18 @@ router
             async req => {
                 await userController.update(req.user._id, { ...req.body, category: "minor" });
                 let user = Mutate(await userController.read(req.user._id))
-
+                let otp=await otpController.generate(
+                    user._id,
+                    "parent-consent",
+                    user.origin,
+                    1 * 24 * 60 * 60 * 1000
+                )
                 let mailer = await getMailer(
                     "register",
                     "minor",
                     {
-                        user
+                        user,
+                        otp
                     }
                 )
                 const emailStatus = await sendMail(
