@@ -33,9 +33,8 @@ router
         async req => {
             // Read all entries
             let message = "";
-            
+            console.log({parent:req.params.parent})
             let data = Mutate( await optionController.list({ question: req.params.parent }))
-            console.log({data})
             switch(req.params.parent){
                 case "country":
                     data=data.map(cn=>{
@@ -44,6 +43,7 @@ router
                     })
                     break;
             }
+            console.log({ parent: req.params.parent, method: "GET", data: data.length })
             return { message, data };
         },
         optionController
@@ -52,7 +52,9 @@ router
         async req => {
             // Read all entries matching filter
             let message = "";
+
             let data = await optionController.list({ question: req.params.parent, ...req.body })
+            console.log({ parent: req.params.parent,method:"POST",data:data.length,query:req.body })
             return { message, data };
         },
         optionController

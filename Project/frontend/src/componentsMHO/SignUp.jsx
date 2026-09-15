@@ -494,29 +494,27 @@ export default function SignUp({
                         />
                       </Grid>
                     </Grid>
-                    <Collapse in={!!btnDisabled} sx={{ width: "100%" }}>
-                      <Grid
-                        sx={{
-                          py: 1,
-                          my: 1,
-                          px: 2,
-                          border: "1px solid",
-                          borderColor: "divider",
-                          bgcolor: "#fff",
-                          borderRadius: 2,
+                    <Grid
+                      sx={{
+                        py: 1,
+                        my: 1,
+                        px: 2,
+                        border: "1px solid",
+                        borderColor: "divider",
+                        bgcolor: "#fff",
+                        borderRadius: 2,
+                      }}
+                      size={12}
+                      container
+                      alignItems="center"
+                    >
+                      <Captcha
+                        onVerified={() => {
+                          setBtnDisabled(false);
                         }}
-                        size={12}
-                        container
-                        direction="row"
-                        alignItems="center"
-                      >
-                        <Captcha
-                          onVerified={() => {
-                            setBtnDisabled(false);
-                          }}
-                        />
-                      </Grid>
-                    </Collapse>
+                      />
+                    </Grid>
+
                     <Grid
                       size={12}
                       container

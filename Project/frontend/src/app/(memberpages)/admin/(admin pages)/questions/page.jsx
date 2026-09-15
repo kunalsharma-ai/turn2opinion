@@ -256,6 +256,7 @@ function CreateOrEditQuestion({ questionID = null, close }) {
       name: "",
       category: [],
       size: 12,
+      maxSelections: 0,
     },
   });
 
@@ -284,6 +285,14 @@ function CreateOrEditQuestion({ questionID = null, close }) {
     form.reset();
     close();
   };
+
+  const questionType = form.watch("type");
+  const isMultiselect = questionType === "multiselect";
+  React.useEffect(() => {
+    if (questionType === "multiselect") {
+      form.setValue("maxSelections", 0);
+    }
+  }, [questionType]);
 
   return (
     <Grid
@@ -401,16 +410,28 @@ function CreateOrEditQuestion({ questionID = null, close }) {
           editorId={id}
           dialogScoped
         />{" "}
-        <Form.Input
-          control={control}
-          {...form.register("size")}
-          label="Question Width (out of 12)"
-          type="number"
-          inputProps={{
-            min: 1,
-            max: 12,
-          }}
-        />
+        <Grid size={{ xs: 12, md: isMultiselect ? 6 : 12 }}>
+          <Form.Input
+            control={control}
+            {...form.register("size")}
+            label="Question Width (out of 12)"
+            type="number"
+            inputProps={{
+              min: 1,
+              max: 12,
+            }}
+          />
+        </Grid>
+        {isMultiselect && (
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Form.Input
+              control={control}
+              {...form.register("maxSelections")}
+              label="Max selections (0 = All)"
+              type="number"
+            />
+          </Grid>
+        )}
         <Grid size={12} direction="column" container pl={2}>
           <Form.Checkbox
             control={control}

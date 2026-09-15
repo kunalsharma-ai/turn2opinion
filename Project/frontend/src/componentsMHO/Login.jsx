@@ -391,13 +391,13 @@ function LoginCard({ onClose, setCardType, setOpenSignUp, socials }) {
             </Page.MuiButton>
           </Box>
         </Grid>
-        <Collapse in={!!btnDisabled} sx={{ width: "100%" }}>
-          <Captcha
-            onVerified={() => {
-              setBtnDisabled(false);
-            }}
-          />
-        </Collapse>
+
+        <Captcha
+          onVerified={() => {
+            setBtnDisabled(false);
+          }}
+        />
+
         {errorMessage && <Page.Error message={errorMessage} />}
 
         <Page.MuiButton

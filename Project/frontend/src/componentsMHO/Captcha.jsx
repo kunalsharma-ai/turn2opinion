@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useRef, useState } from "react";
 import {
   Box,
@@ -7,16 +8,16 @@ import {
   IconButton,
   TextField,
   Typography,
-  Alert,
+  Collapse,
 } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import CheckIcon from "@mui/icons-material/Check";
 import { useToast } from "@/hooks";
 
 const CAPTCHA_ROUTES = [
   { label: "Text", path: "/captcha/text" },
   { label: "Image Selection", path: "/captcha/image_selection" },
   { label: "Puzzle", path: "/captcha/puzzle" },
-  // { label: "Slider", path: "/captcha/slider" },
 ];
 
 const addCacheBuster = (url) =>
@@ -31,7 +32,7 @@ const CaptchaLoader = ({ minHeight }) => (
       minHeight: minHeight || 300,
     }}
   >
-    <CircularProgress size={18} thickness={4} />
+    <CircularProgress size={20} thickness={4} />
   </Box>
 );
 
@@ -60,9 +61,11 @@ export default function Captcha({
     width: 420,
     height: 320,
   });
-
   const [loading, setLoading] = useState(false);
+  const [verified, setVerified] = useState(false);
+  const [challengeStarted, setChallengeStarted] = useState(false);
   const [currentEndpoint, setCurrentEndpoint] = useState(endpoint);
+
   const imageRef = useRef("");
 
   function switchCaptchaType() {
@@ -81,6 +84,7 @@ export default function Captcha({
 
   async function refresh(nextEndpoint = currentEndpoint) {
     setLoading(true);
+    setVerified(false);
 
     setAnswer("");
     setSelectedTiles([]);
@@ -147,14 +151,17 @@ export default function Captcha({
       await prepareImageSelection(url, metadata);
       return;
     }
+
     if (metadata.type === "puzzle") {
       setImageURL(url);
       return;
     }
+
     if (metadata.type === "slider") {
       await prepareSlider(url, metadata);
       return;
     }
+
     setImageURL(url);
   }
 
@@ -165,6 +172,7 @@ export default function Captcha({
         metadata.selectionRows,
         metadata.selectionColumns,
       );
+
       setSelectionPrompt(pieces.prompt || "");
       setSelectionTiles(pieces.tiles);
       setImageURL("");
@@ -175,6 +183,7 @@ export default function Captcha({
 
   async function prepareSlider(url, metadata) {
     setImageURL(url);
+
     try {
       const pieceData = await cropSliderPiece(
         url,
@@ -182,7 +191,9 @@ export default function Captcha({
         metadata.sliderGapY,
         metadata.sliderPieceSize,
       );
+
       setSliderPiece(pieceData.url);
+
       setSliderMeta({
         pieceSize: metadata.sliderPieceSize,
         gapY: metadata.sliderGapY,
@@ -204,26 +215,36 @@ export default function Captcha({
 
   useEffect(() => {
     setCurrentEndpoint(endpoint);
-    refresh(endpoint);
 
     return () => {
       revokeImageURL();
     };
   }, [endpoint]);
 
+  function startCaptcha() {
+    if (loading || verified || challengeStarted) return;
+
+    setChallengeStarted(true);
+    refresh(endpoint);
+  }
+
   function toggleTile(tile) {
     setSelectedTiles((current) => {
       const next = current.includes(tile)
         ? current.filter((item) => item !== tile)
         : [...current, tile];
+
       const normalized = [...next].sort((a, b) => a - b);
+
       setAnswer(normalized.join(","));
+
       return normalized;
     });
   }
 
   async function verify() {
-    if (!canVerify) return;
+    if (!canVerify || verified) return;
+
     setLoading(true);
 
     try {
@@ -237,24 +258,31 @@ export default function Captcha({
           code: String(answer),
         }),
       });
+
       const result = await response.json().catch(() => ({}));
+
       if (!response.ok) {
         useToast({
           status: "error",
           message: "Verification failed",
         });
+
         throw new Error(result.message || "Verification failed");
       }
+
+      setVerified(true);
 
       useToast({
         status: "success",
         message: "Captcha Verified!",
       });
+
       onSuccess?.(result);
     } catch (error) {
       const detail =
         error instanceof Error ? error : new Error("Verification failed");
 
+      refresh();
       onError?.(detail);
     } finally {
       setLoading(false);
@@ -289,8 +317,9 @@ export default function Captcha({
         </Box>
       );
     }
+
     return (
-      <Box sx={imageBoxSx}>
+      <Box sx={imageBoxSx} mb={0.5}>
         {imageURL ? (
           <Box component="img" src={imageURL} alt="Text CAPTCHA challenge" />
         ) : (
@@ -306,10 +335,11 @@ export default function Captcha({
     if (loading) {
       return (
         <Box sx={imageBoxSx}>
-          <CaptchaLoader />
+          <CaptchaLoader minHeight={220} />
         </Box>
       );
     }
+
     if (!selectionTiles.length) {
       return (
         <Box sx={imageBoxSx}>
@@ -319,55 +349,78 @@ export default function Captcha({
         </Box>
       );
     }
+
     return (
-      <Box display="flex" justifyContent="center" flexDirection="column">
-        {selectionPromptText ? (
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            px: 1.5,
+            py: 1,
+            mb: 1.5,
+            border: "1px solid #cfe0f5",
+            borderRadius: 1.5,
+            bgcolor: "#f1f7ff",
+            color: "#063686",
+            fontSize: 13,
+            fontWeight: 600,
+            textAlign: "center",
+            lineHeight: 1.3,
+          }}
+        >
+          {selectionPromptText ||
+            "Select all tiles matching the requested shape"}
+        </Box>
+
+        {selectionPrompt && !selectionPromptText && (
           <Box
+            component="img"
+            src={selectionPrompt}
+            alt="Select tiles matching the prompt"
             sx={{
-              mb: 0.5,
-              px: 0.75,
-              py: 0.5,
+              display: "block",
+              width: "100%",
+              height: 20,
+              objectFit: "fill",
               border: "1px solid #d9e1ed",
-              borderRadius: 1,
-              bgcolor: "#f0f6ff",
-              color: "#1e3a8a",
-              fontSize: 12,
-              fontWeight: 600,
-              textAlign: "center",
+              borderBottom: 0,
+              borderRadius: "5px 5px 0 0",
+              mb: 0.5,
             }}
-          >
-            {selectionPromptText}
-          </Box>
-        ) : (
-          selectionPrompt && (
-            <Box
-              component="img"
-              src={selectionPrompt}
-              alt="Select tiles matching the prompt"
-              sx={{
-                display: "block",
-                width: "100%",
-                height: 20,
-                objectFit: "fill",
-                border: "1px solid #d9e1ed",
-                borderBottom: 0,
-                borderRadius: "5px 5px 0 0",
-              }}
-            />
-          )
+          />
         )}
-        <Box display="flex" justifyContent="center">
+
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 1.5,
+            width: "100%",
+            paddingLeft: "48px",
+          }}
+        >
           <Box
             sx={{
-              maxWidth: 170,
               display: "grid",
-              gridTemplateColumns: `repeat(${selectionColumns}, minmax(0, 1fr))`,
-              gap: "3px",
+              gridTemplateColumns: `repeat(${selectionColumns}, 54px)`,
+              gap: "7px",
               justifyContent: "center",
             }}
           >
             {selectionTiles.map((tile) => {
               const selected = selectedTiles.includes(tile.number);
+
               return (
                 <Box
                   component="button"
@@ -376,22 +429,30 @@ export default function Captcha({
                   onClick={() => toggleTile(tile.number)}
                   aria-label={`Select tile ${tile.number}`}
                   sx={{
+                    width: 54,
+                    height: 62,
                     minWidth: 0,
                     p: 0,
                     overflow: "hidden",
                     border: selected
-                      ? "2px solid #1769c2"
+                      ? "3px solid #1769c2"
                       : "2px solid transparent",
-                    borderRadius: "4px",
+                    borderRadius: 1,
                     bgcolor: "#fff",
                     cursor: "pointer",
                     boxShadow: selected
-                      ? "0 0 0 1px rgba(23, 105, 194, 0.2)"
-                      : "none",
+                      ? "0 0 0 2px rgba(23,105,194,.12)"
+                      : "0 1px 3px rgba(15,23,42,.04)",
+                    transition: ".15s ease",
+                    "&:hover": {
+                      transform: "translateY(-1px)",
+                      boxShadow: "0 3px 8px rgba(15,23,42,.14)",
+                    },
                     "& img": {
                       display: "block",
                       width: "100%",
-                      height: "auto",
+                      height: "100%",
+                      objectFit: "cover",
                     },
                   }}
                 >
@@ -400,6 +461,34 @@ export default function Captcha({
               );
             })}
           </Box>
+
+          <IconButton
+            size="small"
+            onClick={switchCaptchaType}
+            disabled={loading}
+            aria-label="Change CAPTCHA type"
+            title="Change CAPTCHA type"
+            sx={{
+              width: 36,
+              height: 36,
+              flexShrink: 0,
+              border: "1px solid #bfd1e8",
+              borderRadius: 1.5,
+              bgcolor: "#f8fbff",
+              color: "#063686",
+              transition: ".2s",
+              "&:hover": {
+                bgcolor: "#eaf3ff",
+                borderColor: "#1769c2",
+                color: "#0c5adb",
+              },
+              "&.Mui-disabled": {
+                opacity: 0.55,
+              },
+            }}
+          >
+            <RefreshIcon sx={{ fontSize: 20 }} />
+          </IconButton>
         </Box>
       </Box>
     );
@@ -407,26 +496,81 @@ export default function Captcha({
 
   function renderPuzzleCaptcha() {
     return (
-      <Box sx={{ width: "100%", overflow: "hidden", borderRadius: 1 }}>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
         {loading ? (
-          <Box sx={imageBoxSx}>
+          <Box sx={{ ...imageBoxSx, maxWidth: 420 }}>
             <CaptchaLoader />
           </Box>
         ) : imageURL ? (
           <Box
-            component="img"
-            src={imageURL}
-            alt="Puzzle CAPTCHA challenge"
             sx={{
-              display: "block",
-              width: "100%",
-              scale: 1.4,
-              maxHeight: 260,
-              objectFit: "contain",
-              border: "1px solid #d9e1ed",
-              borderRadius: 1,
+              position: "relative",
+              width: "fit-content",
+              maxWidth: "100%",
             }}
-          />
+          >
+            <Box
+              sx={{
+                display: "block",
+                width: "100%",
+                maxWidth: 420,
+                maxHeight: 200,
+                overflow: "hidden",
+              }}
+            >
+              <Box
+                component="img"
+                src={imageURL}
+                alt="Puzzle CAPTCHA challenge"
+                sx={{
+                  display: "block",
+                  width: "100%",
+                  height: "100%",
+                  maxWidth: 420,
+                  maxHeight: 230,
+                  objectFit: "contain",
+                  transform: "translateY(-15px) translateX(10px) scale(1.1)",
+                }}
+              />
+            </Box>
+
+            <IconButton
+              size="small"
+              onClick={switchCaptchaType}
+              disabled={loading}
+              aria-label="Change CAPTCHA type"
+              title="Change CAPTCHA type"
+              sx={{
+                position: "absolute",
+                top: "50%",
+                right: -48,
+                transform: "translateY(-50%)",
+                width: 32,
+                height: 32,
+                border: "1px solid #bfd1e8",
+                borderRadius: 1.5,
+                bgcolor: "#f8fbff",
+                color: "#063686",
+                transition: ".2s",
+                "&:hover": {
+                  bgcolor: "#eaf3ff",
+                  borderColor: "#1769c2",
+                  color: "#0c5adb",
+                },
+                "&.Mui-disabled": {
+                  opacity: 0.55,
+                },
+              }}
+            >
+              <RefreshIcon sx={{ fontSize: 18 }} />
+            </IconButton>
+          </Box>
         ) : (
           <Box sx={imageBoxSx}>
             <Typography variant="caption" color="text.secondary">
@@ -458,7 +602,10 @@ export default function Captcha({
             component="img"
             src={imageURL}
             alt="Slider CAPTCHA challenge"
-            sx={{ display: "block", width: "100%" }}
+            sx={{
+              display: "block",
+              width: "100%",
+            }}
           />
         ) : (
           <Box sx={imageBoxSx}>
@@ -467,6 +614,7 @@ export default function Captcha({
             </Typography>
           </Box>
         )}
+
         {!loading && sliderPiece && (
           <Box
             sx={{
@@ -507,6 +655,181 @@ export default function Captcha({
     }
   }
 
+  function getInstruction() {
+    switch (type) {
+      case "slider":
+        return "Move the slider to align the tile";
+      case "puzzle":
+        return "Select the missing piece";
+      case "text":
+        return "";
+      case "image_selection":
+      default:
+        return "";
+    }
+  }
+
+  function renderVerificationStatus() {
+    if (verified) {
+      return (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1.25,
+            px: 1.5,
+            py: 1.35,
+            my: 0.5,
+            border: "1px solid #86efac",
+            borderRadius: 2,
+            bgcolor: "#f0fdf4",
+            boxShadow: "0 3px 10px rgba(22,163,74,.08)",
+          }}
+        >
+          <Box
+            sx={{
+              width: 38,
+              height: 38,
+              flexShrink: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: "50%",
+              bgcolor: "#dcfce7",
+            }}
+          >
+            <CheckIcon
+              sx={{
+                fontSize: 24,
+                color: "#16a34a",
+              }}
+            />
+          </Box>
+
+          <Box sx={{ minWidth: 0 }}>
+            <Typography
+              sx={{
+                fontSize: 15,
+                lineHeight: 1.25,
+                fontWeight: 700,
+                color: "#15803d",
+              }}
+            >
+              Verified you are human
+            </Typography>
+
+            <Typography
+              sx={{
+                mt: 0.25,
+                fontSize: 10.5,
+                color: "#64748b",
+              }}
+            >
+              Verification completed successfully
+            </Typography>
+          </Box>
+        </Box>
+      );
+    }
+
+    if (challengeStarted) {
+      return null;
+    }
+
+    return (
+      <Box
+        component="button"
+        type="button"
+        onClick={startCaptcha}
+        disabled={loading}
+        aria-label="Verify you are human"
+        sx={{
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          gap: 1.25,
+          px: 1.5,
+          py: 1.35,
+          my: 1.5,
+          border: "1px solid #bfd7f4",
+          borderRadius: 2,
+          bgcolor: "#f2f7ff",
+          boxShadow: "0 3px 12px rgba(12,90,219,.06)",
+          cursor: "pointer",
+          textAlign: "left",
+          transition: ".2s ease",
+          "&:hover": {
+            borderColor: "#8db8e8",
+            bgcolor: "#eaf3ff",
+            boxShadow: "0 5px 16px rgba(12,90,219,.1)",
+          },
+          "&:disabled": {
+            cursor: "default",
+            opacity: 0.7,
+          },
+        }}
+      >
+        <Box
+          sx={{
+            position: "relative",
+            width: 38,
+            height: 38,
+            flexShrink: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 1.5,
+            bgcolor: "#dcecff",
+          }}
+        >
+          <Box
+            sx={{
+              width: 22,
+              height: 22,
+              border: "2px solid #0c5adb",
+              borderRadius: 0.75,
+              bgcolor: "#fff",
+              animation: "captchaPulse 1.6s ease-in-out infinite",
+              "@keyframes captchaPulse": {
+                "0%, 100%": {
+                  transform: "scale(1)",
+                  boxShadow: "0 0 0 0 rgba(12,90,219,0)",
+                },
+                "50%": {
+                  transform: "scale(1.08)",
+                  boxShadow: "0 0 0 5px rgba(12,90,219,.12)",
+                },
+              },
+            }}
+          />
+        </Box>
+
+        <Box sx={{ minWidth: 0, flex: 1 }}>
+          <Typography
+            sx={{
+              fontSize: 15,
+              lineHeight: 1.25,
+              fontWeight: 700,
+              color: "#063686",
+            }}
+          >
+            Verify you are human
+          </Typography>
+
+          <Typography
+            sx={{
+              mt: 0.25,
+              fontSize: 10.5,
+              color: "#64748b",
+            }}
+          >
+            Click here to start verification
+          </Typography>
+        </Box>
+      </Box>
+    );
+  }
+
   function renderTextControl() {
     return (
       <TextField
@@ -515,11 +838,14 @@ export default function Captcha({
         value={answer}
         onChange={(event) => setAnswer(event.target.value)}
         placeholder="Enter the visible code"
-        inputProps={{ "aria-label": "CAPTCHA code", autoComplete: "off" }}
+        inputProps={{
+          "aria-label": "CAPTCHA code",
+          autoComplete: "off",
+        }}
         sx={{
           mb: 1,
           "& .MuiInputBase-root": {
-            height: 32,
+            height: 36,
             fontSize: 12,
           },
           "& .MuiOutlinedInput-notchedOutline": {
@@ -540,10 +866,17 @@ export default function Captcha({
 
   function renderPuzzleControl() {
     return (
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 0.5,
+        }}
+      >
         {Array.from({ length: puzzleChoices }, (_, index) => index + 1).map(
           (choice) => {
             const selected = answer === String(choice);
+
             return (
               <Button
                 key={choice}
@@ -578,7 +911,13 @@ export default function Captcha({
 
   function renderSliderControl() {
     return (
-      <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 0.75,
+        }}
+      >
         <Box
           component="input"
           type="range"
@@ -594,6 +933,7 @@ export default function Captcha({
             cursor: "pointer",
           }}
         />
+
         <Typography
           component="output"
           sx={{
@@ -624,20 +964,6 @@ export default function Captcha({
     }
   }
 
-  function getInstruction() {
-    switch (type) {
-      case "slider":
-        return "Move the slider to align the tile";
-      case "image_selection":
-        return "Select every matching tile";
-      case "puzzle":
-        return "Select the missing piece";
-      case "text":
-      default:
-        return "";
-    }
-  }
-
   const canVerify = answer !== "" && answer !== null && answer !== undefined;
 
   return (
@@ -646,99 +972,108 @@ export default function Captcha({
       aria-busy={loading}
       sx={{
         width: "100%",
-        // maxWidth: 280,
         fontSize: 12,
       }}
     >
-      <Box
+      {renderVerificationStatus()}
+
+      <Collapse
+        in={challengeStarted && !verified}
         sx={{
-          display: "flex",
-          alignItems: "center",
-          gap: 0.75,
           width: "100%",
         }}
       >
         <Box
           sx={{
-            flex: 1,
-            minWidth: 0,
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 0.75,
+            width: "100%",
           }}
         >
-          {renderChallenge()}
-        </Box>
-        <IconButton
-          size="small"
-          onClick={switchCaptchaType}
-          disabled={loading}
-          aria-label="Switch CAPTCHA type"
-          title="Switch CAPTCHA type"
-          sx={{
-            width: 28,
-            height: 28,
-            mt: 0.25,
-            border: "1px solid #cbd5e1",
-            borderRadius: 1,
-            bgcolor: "#f8fbff",
-            color: "#245181",
-            "&:hover": {
-              bgcolor: "#e8f1fb",
-              borderColor: "#1769c2",
-              color: "#1769c2",
-            },
-            "&.Mui-disabled": {
-              opacity: 0.55,
-            },
-          }}
-        >
-          <RefreshIcon sx={{ fontSize: 16 }} />
-        </IconButton>
-      </Box>
+          <Box
+            sx={{
+              flex: 1,
+              minWidth: 0,
+            }}
+          >
+            {renderChallenge()}
+          </Box>
 
-      <Box sx={{ mt: 0.75 }}>
-        <Typography
-          component="label"
-          sx={{
-            display: "block",
-            color: "#334155",
-            fontSize: 11,
-            fontWeight: 600,
-          }}
-        >
-          {getInstruction()}
-        </Typography>
+          {type === "text" && (
+            <IconButton
+              size="small"
+              onClick={switchCaptchaType}
+              disabled={loading}
+              aria-label="Change CAPTCHA type"
+              title="Change CAPTCHA type"
+              sx={{
+                width: 32,
+                height: 32,
+                mt: 1,
+                flexShrink: 0,
+                border: "1px solid #bfd1e8",
+                borderRadius: 1.5,
+                bgcolor: "#f8fbff",
+                color: "#063686",
+                transition: ".2s",
+                "&:hover": {
+                  bgcolor: "#eaf3ff",
+                  borderColor: "#1769c2",
+                  color: "#0c5adb",
+                },
+              }}
+            >
+              <RefreshIcon sx={{ fontSize: 18 }} />
+            </IconButton>
+          )}
+        </Box>
+
+        {getInstruction() && (
+          <Typography
+            sx={{
+              mt: 0.75,
+              mb: 0.5,
+              color: "#334155",
+              fontSize: 11,
+              fontWeight: 600,
+            }}
+          >
+            {getInstruction()}
+          </Typography>
+        )}
+
         {renderControl()}
+
         <Button
           type="button"
           variant="contained"
           fullWidth
           onClick={verify}
-          disabled={loading || !canVerify}
+          disabled={loading || !canVerify || verified}
           sx={{
-            mt: 1,
-            height: 38,
-            borderRadius: 3,
-            fontSize: 12,
-            fontWeight: 700,
+            mt: 1.25,
+            height: 40,
+            borderRadius: 2,
+            fontSize: 13,
+            fontWeight: 800,
             textTransform: "none",
             color: "#fff",
             background: "linear-gradient(135deg,#012362,#0b4bb3)",
-            boxShadow: "0 12px 30px rgba(1,35,98,.20)",
-            transition: ".3s",
+            boxShadow: "0 8px 22px rgba(1,35,98,.18)",
+            transition: ".2s",
             "&:hover": {
               background: "linear-gradient(135deg,#001b55,#063686)",
-              boxShadow: "0 18px 40px rgba(1,35,98,.28)",
-            },
-            "&:active": {
-              transform: "translateY(0)",
             },
             "&:disabled": {
-              background: "#f7f7f7",
+              background: "#f1f5f9",
+              color: "#94a3b8",
             },
           }}
         >
           Verify
         </Button>
-      </Box>
+      </Collapse>
     </Box>
   );
 }
@@ -777,20 +1112,26 @@ async function splitSelectionImage(url, rows, columns) {
   const padding = 12;
   const tileWidth = (image.naturalWidth - padding * (columns + 1)) / columns;
   const tileHeight = (image.naturalHeight - padding * (rows + 1)) / rows;
+
   const renderCrop = (x, y, width, height) => {
     const canvas = document.createElement("canvas");
+
     canvas.width = Math.round(width);
     canvas.height = Math.round(height);
+
     canvas
       .getContext("2d")
       .drawImage(image, x, y, width, height, 0, 0, canvas.width, canvas.height);
+
     return canvas.toDataURL("image/png");
   };
+
   return {
     prompt: "",
     tiles: Array.from({ length: rows * columns }, (_, index) => {
       const row = Math.floor(index / columns);
       const column = index % columns;
+
       return {
         number: index + 1,
         url: renderCrop(
@@ -807,10 +1148,14 @@ async function splitSelectionImage(url, rows, columns) {
 async function cropSliderPiece(url, x, y, size) {
   const image = await loadImage(url);
   const canvas = document.createElement("canvas");
+
   canvas.width = Math.round(size);
   canvas.height = Math.round(size);
+
   const ctx = canvas.getContext("2d");
+
   ctx.drawImage(image, x, y, size, size, 0, 0, size, size);
+
   return {
     url: canvas.toDataURL("image/png"),
     naturalWidth: image.naturalWidth || 420,
@@ -821,6 +1166,7 @@ async function cropSliderPiece(url, x, y, size) {
 function loadImage(url) {
   return new Promise((resolve, reject) => {
     const image = new Image();
+
     image.onload = () => resolve(image);
     image.onerror = reject;
     image.src = url;

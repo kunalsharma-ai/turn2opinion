@@ -566,7 +566,7 @@ function FollowUs() {
       <Grid size={12}>
         <Typography
           sx={{
-            fontSize: 15``,
+            fontSize: 15,
             lineHeight: 1.6,
             mb: 1.5,
           }}
