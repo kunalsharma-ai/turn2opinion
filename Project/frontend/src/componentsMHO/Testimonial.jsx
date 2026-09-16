@@ -7,61 +7,94 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 const testimonialsData = [
   {
-    content:
-      "Earn money is never been so easy before, It's very good to share my opinion and get excellent rewards point. I'm so happy to earn money from Turn2Opinion",
-    user: "Praveen Mehta",
-    country: "India",
-  },
-  {
-    content: "Quick redemption. Cheers",
-    user: "Smith",
+    user: "Maya",
     country: "United States",
-  },
-  {
-    content: "Amazing website and one of Best surveys website",
-    user: "Amanda",
-    country: "United States",
-  },
-  {
     content:
-      "The clear design and technical functionality of the surveys are excellent! Very impressive function to explore more surveys.",
-    user: "Eadfrith",
+      "I joined without expecting much, but the experience has been better than I thought. The surveys are straightforward and earning rewards feels simple.",
+  },
+  {
+    user: "Thomas",
+    country: "Ireland",
+    content:
+      "A very easy platform to use. I can complete surveys whenever I have some free time, and I like knowing what the survey is about before starting.",
+  },
+  {
+    user: "Samantha",
+    country: "New Zealand",
+    content:
+      "The whole process is quite smooth. From creating an account to completing surveys, everything is explained clearly and the website is easy to navigate.",
+  },
+  {
+    user: "Ahmed",
+    country: "Saudi Arabia",
+    content:
+      "I have been using the site for a while and the experience has been positive. There are different types of surveys and the interface is very user friendly.",
+  },
+  {
+    user: "Clara",
+    country: "Portugal",
+    content:
+      "What I like most is that I can participate from home whenever I have spare time. The surveys are generally interesting and don't feel complicated.",
+  },
+  {
+    user: "Robert",
+    country: "Sweden",
+    content:
+      "A simple way to participate in market research. I appreciate the clear survey instructions and the professional look of the platform.",
+  },
+  {
+    user: "Fatima",
+    country: "Malaysia",
+    content:
+      "I was searching for a genuine survey platform and decided to give this one a chance. So far, the experience has been convenient and easy to manage.",
+  },
+  {
+    user: "George",
     country: "United Kingdom",
-  },
-  {
-    content: "That's nice website give extra money for interesting services",
-    user: "Haden",
-    country: "Germany",
-  },
-  {
     content:
-      "Easy process for registration, impressive payoff for our feedback ",
-    user: "Oscar",
-    country: "United States",
+      "The website is clean and easy to use. I can quickly see available opportunities and decide which surveys I have time to complete.",
   },
   {
+    user: "Elena",
+    country: "Mexico",
     content:
-      "I really enjoy taking surveys through Turn2opinion. I feel they offer great promotions and reward their users very well. They also have an amazing customer service with timely responses and great follow through. Thank you!",
-    user: "Gaera",
-    country: "United States",
+      "I enjoy giving my opinion on different products and services. Getting rewarded for sharing those opinions makes the experience even better.",
   },
   {
+    user: "Hassan",
+    country: "Egypt",
     content:
-      "I've been using turn2opinion for around 4 or 5 years now, and not once in those years have I had a bad experience. Plenty of different survey engines to work from, and if you don't want to do surveys then you're free to do offers and play mobile games.",
-    user: "Gavin",
-    country: "United States",
+      "The sign-up process was quick and I found the platform very easy to understand. It is a convenient option for using my spare time productively.",
   },
   {
+    user: "Anna",
+    country: "Poland",
     content:
-      "If you like taking surveys this has to be the site for you. There's always plenty of surveys and the money soon mounts up. You can cash out with as little as a $2 via paypal which is far better than sites that make you hang on until you've hit $20+.",
-    user: "Geetika",
-    country: "India",
+      "I have used several online survey platforms, and I really like the simplicity of this one. No confusing steps and the survey information is easy to follow.",
   },
   {
+    user: "Diego",
+    country: "Argentina",
     content:
-      "Whoa, I was so excited when I checked my mail today! My $12 credit reedeem at my paypal account so quickly! Thanks so much, turn2opinion.",
-    user: "Wei",
-    country: "China",
+      "A nice opportunity to share opinions about brands and everyday products. The surveys are easy to access and the overall experience has been good.",
+  },
+  {
+    user: "Chloe",
+    country: "Belgium",
+    content:
+      "I like the flexibility of participating whenever I have a few minutes available. The website is responsive and the survey process is quite simple.",
+  },
+  {
+    user: "Nathan",
+    country: "Philippines",
+    content:
+      "The platform is easy to understand even for someone new to paid surveys. I had no trouble finding my way around and completing my first survey.",
+  },
+  {
+    user: "Yuki",
+    country: "Japan",
+    content:
+      "A convenient way to participate in research while earning rewards. I like the straightforward design and the fact that the survey process is clearly explained.",
   },
 ];
 

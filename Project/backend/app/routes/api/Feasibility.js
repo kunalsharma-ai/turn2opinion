@@ -43,7 +43,7 @@ router
                 delete (filters.Age);
                 filters["$or"] = temp;
             }
-            console.log(filters["$or"])
+            
             let data = await answerController.feasibility(filters)
             return { message, data: data.length };
         },

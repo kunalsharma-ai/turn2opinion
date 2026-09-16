@@ -272,7 +272,10 @@ function CreateOrEditQuestion({ questionID = null, close }) {
     if (!questionID) return;
     api.get(`${endpoint}/${questionID}`).then((resp) => {
       if (resp.status === "success") {
-        form.reset(resp.data);
+        form.reset({
+          ...resp.data,
+          maxSelections: resp.data.maxSelections ?? 0,
+        });
       }
     });
   }, [questionID]);
@@ -288,11 +291,6 @@ function CreateOrEditQuestion({ questionID = null, close }) {
 
   const questionType = form.watch("type");
   const isMultiselect = questionType === "multiselect";
-  React.useEffect(() => {
-    if (questionType === "multiselect") {
-      form.setValue("maxSelections", 0);
-    }
-  }, [questionType]);
 
   return (
     <Grid
