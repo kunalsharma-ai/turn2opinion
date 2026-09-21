@@ -1,30 +1,22 @@
 "use client";
-import { Page } from "@/util";
+import { Page, api } from "@/util";
+import { useQuery } from "@tanstack/react-query";
 import { Controller } from "react-hook-form";
 import {
   FormGroup,
   FormControl,
   FormControlLabel,
-  Radio,
-  RadioGroup,
   Checkbox,
-  Select,
-  MenuItem,
   Grid,
-  Chip,
-  Alert,
-  Stepper,
-  Step,
-  StepLabel,
-  StepConnector,
-  MobileStepper,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
-
+import { useMember } from "@/Context";
+import { Form } from "@/components";
 export default function CheckboxElement({ question, form, options, disabled }) {
   const isQuestionDisabled = disabled || !(question.isEditable ?? true);
   const errors = form?.formState?.errors;
+  const user = useMember();
+  const showPhoneInput =
+    question.name === "communication-methods" && !user?.phone;
   return (
     <Grid
       size={{ xs: 12, md: Number(question?.size) }}
@@ -63,21 +55,41 @@ export default function CheckboxElement({ question, form, options, disabled }) {
           rules={{
             required: question.required ? "This field is required" : false,
           }}
-          defaultValue={[]}
+          defaultValue={
+            question.name === "communication-methods" &&
+            options?.some(
+              (option) =>
+                (typeof option === "string" ? option : option.value) ===
+                "email",
+            )
+              ? ["email"]
+              : []
+          }
           render={({ field }) => {
+            const currentValue = field.value || [];
             const handleChange = (optionValue) => {
-              const currentValue = field.value || [];
               if (currentValue.includes(optionValue)) {
                 field.onChange(currentValue.filter((v) => v !== optionValue));
               } else {
-                // Add value
                 field.onChange([...currentValue, optionValue]);
               }
             };
 
+            const requiresPhone =
+              showPhoneInput &&
+              currentValue.some((value) => ["sms", "phone"].includes(value));
+
             return (
               <>
-                <FormGroup>
+                <FormGroup
+                  row
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    columnGap: 2,
+                    rowGap: 0.5,
+                  }}
+                >
                   {options.map((option) => {
                     const label =
                       typeof option === "string" ? option : option.label;
@@ -89,13 +101,10 @@ export default function CheckboxElement({ question, form, options, disabled }) {
                         control={
                           <Checkbox
                             disabled={isQuestionDisabled}
-                            checked={field.value?.includes(value)}
-                            onChange={() => {
-                              handleChange(value);
-                            }}
+                            checked={currentValue.includes(value)}
+                            onChange={() => handleChange(value)}
                             sx={{
-                              color: "#fff",
-                              "&.Mui-checked": {
+                              "& .MuiSvgIcon-root": {
                                 color: "#fff",
                               },
                             }}
@@ -107,7 +116,7 @@ export default function CheckboxElement({ question, form, options, disabled }) {
                   })}
                 </FormGroup>
 
-                {errors[question.name] && (
+                {errors?.[question.name] && (
                   <Page.Text
                     color="error"
                     variant="caption"
@@ -116,11 +125,63 @@ export default function CheckboxElement({ question, form, options, disabled }) {
                     {errors[question.name].message}
                   </Page.Text>
                 )}
+                {requiresPhone && (
+                  <PhoneInput
+                    form={form}
+                    disabled={isQuestionDisabled}
+                    errors={errors}
+                  />
+                )}
               </>
             );
           }}
         />
       </FormControl>
+    </Grid>
+  );
+}
+function PhoneInput({ form, disabled, errors }) {
+  const phoneFieldName = "phone";
+  const value = form.watch(phoneFieldName);
+  const { data: { country } = {} } = useQuery({
+    queryKey: ["country"],
+    queryFn: async () => {
+      const resp = await api.get("/api/v1/get-country");
+      resp.country = resp.country.toLowerCase().trim();
+      return resp;
+    },
+    enabled: [undefined, null].includes(value),
+  });
+
+  const lockCountry = {
+    disableDropdown: !Boolean(value),
+    ...(!value && country
+      ? {
+          selectedCountry: country,
+          disableDropdown: true,
+        }
+      : {}),
+  };
+
+  return (
+    <Grid size={{ xs: 12, sm: 3 }} sx={{ mt: 1 }}>
+      <Page.Text
+        sx={{
+          fontWeight: 600,
+          mb: 0.5,
+          color: (theme) => theme.palette.cardtext.main,
+        }}
+      >
+        Phone number for communication
+      </Page.Text>
+
+      <Form.Phone
+        name={phoneFieldName}
+        control={form.control}
+        disabled={disabled && Boolean(value)}
+        {...lockCountry}
+        errors={errors?.[phoneFieldName]}
+      />
     </Grid>
   );
 }

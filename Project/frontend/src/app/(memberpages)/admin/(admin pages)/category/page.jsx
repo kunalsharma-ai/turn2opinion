@@ -242,7 +242,7 @@ function CreateOrEditCategory({ categoryID = null, close, categories }) {
             control={control}
             {...form.register("qualityScoreScale")}
             type="number"
-            label="Quality Score Scale"
+            label="Max Quality Score"
           />
         </Grid>
         <Grid size={6}>

@@ -92,7 +92,10 @@ export default function MemberHeader() {
             gap={{ xs: 0, md: 2 }}
             pb={1}
           >
-            <QualityScore value={user?.qualityScore ?? 0} total={200} />
+            <QualityScore
+              value={user?.qualityScore ?? 0}
+              total={user?.qualityScoreTotal ?? 0}
+            />
             <MemberNotification />
 
             <Button
@@ -199,7 +202,9 @@ const QualityScore = ({ value, total }) => {
       gap={0}
     >
       <Box>
-        <Typography sx={{ color: "secondary.main", fontSize: "18px", fontWeight:600 }}>
+        <Typography
+          sx={{ color: "secondary.main", fontSize: "18px", fontWeight: 600 }}
+        >
           Quality Score -{" "}
           <Typography
             component={"span"}

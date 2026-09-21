@@ -19,6 +19,7 @@ import llmRouter from "./api/llm.js"
 import integrationRoutes from "./api/integrationRoutes.js";
 import validationRoutes from "./api/Validation.js";
 import socialsRouter from "./api/Socials.js";
+import cpiRouter from "./api/CPI.js";
 import { isAuthenticated } from "../utils/index.js";
 import followSocialRouter from "./api/FollowSocial.js";
 
@@ -52,6 +53,7 @@ router
     .use("/api/v1/change-email", changeEmail)
     .use("/api/v1/feasibility", feasibilityRouter)
     .use("/api/v1/filtered-users", feasibilityRouter)
+    .use("/api/v1/cpi",cpiRouter)
     .use("/api/v1/project-dev", projectRouter)
     .use("/api/v1/me", isAuthenticated, meRouter)
     .use("/api/v1/response", isAuthenticated, meResponse)

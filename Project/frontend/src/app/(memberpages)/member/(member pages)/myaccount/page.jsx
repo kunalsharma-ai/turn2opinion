@@ -293,6 +293,14 @@ function UserInfo({ user }) {
       profilePicture: user.profilePicture ?? "/images/logo/user.png",
     });
   }, [user]);
+
+  const rating =
+    user?.qualityScoreTotal > 0
+      ? Math.round(
+          ((user?.qualityScore ?? 0) / user.qualityScoreTotal) * 5 * 2,
+        ) / 2
+      : 0;
+
   const userData = [
     {
       icon: <CakeIcon sx={{ fontSize: 18 }} />,
@@ -414,16 +422,25 @@ function UserInfo({ user }) {
               </Typography>
             </>
           )}
+
           <Rating
             name="account-rating"
-            value={5 * ((user?.qualityScore ?? 0) / 200)}
+            value={rating}
             precision={0.5}
             readOnly
             size="large"
             emptyIcon={
-              <StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />
+              <StarIcon
+                style={{ opacity: 0.28, color: "#fff" }}
+                fontSize="inherit"
+              />
             }
-            sx={{ pb: 2 }}
+            sx={{
+              pb: 2,
+              "& .MuiRating-iconFilled": {
+                color: "#FFD54F",
+              },
+            }}
           />
         </Grid>
         <Grid
@@ -650,11 +667,17 @@ function Payment() {
       >
         {payment?.method ? (
           <Grid container size={12} alignItems="center" py={{ xs: 0, md: 1 }}>
-            <Typography
-              width={{ xs: "100%", lg: "40%" }}
-              fontWeight={payment.method === "Wire Transfer" ? 600 : 500}
-            >
-              {payment.method}:
+            <Typography>
+              {payment.method === "wire-transfer"
+                ? "Wire Transfer"
+                : payment.method === "upi"
+                  ? "UPI"
+                  : payment.method === "amazon-gift-card"
+                    ? "Amazon Gift Card"
+                    : payment.method === "paypal"
+                      ? "PayPal"
+                      : payment.method}{" "}
+              Details:
             </Typography>
 
             <Grid size={12} mt={1.5}>
@@ -732,10 +755,9 @@ function Payment() {
         title="Select Payment Method"
         maxWidth="md"
         open={openPayment}
-        onClose={async() => {
+        onClose={async () => {
           await member.Reload();
-          setOpenPayment(false)
-          
+          setOpenPayment(false);
         }}
       >
         <Grid

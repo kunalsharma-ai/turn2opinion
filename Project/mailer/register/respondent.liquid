@@ -64,7 +64,7 @@
                 line-height: 38px;
                 color: #14245d;
               ">
-              Thank you for registering with Turn2Opinion – your opinion matters 
+              Thank you for registering with Turn2Opinion – your opinion matters   
               and creates a better tomorrow.
             </p>
           </td>
@@ -105,7 +105,7 @@
                       font-size: 20px;
                       line-height: 34px;
                     ">
-                    To complete your registration and activate your account, 
+                    To complete your registration and activate your account,   
                     please verify your email address by clicking the link below:
                   </p>
 
@@ -121,6 +121,31 @@
                     ">
                     VERIFY EMAIL ADDRESS
                   </a>
+                  <p style="
+      margin:18px 0 0;
+      font-size:16px;
+      line-height:20px;
+      color#7b8794;
+    ">
+                    Or copy and paste the URL below into your browser to continue:
+                  </p>
+
+                  <p style="
+      margin:8px 0 0;
+      font-size:16px;
+      line-height:20px;
+      word-break:break-all;
+      color:#0D5CC7;
+    ">
+                    http://{{ user.origin }}/auth/password?user={{ user._id }}&code={{ otp.code }}</p>
+                  <p style="
+      margin:15px 0 0;
+      font-size:16px;
+      line-height:20px;
+      color:#7b8794;
+    ">
+                    This link will expire after 24 hours.
+                  </p>
                 </td>
               </tr>
             </table>

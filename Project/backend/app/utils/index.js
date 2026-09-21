@@ -14,3 +14,6 @@ export { default as Token } from "./token.js";
 export { default as getMailer } from "./getMailer.js";
 export { default as sendMail } from "./sendMail.js";
 export { default as translate } from "./translate.js";
+export { cpi } from "./CPI.js";
+import Feasibility from "./Feasibility.js";
+export const staticFeasibility = new Feasibility("./app/dataBank")

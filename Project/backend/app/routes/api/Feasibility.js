@@ -1,6 +1,7 @@
 import express from "express";
 import { User as userController, Answer as answerController } from "../../controller/index.js";
-import { expressRoute, expressView, isAuthenticated, fsLogger, getMailer, sendMail, Token } from "../../utils/index.js"
+import { expressRoute, expressView, isAuthenticated, fsLogger, getMailer, sendMail, Token, staticFeasibility } from "../../utils/index.js"
+import { asyncHandler, HttpError } from "express-web-tools";
 
 const router = express.Router();
 router
@@ -43,9 +44,11 @@ router
                 delete (filters.Age);
                 filters["$or"] = temp;
             }
-            
             let data = await answerController.feasibility(filters)
-            return { message, data: data.length };
+            const country = filters.country;
+            if (!country || country.length === 0) throw new HttpError(402, "Invalid request")
+            const staticCount = staticFeasibility.feasibility(country[0], Object.fromEntries(Object.entries(filters).filter(v => v[0] !== "country")))
+            return { message, data: data.length + staticCount };
         },
         answerController
     ))
@@ -59,6 +62,38 @@ router
                 return { message, data: data };
             },
             userController
+        )
+    )
+router
+    .route("/options/:country/:field")
+    .post(
+        asyncHandler(
+            async (req, res) => {
+                const data = staticFeasibility.getOptions(req.params.country, req.params.field);           
+                console.log({
+                    status: "success",
+                    data
+                })
+                return res.json({
+                    status: "success",
+                    data
+                })
+            }
+        )
+    )
+    .get(
+        asyncHandler(
+            async (req, res) => {
+                const data = staticFeasibility.getOptions(req.params.country, req.params.field);
+                console.log({
+                    status: "success",
+                    data
+                })
+                return res.json({
+                    status: "success",
+                    data
+                })
+            }
         )
     )
 export default router;

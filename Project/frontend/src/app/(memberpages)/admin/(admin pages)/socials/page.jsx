@@ -326,8 +326,13 @@ function CreateOrEditSocials({ socialID = null, onClose, socials }) {
 
 function ManageReward() {
   const [isLoading, setIsLoading] = React.useState(false);
-  const [users, setUsers] = React.useState([{}]);
-  const [open, setOpen] = React.useState({ open: false, id: null });
+  const [users, setUsers] = React.useState([]);
+  const [open, setOpen] = React.useState({
+    open: false,
+    data: null,
+  });
+  const [status, setStatus] = React.useState("");
+
   React.useEffect(() => {
     loadData(
       api.get(`/api/v1/follow-social/verify`),
@@ -339,7 +344,37 @@ function ManageReward() {
       },
     );
   }, []);
-  // return <pre>{JSON.stringify(users,null,2)}</pre>
+
+  const handleOpen = (data) => {
+    setOpen({
+      open: true,
+      data,
+    });
+    setStatus(data.status || "pending");
+  };
+
+  const handleClose = () => {
+    setOpen({
+      open: false,
+      data: null,
+    });
+    setStatus("");
+  };
+
+  const handleSave = async () => {
+    if (!open.data?._id || !status) return;
+    const response = await api.put(
+      `/api/v1/follow-social/verify/${open.data._id}`,
+      {
+        status,
+      },
+    );
+    useToast(response);
+    if (response?.status === "success") {
+      handleClose();
+    }
+  };
+
   return (
     <Page.Box
       sx={{
@@ -353,14 +388,12 @@ function ManageReward() {
             id: "name",
             label: "User Name",
             width: "320px",
-            // data: "name",
             render: (info) => (
               <>
-                {info?.created?.By?.name?.first} {info?.created?.By?.name?.last}
+                {info?.created?.By?.name?.first} {info?.created?.By?.name?.last}{" "}
                 ({info?.created?.By?.mail})
               </>
             ),
-            // feature: ["searchable"],
           },
           {
             id: "platform",
@@ -385,12 +418,7 @@ function ManageReward() {
             id: "screenshot",
             label: "Attachment",
             render: (info) => (
-              <Button
-                sx={{ p: 0 }}
-                onClick={() => {
-                  setOpen({ open: true, id: info.screenshot });
-                }}
-              >
+              <Button sx={{ p: 0 }} onClick={() => handleOpen(info)}>
                 View Screenshot
               </Button>
             ),
@@ -399,9 +427,9 @@ function ManageReward() {
             id: "status",
             label: "Status",
             render: (d) => (
-              <Page.Box display={"flex"} gap={1} alignItems={"center"}>
+              <Page.Box display="flex" gap={1} alignItems="center">
                 <Chip
-                  variant="outlined"
+                  variant="contained"
                   label={d.status}
                   color={
                     d.status === "approved"
@@ -411,14 +439,11 @@ function ManageReward() {
                         : "warning"
                   }
                   size="small"
-                  sx={{ textTransform: "capitalize", px: 1 }}
+                  sx={{
+                    textTransform: "capitalize",
+                    px: 1,
+                  }}
                 />
-                {/* <IconButton
-                    sx={{ fontSize: 14, color: "error.main" }}
-                    title="Undo"
-                  >
-                    <i className="fa-solid fa-rotate-left" />
-                  </IconButton> */}
               </Page.Box>
             ),
           },
@@ -430,9 +455,6 @@ function ManageReward() {
         hideColumnSelector
         hideDownload
         noDataMsg="No Record Found."
-        add={() => {
-          setOpen({ open: true, id: null });
-        }}
         title={
           <Page.Text
             sx={{
@@ -452,41 +474,103 @@ function ManageReward() {
       <PopUp
         open={open.open}
         title="Submitted Screenshot"
-        maxWidth="lg"
-        onClose={() => setOpen({ open: false, id: null })}
+        maxWidth="sm"
+        onClose={handleClose}
       >
-        <Page.Box p={2}>
-          <img
-            src={`/social/screenshots/${open.id}`}
-            style={{ maxWidth: "100%" }}
-          />
-          <Grid size={12} justifyContent="flex-end" spacing={2} container p={2}>
-            <Page.Select
-              label="status"
-              onChange={() => {}}
-              options={[
-                { label: "Approve", value: "approve" },
-                { label: "Reject", value: "reject" },
-              ]}
-            />
-            <Page.Box display={"flex"} gap={1} alignItems={"center"}>
+        <Page.Box
+          sx={{
+            width: "100%",
+            maxWidth: 560,
+            mx: "auto",
+            p: { xs: 1.5, sm: 2 },
+          }}
+        >
+          <Page.Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              overflow: "hidden",
+              borderRadius: 1,
+              bgcolor: "grey.100",
+              p: 1,
+            }}
+          >
+            {open.data?.screenshot && (
+              <img
+                src={`/social/screenshots/${open.data.screenshot}`}
+                alt="Submitted screenshot"
+                style={{
+                  display: "block",
+                  width: "100%",
+                  height: "auto",
+                  maxHeight: "60vh",
+                  objectFit: "contain",
+                }}
+              />
+            )}
+          </Page.Box>
+
+          <Grid container spacing={2} alignItems="center" sx={{ mt: 1 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Page.Select
+                label="Status"
+                value={status}
+                onChange={(e) => {
+                  setStatus(e.target.value);
+                }}
+                options={[
+                  {
+                    label: "Pending",
+                    value: "pending",
+                  },
+                  {
+                    label: "Approve",
+                    value: "approved",
+                  },
+                  {
+                    label: "Reject",
+                    value: "declined",
+                  },
+                ]}
+                fullWidth
+              />
+            </Grid>
+
+            <Grid
+              size={{ xs: 12, sm: 6 }}
+              sx={{
+                display: "flex",
+                justifyContent: {
+                  xs: "stretch",
+                  sm: "flex-end",
+                },
+                gap: 1,
+              }}
+            >
               <Page.MuiButton
-                onClick={() => setOpen({ open: false, id: null })}
+                onClick={handleClose}
                 variant="outlined"
-                sx={{ textTransform: "none" }}
+                sx={{
+                  textTransform: "none",
+                  flex: { xs: 1, sm: "unset" },
+                }}
               >
                 Cancel
               </Page.MuiButton>
               <Page.MuiButton
-                onClick={() => {
-                  setOpen({ open: false, id: null });
-                }}
+                onClick={handleSave}
                 variant="contained"
-                sx={{ textTransform: "none" }}
+                disabled={!status || status === open.data?.status}
+                sx={{
+                  textTransform: "none",
+                  flex: { xs: 1, sm: "unset" },
+                }}
               >
                 Save
               </Page.MuiButton>
-            </Page.Box>
+            </Grid>
           </Grid>
         </Page.Box>
       </PopUp>

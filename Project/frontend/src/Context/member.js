@@ -15,72 +15,92 @@ async function loadUserInfo() {
     let temp = await api.get(`/api/v1/me`);
     if (temp.status === "error") throw new Error(temp.message);
     if ("data" in temp)
-      return { ...temp.data, fullname: temp.data.fullName, firstname: temp?.data?.name?.first, lastname: temp?.data?.name?.last }
-
+      return {
+        ...temp.data,
+        fullname: temp.data.fullName,
+        firstname: temp?.data?.name?.first,
+        lastname: temp?.data?.name?.last,
+      };
   } catch (error) {
     throw new Error(error.message);
   }
 }
 class ValidUser {
   constructor(userinfo, router) {
-    this.userinfo = userinfo
-    this.router = router
+    this.userinfo = userinfo;
+    this.router = router;
   }
   termsAccepted() {
-    return ("terms" in this.userinfo && this.userinfo.terms instanceof Array && this.userinfo.terms.length !== 0)
+    return (
+      "terms" in this.userinfo &&
+      this.userinfo.terms instanceof Array &&
+      this.userinfo.terms.length !== 0
+    );
   }
   emailVerified() {
-    return ("isVerified" in this.userinfo && "email" in this.userinfo.isVerified && this.userinfo.isVerified.email === "verified")
+    return (
+      "isVerified" in this.userinfo &&
+      "email" in this.userinfo.isVerified &&
+      this.userinfo.isVerified.email === "verified"
+    );
   }
   async hasCompletedWelcomeSurvey() {
     try {
       let temp = await api.post(`/api/v1/response`, {
         ["survey.slug"]: "welcome",
-        "status": "complete"
+        status: "complete",
       });
       if (temp.status === "error") {
         return false;
       }
-      return ("data" in temp && Array.isArray(temp.data) && temp.data.length === 1)
+
+      return (
+        "data" in temp && Array.isArray(temp.data) && temp.data.length === 1
+      );
     } catch (error) {
       console.error(error);
       return false;
     }
   }
   isAdmin() {
-    return ("role" in this.userinfo && ["root", "admin"].includes(this.userinfo.role))
+    return (
+      "role" in this.userinfo && ["root", "admin"].includes(this.userinfo.role)
+    );
   }
   async allowAccess(pathname) {
     if (pathname.startsWith("/admin")) {
-      if (!this.isAdmin()) return this.router.replace("/")
+      if (!this.isAdmin()) return this.router.replace("/");
     }
     if (pathname.startsWith("/member")) {
-      if (!this.emailVerified()) return this.router.replace(`/?verifyemail=${this.userinfo.mail}`)
-      if (!this.termsAccepted()) return this.router.replace("/auth/terms")
-      if (!(await this.hasCompletedWelcomeSurvey())) return this.router.replace("/survey?name=welcome")
+      if (!this.emailVerified())
+        return this.router.replace(`/?verifyemail=${this.userinfo.mail}`);
+
+      if (!this.termsAccepted()) return this.router.replace("/auth/terms");
+
+      if (!(await this.hasCompletedWelcomeSurvey()))
+        return this.router.replace("/survey?name=welcome");
     }
   }
 }
 export function MemberProvider({ children }) {
-  const [isLoading, setIsLoading] = React.useState(true)
+  const [isLoading, setIsLoading] = React.useState(true);
   const [reload, setReload] = useState(1);
   const [me, setMe] = useState(null);
+  const [categories, setCategories] = useState([]);
   const [router, pathname] = [useRouter(), usePathname()];
   function Reload() {
-    setReload(reload + 1)
+    setReload(reload + 1);
   }
   function update(data) {
-    if (!Boolean(data))
-      updateMe(null)
-    else
-      updateMe(data)
+    if (!Boolean(data)) updateMe(null);
+    else updateMe(data);
   }
   async function Logout() {
-    await api.delete("/api/v1/me")
+    await api.delete("/api/v1/me");
     if (typeof window === "undefined") return;
     localStorage.clear();
     Reload();
-    router.replace("/")
+    router.replace("/");
   }
 
   function updateMe(data) {
@@ -89,37 +109,65 @@ export function MemberProvider({ children }) {
       Reload,
       Logout,
       update,
-    })
+    });
   }
+
+  useEffect(() => {
+    api
+      .get(`/api/v1/category/`)
+      .then((resp) => {
+        if (resp.status === "success") {
+          setCategories(resp.data || []);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load categories", err);
+      });
+  }, []);
 
   useEffect(() => {
     setIsLoading(true);
     loadUserInfo()
       .then((resp) => {
-        let user = new ValidUser(resp, router)
-        user.allowAccess(pathname)
-        updateMe(resp)
+        let user = new ValidUser(resp, router);
+        user.allowAccess(pathname);
+        updateMe(resp);
       })
       .catch((err) => {
         setMe(null);
       })
       .finally(() => {
         setIsLoading(false);
-      })
+      });
   }, [reload, pathname]);
   useEffect(() => {
-    if (isLoading) return () => { };
-    api
-      .get(`/api/v1/me/profile`)
-      .then(resp => {
-        
-        update({...me, ...resp.data})
-      })
-  }, [isLoading])
-  return <MemberContext.Provider value={ me }>{ children }</MemberContext.Provider>;
+    if (isLoading || !me) return;
+    api.get(`/api/v1/me/profile`).then((resp) => {
+      update({
+        ...me,
+        ...resp.data,
+      });
+    });
+  }, [isLoading]);
+
+  const qualityScoreTotal =
+    categories.find(
+      (item) =>
+        item?.name?.trim().toLowerCase() === me?.category?.trim().toLowerCase(),
+    )?.qualityScoreScale ?? 0;
+
+  const member = me
+    ? {
+        ...me,
+        qualityScoreTotal,
+      }
+    : null;
+
+  return (
+    <MemberContext.Provider value={member}>{children}</MemberContext.Provider>
+  );
 }
 
 export function useMember() {
   return useContext(MemberContext);
 }
-//*/
