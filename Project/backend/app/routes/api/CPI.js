@@ -18,7 +18,7 @@ router
     .post(asyncHandler(
         async (req, res) => {
             const data = cpi.calculate(
-                projectCategories[req.body.category] ?? "",
+                (req.body.category instanceof Array ? req.body.category : [req.body.category]).map(category => projectCategories[category] ?? category),
                 req.body.subcategory,
                 req.body.ir,
                 req.body.loi,

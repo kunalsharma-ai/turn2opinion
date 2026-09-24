@@ -55,9 +55,16 @@ export class CPI {
         return factor.value;
     }
     categoryEffect(category, subcategory) {
-        let factor = this.#categoryAndLOI[category].find(j => subcategory.toLowerCase() === j[0].toLowerCase());
-        if (!factor) throw new Error("Out of bound")
-        return factor;
+        let factor = [];
+        let temp = (category instanceof Array) ?
+            category.map(cat => this.#categoryAndLOI[cat]) :
+            [this.#categoryAndLOI[category]];
+            console.log({
+                category,subcategory
+            })
+        return temp.flatMap(v => {
+            return ((subcategory instanceof Array) ? subcategory : [subcategory]).map(o => v.find(val => val[0].toLowerCase() === o.toLowerCase()))
+        }).filter(v => Boolean(v));
     }
     getCategories(group) {
         if (!(group in this.#categoryAndLOI)) return [];
@@ -83,11 +90,16 @@ export class CPI {
         geography
     ) {
         const irFactor = this.irEffect(ir);
-        const categoryFactor = this.categoryEffect(category, subcategory);
-        const loiIndex = this.LOIIndex(loi);
         const geoFactor = this.geoFactor(geography);
-        // console.log([loiIndex, irFactor, categoryFactor[1], categoryFactor[2 + loiIndex], geoFactor * 100])
-        return Math.round(irFactor * categoryFactor[1] * categoryFactor[2 + loiIndex] * geoFactor * 100) / 100
+        const loiIndex = this.LOIIndex(loi);
+        const categoryFactors = this.categoryEffect(category, subcategory);
+        let temp = categoryFactors
+            .map(categoryFactor => {
+                return Math.round(irFactor * categoryFactor[1] * categoryFactor[2 + loiIndex] * geoFactor * 100) / 100
+            })
+            console.log(temp);
+        return Math.max(...temp)
+        // .max()
     }
 }
 
