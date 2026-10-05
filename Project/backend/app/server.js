@@ -6,8 +6,8 @@ import pureIP from "express-pureip";
 import mongoose from "mongoose";
 import appRoute from "./routes/index.js";
 import compression from "compression";
-import { setOrigin, expressRoute, fsLogger } from "./utils/index.js";
-
+import { setOrigin, expressRoute, fsLogger,loadModule } from "./utils/index.js";
+loadModule("app/new-module/index.js");
 (async () => {
     const env = {
         port: process.env.port ?? 3000,
@@ -19,10 +19,10 @@ import { setOrigin, expressRoute, fsLogger } from "./utils/index.js";
         .set("view-engine", "twig")
         .set('views', "views")
         .use([
-            (req, res, next) => {
-                console.log("Request received at", req.path);
-                next()
-            },
+            // (req, res, next) => {
+            //     console.log("Request received at", req.path);
+            //     next()
+            // },
             compression(),
             express.static("/src/public"),
             cors({
@@ -71,6 +71,10 @@ import { setOrigin, expressRoute, fsLogger } from "./utils/index.js";
                 uploadTimeout: 30000
             }),
             setOrigin,
+            (r,s,n)=>{
+                console.log(`[${(new Date()).toISOString()}]${r.method}:${r.path}`)
+                n();
+            },
             appRoute,
             errorRoute,
         ])
@@ -93,6 +97,7 @@ import { setOrigin, expressRoute, fsLogger } from "./utils/index.js";
 })();
 
 async function errorRoute(error, req, res, next) {
+    console.log({error})
     let { status, message } = error;
     if (isNaN(status)) status = 500;
     fsLogger.Log(`Error: ${error.message}`, {

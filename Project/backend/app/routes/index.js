@@ -27,12 +27,11 @@ import meRouter from "./api/Me.js";
 import changeEmail from "./api/changeEmail.js"
 const router = express.Router();
 router
-
     .use("/api/v1/llm", llmRouter)
     .use("/api/v1/newsletter", (r, s) => {
         console.log(r);
         const { body, files } = r;
-        console.log({ body, files })
+        // console.log({ body, files })
         return s.json({
             status: "error",
             message: "under development"
@@ -53,7 +52,7 @@ router
     .use("/api/v1/change-email", changeEmail)
     .use("/api/v1/feasibility", feasibilityRouter)
     .use("/api/v1/filtered-users", feasibilityRouter)
-    .use("/api/v1/cpi",cpiRouter)
+    .use("/api/v1/cpi", cpiRouter)
     .use("/api/v1/project-dev", projectRouter)
     .use("/api/v1/me", isAuthenticated, meRouter)
     .use("/api/v1/response", isAuthenticated, meResponse)
@@ -66,3 +65,44 @@ router
 // router
 //     .use("/api/v1/respondent",respondentRouter)
 export default router;
+
+
+
+function responseTimeout(timeout = 30_000) {
+    return (req, res, next) => {
+        console.log("Setting up timer for 30 sec")
+        let finished = false;
+        
+        const clock = setInterval(() => {            
+            console.log((new Date).toISOString());
+        }, 1000)
+        const timer = setTimeout(() => {
+            if (finished) return;
+            console.log("stopping clock")
+            clearInterval(clock);
+            finished = true;
+
+            const error = new Error(
+                `Request timeout after ${timeout / 1000} seconds`
+            );
+            console.log("Timeout")
+            error.status = 504;
+            error.code = 'REQUEST_TIMEOUT';
+
+            next(error);
+        }, timeout);
+
+        const cleanup = () => {
+            if (finished) return;
+            console.log("cleaing clock")
+            clearInterval(clock)
+            finished = true;
+            clearTimeout(timer);
+        };
+
+        res.once('finish', cleanup);
+        res.once('close', cleanup);
+
+        next();
+    };
+}

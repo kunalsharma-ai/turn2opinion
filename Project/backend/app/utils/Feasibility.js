@@ -32,7 +32,7 @@ class Feasibility {
         return temp.weight;
     }
     getOptions(country, field) {
-        console.log(country,field)
+        // console.log(country,field)
         return this
             .#distribution
             .filter(
@@ -56,13 +56,12 @@ class Feasibility {
     feasibility(country, filters) {
         let population = this.#population[country];
         const entries = Object.entries(filters);
-
         const combinations = cartesian(
             ...entries.map(([field, values]) =>
                 values.map(value => ({ field, value }))
             )
         );
-
+        console.log(combinations);
         let count = combinations
             .map(combination => {
                 const filter = Object.fromEntries(
@@ -81,23 +80,3 @@ class Feasibility {
     }
 }
 export default Feasibility;
-// ; (async () => {
-//     let db = new Feasibility()
-//     console.log(db.feasibility(
-//         "IN",
-//         {
-//             gender: [
-//                 "Female"
-//             ],
-//             children: [
-//                 "0-2 Years"
-//             ],
-//             education: [
-//                 "Some college - no degree"
-//             ],
-//             ethnicity: [
-//                 "Dravidian"
-//             ]
-//         }
-//     ))
-// })()

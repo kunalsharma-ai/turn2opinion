@@ -5,6 +5,8 @@ import { InputTextField, RequiredLabel } from "../forms";
 import getOptions from "@/util/getOptions";
 import { Link } from "@/util/page";
 import { InputAdornment, Grid } from "@mui/material";
+import {useTheme} from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { IconButton, Tooltip, LinearProgress } from "@mui/material";
@@ -103,6 +105,9 @@ export default function Input({
     color: "",
     strength: "",
   });
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const tooltipPlacement = isMobile ? "top-end" : "right";
 
   let pValue;
   if (parent) {
@@ -214,7 +219,7 @@ export default function Input({
                   <Tooltip
                     title={ ParseErrorMessage({ error: errorMessage }) }
                     arrow
-                    placement="top-end"
+                    placement={tooltipPlacement}
                     slots={ {
                       transition: Zoom,
                     } }
@@ -262,7 +267,7 @@ export default function Input({
                   <Tooltip
                     title={ ParseErrorMessage({ error: errorMessage }) }
                     arrow
-                    placement="top-end"
+                    placement={tooltipPlacement}
                     slots={ {
                       transition: Zoom,
                     } }

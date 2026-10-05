@@ -7,6 +7,7 @@ export default mongooseModel(
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     channel: { type: String, required: true },
     code: { type: String, required: true },
+    createdAt: { type: Date, default: Date.now },
     expiresAt: { type: Date, default: (Date.now() + 900) }
   },
   [
@@ -20,7 +21,19 @@ export default mongooseModel(
 
         // check for existing OTP
         const existing = await OTPModel.findOne({ user, channel, origin });
-        if (existing) return existing;
+        // if (existing) return existing;
+        if (existing) {
+        const timePassed = Date.now() - new Date(existing.createdAt).getTime();
+
+        if (timePassed < 60 * 1000) {
+            return {
+                cooldown: true,
+                remaining: Math.ceil((60 * 1000 - timePassed) / 1000)
+            };
+        }
+        // 60 seconds passed, create a new OTP
+        await OTPModel.deleteOne({ _id: existing._id });
+    }
 
         const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
 

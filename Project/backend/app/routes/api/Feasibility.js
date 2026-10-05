@@ -19,13 +19,13 @@ router
         async req => {
             let message = "";
             let filters = Object.fromEntries(Object.entries(req.body).map(fltr => {
-                console.log(fltr)
                 if (fltr[1] instanceof Array) return fltr;
                 if (fltr[0] === "Country") {
                     return ["country", Object.keys(fltr[1])]
                 }
                 return [fltr[0], Object.keys(fltr[1])]
             }))
+            // console.log(filters)
             if ("Age" in filters) {
                 let temp = filters.Age.map(age => {
                     console.log(age)
@@ -44,10 +44,15 @@ router
                 delete (filters.Age);
                 filters["$or"] = temp;
             }
+            console.log("searching data")
             let data = await answerController.feasibility(filters)
             const country = filters.country;
             if (!country || country.length === 0) throw new HttpError(402, "Invalid request")
-            const staticCount = staticFeasibility.feasibility(country[0], Object.fromEntries(Object.entries(filters).filter(v => v[0] !== "country")))
+            console.log("Loading static data")
+            const staticCount =0/* staticFeasibility.feasibility(
+                country[0],
+                Object.fromEntries(Object.entries(filters).filter(v => v[0] !== "country"))
+            )//*/
             return { message, data: data.length + staticCount };
         },
         answerController
@@ -69,11 +74,7 @@ router
     .post(
         asyncHandler(
             async (req, res) => {
-                const data = staticFeasibility.getOptions(req.params.country, req.params.field);           
-                console.log({
-                    status: "success",
-                    data
-                })
+                const data = staticFeasibility.getOptions(req.params.country, req.params.field);
                 return res.json({
                     status: "success",
                     data
@@ -85,10 +86,6 @@ router
         asyncHandler(
             async (req, res) => {
                 const data = staticFeasibility.getOptions(req.params.country, req.params.field);
-                console.log({
-                    status: "success",
-                    data
-                })
                 return res.json({
                     status: "success",
                     data

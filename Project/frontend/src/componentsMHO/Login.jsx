@@ -280,7 +280,7 @@ function LoginCard({ onClose, setCardType, setOpenSignUp, socials }) {
               if (value !== null) setLoginType(value);
             }}
             sx={{
-              display: "flex",
+              display: "none",
               flexWrap: "nowrap",
               "& .MuiToggleButton-root": {
                 textTransform: "none",

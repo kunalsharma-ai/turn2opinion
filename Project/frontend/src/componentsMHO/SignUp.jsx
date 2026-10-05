@@ -75,6 +75,27 @@ const socialIcons = {
   instagram: <Instagram sx={{ color: "#E4405F", fontSize: "22px" }} />,
 };
 
+const SALUTATION_OPTIONS = [
+  { value: "Mr.", label: "Mr.", genderBased: true },
+  { value: "Ms.", label: "Ms.", genderBased: true },
+  { value: "Mrs.", label: "Mrs.", genderBased: true },
+  { value: "Dr.", label: "Dr.", genderBased: false },
+  { value: "Prof.", label: "Prof.", genderBased: false },
+  { value: "Mx.", label: "Mx.", genderBased: true },
+];
+
+const GENDER_SALUTATION_MAP = {
+  Male: ["Mr.", "Dr.", "Prof."],
+  Female: ["Ms.", "Mrs.", "Dr.", "Prof."],
+  Other: ["Mx.", "Dr.", "Prof."],
+};
+
+const DEFAULT_SALUTATION_MAP = {
+  Male: "Mr.",
+  Female: "Ms.",
+  Other:"Mx.",
+};
+
 export default function SignUp({
   open,
   onClose,
@@ -257,6 +278,22 @@ export default function SignUp({
     form.reset(userInfo);
   }, [query]);
   const category = form.watch("category");
+  const gender = form.watch("gender");
+  const salutation = form.watch("name.salutation");
+  React.useEffect(() => {
+    if(!gender) return;
+
+    const validSalutation = GENDER_SALUTATION_MAP[gender] || [];
+    const defaultSalutation = DEFAULT_SALUTATION_MAP[gender];
+
+    if(!validSalutation.includes(salutation)){
+      form.setValue("name.salutation", defaultSalutation, {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+    }
+  }, [gender]);
+
   return (
     <PopUp
       open={open}
@@ -402,15 +439,17 @@ export default function SignUp({
                         <Form.Select
                           {...register("name.salutation")}
                           control={control}
-                          options={[
-                            { value: "Mr.", label: "Mr." },
-                            { value: "Ms.", label: "Ms." },
-                            { value: "Mrs.", label: "Mrs." },
-                            { value: "Dr.", label: "Dr." },
-                            { value: "Prof.", label: "Prof." },
-                            { value: "Mx. ", label: "Mx." },
-                          ]}
+                          options={
+                            gender ? SALUTATION_OPTIONS.filter((option) => GENDER_SALUTATION_MAP[gender]?.includes(
+                              option.value,
+                            ),
+                          )
+                          : SALUTATION_OPTIONS
+                          }
                           labelText="Sal."
+                          required={true}
+                          errors={errors?.name?.salutation}
+                          validations={user.name.salutation}
                         />
                       </Grid>
                       <Grid size={{ xs: 12, md: 4.9 }}>
@@ -452,7 +491,7 @@ export default function SignUp({
                           {...register("phone")}
                           control={control}
                           labelText="Phone"
-                          required={true}
+                          // required={true}
                           // onlyCountries={ [country] }
                           selectedCountry={country}
                           disableDropdown={Boolean(country)}
@@ -901,7 +940,10 @@ export default function SignUp({
                     color: "#fff",
                     borderRadius: 1.5,
                   }}
-                  onClick={onClose}
+                  onClick={() => {
+                    onClose();
+                    router.push("/");
+                  }}
                 >
                   Go To Home
                 </Page.MuiButton>
@@ -1092,12 +1134,15 @@ export default function SignUp({
                       },
                     }}
                     onClick={async () => {
-                      let resp = await api.post(`/api/v1/user/resend`, {
-                        ...form.watch(),
-                        action: "resend-otp",
-                      });
+                    let resp = await api.post("/api/v1/user/resend", {
+                      mail: query.verifyemail,
+                      action: "resend-otp",
+                    });
                       useToast(resp);
-                      setCooldown(RESEND_SECONDS);
+                      // setCooldown(RESEND_SECONDS);
+                      if(resp?.status !== "error"){
+                        setCooldown(60);
+                      }
                     }}
                   >
                     {cooldown > 0
@@ -1121,7 +1166,10 @@ export default function SignUp({
                         borderWidth: 1.5,
                       },
                     }}
-                    onClick={onClose}
+                    onClick={() => {
+                      onClose();
+                      router.push("/");
+                    }}
                   >
                     Go To Home
                   </Page.MuiButton>
@@ -1313,7 +1361,7 @@ export default function SignUp({
                       },
                     }}
                     onClick={async () => {
-                      let resp = await api.post(`/api/v1/user/resend`, {
+                      let resp = await api.post("/api/v1/user/resend", {
                         mail: query.verifyemail,
                         action: "resend-otp",
                       });

@@ -1,3 +1,4 @@
+import { HttpError } from "express-web-tools";
 import fs from "fs";
 
 class JSONFile {
@@ -89,6 +90,7 @@ export class CPI {
         loi,
         geography
     ) {
+        if(isNaN(ir)||isNaN(loi)||[null,undefined,""].includes(geography))throw new HttpError(404,"Invalid request");
         const irFactor = this.irEffect(ir);
         const geoFactor = this.geoFactor(geography);
         const loiIndex = this.LOIIndex(loi);

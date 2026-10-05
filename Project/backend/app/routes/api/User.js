@@ -231,12 +231,28 @@ router
         ))
     .post(
         `/resend`,
-        asyncHandler(isAuthenticated),
+        // asyncHandler(isAuthenticated),
         expressRoute(
             async req => {
                 // update single entry
                 let message = req.body.action;
                 let data = await userController.findOne({ mail: req.body.mail, origin: req.origin });
+
+                // User extst check
+                if (!data) {
+                    return {
+                        status: "error",
+                        message: "User not found",
+                    };
+                }
+
+                // already varified check
+                if (data.emailVerified) {
+                    return {
+                        status: "error",
+                        message: "Email is already verified.",
+                    };
+                }
 
                 // if (req.body.action === "resend-otp") {
                 let otp = await otpController.generate(
@@ -245,6 +261,14 @@ router
                     req.origin,
                     1 * 24 * 60 * 60 * 1000
                 );
+
+                if (otp?.cooldown) {
+                    return {
+                        status: "error",
+                        message: `Please wait ${otp.remaining} seconds before requesting another email.`,
+                    };
+                }
+
                 let mailer = await getMailer(
                     "register",
                     "respondent",

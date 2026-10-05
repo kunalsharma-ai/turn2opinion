@@ -1,5 +1,203 @@
 [
     {
+        "country": "US",
+        "fld": "department",
+        "value": "Strategic & Top Management",
+        "weight": 0.04
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Mid-Level Management",
+        "weight": 0.05
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Accounts Department",
+        "weight": 0.05
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Banking & Finance",
+        "weight": 0.03
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Marketing & Proposals Department",
+        "weight": 0.03
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Sales & Business Development Department",
+        "weight": 0.06
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Advertising Department",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Project & Program Management",
+        "weight": 0.03
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Procurement Department",
+        "weight": 0.06
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Supply/Cold Chain & Logistics",
+        "weight": 0.06
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Information Technology Department",
+        "weight": 0.03
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Human Resources Department",
+        "weight": 0.04
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Administration & Facilities Department",
+        "weight": 0.04
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Quality & Inspection Department",
+        "weight": 0.05
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Production Department",
+        "weight": 0.07
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "UX, Design & Architecture Department",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Maintenance & Utilities Department",
+        "weight": 0.03
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Research & Development Department",
+        "weight": 0.03
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Packaging Department",
+        "weight": 0.02
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Dispatch & Logistics Department",
+        "weight": 0.03
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Store & Warehousing Department",
+        "weight": 0.04
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Security Department",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Personnel Department",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Customer Success, Service & Operations",
+        "weight": 0.03
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Teaching & Training",
+        "weight": 0.02
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Consulting",
+        "weight": 0.02
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Construction & Site Engineering",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "BFSI, Investments & Trading",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Medical & Health Services",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Content, Editorial & Journalism",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Legal & Regulatory",
+        "weight": 0.02
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Risk Management & Compliance",
+        "weight": 0.02
+    },
+    {
+        "country": "US",
+        "fld": "department",
+        "value": "Food & Beverage Department",
+        "weight": 0.02
+    },
+    {
         "country": "AU",
         "fld": "children",
         "value": "0-2 Years",
@@ -3490,6 +3688,221 @@
         "fld": "empstat",
         "value": "Employed full-time",
         "weight": 0.19
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Creative Services Industry",
+        "weight": 0.02
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Advertising Services",
+        "weight": 0.02
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Fashion Services",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Floral Services",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Cultural Industry Services",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Education Industry Services",
+        "weight": 0.04
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Entertainment Industry Services",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Film Industry Services",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Gambling Services Industry",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Music Industry Services",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Video Game Industry Services",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Financial Services Industry",
+        "weight": 0.08
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Insurance Services Industry",
+        "weight": 0.05
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Healthcare Services Industry",
+        "weight": 0.09
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Hospitality Services Industry",
+        "weight": 0.05
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Information Services Industry",
+        "weight": 0.04
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Leisure Services Industry",
+        "weight": 0.03
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Mass Media Services",
+        "weight": 0.02
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Broadcasting Services",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Digital Marketing Services",
+        "weight": 0.04
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Internet Services",
+        "weight": 0.04
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "News Media Services",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Publishing Services",
+        "weight": 0.01
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Entertainment Services",
+        "weight": 0.03
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Professional Services",
+        "weight": 0.08
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Real Estate Industry Services",
+        "weight": 0.05
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Retail Industry Services",
+        "weight": 0.07
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Software Industry Services",
+        "weight": 0.07
+    },{
+        "country": "US",
+        "fld": "organization-revenue",
+        "value": "up to 100,000",
+        "weight": 0.329
+    },
+    {
+        "country": "US",
+        "fld": "organization-revenue",
+        "value": "100,000 - 500,000",
+        "weight": 0.251
+    },
+    {
+        "country": "US",
+        "fld": "organization-revenue",
+        "value": "500,000 - 2,000,000",
+        "weight": 0.184
+    },
+    {
+        "country": "US",
+        "fld": "organization-revenue",
+        "value": "2,000,000 - 10,000,000",
+        "weight": 0.126
+    },
+    {
+        "country": "US",
+        "fld": "organization-revenue",
+        "value": "10,000,000 - 50,000,000",
+        "weight": 0.07
+    },
+    {
+        "country": "US",
+        "fld": "organization-revenue",
+        "value": "50,000,000 and above",
+        "weight": 0.04
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Sport Industry Services",
+        "weight": 0.02
+    },
+    {
+        "country": "US",
+        "fld": "sector",
+        "value": "Transport Services",
+        "weight": 0.05
     },
     {
         "country": "AU",
