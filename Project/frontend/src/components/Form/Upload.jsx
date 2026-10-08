@@ -151,8 +151,11 @@ export default function Upload({
   // ============================
   function removeImage(index) {
     const arr = form.getValues(name) || [];
-    arr.splice(index, 1);
-    form.setValue(name, [...arr]);
+    const updatedImages = arr.filter((_, i) => i !== index);
+    form.setValue(name, updatedImages, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
   }
 
   // ============================
@@ -337,6 +340,7 @@ export default function Upload({
                     }}
                   />
                   <Button
+                    type="button"
                     size="small"
                     sx={{
                       minWidth: 0,

@@ -36,28 +36,102 @@ export default function Survey({
   const form = useForm({
     mode: "onChange",
   });
+  const phoneHasValue = Boolean(form.watch("phone"));
+  const questionStatesRef = React.useRef({});
+  const isLoadingAnswersRef = React.useRef(false);
+  const isResettingRef = React.useRef(false);
+  const previousValuesRef = React.useRef({});
+
+  const pageQuestionsForReset = React.useMemo(() => {
+    if ([null, undefined].includes(currentPage)) return [];
+
+    return [...(pages?.[currentPage] || [])].slice(1);
+  }, [pages, currentPage]);
+
   let questions = pages[currentPage];
   // if (questions?.includes("phone")) questions.push("phone-whatsapp");
   // if (questions?.includes("alternate-phone"))
   //   questions.push("alternate-phone-whatsapp");
   questions = questions?.unique();
+  React.useEffect(() => {
+    previousValuesRef.current = form.getValues();
+
+    const subscription = form.watch((values, { name }) => {
+      if (!name) return;
+
+      if (isLoadingAnswersRef.current) return;
+
+      if (isResettingRef.current) return;
+
+      const changedIndex = pageQuestionsForReset.indexOf(name);
+
+      if (changedIndex === -1) return;
+
+      if (questionStatesRef.current[name] !== true) return;
+
+      const previousValue = previousValuesRef.current[name];
+      const currentValue = values?.[name];
+
+      if (JSON.stringify(previousValue) === JSON.stringify(currentValue)) {
+        return;
+      }
+
+      previousValuesRef.current[name] = currentValue;
+
+      const questionsToClear = pageQuestionsForReset.slice(changedIndex + 1);
+
+      if (!questionsToClear.length) return;
+
+      isResettingRef.current = true;
+
+      questionsToClear.forEach((question) => {
+        if (!question) return;
+
+        if (questionStatesRef.current[question] !== true) {
+          return;
+        }
+
+        form.setValue(question, null, {
+          shouldDirty: true,
+          shouldTouch: false,
+          shouldValidate: false,
+        });
+      });
+
+      isResettingRef.current = false;
+      previousValuesRef.current = form.getValues();
+    });
+
+    return () => subscription.unsubscribe();
+  }, [currentPage, pageQuestionsForReset, form]);
+
   const { data: me } = useQuery({
     queryKey: ["answers", pages?.[currentPage]?.[0], currentPage],
     queryFn: async ({ queryKey }) => {
       const resp = await api.post("/api/v1/me", {
         questions,
       });
-      Object.fromEntries(
-        Object.entries(resp.data)
-          .filter((ans) => questions.includes(ans[0]))
-          .map(([key, value]) => {
-            form.setValue(key, value);
-            if (key === "age") {
-              form.setValue(key, "");
-            }
-            return [key, value];
-          }),
-      );
+
+      isLoadingAnswersRef.current = true;
+
+      try {
+        Object.fromEntries(
+          Object.entries(resp.data)
+            .filter((ans) => questions.includes(ans[0]))
+            .map(([key, value]) => {
+              form.setValue(key, value);
+
+              if (key === "age") {
+                form.setValue(key, "");
+              }
+
+              return [key, value];
+            }),
+        );
+      } finally {
+        previousValuesRef.current = form.getValues();
+        isLoadingAnswersRef.current = false;
+      }
       return resp.data;
     },
     enabled:
@@ -123,6 +197,9 @@ export default function Survey({
     }
     setCurrentPage(currentPage + 1);
   }
+  const handleQuestionStateChange = React.useCallback((name, isEnabled) => {
+    questionStatesRef.current[name] = isEnabled;
+  }, []);
   return (
     <>
       {hideSteps || [undefined, null].includes(currentPage) ? (
@@ -143,23 +220,23 @@ export default function Survey({
         sx={{
           bgcolor: (theme) => theme.palette.cardbgdark.main,
           borderRadius: 2,
-          minHeight: [undefined, null].includes(currentPage)
-            ? "calc(90vh - 170px)"
-            : "calc(90vh - 214px)",
-          // steps[currentGroupIndex] !== "Welcome"
-          //   ? "calc(90vh - 230px)"
+          ...(isProfile
+            ? { flex: 1, minHeight: 0, flexWrap: "nowrap" }
+            : {
+                minHeight: [undefined, null].includes(currentPage)
+                  ? "calc(90vh - 170px)"
+                  : "calc(90vh - 214px)",
+              }),
         }}
       >
         <Grid
           size={12}
           container
           sx={{
-            maxHeight: {
-              md: editMode ? "calc(90vh - 240px)" : "calc(90vh - 185px)",
-              // steps[currentGroupIndex] !== "Welcome"
-              //   ? "calc(90vh - 300px)"
-              //   : "calc(90vh - 215px)",
-            },
+            maxHeight: isProfile
+              ? "none"
+              : { md: editMode ? "calc(90vh - 240px)" : "calc(90vh - 185px)" },
+            minHeight: isProfile ? 0 : undefined,
             maxWidth: "100%",
             overflowY: "auto",
             // bgcolor: "#8cb2f333",
@@ -179,6 +256,7 @@ export default function Survey({
           ) : (
             pages[currentPage]
               ?.slice(1)
+              ?.filter((que) => que !== "alternate-phone" || phoneHasValue)
               ?.map((que, index) => (
                 <Question
                   key={`${que}-${index}`}
@@ -186,6 +264,7 @@ export default function Survey({
                   user={user}
                   form={form}
                   disabled={!editMode}
+                  onQuestionStateChange={handleQuestionStateChange}
                 />
               ))
           )}

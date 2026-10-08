@@ -255,7 +255,7 @@ function SurveyList({ surveys, query, isLoading }) {
         data={surveys}
         isLoading={isLoading}
         filter={filters.find((filter) => filter.label === activeFilter)}
-        pageSize={5}
+        pageSize={12}
         getSearchText={(row) => row.name}
         emptyMessage="No surveys available."
         renderToolbar={() => (
@@ -593,7 +593,7 @@ function SurveyCard({ survey }) {
             </Typography>
 
             <Typography className="survey-subtext" variant="body2">
-              Reward
+              Reward ($ {survey.points / 1000})
             </Typography>
           </Box>
         </Stack>

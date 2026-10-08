@@ -82,6 +82,7 @@ export default function Input({
   labelText,
   surveyLabel,
   required = false,
+  inputSX,
   sx,
   validations,
   parent,
@@ -330,6 +331,7 @@ export default function Input({
                 { ...props }
                 { ...field }
                 value={ field.value ?? "" }
+                inputSX={inputSX}
                 type={
                   type === "password" ? (masked ? "password" : "text") : type
                 }

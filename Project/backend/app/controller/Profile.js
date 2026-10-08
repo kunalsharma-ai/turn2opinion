@@ -2,7 +2,12 @@ import { CrudController } from "../utils/index.js";
 import { Profile as profileModel } from "../model/index.js";
 
 class ProfileController extends CrudController {
-  
+
+  async list(q = {}, populateFields = null, sort = {}, project = "+sortOrder +isActive") {
+    
+
+    return await super.list(q, populateFields, sort, project)
+  }
   async status() {
     const userID = this?.request?.user?._id?.toString();
     let temp = await profileModel.aggregate([

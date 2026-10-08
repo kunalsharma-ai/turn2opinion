@@ -72,29 +72,30 @@ export default function Header({
     setMobileOpen(false);
   };
 
-  const scrollToHowItWorks = () => {
-    const el = document.getElementById("how-it-works");
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if(el){
+      el.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      })
     }
-  };
+  }
 
-  const goToSteps = () => {
+  const goToSection = (id) => {
     if (pathname === "/") {
-      scrollToHowItWorks();
+      scrollToSection(id);
     } else {
-      router.push("/?scroll=howitworks");
+      router.push(`/?scroll=${id}`);
     }
   };
 
-  useEffect(() => {
+    useEffect(() => {
     if (pathname !== "/") return;
-
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("scroll") === "howitworks") {
+    if(scroll){
       setTimeout(() => {
-        scrollToHowItWorks();
-        router.replace("/", { scroll: false });
+        scrollToSection(scroll);
+      //  router.replace("/", { scroll: false });
       }, 50);
     }
   }, [pathname]);
@@ -109,10 +110,26 @@ export default function Header({
       },
     },
     {
+      label: "Who We Are",
+      path: "/",
+      onClick: () => {
+        goToSection("who-we-are");
+        setMobileOpen(false);
+      },
+    },
+    {
       label: "Steps to Join",
       path: "/",
       onClick: () => {
-        goToSteps();
+        goToSection("how-it-works");
+        setMobileOpen(false);
+      },
+    },
+    {
+      label: "Rewards",
+      path: "/",
+      onClick: () => {
+        goToSection("reward-claim");
         setMobileOpen(false);
       },
     },

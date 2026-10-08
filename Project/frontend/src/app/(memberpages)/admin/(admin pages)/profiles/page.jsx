@@ -54,7 +54,7 @@ export default function () {
           {
             id: "category",
             label: "Category",
-            feature: ["sortable"],
+            feature: ["sortable", "filterable"],
             render: (info, i) => {
               return (
                 <Chip
@@ -72,6 +72,11 @@ export default function () {
             label: "Profile",
             render: (info) => info.name.Capitalize(),
             feature: ["sortable", "searchable"],
+          },
+          {
+            id: "sortOrder",
+            label: "sortOrder",
+            data: "sortOrder",
           },
           {
             id: "questionsList",
@@ -99,6 +104,35 @@ export default function () {
                   }}
                 >
                   <EditIcon fontSize="small" color="secondary" />
+                </IconButton>
+                <IconButton
+                  sx={{ p: 0 }}
+                  title="Move Up in Sort Order"
+                  onClick={async () => {
+                    let temp = await api.put(`/api/v1/profile/${info._id}`, {
+                      ...info,
+                      sortOrder: Number(info.sortOrder) + 1,
+                    });
+                    // useToast(temp);
+                    setReload(reload + 1);
+                  }}
+                >
+                  <KeyboardArrowUpIcon fontSize="small" color="primary" />
+                </IconButton>
+
+                <IconButton
+                  sx={{ p: 0 }}
+                  title="Move Down in Sort Order"
+                  onClick={async () => {
+                    let temp = await api.put(`/api/v1/profile/${info._id}`, {
+                      ...info,
+                      sortOrder: Number(info.sortOrder) - 1,
+                    });
+                    // useToast(temp);
+                    setReload(reload + 1);
+                  }}
+                >
+                  <KeyboardArrowDownIcon fontSize="small" color="primary" />
                 </IconButton>
               </>
             ),

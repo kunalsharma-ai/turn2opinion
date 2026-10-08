@@ -43,20 +43,64 @@ export default function page() {
     invited: [],
   });
 
-  React.useEffect(() => {
-    if (!window) return;
+  const loadReferralHistory = React.useCallback(() => {
     if (!user) return;
-    setReferralLink(`${window.location.origin}/?ref=${user._id}&signup`);
-    api
-      .post(`/api/v1/user`, {
+
+    Promise.all([
+      api.get(`/api/v1/me/invite`),
+      api.post(`/api/v1/user`, {
         referredBy: user._id,
-      })
-      .then((resp) => {
-        if ("data" in resp) {
-          setReferrals(resp.data);
-        }
-      });
+      }),
+    ]).then(([inviteResp, referralResp]) => {
+      const invites = inviteResp?.data || [];
+      const registeredUsers = referralResp?.data || [];
+
+      const mergedData = [
+        ...invites.map((invite) => {
+          const registeredUser = registeredUsers.find(
+            (referral) =>
+              referral.mail?.toLowerCase() === invite.email?.toLowerCase(),
+          );
+
+          return {
+            email: invite.email,
+            registered: registeredUser ? "Registered" : "Not Registered",
+            sentAt: invite.createdAt,
+            name: registeredUser?.fullName || "",
+            status: registeredUser?.isVerified?.email || "",
+            dateOfJoining: registeredUser?.createdAt || "",
+          };
+        }),
+
+        ...registeredUsers
+          .filter(
+            (user) =>
+              !invites.some(
+                (invite) =>
+                  invite.email?.toLowerCase() === user.mail?.toLowerCase(),
+              ),
+          )
+          .map((user) => ({
+            email: user.mail,
+            registered: "Registered",
+            sentAt: "",
+            name: user.fullName || "",
+            status: user.isVerified?.email || "",
+            dateOfJoining: user.createdAt || "",
+          })),
+      ];
+
+      setReferrals(mergedData);
+    });
   }, [user]);
+
+  React.useEffect(() => {
+    if (!user) return;
+
+    setReferralLink(`${window.location.origin}/?ref=${user._id}&signup`);
+    loadReferralHistory();
+  }, [user, loadReferralHistory]);
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(referralLink);
@@ -89,24 +133,47 @@ export default function page() {
     setEmails(newEmails);
   };
   const columns = [
-    { id: "name", label: "Name", data: "fullName" },
-    { id: "email", label: "E-mail", data: "mail" },
+    {
+      id: "email",
+      label: "Email",
+      data: "email",
+    },
+    {
+      id: "registered",
+      label: "Registered",
+      data: "registered",
+    },
+    {
+      id: "sentAt",
+      label: "Sent At",
+      render: (info) =>
+        info.sentAt ? new Date(info.sentAt).toLocaleString() : "",
+    },
+    {
+      id: "name",
+      label: "Name",
+      data: "name",
+    },
     {
       id: "status",
       label: "Status",
-      render: (info) => (
-        <Chip
-          size="small"
-          color={info.isVerified.email == "verified" ? "success" : "error"}
-          label={info.isVerified.email}
-          sx={{ textTransform: "capitalize" }}
-        />
-      ),
+      render: (info) =>
+        info.status ? (
+          <Chip
+            size="small"
+            color={info.status === "verified" ? "success" : "error"}
+            label={info.status}
+            sx={{ textTransform: "capitalize" }}
+          />
+        ) : (
+          ""
+        ),
     },
     {
       id: "date",
       label: "Date of Joining",
-      render: (info) => new Date(info.createdAt).showDate(),
+      render: (info) =>
+        info.dateOfJoining ? new Date(info.dateOfJoining).showDate() : "",
     },
   ];
 
@@ -257,6 +324,10 @@ export default function page() {
                 });
                 if (resp.status === "success") {
                   setSentInvites(resp.data);
+
+                  setEmails([""]);
+
+                  loadReferralHistory();
                 } else {
                   useToast(resp);
                 }
@@ -284,7 +355,7 @@ export default function page() {
           </Box>
         </Grid>
 
-        <InvitedEmails sentInvites={sentInvites} />
+        {/* <InvitedEmails sentInvites={sentInvites} /> */}
       </Grid>
       {referrals?.length > 0 && (
         <Grid size={12}>
@@ -335,109 +406,6 @@ export default function page() {
           {toastMessage}
         </Alert>
       </Snackbar>
-    </Grid>
-  );
-}
-function InvitedEmails({ sentInvites }) {
-  const [users, setUsers] = React.useState([]);
-  React.useEffect(() => {
-    api.get(`/api/v1/me/invite`).then((resp) => {
-      if ("data" in resp) setUsers(resp.data);
-    });
-  }, [sentInvites]);
-  if (!users || users.length === 0) return null;
-  return (
-    <Grid
-      size={{ xs: 12, lg: 6 }}
-      container
-      mt={2}
-      alignSelf="flex-start"
-      spacing={2}
-    >
-      <Box width={"100%"}>
-        <Typography
-          color="secondary"
-          sx={{
-            fontSize: "16px",
-            fontWeight: "700",
-          }}
-        >
-          Invite History:
-        </Typography>
-      </Box>
-
-      <TableContainer
-        sx={{
-          border: (theme) => `1px solid ${theme.palette.primary.main}`,
-          bgcolor: (theme) => theme.palette.cardbgdark.main,
-          borderRadius: 2,
-          maxHeight: { xs: "400px", lg: "132px" },
-          maxWidth: "100%",
-          overflow: "auto",
-        }}
-      >
-        <Table
-          size="small"
-          sx={{
-            // overflow: "scroll",
-            tableLayout: "fixed",
-            "& tbody td": {
-              color: (theme) => theme.palette.cardtext.main,
-              height: "32px",
-              fontWeight: 500,
-              border: "1px solid rgba(255, 255, 255, 0.12)",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-              fontSize: 13,
-            },
-            "& tbody tr": {
-              height: "32px",
-            },
-            "& thead th": {
-              fontSize: 13.5,
-              fontWeight: 600,
-              border: "1px solid rgba(255, 255, 255, 0.12)",
-              color: (theme) => theme.palette.cardtext.main,
-            },
-          }}
-        >
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">Email</TableCell>
-              <TableCell align="center">Registered</TableCell>
-              <TableCell align="center">Sent At</TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {users.map((user) => (
-              <TableRow
-                key={user.id}
-                // sx={{
-                //   "&:hover": {
-                //     bgcolor: "#dff7e1ff",
-                //   },
-                // }}
-              >
-                <TableCell align="center">
-                  <Tooltip title={user.email} placement="left">
-                    {user.email}
-                  </Tooltip>
-                </TableCell>
-
-                <TableCell align="center">
-                  {user.isActive ? "Not Registered" : "Registered"}
-                </TableCell>
-
-                <TableCell align="center">
-                  {new Date(user.createdAt).toFormat("dd-mmm-yyyy")}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
     </Grid>
   );
 }

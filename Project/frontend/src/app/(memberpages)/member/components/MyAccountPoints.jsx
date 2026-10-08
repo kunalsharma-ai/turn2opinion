@@ -205,15 +205,14 @@ export default function MyAccountPoints() {
 
               <Typography
                 sx={{
-                  position: "absolute",
-                  right: 0,
-                  top: 34,
+                  mt: 1,
                   color: "#93c5fd",
-                  fontSize: "14px",
-                  fontWeight: 700,
-                  display: { xs: "block", md: "none", xl: "block" },
+                  fontSize: "12px", 
+                  fontWeight: 700, 
+                  lineHeight: 1.4,
                 }}
               >
+                Users can claim their rewards once they reach the{" "}
                 {threshold.toLocaleString()} pt
               </Typography>
             </Box>

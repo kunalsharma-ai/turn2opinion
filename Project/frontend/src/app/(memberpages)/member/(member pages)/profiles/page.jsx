@@ -92,11 +92,37 @@ export default function () {
     enabled: !!user?.category || !editMode,
   });
   if (profilesLoading || profiles.length === 0) return <></>
-  const activeTab = 1 + profiles.map(profile => profile.slug).indexOf(query.profile);
-  const selectedProfile = (activeTab) ? profiles.at(activeTab - 1) : profiles[0];
+  // const activeTab = 1 + profiles.map(profile => profile.slug).indexOf(query.profile);
+  // const selectedProfile = (activeTab) ? profiles.at(activeTab - 1) : profiles[0];
+
+  const activeTab = !query.profile ? 1 : 1 + profiles.map((profile) => profile.slug).indexOf(query.profile);
+
+  const allProfiles = profiles.filter((p) => Number(p.status) > 0);
+
+  const currentProfileIndex = query.profile ? allProfiles.findIndex((p) => p.slug === query.profile) : 0;
+
+  const selectedProfile = allProfiles[currentProfileIndex] ?? allProfiles[0];
+
+  const isFirstProfile = currentProfileIndex <= 0;
+  const isLastProfile = currentProfileIndex >= allProfiles.length - 1;
+
+
+  const handlePreviousProfile = () => {
+    const previousProfile = allProfiles[currentProfileIndex - 1];
+    if (!previousProfile) return;
+    router.push(`?profile=${previousProfile.slug}`, { scroll: false });
+  };
+
+const handleNextProfile = () => {
+  const nextProfile = allProfiles[currentProfileIndex + 1];
+  if (!nextProfile) return;
+  router.push(`?profile=${nextProfile.slug}`, { scroll: false });
+};
+
+
   return <Grid container size={12} px={1} mt={2} justifyContent="center">
     <ProfileTabs
-      profiles={profiles?.filter?.(profile => Number(profile.status) > 0) || []}
+      profiles={allProfiles}
       query={query}
       onChange={e => {
         console.log(e);
@@ -111,7 +137,10 @@ export default function () {
           bgcolor: (theme) => theme.palette.cardbg.main,
           borderRadius: 2.5,
           boxShadow: 1,
-
+          height: "calc(90vh - 160px)",   
+          overflow: "hidden",             
+          display: "flex",               
+          flexDirection: "column",        
         }}
       >
         <Grid
@@ -152,7 +181,9 @@ export default function () {
             )}
           </Page.Box>
         </Grid>
+        <Box sx={{ flex: 1, minHeight: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
         <Survey
+          key={selectedProfile?.slug}
           editMode={editMode}
           setEditMode={setEditMode}
           hideSteps={true}
@@ -165,6 +196,30 @@ export default function () {
             setEditMode(false);
           }}
         />
+        </Box>
+
+        {!editMode && (
+          <Box sx={{ display: "flex", justifyContent: "space-between", px: 2, py: 1, flexShrink: 0 , bgcolor: (theme) => theme.palette.secondary.main,}}>
+            <Button
+              variant="contained"
+              startIcon={<KeyboardArrowLeft />}
+              onClick={handlePreviousProfile}
+              disabled={isFirstProfile}
+              sx={{ bgcolor: "white", color: "secondary.main", "&:hover": { bgcolor: "#f0f0f0" } }}
+            >
+              Back
+            </Button>
+            <Button
+              variant="contained"
+              endIcon={<KeyboardArrowRight />}
+              onClick={handleNextProfile}
+              disabled={isLastProfile}
+              sx={{ bgcolor: "white", color: "secondary.main", "&:hover": { bgcolor: "#f0f0f0" } }}
+            >
+              Next
+            </Button>
+          </Box>
+        )}
       </Grid>
     </Grid>
   </Grid>
@@ -172,7 +227,8 @@ export default function () {
 function ProfileTabs({
   profiles,
   query,
-  onChange
+  onChange,
+  allProfiles
 }) {
   const tabs = React.useMemo(() => {
     return profiles.map((p) => ({
@@ -194,6 +250,11 @@ function ProfileTabs({
       return;
     return profiles.map((p) => p.slug).indexOf(query.profile);
   }, [profiles, query]);
+
+  React.useEffect(() => {
+    if (!tabs.length) return;
+    if (!query.profile) onChange(tabs[0].link);
+  }, [tabs, query.profile]);
   return <Tabs
     value={activeTab}
     onChange={(_, v) => {

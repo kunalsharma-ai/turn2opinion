@@ -204,6 +204,7 @@ export default function Select({
                       {isOpen &&
                         formattedOptions.length > 1 &&
                         multiple &&
+                        maxSelections < 1 &&
                         showSelectAllBtn && (
                           <Page.MuiButton
                             variant="contained"

@@ -8,6 +8,7 @@ import HeroSection from "@/componentsMHO/HeroSection";
 import Stats from "@/componentsMHO/Stats";
 import WhoWeAre from "@/componentsMHO/WhoWeAre";
 import HowItWorks from "@/componentsMHO/HowItWorks";
+import RewardClaims from "@/componentsMHO/RewardClaims";
 import Testimonial from "@/componentsMHO/Testimonial";
 import JoinPanel from "@/componentsMHO/JoinPanel";
 import Footer from "@/componentsMHO/Footer";
@@ -35,6 +36,8 @@ export default function HomeClient() {
   const sections = [
     { label: "About", id: "about" },
     { label: "Steps to Join", id: "how-it-works" },
+    { label: "Who We Are", id: "who-we-are" },
+    { label: "Rewards", id: "reward-claim" },
     { label: "Contact Us", isExternalPage: true, path: "/contact" },
   ];
 
@@ -88,12 +91,15 @@ export default function HomeClient() {
           <WeArePart />
           <Journey setOpenSignUp={setOpenSignUp} />
           <Stats />
-          <WhoWeAre />
+          <div id="who-we-are">
+            <WhoWeAre />
+          </div>
 
           <div id="how-it-works">
             <HowItWorks setOpenSignUp={setOpenSignUp} />
           </div>
 
+          <RewardClaims />
           <Testimonial />
           <JoinPanel setOpenSignUp={setOpenSignUp} />
         </main>
