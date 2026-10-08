@@ -191,13 +191,40 @@ import("../controller/Response.js")
             ]));
             surveys = await surveyController.applyEligibility(surveys, user);
 
-            if (!surveys.length) return [];
+            if (!surveys.length){
+                return {
+                    _id: user.category,
+                    count: 0,
+                    internal: {
+                        all: 0,
+                        highRewards: 0,
+                        short: 0,
+                    },
+                    external: {
+                        all: 0,
+                        highRewards: 0,
+                        shoort: 0,
+                    },
+                    sampledge: 0,
+                };
+            };
             const countBy = (src) => surveys.filter((s) => s.source === src).length;
+            const highRewardsCountBy = (src) => surveys.filter((s) => s.source === src && Number(s.points) > 500 ).length;
+            const shortCountBy = (src) => surveys.filter((s) => s.source === src && Number(s.loi) <= 5).length;   
+                         
             return {
                 _id: user.category,
                 count: surveys.length,
-                internal: countBy("internal"),
-                external: countBy("external"),
+                internal: {
+                    all: countBy("internal"),
+                    highRewards: highRewardsCountBy("internal"),
+                    short: shortCountBy("internal"),
+                },
+                external: {
+                    all: countBy("external"),
+                    highRewards: highRewardsCountBy("external"),
+                    short: shortCountBy("external"),
+                },
                 sampledge: countBy("sampledge"),
             };
         };

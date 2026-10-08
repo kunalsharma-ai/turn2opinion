@@ -292,26 +292,12 @@ function UserInfo({ user }) {
     mode:"onChange"
   });
     const {
-
     formState: { errors },
   } = form;
 
   const [editingField, setEditingField] = React.useState(null);
   const [visibleFields, setVisibleFields] = React.useState({});
-  const [defaultCountry, setDefaultCountry] = React.useState("us");
-
-  React.useEffect(() => {
-    const getCountry = async () => {
-      try {
-        const resp = await api.get("/api/v1/country");
-        const country = resp?.country?.toLowerCase().trim();
-        if (country) setDefaultCountry(country);
-      } catch (err) {
-        console.error("Failed to fetch country:", err);
-      }
-    };
-    getCountry();
-  }, []);
+  const defaultCountry = user?.country?.toLowerCase() || "us";
 
   const toggleField = (index) => {
     setVisibleFields((prev) => ({
