@@ -768,7 +768,7 @@ function Payment() {
 
   const hasData = (methodValue) => {
     const fields = methodFieldsConfig[methodValue] || [];
-    return fields.some((f) => payment[f.key]?.toString().trim());
+    return fields.length > 0 && fields.every((f) => payment[f.key]?.toString().trim());
   };
 
   const handleFieldChange = (key) => (e) => {
@@ -809,9 +809,13 @@ const handleSaveField = async (fieldKey) => {
 
   try {
     const resp = await api.patch(`/api/v1/me/answer`, {
-      [apiKeyMap[fieldKey]]: payment[fieldKey],   // sirf ek field
+      [apiKeyMap[fieldKey]]: payment[fieldKey],  
     });
     useToast(resp);
+    if (primaryMethod && !hasData(primaryMethod)) {
+      setPrimaryMethod(null);
+      await api.patch(`/api/v1/me/answer`, { "payment-method-primary": "" });
+    }
     await member.Reload();
   } catch (error) {
     console.error(`Failed to update ${fieldKey}:`, error);
@@ -821,18 +825,35 @@ const handleSaveField = async (fieldKey) => {
   }
 };
 
-  const handleSetPrimary = async (methodValue) => {
-    setPrimaryMethod(methodValue);
-    try {
-      const resp = await api.patch(`/api/v1/me/answer`, {
-        "payment-method-primary": methodValue,
-      });
-      useToast(resp);
-    } catch (error) {
-      console.error(`Failed to set primary payment method:`, error);
-    }
-  };
+ const handleSetPrimary = async (methodValue) => {
+  if (!hasData(methodValue)) {
+    useToast({ status: "error", message: "Please fill in the details first." });
+    return;
+  }
 
+  if (primaryMethod === methodValue) return;
+
+  const previous = primaryMethod;
+  setPrimaryMethod(methodValue); 
+
+  try {
+    const resp = await api.patch(`/api/v1/me/answer`, {
+      "payment-method-primary": methodValue,
+    });
+    useToast(resp);
+  } catch (error) {
+    console.error(`Failed to set primary payment method:`, error);
+    setPrimaryMethod(previous); 
+  }
+};
+
+  const sortedOptions = React.useMemo(() => {
+  return [...paymentOptions].sort((a, b) => {
+    if (a.value === primaryMethod) return -1;
+    if (b.value === primaryMethod) return 1;
+    return 0; 
+  });
+}, [paymentOptions, primaryMethod]);
   return (
     <Grid size={12} container spacing={2} justifyContent="center">
       {/* Header */}
@@ -850,7 +871,7 @@ const handleSaveField = async (fieldKey) => {
       </Box>
 
       <Grid size={12} container spacing={1}>
-        {paymentOptions.map((method, index) => {
+        {sortedOptions.map((method, index) => {
           const methodValue = method.value;
           // const isEditing = editingMethod === methodValue;
           const filled = hasData(methodValue);
@@ -858,7 +879,7 @@ const handleSaveField = async (fieldKey) => {
           const fields = methodFieldsConfig[methodValue] || [];
 
           return (
-            <Grid size={12} key={index}>
+            <Grid size={12} key={methodValue}>
               <Accordion
                 expanded={expandedMethod === methodValue}
                 onChange={handleAccordionChange(methodValue)}
@@ -887,21 +908,23 @@ const handleSaveField = async (fieldKey) => {
 
                     <Typography sx={{ flex: 1, fontWeight: 500 }}>{method.label}</Typography>
 
-                    <IconButton
-                      component="span"
-                      size="small"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSetPrimary(methodValue);
-                      }}
-                      sx={{ color: isPrimary ? "secondary.main" : "#fff" }}
-                    >
-                      {isPrimary ? (
-                        <StarIcon fontSize="small" />
-                      ) : (
-                        <StarBorderIcon fontSize="small" />
-                      )}
-                    </IconButton>
+                     <IconButton
+  component="span"
+  size="small"
+  onClick={(e) => {
+    e.stopPropagation();
+    handleSetPrimary(methodValue);
+  }}
+  sx={{
+    color: isPrimary
+      ? "secondary.main"
+      : filled
+      ? "#fff"
+      : "rgba(255,255,255,0.3)", // value nahi hai to grey dikhega
+  }}
+>
+  {isPrimary ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
+</IconButton>
                   </Box>
                 </AccordionSummary>
 
