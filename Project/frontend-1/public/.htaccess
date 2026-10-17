@@ -1,0 +1,44 @@
+# Apache / cPanel configuration for the prerendered Turn2Opinion build (dist/client).
+# Copy the CONTENTS of dist/client into public_html (this file is included automatically).
+Options -Indexes -MultiViews
+DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Force HTTPS and the www host (canonical origin: https://www.turn2opinion.com)
+  RewriteCond %{HTTPS} !=on [OR]
+  RewriteCond %{HTTP_HOST} !^www\. [NC]
+  RewriteRule ^ https://www.turn2opinion.com%{REQUEST_URI} [L,R=301]
+
+  # Add trailing slash to clean URLs that map to a folder (/about -> /about/)
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteCond %{REQUEST_URI} !/$
+  RewriteRule ^(.*)$ /$1/ [L,R=301]
+
+  # Never rewrite the backend API (served by the hosting backend, not this build)
+  RewriteRule ^api/ - [L]
+</IfModule>
+
+# Unknown URLs -> branded 404 page with a real 404 status
+ErrorDocument 404 /404.html
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+  <FilesMatch "\.(js|css|woff|woff2)$">
+    <If "%{REQUEST_URI} =~ m#^/assets/#">
+      Header set Cache-Control "public, max-age=31536000, immutable"
+    </If>
+  </FilesMatch>
+  <FilesMatch "\.(html|xml|txt|webmanifest)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/javascript application/json application/xml image/svg+xml font/woff
+</IfModule>

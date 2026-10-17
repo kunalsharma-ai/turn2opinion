@@ -1,0 +1,250 @@
+// "Who we invite": a profile slot machine. Three reels spin and stop on a real profile combination
+// ("a Procurement Manager in Logistics at a mid-size company"), a member illustration pops up, and three
+// endless rails underneath show the full breadth of industries, roles and lifestyles. A plain list of every
+// profile type sits in a disclosure for screen readers and search engines.
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { B2B, B2C, PROFILE_TYPE_COUNT } from '../../data/profiles.js';
+import { useInView, prefersReducedMotion } from '../../hooks/useMounted.js';
+import { asset } from '../../config/env.js';
+import Icon from '../Icon.jsx';
+
+const ITEM_H = 46;
+const PEOPLE = { pro: ['business', 'finance', 'tech-user', 'pro-pointing'], con: ['shopper', 'gamer', 'foodie', 'traveller', 'health', 'retiree'] };
+
+function reelsFor(mode) {
+  if (mode === 'pro') {
+    return [
+      { label: 'Role', items: B2B.roles.flatMap((r) => r.titles) },
+      { label: 'Industry', items: B2B.industries.map((d) => d.name) },
+      { label: 'Company', items: B2B.firmographics }
+    ];
+  }
+  return [
+    { label: 'Who', items: B2C.lifestyles.flatMap((l) => l.items) },
+    { label: 'Generation', items: B2C.demographics.find((d) => d.label === 'Generations').items },
+    { label: 'Life stage', items: B2C.demographics.find((d) => d.label === 'Work status').items }
+  ];
+}
+const COMPANY = {
+  'Micro businesses': 'a micro business',
+  'Small businesses': 'a small business',
+  'Mid-size companies': 'a mid-size company',
+  'Large enterprises': 'a large enterprise',
+  'Global corporations': 'a global corporation',
+  'Public sector bodies': 'a public sector body',
+  'Start-ups': 'a start-up',
+  'Family-owned firms': 'a family-owned firm'
+};
+const pick = (n) => Math.floor(Math.random() * n);
+
+function Reel({ items, index, spinKey, delay }) {
+  // A long strip (items repeated) so each spin travels downward several loops before landing.
+  const loops = 4;
+  const strip = useMemo(() => Array.from({ length: loops }, () => items).flat(), [items]);
+  const target = (loops - 1) * items.length + index;
+  return (
+    <div className="reel">
+      <div
+        className="reel-strip"
+        key={spinKey}
+        style={{ '--to': `${-target * ITEM_H}px`, '--d': `${delay}ms`, '--from': `${-(target - 2 * items.length) * ITEM_H}px` }}
+      >
+        {strip.map((t, i) => (
+          <span key={i} className={i === target ? 'is-hit' : ''}>
+            {t}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Rail({ items, dir, icons }) {
+  return (
+    <div className={`rail ${dir}`} aria-hidden="true">
+      <div className="rail-track">
+        {[...items, ...items].map((t, i) => (
+          <span key={i}>
+            {icons && <Icon name={icons[i % icons.length]} size={14} />}
+            {t}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CountUp({ to, run }) {
+  const [v, setV] = useState(prefersReducedMotion() ? to : 0);
+  useEffect(() => {
+    if (!run || prefersReducedMotion()) return undefined;
+    let raf = 0;
+    const t0 = performance.now();
+    const step = (t) => {
+      const k = Math.min(1, (t - t0) / 1400);
+      setV(Math.round(to * (1 - Math.pow(1 - k, 3))));
+      if (k < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [run, to]);
+  return <>{v}</>;
+}
+
+export default function ProfilesExplorer() {
+  const [mode, setMode] = useState('pro');
+  const reels = useMemo(() => reelsFor(mode), [mode]);
+  const [idx, setIdx] = useState([3, 0, 2]);
+  const [spin, setSpin] = useState(0);
+  const [person, setPerson] = useState(0);
+  const [ref, inView] = useInView({ threshold: 0.3 });
+  const manual = useRef(0);
+
+  const go = () => {
+    setIdx(reels.map((r) => pick(r.items.length)));
+    setPerson((p) => (p + 1) % PEOPLE[mode].length);
+    setSpin((k) => k + 1);
+  };
+  useEffect(() => {
+    setIdx(reels.map((r, i) => (i === 0 ? 3 : i) % r.items.length));
+    setSpin((k) => k + 1);
+    setPerson(0);
+  }, [reels]);
+  useEffect(() => {
+    if (!inView || prefersReducedMotion()) return undefined;
+    const t = setTimeout(go, spin === 0 ? 600 : Date.now() - manual.current < 8000 ? 9000 : 5200);
+    return () => clearTimeout(t);
+  }, [inView, spin]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const words = reels.map((r, i) => r.items[idx[i] % r.items.length]);
+  const an = (w) => (/^[AEIOU]/i.test(w) ? 'An' : 'A');
+  const sentence =
+    mode === 'pro'
+      ? `${an(words[0])} ${words[0]} in ${words[1]}, working at ${COMPANY[words[2]] || words[2]}`
+      : `${words[0]} · ${words[1]} · ${words[2]}`;
+
+  const rails =
+    mode === 'pro'
+      ? [
+          { items: B2B.industries.map((d) => d.name), icons: B2B.industries.map((d) => d.icon), dir: 'ltr' },
+          { items: B2B.roles.flatMap((r) => r.titles), dir: 'rtl' },
+          { items: [...B2B.departments, ...B2B.firmographics], dir: 'ltr' }
+        ]
+      : [
+          { items: B2C.lifestyles.map((l) => l.name), icons: B2C.lifestyles.map((l) => l.icon), dir: 'ltr' },
+          { items: B2C.lifestyles.flatMap((l) => l.items), dir: 'rtl' },
+          { items: B2C.demographics.flatMap((d) => d.items), dir: 'ltr' }
+        ];
+
+  return (
+    <div className={`slots mode-${mode}`} ref={ref}>
+      <div className="slots-top">
+        <div className="mode-switch" role="group" aria-label="Audience">
+          <span className={`mode-thumb ${mode}`} aria-hidden="true" />
+          <button type="button" aria-pressed={mode === 'pro'} onClick={() => setMode('pro')}>
+            <Icon name="briefcase" size={18} /> Business professionals
+          </button>
+          <button type="button" aria-pressed={mode === 'con'} onClick={() => setMode('con')}>
+            <Icon name="users" size={18} /> Consumers
+          </button>
+        </div>
+        <p className="slots-count">
+          <strong>
+            <CountUp to={PROFILE_TYPE_COUNT} run={inView} />+
+          </strong>
+          <span>profile types, from the boardroom to the living room</span>
+        </p>
+      </div>
+
+      <div className="slots-main">
+        <div className="machine2">
+          <div className="m2-lights" aria-hidden="true">
+            {Array.from({ length: 14 }).map((_, i) => (
+              <i key={i} style={{ '--i': i }} />
+            ))}
+          </div>
+          <p className="m2-title">Profile match-o-matic</p>
+          <div className="m2-window">
+            {reels.map((r, i) => (
+              <div key={r.label} className="m2-col">
+                <span className="m2-label">{r.label}</span>
+                <Reel items={r.items} index={idx[i] % r.items.length} spinKey={`${mode}-${spin}`} delay={i * 260} />
+              </div>
+            ))}
+          </div>
+          <button
+            type="button"
+            className="m2-lever"
+            onClick={() => {
+              manual.current = Date.now();
+              go();
+            }}
+          >
+            <span className="m2-knob" aria-hidden="true" />
+            Spin a profile
+          </button>
+        </div>
+
+        <div className="slots-result" key={`${mode}-${spin}`} aria-live="polite">
+          <span className="sr-person" aria-hidden="true">
+            <img src={asset(`/images/people/${PEOPLE[mode][person % PEOPLE[mode].length]}.svg`)} alt="" width="200" height="240" loading="lazy" />
+          </span>
+          <p className="sr-kicker">Next survey could be for…</p>
+          <p className="sr-sentence">{sentence}</p>
+          <p className="sr-note">
+            <Icon name="check" size={16} /> Yes, we have surveys for that profile.
+          </p>
+        </div>
+      </div>
+
+      <div className="rails">
+        {rails.map((r, i) => (
+          <Rail key={`${mode}-${i}`} items={r.items} icons={r.icons} dir={r.dir} />
+        ))}
+      </div>
+
+      <details className="slots-all">
+        <summary>
+          <Icon name="layers" size={16} /> See every profile type we recruit
+        </summary>
+        {mode === 'pro' ? (
+          <div className="slots-all-cols">
+            <div>
+              <h3>Industries</h3>
+              <p>{B2B.industries.map((d) => d.name).join(', ')}.</p>
+            </div>
+            <div>
+              <h3>Departments</h3>
+              <p>{B2B.departments.join(', ')}.</p>
+            </div>
+            {B2B.roles.map((r) => (
+              <div key={r.family}>
+                <h3>{r.family}</h3>
+                <p>{r.titles.join(', ')}.</p>
+              </div>
+            ))}
+            <div>
+              <h3>Company types</h3>
+              <p>{B2B.firmographics.join(', ')}.</p>
+            </div>
+          </div>
+        ) : (
+          <div className="slots-all-cols">
+            {B2C.lifestyles.map((l) => (
+              <div key={l.name}>
+                <h3>{l.name}</h3>
+                <p>{l.items.join(', ')}.</p>
+              </div>
+            ))}
+            {B2C.demographics.map((d) => (
+              <div key={d.label}>
+                <h3>{d.label}</h3>
+                <p>{d.items.join(', ')}.</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </details>
+    </div>
+  );
+}

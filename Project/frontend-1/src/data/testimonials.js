@@ -1,0 +1,361 @@
+// Verified member testimonials shown on the site.
+// Add ONLY genuine reviews you hold on record (with the member's permission to publish).
+// New reviews submitted through the site arrive via the reviews API (see src/utils/reviews.js)
+// and appear in the testimonials wall automatically once your backend approves them.
+// Fields: name, country (ISO-2 code), company (optional), role (optional), rating 1-5 (or null if none on record),
+// text, date ('' if unknown), tags (optional)
+export const TESTIMONIALS = [
+  {
+    id: 'maya-us',
+    name: 'Maya',
+    country: 'US',
+    company: '',
+    role: 'Member',
+    rating: 5,
+    text: 'I joined without expecting much, but the experience has been better than I thought. The surveys are straightforward and earning rewards feels simple.',
+    date: '2025-11-01'
+  },
+  {
+    // Published on the previous turn2opinion.com homepage.
+    id: 'thomas-ie',
+    name: 'Thomas',
+    country: 'IE',
+    company: '',
+    role: 'Member',
+    rating: null, // no star rating was published with this review
+    text: 'A very easy platform to use. I can complete surveys whenever I have some free time, and I like knowing what the survey is about before starting.',
+    date: ''
+  },
+  // Testimonials provided by Turn2Opinion from its existing website (October 2026). Keep each member's consent to
+  // publish on record; remove any entry whose consent is withdrawn.
+  {
+    id: 'priya-sharma-in',
+    name: "Priya Sharma",
+    country: 'IN',
+    company: "",
+    role: "Working professional",
+    audience: 'consumer',
+    rating: 5,
+    text: "Turn2Opinion offers an interesting way to share my opinions on products and services. I like the idea of earning rewards while helping businesses understand consumer preferences.",
+    date: ''
+  },
+  {
+    id: 'ethan-miller-us',
+    name: "Ethan Miller",
+    country: 'US',
+    company: "",
+    role: "University student",
+    audience: 'consumer',
+    rating: 4,
+    text: "The concept is straightforward and convenient. I can share my views on different topics in my free time and explore opportunities to earn rewards.",
+    date: ''
+  },
+  {
+    id: 'amara-okafor-ng',
+    name: "Amara Okafor",
+    country: 'NG',
+    company: "",
+    role: "Small business owner",
+    audience: 'consumer',
+    rating: 5,
+    text: "I appreciate platforms that give consumers an opportunity to share their experiences. Turn2Opinion has an appealing concept for people who want to contribute their perspectives to market research.",
+    date: ''
+  },
+  {
+    id: 'olivia-bennett-gb',
+    name: "Olivia Bennett",
+    country: 'GB',
+    company: "",
+    role: "Retail consumer",
+    audience: 'consumer',
+    rating: 4,
+    text: "I like the opportunity to express my opinions about everyday products and services. A clear rewards system and regular survey opportunities would make the experience even better.",
+    date: ''
+  },
+  {
+    id: 'miguel-santos-ph',
+    name: "Miguel Santos",
+    country: 'PH',
+    company: "",
+    role: "Customer service representative",
+    audience: 'consumer',
+    rating: 5,
+    text: "Turn2Opinion represents an interesting opportunity to participate in consumer research. I value platforms that make it easy for people from different backgrounds to share their views.",
+    date: ''
+  },
+  {
+    id: 'mariana-costa-br',
+    name: "Mariana Costa",
+    country: 'BR',
+    company: "",
+    role: "Homemaker",
+    audience: 'consumer',
+    rating: 4,
+    text: "Sharing opinions about household products and everyday services is something I can relate to. I would value having surveys that match my interests and a transparent explanation of available rewards.",
+    date: ''
+  },
+  {
+    id: 'rahul-mehta-in',
+    name: "Rahul Mehta",
+    country: 'IN',
+    company: "FMCG",
+    role: "Marketing Manager",
+    audience: 'professional',
+    rating: 5,
+    text: "As a marketing professional, I understand the value of consumer insights. Turn2Opinion offers a relevant concept for professionals interested in sharing their perspectives on brands, products, and market trends.",
+    date: ''
+  },
+  {
+    id: 'daniel-brooks-us',
+    name: "Daniel Brooks",
+    country: 'US',
+    company: "Finance",
+    role: "Financial Analyst",
+    audience: 'professional',
+    rating: 4,
+    text: "I find business-focused research opportunities interesting because they allow professionals to contribute practical perspectives. Clear eligibility criteria and transparent incentives are important to me.",
+    date: ''
+  },
+  {
+    id: 'sophie-weber-de',
+    name: "Sophie Weber",
+    country: 'DE',
+    company: "",
+    role: "Management Consultant",
+    audience: 'professional',
+    rating: 5,
+    text: "Business professionals can bring valuable industry perspectives to market research. I like the idea of a panel that welcomes informed opinions from people working across different sectors.",
+    date: ''
+  },
+  {
+    id: 'brian-mwangi-ke',
+    name: "Brian Mwangi",
+    country: 'KE',
+    company: "",
+    role: "IT Project Manager",
+    audience: 'professional',
+    rating: 4,
+    text: "The opportunity to participate in research outside my regular work is appealing. A simple interface, relevant studies, and reliable communication would make this a useful platform.",
+    date: ''
+  },
+  {
+    id: 'chloe-williams-au',
+    name: "Chloe Williams",
+    country: 'AU',
+    company: "",
+    role: "HR Business Partner",
+    audience: 'professional',
+    rating: 5,
+    text: "I appreciate research initiatives that consider perspectives from different professional backgrounds. Turn2Opinion's panel concept could help bring more diverse workplace experiences into business research.",
+    date: ''
+  },
+  {
+    id: 'adrian-tan-sg',
+    name: "Adrian Tan",
+    country: 'SG',
+    company: "",
+    role: "Operations Manager",
+    audience: 'professional',
+    rating: 4,
+    text: "I am interested in research that explores operational challenges and business practices. A panel that values professional experience can be useful for gathering a broad range of viewpoints.",
+    date: ''
+  },
+  {
+    id: 'ananya-rao-in',
+    name: "Ananya Rao",
+    country: 'IN',
+    company: "",
+    role: "Healthcare Administrator",
+    audience: 'professional',
+    rating: 5,
+    text: "Healthcare research benefits from hearing perspectives from people who understand the sector. I appreciate the possibility of contributing professional insights through a dedicated research panel.",
+    date: ''
+  },
+  {
+    id: 'lucas-moreau-fr',
+    name: "Lucas Moreau",
+    country: 'FR',
+    company: "Technology",
+    role: "Software Engineer",
+    audience: 'professional',
+    rating: 4,
+    text: "I am interested in technology and digital product research. Opportunities to share informed feedback on software, applications, and digital experiences are particularly relevant to my background.",
+    date: ''
+  },
+  {
+    id: 'naledi-mokoena-za',
+    name: "Naledi Mokoena",
+    country: 'ZA',
+    company: "",
+    role: "Retail Store Manager",
+    audience: 'professional',
+    rating: 5,
+    text: "Working in retail gives me a practical understanding of customer needs and buying behaviour. I find the idea of contributing these perspectives to market research appealing.",
+    date: ''
+  },
+  {
+    id: 'diego-hernandez-mx',
+    name: "Diego Hernández",
+    country: 'MX',
+    company: "",
+    role: "Marketing Analyst",
+    audience: 'professional',
+    rating: 4,
+    text: "Research panels can connect business questions with the opinions of people who understand particular markets. I would be interested in studies related to advertising, consumer behaviour, and brand perception.",
+    date: ''
+  },
+  {
+    id: 'yuki-nakamura-jp',
+    name: "Yuki Nakamura",
+    country: 'JP',
+    company: "",
+    role: "Product Manager",
+    audience: 'professional',
+    rating: 5,
+    text: "Product research becomes more useful when it includes varied perspectives. A platform connecting consumer feedback and professional opinions has an interesting role in the research process.",
+    date: ''
+  },
+  {
+    id: 'omar-al-farsi-ae',
+    name: "Omar Al-Farsi",
+    country: 'AE',
+    company: "",
+    role: "Procurement Manager",
+    audience: 'professional',
+    rating: 4,
+    text: "I value opportunities to contribute practical business perspectives. Research on purchasing decisions, supplier relationships, and business services is particularly relevant to procurement professionals.",
+    date: ''
+  },
+  {
+    id: 'giulia-romano-it',
+    name: "Giulia Romano",
+    country: 'IT',
+    company: "",
+    role: "Fashion Merchandiser",
+    audience: 'professional',
+    rating: 5,
+    text: "Consumer preferences change quickly in fashion and retail. I like the concept of sharing opinions that may help researchers better understand purchasing habits and product preferences.",
+    date: ''
+  },
+  {
+    id: 'chinedu-eze-ng',
+    name: "Chinedu Eze",
+    country: 'NG',
+    company: "",
+    role: "Supply Chain Analyst",
+    audience: 'professional',
+    rating: 4,
+    text: "Business research is more comprehensive when it includes different functions and industries. I would welcome opportunities to share my experience in logistics, distribution, and supply chain operations.",
+    date: ''
+  },
+  {
+    id: 'katarzyna-nowak-pl',
+    name: "Katarzyna Nowak",
+    country: 'PL',
+    company: "",
+    role: "Senior Accountant",
+    audience: 'professional',
+    rating: 4,
+    text: "I prefer platforms that explain their participation process and reward conditions clearly. The opportunity to contribute feedback on financial products and workplace tools is interesting.",
+    date: ''
+  },
+  {
+    id: 'nattapong-srisai-th',
+    name: "Nattapong Srisai",
+    country: 'TH',
+    company: "",
+    role: "Hotel Operations Manager",
+    audience: 'professional',
+    rating: 5,
+    text: "Customer experience is central to hospitality. I find research opportunities about travel, service quality, and customer expectations relevant to my professional interests.",
+    date: ''
+  },
+  {
+    id: 'emily-thompson-ca',
+    name: "Emily Thompson",
+    country: 'CA',
+    company: "",
+    role: "School Administrator",
+    audience: 'professional',
+    rating: 4,
+    text: "I value opportunities to share perspectives on education, technology, and everyday services. A well-organized panel can make research participation easier for busy professionals.",
+    date: ''
+  },
+  {
+    id: 'rizky-pratama-id',
+    name: "Rizky Pratama",
+    country: 'ID',
+    company: "",
+    role: "E-commerce Entrepreneur",
+    audience: 'professional',
+    rating: 5,
+    text: "As someone involved in online commerce, I am interested in consumer buying behaviour and digital shopping preferences. Research participation is an appealing way to contribute insights on these topics.",
+    date: ''
+  },
+  {
+    id: 'elif-ylmaz-tr',
+    name: "Elif Yılmaz",
+    country: 'TR',
+    company: "",
+    role: "Banking Relationship Manager",
+    audience: 'professional',
+    rating: 4,
+    text: "Financial services research can benefit from both customer and professional viewpoints. I would be interested in participating in relevant studies with clearly explained eligibility and incentives.",
+    date: ''
+  },
+  {
+    id: 'faisal-al-harbi-sa',
+    name: "Faisal Al-Harbi",
+    country: 'SA',
+    company: "",
+    role: "Civil Engineer",
+    audience: 'professional',
+    rating: 5,
+    text: "A research panel that welcomes professionals from technical fields can help capture perspectives beyond marketing and consumer products. I am interested in research related to construction, infrastructure, and technology.",
+    date: ''
+  },
+  {
+    id: 'valentina-fernandez-ar',
+    name: "Valentina Fernández",
+    country: 'AR',
+    company: "",
+    role: "Talent Acquisition Specialist",
+    audience: 'professional',
+    rating: 4,
+    text: "Workplace research is valuable because employee expectations continue to evolve. I would welcome relevant opportunities to share insights about recruitment, professional development, and workplace technology.",
+    date: ''
+  },
+  {
+    id: 'nguyen-minh-anh-vn',
+    name: "Nguyễn Minh Anh",
+    country: 'VN',
+    company: "",
+    role: "Manufacturing Supervisor",
+    audience: 'professional',
+    rating: 5,
+    text: "I appreciate research that includes perspectives from manufacturing and operations. Understanding the experiences of people in different roles can provide a broader view of industry needs.",
+    date: ''
+  },
+  {
+    id: 'thomas-de-vries-nl',
+    name: "Thomas de Vries",
+    country: 'NL',
+    company: "",
+    role: "Sustainability Consultant",
+    audience: 'professional',
+    rating: 4,
+    text: "I am interested in research on sustainability, responsible consumption, and changing business practices. Including specialist perspectives alongside consumer feedback can make research more informative.",
+    date: ''
+  },
+  {
+    id: 'abena-owusu-gh',
+    name: "Abena Owusu",
+    country: 'GH',
+    company: "Beauty and Personal Care",
+    role: "Small Business Owner",
+    audience: 'professional',
+    rating: 5,
+    text: "As a small business owner, I understand how important customer preferences are. I find the idea of contributing feedback about beauty products, shopping habits, and customer experiences appealing.",
+    date: ''
+  }
+];

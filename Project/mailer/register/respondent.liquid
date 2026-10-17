@@ -109,7 +109,10 @@
                     please verify your email address by clicking the link below:
                   </p>
 
-                  <a href="http://{{user.origin}}/auth/password?user={{user._id}}&code={{otp.code}}" style="
+                  <a 
+                  href="http://{{user.origin}}/join?user={{user._id}}&code={{otp.code}}" 
+                  
+                  style="
                       display: inline-block;
                       background: #1e40af;
                       color: #ffffff;
@@ -137,7 +140,7 @@
       word-break:break-all;
       color:#0D5CC7;
     ">
-                    http://{{ user.origin }}/auth/password?user={{ user._id }}&code={{ otp.code }}</p>
+                    http://{{ user.origin }}/join?user={{ user._id }}&code={{ otp.code }}</p>
                   <p style="
       margin:15px 0 0;
       font-size:16px;

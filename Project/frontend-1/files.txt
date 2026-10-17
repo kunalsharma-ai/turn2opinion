@@ -1,0 +1,10 @@
+total 88
+-rw-rw-r--  1 frfs frfs   697 Oct 13 12:06 Dockerfile
+-rw-rw-r--  1 frfs frfs     0 Oct 13 12:18 files.txt
+-rw-r--r--  1 frfs frfs  1726 Oct 12 14:20 index.html
+-rw-rw-r--  1 frfs frfs 59669 Oct 13 12:09 package-lock.json
+-rw-r--r--  1 frfs frfs   955 Oct 12 15:05 package.json
+drwxr-xr-x  6 frfs frfs  4096 Oct 12 14:00 public
+drwxr-xr-x  2 frfs frfs  4096 Oct 12 15:05 scripts
+drwxr-xr-x 12 frfs frfs  4096 Oct 12 14:00 src
+-rw-r--r--  1 frfs frfs   494 Oct 13 12:10 vite.config.js

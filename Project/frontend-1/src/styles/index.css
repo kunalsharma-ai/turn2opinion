@@ -1,0 +1,7 @@
+/* Global stylesheet entry – imported once in src/entry-client.jsx */
+@import './base.css';
+@import './components.css';
+@import './layout.css';
+@import './home.css';
+@import './pages.css';
+@import './widgets.css';

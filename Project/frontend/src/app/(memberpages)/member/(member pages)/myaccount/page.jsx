@@ -909,22 +909,22 @@ const handleSaveField = async (fieldKey) => {
                     <Typography sx={{ flex: 1, fontWeight: 500 }}>{method.label}</Typography>
 
                      <IconButton
-  component="span"
-  size="small"
-  onClick={(e) => {
-    e.stopPropagation();
-    handleSetPrimary(methodValue);
-  }}
-  sx={{
-    color: isPrimary
-      ? "secondary.main"
-      : filled
-      ? "#fff"
-      : "rgba(255,255,255,0.3)", // value nahi hai to grey dikhega
-  }}
->
-  {isPrimary ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
-</IconButton>
+                        component="span"
+                        size="small"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSetPrimary(methodValue);
+                        }}
+                        sx={{
+                          color: isPrimary
+                            ? "secondary.main"
+                            : filled
+                            ? "#fff"
+                            : "rgba(255,255,255,0.3)", 
+                        }}
+                      >
+                        {isPrimary ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
+                      </IconButton>
                   </Box>
                 </AccordionSummary>
 

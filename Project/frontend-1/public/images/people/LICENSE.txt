@@ -1,0 +1,3 @@
+Illustrations of people in this folder are built from Open Peeps by Pablo Stanley (https://www.openpeeps.com),
+released under CC0 1.0 (public domain). They were composed with the @opeepsfun/open-peeps package (MIT licence)
+and exported as static SVG files, so no runtime dependency is added to the site.

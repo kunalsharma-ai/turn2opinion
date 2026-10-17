@@ -7,7 +7,6 @@ import mongoose from "mongoose";
 import appRoute from "./routes/index.js";
 import compression from "compression";
 import { setOrigin, expressRoute, fsLogger,loadModule } from "./utils/index.js";
-loadModule("app/new-module/index.js");
 (async () => {
     const env = {
         port: process.env.port ?? 3000,
