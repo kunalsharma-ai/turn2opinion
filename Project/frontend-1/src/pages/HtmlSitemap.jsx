@@ -15,6 +15,7 @@ const GROUPS = [
       ['/profiling/', 'Survey Profiling & Quality Score'],
       ['/rewards/', 'Survey Rewards'],
       ['/about/', 'About Turn2Opinion'],
+      ['/about/reviews/', 'Member Ratings & Reviews'],
       ['/contact/', 'Contact'],
       ['/join/', 'Join free'],
       ['/login/', 'Member login']

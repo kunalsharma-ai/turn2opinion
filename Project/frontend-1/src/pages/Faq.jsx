@@ -6,11 +6,14 @@ import { useReveal, prefersReducedMotion } from '../hooks/useMounted.js';
 import { asset } from '../config/env.js';
 import { Breadcrumbs, CtaBand, FlipFaq } from '../components/Common.jsx';
 import Icon from '../components/Icon.jsx';
+import { useI18n } from '../i18n/I18nProvider.jsx';
+import { tr } from '../i18n/engine.js';
 
 const COLORS = { joining: '#1F5BFF', account: '#7B5CFF', surveys: '#FF5C7A', rewards: '#F08C00', privacy: '#0E9F6E' };
 const IDEAS = ['How do I get paid?', 'Is it really free?', 'Why was I screened out?', 'Can I delete my account?', 'Is UPI available?'];
 
 function useTypingPlaceholder() {
+  const { lang } = useI18n();
   const [i, setI] = useState(0);
   const [n, setN] = useState(0);
   useEffect(() => {
@@ -28,6 +31,8 @@ function useTypingPlaceholder() {
     );
     return () => clearTimeout(t);
   }, [i, n]);
+  // Other languages: show the whole suggestion translated (typing letter by letter would create untranslatable fragments).
+  if (lang !== 'en') return `${tr('Try')} “${tr(IDEAS[i])}”`;
   return `Try “${IDEAS[i].slice(0, prefersReducedMotion() ? undefined : n)}”`;
 }
 
@@ -66,7 +71,8 @@ export default function Faq() {
               <label htmlFor="faq-q" className="sr-only">
                 Search questions
               </label>
-              <input id="faq-q" type="search" placeholder={ph} value={q} onChange={(e) => setQ(e.target.value)} />
+              <input id="faq-q" type="search" placeholder={ph}
+                translate="no" value={q} onChange={(e) => setQ(e.target.value)} />
               <span className="hd-count" aria-live="polite">
                 {found} {found === 1 ? 'answer' : 'answers'}
               </span>
@@ -82,7 +88,7 @@ export default function Faq() {
           <div className="hd-art" aria-hidden="true">
             <span className="hd-ring" />
             <span className="hd-peep">
-              <img src={asset('/images/people/pro-pointing.svg')} alt="" width="220" height="260" />
+              <img src={asset('/images/people/pro-pointing.svg')} alt="Illustration of a panel member pointing to the answer to a frequently asked question" width="220" height="260" />
             </span>
             <span className="hd-bulb">
               <Icon name="bolt" size={26} />

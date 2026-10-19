@@ -6,6 +6,11 @@ import { prefersReducedMotion } from '../../hooks/useMounted.js';
 import Icon from '../Icon.jsx';
 import { T2OMark } from '../Brand.jsx';
 import { asset } from '../../config/env.js';
+import WordSplit from '../WordSplit.jsx';
+import AuroraCanvas from '../AuroraCanvas.jsx';
+import { peopleAlt } from '../../data/illustrations.js';
+import { useI18n } from '../../i18n/I18nProvider.jsx';
+import { tr } from '../../i18n/engine.js';
 
 export const AUDIENCES = {
   consumer: {
@@ -39,6 +44,7 @@ export const AUDIENCES = {
 };
 
 function Rotator({ words }) {
+  useI18n(); // re-render when the language changes so the word is shown translated
   const [i, setI] = useState(0);
   useEffect(() => {
     setI(0);
@@ -47,9 +53,9 @@ function Rotator({ words }) {
     return () => clearInterval(t);
   }, [words]);
   return (
-    <span className="rotator" aria-live="off">
+    <span className="rotator notranslate" translate="no" aria-live="off">
       <span className="rotator-word" key={words[i]}>
-        {words[i]}
+        {tr(words[i])}
       </span>
     </span>
   );
@@ -100,7 +106,9 @@ const PERSONAS = {
 };
 const METHOD_LABEL = { UPI: 'UPI (India)', PayPal: 'PayPal', 'Wire Transfer': 'wire transfer', 'Amazon Gift Card': 'Amazon gift card' };
 
-function TypeText({ text, onDone }) {
+function TypeText({ text: source, onDone }) {
+  const { lang } = useI18n();
+  const text = lang === 'en' ? source : tr(source);
   const [n, setN] = useState(prefersReducedMotion() ? text.length : 0);
   useEffect(() => {
     if (prefersReducedMotion()) {
@@ -115,7 +123,7 @@ function TypeText({ text, onDone }) {
     return () => clearTimeout(t);
   }, [n, text]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
-    <span className="tt">
+    <span className="tt notranslate" translate="no">
       {text.slice(0, n)}
       <i className={n < text.length ? 'tt-caret' : 'tt-caret done'} />
     </span>
@@ -170,7 +178,7 @@ export function RewardStage({ aud }) {
         ))}
       </span>
       <div className="portal-blob">
-        <img key={`${aud}-${p.img}`} className="portal-person" src={asset(`/images/people/${p.img}.svg`)} alt="" width="300" height="360" />
+        <img key={`${aud}-${p.img}`} className="portal-person" src={asset(`/images/people/${p.img}.svg`)} alt={peopleAlt(p.img)} width="300" height="360" />
       </div>
       <div className="portal-q" key={`q-${aud}-${i}`}>
         <span className="pq-role">
@@ -257,9 +265,17 @@ export function RewardStage({ aud }) {
 
 export default function HomeHero() {
   const [aud, setAud] = useState('consumer');
+  const { lang } = useI18n();
   const a = AUDIENCES[aud];
+  // Same hero, animation and taglines in every language. English keeps the original white Turn2Opinion grading;
+  // every other language adds a WebGL aurora in its own colour grade behind it (see .hero-aurora in i18n.css).
   return (
-    <section className={`hero hero-${aud}`}>
+    <section className={`hero hero-${aud} ${lang !== 'en' ? 'is-graded' : ''}`}>
+      {lang !== 'en' && (
+        <div className="hero-aurora" aria-hidden="true">
+          <AuroraCanvas />
+        </div>
+      )}
       <div className="hero-bg" aria-hidden="true">
         <span className="hero-blob b1" />
         <span className="hero-blob b2" />
@@ -285,11 +301,7 @@ export default function HomeHero() {
             <span className="ht-line l2">Your Opinion Matters.</span>
           </h1>
           <p className="hero-tagline" key={aud}>
-            {a.tagline.split(' ').map((w, i) => (
-              <span key={i} style={{ '--i': i }}>
-                {w}{' '}
-              </span>
-            ))}
+            <WordSplit text={a.tagline} />
           </p>
           <p className="hero-lead">
             {a.lead} <Rotator words={a.who} /> {a.leadEnd}

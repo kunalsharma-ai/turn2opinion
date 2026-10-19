@@ -2,7 +2,14 @@ import { asset, ENV } from '../config/env.js';
 import { Link } from '../router/Router.jsx';
 import { useMounted } from '../hooks/useMounted.js';
 
-/** Country flag from /public/flags (flag-icons, MIT). */
+/**
+ * Country flag from /public/flags (flag-icons, MIT).
+ *
+ * `title` is the country (or place) the flag stands for and becomes its alt text — pass it
+ * wherever the flag carries the meaning on its own, such as the stamp on a review card. Leave it
+ * out where the name is already written next to the flag: alt="" then keeps a screen reader from
+ * reading the same country twice, which is what empty alt text is for.
+ */
 export function Flag({ code, size = 20, className = '', title }) {
   if (!code) return null;
   const c = String(code).toLowerCase();
@@ -12,7 +19,7 @@ export function Flag({ code, size = 20, className = '', title }) {
       src={asset(`/flags/${c}.svg`)}
       width={Math.round(size * 1.333)}
       height={size}
-      alt={title || ''}
+      alt={title ? `Flag of ${title}` : ''}
       loading="lazy"
       decoding="async"
     />

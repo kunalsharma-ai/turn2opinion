@@ -31,7 +31,7 @@ import { useQuery } from "@/Context";
 import { SurveyPoints } from "../../components";
 import { SurveyHistory } from "../dashboard/page";
 
-const permittedStatus = ["invited", "dropout"];
+const permittedStatus = ["invited"];
 export default function SurveyDashboard() {
   const [query] = [useQuery()];
   const [surveys, setSurveys] = React.useState([]);
@@ -547,6 +547,7 @@ function SurveyCard({ survey }) {
                 textTransform: "capitalize",
                 fontWeight: 600,
                 color: "#fff",
+                cursor: "default",
               }}
             />
           )}

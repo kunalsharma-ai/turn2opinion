@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from '../router/Router.jsx';
 import { useInView, useReveal, prefersReducedMotion } from '../hooks/useMounted.js';
 import { asset } from '../config/env.js';
+import { peopleAlt } from '../data/illustrations.js';
 import { CtaBand, PageHero, SectionHead } from '../components/Common.jsx';
 import { InvitationChannels } from '../components/sections/Rewards.jsx';
 import Icon from '../components/Icon.jsx';
@@ -120,7 +121,7 @@ function TwoSides() {
               </i>
             ))}
           </span>
-          <img className="duo-peep" src={asset(`/images/people/${sd.img}.svg`)} alt="" width="200" height="240" loading="lazy" />
+          <img className="duo-peep" src={asset(`/images/people/${sd.img}.svg`)} alt={peopleAlt(sd.img)} width="200" height="240" loading="lazy" />
           <div className="duo-copy">
             <h3 className="duo-tag">
               <span>
@@ -311,7 +312,7 @@ export default function HowItWorks() {
                 </button>
               ))}
               <span className="lv-token" style={{ left: `${NODES[active][0]}%`, top: `${NODES[active][1]}%` }} aria-hidden="true">
-                <img src={asset('/images/people/shopper.svg')} alt="" width="60" height="70" />
+                <img src={asset('/images/people/shopper.svg')} alt="Illustration of a smiling shopper who has just claimed a survey reward" width="60" height="70" />
               </span>
             </div>
 

@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useInView, prefersReducedMotion } from '../../hooks/useMounted.js';
 import { asset } from '../../config/env.js';
 import Icon from '../Icon.jsx';
+import WordSplit from '../WordSplit.jsx';
 
 const TONES = ['#1F5BFF', '#FF4F7B', '#12A594', '#F08C00', '#7B5CFF', '#0EA5E9'];
 const ICONS = ['user', 'wallet', 'gift', 'briefcase', 'mail', 'chat'];
@@ -63,7 +64,7 @@ export default function QuickAnswers({ items, idPrefix = 'qa' }) {
           <i />
           <i />
         </span>
-        <img className="qa-peep" src={asset('/images/people/tech-user.svg')} alt="" width="220" height="260" loading="lazy" />
+        <img className="qa-peep" src={asset('/images/people/tech-user.svg')} alt="Illustration of a panel member reading answers to common questions on a laptop" width="220" height="260" loading="lazy" />
         {items.map((it, i) => (
           <div key={it.q} id={`${idPrefix}-panel-${i}`} role="tabpanel" aria-labelledby={`${idPrefix}-tab-${i}`} hidden={i !== on} className="qa-bubble">
             <span className="qa-quote" aria-hidden="true">
@@ -71,11 +72,7 @@ export default function QuickAnswers({ items, idPrefix = 'qa' }) {
             </span>
             <h3>{it.q}</h3>
             <p>
-              {it.a.split(' ').map((w, k) => (
-                <span key={k} style={{ '--k': k }}>
-                  {w}{' '}
-                </span>
-              ))}
+              <WordSplit text={it.a} varName="--k" />
             </p>
           </div>
         ))}

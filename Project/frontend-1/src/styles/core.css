@@ -1,0 +1,5 @@
+/* CSS bundle 1 of 4 — CORE. Loaded blocking on every page, first in the cascade.
+   See styles/index.css for the whole picture and the fixed order the four bundles keep. */
+@import './base.css';
+@import './components.css';
+@import './layout.css';

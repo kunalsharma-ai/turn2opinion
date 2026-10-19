@@ -7,6 +7,11 @@ import { buildHead, headToHtml } from './seo/seo.js';
 import { getData } from './app/routeCache.js';
 import { ENV } from './config/env.js';
 import { BLOG_POSTS } from './data/blog/index.js';
+// Build-time only (llms.txt generator in scripts/llms.mjs) — not part of the browser bundle.
+export { FAQ_GROUPS } from './data/faqs.js';
+export { SITE } from './config/site.js';
+export { ALL_COUNTRIES } from './data/profiles.js';
+export { loadPostBody } from './data/blog/loaders.js';
 
 export { allStaticPaths, ROUTES, NOT_FOUND, BLOG_POSTS };
 export const SITE_URL = ENV.SITE_URL;

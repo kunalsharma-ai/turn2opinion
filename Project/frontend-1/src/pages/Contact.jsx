@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { SITE, waLink } from '../config/site.js';
 import { ENV, asset } from '../config/env.js';
-import { postJSON, failureMessage, api } from '../utils/api.js';
+import { postJSON, failureMessage } from '../utils/api.js';
 import { track } from '../utils/analytics.js';
 import { useReveal } from '../hooks/useMounted.js';
 import { Link } from '../router/Router.jsx';
@@ -10,6 +10,7 @@ import { EMAIL_RE } from '../components/FormFields.jsx';
 import Icon from '../components/Icon.jsx';
 import { Breadcrumbs } from '../components/Common.jsx';
 import { T2OMark } from '../components/Brand.jsx';
+import WordSplit from '../components/WordSplit.jsx';
 
 const TOPICS = ['My account', 'Surveys & invitations', 'Rewards & payments', 'Privacy & data', 'Business / research partnership', 'Something else'];
 
@@ -35,7 +36,7 @@ function Switchboard() {
       </svg>
       <span className="sb-person" aria-hidden="true">
         <span className="sb-ring" />
-        <img src={asset('/images/people/pro-pointing.svg')} alt="" width="200" height="240" />
+        <img src={asset('/images/people/pro-pointing.svg')} alt="Illustration of a Turn2Opinion support contact pointing to the ways to reach the team" width="200" height="240" />
       </span>
       {LINES.map((l, i) => {
         const inner = (
@@ -94,8 +95,8 @@ export default function Contact() {
     setErrors({ _submitted: true, ...extra });
     if (Object.values(v).some(Boolean) || extra.agree || extra.captcha) return;
     setState('sending');
-    const res = await api.post('/api/v1/contact', { ...f, website: hp, captchaToken: captcha.token, captchaProvider: captcha.provider });
-    if (res.status === "success") {
+    const res = await postJSON(ENV.API_ENQUIRY_URL, { ...f, website: hp, captchaToken: captcha.token, captchaProvider: captcha.provider });
+    if (res.ok) {
       setState('sent');
       track('contact_submit', { topic: f.topic });
     } else {
@@ -115,11 +116,7 @@ export default function Contact() {
             <p className="ph-kicker">Real people, on every line</p>
             <h1 className="ph-title">Let’s talk</h1>
             <p className="ph-tagline">
-              {'Pick a line. A real person picks up.'.split(' ').map((w, i) => (
-                <span key={i} style={{ '--i': i }}>
-                  {w}{' '}
-                </span>
-              ))}
+              <WordSplit text="Pick a line. A real person picks up." />
             </p>
             <p className="ph-lead">Questions about surveys, rewards or your account? Live help answers any time of day – or drop us a note below.</p>
             <ul className="ch-facts">

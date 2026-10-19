@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from '../router/Router.jsx';
 import Icon from './Icon.jsx';
+import WordSplit from './WordSplit.jsx';
 
 export function Breadcrumbs({ items }) {
   return (
@@ -63,11 +64,7 @@ export function PageHero({ crumbs, kicker, title, lead, tagline, theme = 'orbit'
           <h1 className="ph-title">{title}</h1>
           {tagline && (
             <p className="ph-tagline">
-              {tagline.split(' ').map((w, i) => (
-                <span key={i} style={{ '--i': i }}>
-                  {w}{' '}
-                </span>
-              ))}
+              <WordSplit text={tagline} />
               <svg className="ph-underline" viewBox="0 0 300 12" preserveAspectRatio="none" aria-hidden="true">
                 <path d="M2 8 C 60 2, 120 12, 180 6 S 270 3, 298 7" />
               </svg>

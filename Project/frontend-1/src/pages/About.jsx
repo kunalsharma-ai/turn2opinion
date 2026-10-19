@@ -90,7 +90,7 @@ export default function About() {
             <div className="bridge-core">
               <span className="bridge-beam b-left" />
               <span className="bridge-hub">
-                <img src={asset('/images/brand/turn2opinion-logo-320.webp')} alt="" width="140" height="43" loading="lazy" />
+                <img src={asset('/images/brand/turn2opinion-logo-320.webp')} alt="Turn2Opinion logo" width="140" height="43" loading="lazy" />
               </span>
               <span className="bridge-beam b-right" />
             </div>
@@ -167,6 +167,40 @@ export default function About() {
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      {/* Gateway to the full ratings & reviews page (v3.1). Kept here, under About, because what
+          members say about us belongs with who we are rather than on a marketing page. */}
+      <section className="section s-paper" aria-labelledby="rv-gate-h">
+        <div className="wrap">
+          <Link to="/about/reviews/" className="rv-gate" data-reveal>
+            <span className="rvg-art" aria-hidden="true">
+              <span className="rvg-orb" />
+              <span className="rvg-ring r1" />
+              <span className="rvg-ring r2" />
+              <span className="rvg-bars">
+                <i />
+                <i />
+                <i />
+                <i />
+                <i />
+              </span>
+            </span>
+            <span className="rvg-copy">
+              <span className="rvg-kicker">
+                <Icon name="pulse" size={14} /> Judged by the people who use it
+              </span>
+              <h2 id="rv-gate-h">Read every rating and review</h2>
+              <p>
+                The average score, how members rate surveys, rewards, support and mobile separately, and every review in
+                full — with the country each one came from. Low scores included.
+              </p>
+            </span>
+            <span className="rvg-go" aria-hidden="true">
+              <Icon name="arrow" size={20} />
+            </span>
+          </Link>
         </div>
       </section>
 

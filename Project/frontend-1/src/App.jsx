@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { Router, usePath } from './router/Router.jsx';
 import { matchRoute, resolveSeo } from './routes.js';
 import { getData, getPage, isReady, preloadPath } from './app/routeCache.js';
@@ -8,22 +8,51 @@ import Footer from './components/Footer.jsx';
 import { useMounted } from './hooks/useMounted.js';
 import { trackPageView } from './utils/analytics.js';
 import SocialRedirect from './components/SocialRedirect.jsx';
+import AnimationGate from './components/AnimationGate.jsx';
+import { I18nProvider } from './i18n/I18nProvider.jsx';
+import { useI18n } from './i18n/I18nProvider.jsx';
+
+const LanguagePicker = lazy(() => import('./components/LanguagePicker.jsx').then((m) => ({ default: m.LanguagePicker })));
+const TranslateStatus = lazy(() => import('./components/LanguagePicker.jsx').then((m) => ({ default: m.TranslateStatus })));
+
+/** Loads the picker code only when it is opened, and the status pill only in other languages. */
+function LanguageLayer() {
+  const { picker, lang } = useI18n();
+  return (
+    <Suspense fallback={null}>
+      {picker && <LanguagePicker />}
+      {lang !== 'en' && <TranslateStatus />}
+    </Suspense>
+  );
+}
+
+const WIDGET_EVENTS = ['pointerdown', 'keydown', 'scroll', 'touchstart', 'wheel'];
 
 function GlobalWidgetsLoader() {
-  // Floating widgets (chat, cursor, toasts, review prompt, consent) load after the page is idle,
-  // so they never compete with the first paint.
+  // Floating widgets (chat, cursor, toasts, review prompt, consent) load on the visitor's first
+  // move — a scroll, a tap, a key — and otherwise on a timer, so they never compete with the
+  // first paint or with hydration. None of them is on screen before that: the review prompt is
+  // on a scroll interval anyway, and the chat button and consent bar are needed the moment
+  // someone reaches for them, which is exactly when the first of these events fires.
   const [Widgets, setWidgets] = useState(null);
   useEffect(() => {
-    let cancelled = false;
-    const go = () =>
-      import('./components/GlobalWidgets.jsx').then((m) => {
-        if (!cancelled) setWidgets(() => m.default);
-      });
-    const id = 'requestIdleCallback' in window ? window.requestIdleCallback(go, { timeout: 1500 }) : setTimeout(go, 600);
+    let done = false;
+    const go = () => {
+      if (done) return;
+      done = true;
+      stop();
+      import('./components/GlobalWidgets.jsx').then((m) => setWidgets(() => m.default));
+    };
+    const idle = () => ('requestIdleCallback' in window ? window.requestIdleCallback(go, { timeout: 1200 }) : setTimeout(go, 400));
+    const timer = setTimeout(idle, 2200);
+    const stop = () => {
+      clearTimeout(timer);
+      WIDGET_EVENTS.forEach((e) => window.removeEventListener(e, go, { capture: true }));
+    };
+    WIDGET_EVENTS.forEach((e) => window.addEventListener(e, go, { capture: true, passive: true, once: true }));
     return () => {
-      cancelled = true;
-      if ('cancelIdleCallback' in window) window.cancelIdleCallback(id);
-      else clearTimeout(id);
+      done = true;
+      stop();
     };
   }, []);
   return Widgets ? <Widgets /> : null;
@@ -70,7 +99,13 @@ function Shell() {
       {!ready && <div className="route-progress" role="progressbar" aria-label="Loading page" />}
       <main id="main" tabIndex={-1}>{content}</main>
       <Footer />
-      {mounted && <GlobalWidgetsLoader />}
+      {mounted && (
+        <>
+          <AnimationGate />
+          <GlobalWidgetsLoader />
+          <LanguageLayer />
+        </>
+      )}
     </>
   );
 }
@@ -78,7 +113,9 @@ function Shell() {
 export default function App({ initialPath }) {
   return (
     <Router initialPath={initialPath}>
-      <Shell />
+      <I18nProvider>
+        <Shell />
+      </I18nProvider>
     </Router>
   );
 }

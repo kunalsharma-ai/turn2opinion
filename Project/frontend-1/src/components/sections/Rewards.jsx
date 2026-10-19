@@ -108,6 +108,8 @@ export function RewardRoutes() {
             key={ro.who}
             type="button"
             className={`mt-station ${i === act ? 'is-on' : ''}`}
+            /* .mt-who is hidden below 760px, so the name is given here too or the button has none. */
+            aria-label={ro.who}
             style={{ top: `${(SY(i) / 420) * 100}%`, '--c': ro.tone }}
             onMouseEnter={() => {
               setHold(true);

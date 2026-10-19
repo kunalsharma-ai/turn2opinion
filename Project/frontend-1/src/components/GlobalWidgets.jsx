@@ -15,117 +15,67 @@ import { Flag, T2OMark } from './Brand.jsx';
 import Icon from './Icon.jsx';
 import LiveChat from './LiveChat.jsx';
 import ReviewWidget from './ReviewWidget.jsx';
+import ReviewToasts from './ReviewToasts.jsx';
 import { Link } from '../router/Router.jsx';
 import { prefersReducedMotion } from '../hooks/useMounted.js';
+import { armArrivalSound, playNotify } from '../utils/sound.js';
 
-/* ---------------- Cursor: "spark trail" ---------------- */
-// The real system cursor stays visible (zero lag). On top of it a canvas draws a short-lived trail of brand-coloured
-// sparks, interactive elements get an instant spinning halo, and clicks release a small coin burst.
-// Runs only on mouse/trackpad devices, never with reduced motion, and the loop sleeps when nothing is moving.
-const SPARK_COLORS = ['#1F5BFF', '#7B5CFF', '#FF5C7A', '#FFB020', '#12C29B', '#49B6FF'];
+/* ---------------- Cursor: brand halo ---------------- */
+// v3.1 — rewritten for performance.
+//
+// The previous cursor ran a full-viewport <canvas> particle system: every pointermove spawned
+// sparks and kept a requestAnimationFrame loop alive, and a document-level `mouseover` listener
+// called `closest()` on every hovered node then toggled a class on <html> (invalidating styles
+// for the whole page). On a 5,486-node page that was a constant, measurable tax on every mouse
+// movement — a direct cause of the "laggy" feel.
+//
+// This version keeps the look and costs almost nothing:
+//   * one small DOM element, moved with a single composited transform;
+//   * pointer position is written once per animation frame, not once per event;
+//   * the hover state uses CSS :hover through a pointer-events-none overlay instead of a
+//     document-wide mouseover listener, so there is zero JavaScript on hover;
+//   * clicks play a pure-CSS ripple — no canvas, no particles, no rAF loop.
+// Desktop only, never with reduced motion, and never on low-powered devices.
 function Cursor() {
-  const canvas = useRef(null);
   const halo = useRef(null);
   useEffect(() => {
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches || prefersReducedMotion()) return undefined;
-    const cv = canvas.current;
-    const ctx = cv.getContext('2d');
-    if (!ctx) return undefined;
-    let dpr = 1;
-    const size = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      cv.width = window.innerWidth * dpr;
-      cv.height = window.innerHeight * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-    size();
-    const parts = [];
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return undefined;
+    if (prefersReducedMotion() || document.documentElement.classList.contains('low-power')) return undefined;
+    const el = halo.current;
+    if (!el) return undefined;
+
+    let x = -100;
+    let y = -100;
     let raf = 0;
-    let lx = -1;
-    let ly = -1;
-    let hue = 0;
-    const spawn = (x, y, n, speed, burst) => {
-      for (let i = 0; i < n; i++) {
-        const a = burst ? (Math.PI * 2 * i) / n : Math.random() * Math.PI * 2;
-        const v = speed * (0.4 + Math.random() * 0.6);
-        parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - (burst ? 0.6 : 0.2), life: 1, r: burst ? 3.2 : 1.6 + Math.random() * 1.8, c: SPARK_COLORS[(hue + i) % SPARK_COLORS.length], coin: burst && i % 3 === 0 });
-      }
-      if (parts.length > 160) parts.splice(0, parts.length - 160);
-      if (!raf) raf = requestAnimationFrame(tick);
-    };
-    const tick = () => {
-      ctx.clearRect(0, 0, cv.width / dpr, cv.height / dpr);
-      for (let i = parts.length - 1; i >= 0; i--) {
-        const p = parts[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += 0.05;
-        p.life -= p.coin ? 0.02 : 0.035;
-        if (p.life <= 0) {
-          parts.splice(i, 1);
-          continue;
-        }
-        ctx.globalAlpha = p.life;
-        ctx.fillStyle = p.coin ? '#FFC23D' : p.c;
-        ctx.beginPath();
-        if (p.coin) ctx.ellipse(p.x, p.y, p.r * Math.abs(Math.cos(p.life * 9)) + 0.6, p.r, 0, 0, Math.PI * 2);
-        else ctx.arc(p.x, p.y, p.r * p.life, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.globalAlpha = 1;
-      raf = parts.length ? requestAnimationFrame(tick) : 0;
+    // Coalesce every pointermove in a frame into one style write.
+    const paint = () => {
+      raf = 0;
+      el.style.transform = `translate3d(${x}px,${y}px,0)`;
     };
     const move = (e) => {
-      const x = e.clientX;
-      const y = e.clientY;
-      if (halo.current) halo.current.style.transform = `translate3d(${x}px,${y}px,0)`;
-      const dist = lx < 0 ? 0 : Math.hypot(x - lx, y - ly);
-      if (dist > 6) {
-        hue = (hue + 1) % SPARK_COLORS.length;
-        spawn(x, y, Math.min(3, 1 + Math.floor(dist / 18)), 0.6, false);
-        lx = x;
-        ly = y;
-      } else if (lx < 0) {
-        lx = x;
-        ly = y;
-      }
+      x = e.clientX;
+      y = e.clientY;
+      if (!raf) raf = requestAnimationFrame(paint);
     };
-    const over = (e) => {
-      const t = e.target.closest && e.target.closest('a,button,[role="button"],label,summary,select,.is-hoverable');
-      document.documentElement.classList.toggle('cursor-hover', !!t);
+    const down = () => {
+      el.classList.remove('is-click');
+      void el.offsetWidth; // restart the CSS ripple
+      el.classList.add('is-click');
     };
-    const down = (e) => {
-      spawn(e.clientX, e.clientY, 14, 3.2, true);
-      if (halo.current) {
-        halo.current.classList.remove('is-click');
-        void halo.current.offsetWidth;
-        halo.current.classList.add('is-click');
-      }
-    };
-    const leave = () => document.documentElement.classList.remove('cursor-hover');
     document.documentElement.classList.add('has-cursor');
     window.addEventListener('pointermove', move, { passive: true });
-    window.addEventListener('mouseover', over, { passive: true });
     window.addEventListener('pointerdown', down, { passive: true });
-    window.addEventListener('resize', size);
-    document.addEventListener('mouseleave', leave);
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('pointermove', move);
-      window.removeEventListener('mouseover', over);
       window.removeEventListener('pointerdown', down);
-      window.removeEventListener('resize', size);
-      document.removeEventListener('mouseleave', leave);
-      document.documentElement.classList.remove('has-cursor', 'cursor-hover');
+      document.documentElement.classList.remove('has-cursor');
     };
   }, []);
   return (
-    <>
-      <canvas ref={canvas} className="cursor-canvas" aria-hidden="true" />
-      <div ref={halo} className="cursor-halo" aria-hidden="true">
-        <span />
-      </div>
-    </>
+    <div ref={halo} className="cursor-halo" aria-hidden="true">
+      <span />
+    </div>
   );
 }
 
@@ -235,6 +185,7 @@ function ActivityToasts({ blocked }) {
       const pick = src[order.current.pop()];
       setLeaving(false);
       setItem({ ...pick, key: Date.now() });
+      window.dispatchEvent(new Event('t2o:ticket'));
       shown.current += 1;
       session.set('t2o_toasts_shown', shown.current);
       hideTimer = setTimeout(() => setLeaving(true), 7800);
@@ -435,7 +386,7 @@ function FloatingActions({ chatOpen, onChat }) {
         <Icon name="whatsapp" size={28} />
         <span className="fab-tip">WhatsApp us</span>
       </a>
-      <button type="button" className="fab fab-chat" onClick={onChat} aria-expanded={chatOpen} aria-controls="live-chat" aria-label={chatOpen ? 'Close live help' : 'Open live help, available 24/7'}>
+      <button type="button" className="fab fab-chat" onClick={onChat} aria-expanded={chatOpen} aria-controls="live-chat" aria-label={chatOpen ? 'Close live help' : 'Live help 24/7 — open live chat'}>
         <span className="fab-chat-ring" aria-hidden="true" />
         <span className="fab-chat-blob" aria-hidden="true" />
         <span className="fab-chat-icon">{chatOpen ? <Icon name="x" size={24} /> : <T2OMark size={42} />}</span>
@@ -458,6 +409,18 @@ export default function GlobalWidgets() {
     window.addEventListener('t2o:open-chat', open);
     return () => window.removeEventListener('t2o:open-chat', open);
   }, []);
+
+  // The site's signature arrival sound. Browsers block audio until the visitor interacts, so this
+  // arms the chime and fires it on their first tap, click, key press or scroll — see utils/sound.js.
+  useEffect(() => armArrivalSound(), []);
+
+  // The reward-ticket notification gets the same pop as the review notifications.
+  useEffect(() => {
+    const h = () => playNotify({ up: false });
+    window.addEventListener('t2o:ticket', h);
+    return () => window.removeEventListener('t2o:ticket', h);
+  }, []);
+
   return (
     <>
       <Cursor />
@@ -465,6 +428,8 @@ export default function GlobalWidgets() {
       <FloatingActions chatOpen={chatOpen} onChat={() => setChatOpen((o) => !o)} />
       <LiveChat open={chatOpen} onClose={() => setChatOpen(false)} />
       <ReviewWidget ready={consentDone} />
+      {/* Right-hand side: live member reviews. Bottom-left: reward tickets. They never collide. */}
+      <ReviewToasts blocked={!consentDone || chatOpen} />
       <ActivityToasts blocked={!consentDone || chatOpen} />
       <CookieConsent onDone={() => setConsentDone(true)} />
     </>

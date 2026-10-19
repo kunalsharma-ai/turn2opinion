@@ -59,7 +59,7 @@ export default function FlagCarousel() {
               onMouseEnter={() => setHover(c)}
             >
               <span className="fw-cloth">
-                <Flag code={c.code} size={40} />
+                <Flag code={c.code} size={40} title={c.name} />
               </span>
               <span className="fw-name">{c.name}</span>
             </span>

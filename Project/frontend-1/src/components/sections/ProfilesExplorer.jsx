@@ -7,6 +7,8 @@ import { B2B, B2C, PROFILE_TYPE_COUNT } from '../../data/profiles.js';
 import { useInView, prefersReducedMotion } from '../../hooks/useMounted.js';
 import { asset } from '../../config/env.js';
 import Icon from '../Icon.jsx';
+import { isSoundEnabled } from '../../i18n/soundPrefs.js';
+import { peopleAlt } from '../../data/illustrations.js';
 
 const ITEM_H = 46;
 const PEOPLE = { pro: ['business', 'finance', 'tech-user', 'pro-pointing'], con: ['shopper', 'gamer', 'foodie', 'traveller', 'health', 'retiree'] };
@@ -37,17 +39,28 @@ const COMPANY = {
 };
 const pick = (n) => Math.floor(Math.random() * n);
 
-function Reel({ items, index, spinKey, delay }) {
+// The three reels and the three rails below them are the heaviest decoration on the home page:
+// repeated at full length they were 528 + 320 spans — about a fifth of the whole document — all of
+// it inside `overflow: hidden` boxes a visitor cannot see until this section scrolls into view.
+// So each one renders a minimal, same-height placeholder until `live` (the section's own
+// IntersectionObserver) turns it on, which is also the moment the first spin is scheduled. The
+// window height is fixed in CSS and the rails take their height from a single chip, so filling
+// them in later moves nothing on the page. The full profile list stays in the HTML either way —
+// it is in the <details> block below, which is what search engines and screen readers read.
+const RAIL_IDLE = 6;
+
+function Reel({ items, index, spinKey, delay, live }) {
   // A long strip (items repeated) so each spin travels downward several loops before landing.
   const loops = 4;
-  const strip = useMemo(() => Array.from({ length: loops }, () => items).flat(), [items]);
-  const target = (loops - 1) * items.length + index;
+  const strip = useMemo(() => (live ? Array.from({ length: loops }, () => items).flat() : [items[index % items.length]]), [items, live, index]);
+  const target = live ? (loops - 1) * items.length + index : 0;
+  const from = live ? -(target - 2 * items.length) * ITEM_H : 0;
   return (
     <div className="reel">
       <div
         className="reel-strip"
-        key={spinKey}
-        style={{ '--to': `${-target * ITEM_H}px`, '--d': `${delay}ms`, '--from': `${-(target - 2 * items.length) * ITEM_H}px` }}
+        key={live ? spinKey : 'idle'}
+        style={{ '--to': `${-target * ITEM_H}px`, '--d': `${delay}ms`, '--from': `${from}px` }}
       >
         {strip.map((t, i) => (
           <span key={i} className={i === target ? 'is-hit' : ''}>
@@ -59,11 +72,12 @@ function Reel({ items, index, spinKey, delay }) {
   );
 }
 
-function Rail({ items, dir, icons }) {
+function Rail({ items, dir, icons, live }) {
+  const strip = live ? [...items, ...items] : items.slice(0, RAIL_IDLE);
   return (
     <div className={`rail ${dir}`} aria-hidden="true">
       <div className="rail-track">
-        {[...items, ...items].map((t, i) => (
+        {strip.map((t, i) => (
           <span key={i}>
             {icons && <Icon name={icons[i % icons.length]} size={14} />}
             {t}
@@ -168,7 +182,7 @@ export default function ProfilesExplorer() {
             {reels.map((r, i) => (
               <div key={r.label} className="m2-col">
                 <span className="m2-label">{r.label}</span>
-                <Reel items={r.items} index={idx[i] % r.items.length} spinKey={`${mode}-${spin}`} delay={i * 260} />
+                <Reel items={r.items} index={idx[i] % r.items.length} spinKey={`${mode}-${spin}`} delay={i * 260} live={inView} />
               </div>
             ))}
           </div>
@@ -178,6 +192,8 @@ export default function ProfilesExplorer() {
             onClick={() => {
               manual.current = Date.now();
               go();
+              // Lever clunk → reels → cash-register "ka-ching" (synthesised, follows the Sound on/off switch).
+              if (isSoundEnabled()) import('../../i18n/sounds.js').then((m) => m.playSlotPull()).catch(() => {});
             }}
           >
             <span className="m2-knob" aria-hidden="true" />
@@ -187,7 +203,13 @@ export default function ProfilesExplorer() {
 
         <div className="slots-result" key={`${mode}-${spin}`} aria-live="polite">
           <span className="sr-person" aria-hidden="true">
-            <img src={asset(`/images/people/${PEOPLE[mode][person % PEOPLE[mode].length]}.svg`)} alt="" width="200" height="240" loading="lazy" />
+            <img
+              src={asset(`/images/people/${PEOPLE[mode][person % PEOPLE[mode].length]}.svg`)}
+              alt={peopleAlt(PEOPLE[mode][person % PEOPLE[mode].length])}
+              width="200"
+              height="240"
+              loading="lazy"
+            />
           </span>
           <p className="sr-kicker">Next survey could be for…</p>
           <p className="sr-sentence">{sentence}</p>
@@ -199,7 +221,7 @@ export default function ProfilesExplorer() {
 
       <div className="rails">
         {rails.map((r, i) => (
-          <Rail key={`${mode}-${i}`} items={r.items} icons={r.icons} dir={r.dir} />
+          <Rail key={`${mode}-${i}`} items={r.items} icons={r.icons} dir={r.dir} live={inView} />
         ))}
       </div>
 

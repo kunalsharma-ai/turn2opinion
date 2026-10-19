@@ -1,0 +1,17 @@
+/* CSS bundle 4 of 4 — LATE. Downloaded immediately but NOT render-blocking (the link starts as
+   media="print" and switches to media="all" on load; there is a plain <noscript> link too).
+
+   Everything in here styles something that is either mounted after the page is idle (the chat
+   FAB, the review prompt, the toasts, the consent bar — see GlobalWidgetsLoader in App.jsx) or
+   sits thousands of pixels below the fold (the testimonial gems, the footer QR hub), so none of
+   it is needed for the first paint. Keeping it out of the blocking path is what takes the
+   render-blocking CSS on the home page from 376 KB to 222 KB.
+
+   perf.css is repeated at the end so the performance layer is still the last word in the
+   cascade once this bundle lands. */
+@import './widgets.css';
+@import './reviews.css';
+@import './rating.css';
+@import './voices.css';
+@import './qr.css';
+@import './perf.css';

@@ -1,4 +1,5 @@
 "use client"
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { api, Page } from "@/util";
 import { Form } from "@/components"
@@ -28,6 +29,7 @@ export default function PhoneElement({ question, form, disabled }) {
   const isQuestionDisabled = disabled || !(question.isEditable ?? true);
   const errors = form?.formState?.errors
   const value = form.watch(question.name);
+  const [initialEmpty] = React.useState(() => [undefined, null, ""].includes(value));
 
   const {
     data: { country, ip } = {}
@@ -38,7 +40,8 @@ export default function PhoneElement({ question, form, disabled }) {
       resp.country = resp.country.toLowerCase().trim();
       return resp;
     },
-    enabled: [undefined, null].includes(value)
+    // enabled: [undefined, null].includes(value)
+    enabled: initialEmpty
   });
   let validations;
   if (question.required)
@@ -64,8 +67,10 @@ export default function PhoneElement({ question, form, disabled }) {
       control={form.control}
       disabled={isQuestionDisabled && Boolean(value)}
       validations={validations}
-      selectedCountry={country}
-      disableDropdown={Boolean(country)}
+      // selectedCountry={country}
+      // disableDropdown={Boolean(country)}
+      selectedCountry={initialEmpty ? country : undefined}
+disableDropdown={initialEmpty && Boolean(country)}
       errors={errors?.[question.name]}
     />
     {/* {

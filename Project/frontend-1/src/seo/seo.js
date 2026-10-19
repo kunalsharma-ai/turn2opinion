@@ -2,6 +2,7 @@
 import { ENV } from '../config/env.js';
 import { SITE } from '../config/site.js';
 import { FAQ_GROUPS } from '../data/faqs.js';
+import { TESTIMONIALS } from '../data/testimonials.js';
 
 const abs = (path) => ENV.SITE_URL + (path.startsWith('/') ? path : '/' + path);
 
@@ -63,6 +64,49 @@ function faqPage(faqs) {
   };
 }
 
+/**
+ * Structured data for /about/reviews/.
+ *
+ * Deliberately a CollectionPage holding an ItemList of Review objects rather than an
+ * aggregateRating bolted onto the Organization. Google does not allow self-serving reviews about
+ * your own organisation to earn review rich results, so claiming them would be both ineffective
+ * and against the guidelines. This markup is accurate — it describes exactly what the page is,
+ * a list of member reviews we hold on record — and search engines can read it without us
+ * pretending it is something it is not.
+ *
+ * Only reviews with a score on record are listed, capped so the JSON-LD stays small.
+ */
+function reviewsPage(path, seo, reviews) {
+  const rated = (reviews || []).filter((r) => r.rating > 0 && r.text && r.name).slice(0, 30);
+  if (!rated.length) return null;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': abs(path) + '#reviews',
+    name: seo.title,
+    description: seo.description,
+    url: abs(path),
+    isPartOf: { '@id': ENV.SITE_URL + '/#website' },
+    about: { '@id': ENV.SITE_URL + '/#organization' },
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: rated.length,
+      itemListElement: rated.map((r, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        item: {
+          '@type': 'Review',
+          author: { '@type': 'Person', name: r.name },
+          reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5, worstRating: 1 },
+          reviewBody: r.text,
+          ...(r.date ? { datePublished: String(r.date).slice(0, 10) } : {}),
+          itemReviewed: { '@type': 'Organization', name: SITE.name, url: ENV.SITE_URL + '/' }
+        }
+      }))
+    }
+  };
+}
+
 function article(path, seo) {
   const p = seo.post;
   return {
@@ -97,6 +141,10 @@ export function buildHead(path, seo, data) {
     const faqs = path === '/faq/' ? FAQ_GROUPS.flatMap((g) => g.items) : data && data.faqs;
     const f = faqPage(faqs);
     if (f) schema.push(f);
+  }
+  if (kinds.includes('aggregateRating')) {
+    const rp = reviewsPage(path, seo, TESTIMONIALS);
+    if (rp) schema.push(rp);
   }
   const bc = breadcrumb(path, seo);
   if (bc) schema.push(bc);

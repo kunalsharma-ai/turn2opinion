@@ -1051,6 +1051,22 @@ select.input {
   border-color: var(--blue);
   box-shadow: 0 0 0 4px rgba(31, 91, 255, 0.14);
 }
+/* Narrow phones: the wide tracking on the answer field pushed its placeholder out of view when
+   it sat beside the image. Below 440px the image and the field stack instead. */
+@media (max-width: 440px) {
+  .captcha-body {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .captcha-canvas {
+    align-self: center;
+  }
+  .captcha-input {
+    width: 100%;
+    flex: 0 0 auto;
+    letter-spacing: 0.12em;
+  }
+}
 .captcha-switch {
   border: 0;
   background: none;
@@ -1197,5 +1213,25 @@ select.input {
   }
   .cf-thread {
     position: static;
+  }
+}
+
+/* Live-help dot — used by the header, the chat panel and the chat button, so it lives with the
+   shared UI atoms rather than in one page's stylesheet. */
+.live-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #22d38a;
+  box-shadow: 0 0 0 0 rgba(34, 211, 138, 0.6);
+  animation: livePulse 1.8s infinite;
+}
+@keyframes livePulse {
+  70% {
+    box-shadow: 0 0 0 8px rgba(34, 211, 138, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 211, 138, 0);
   }
 }

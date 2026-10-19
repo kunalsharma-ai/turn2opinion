@@ -111,6 +111,7 @@ export default function Survey({
       const resp = await api.post("/api/v1/me", {
         questions,
       });
+  const phoneLocked = Boolean(me?.phone && String(me.phone).trim().length > 0);
 
       isLoadingAnswersRef.current = true;
 
@@ -257,13 +258,15 @@ export default function Survey({
             pages[currentPage]
               ?.slice(1)
               ?.filter((que) => que !== "alternate-phone" || phoneHasValue)
+              ?.filter((que) => que !== "phone" || me)
               ?.map((que, index) => (
                 <Question
                   key={`${que}-${index}`}
                   que={que}
                   user={user}
                   form={form}
-                  disabled={!editMode}
+                  // disabled={!editMode}
+                  disabled={!editMode || (que === "phone" && (!me || phoneLocked))}
                   onQuestionStateChange={handleQuestionStateChange}
                 />
               ))

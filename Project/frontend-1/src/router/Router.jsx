@@ -77,13 +77,6 @@ export function Router({ initialPath, children }) {
 export const useRouter = () => useContext(RouterContext);
 export const usePath = () => useContext(RouterContext).path;
 
-// Ye prefixes is SPA ke bahar ki apps hain: full page load chahiye
-const EXTERNAL_PREFIXES = ['/member', '/admin'];
-const isOutsideApp = (to) => {
-  const p = '/' + String(to).split('#')[0].split('?')[0].replace(/^\/+/, '');
-  return EXTERNAL_PREFIXES.some((x) => p === x || p.startsWith(x + '/'));
-};
-
 /** Internal link. External URLs (http, mailto, tel) render a normal anchor. */
 export function Link({ to, children, onClick, className, ...rest }) {
   const { navigate, path } = useRouter();
@@ -92,14 +85,6 @@ export function Link({ to, children, onClick, className, ...rest }) {
     const isHttp = /^https?:/i.test(to);
     return (
       <a href={to} className={className} {...(isHttp ? { target: '_blank', rel: 'noopener noreferrer' } : {})} {...rest}>
-        {children}
-      </a>
-    );
-  }
-  
-  if (isOutsideApp(to)) {
-    return (
-      <a href={to} className={className} onClick={onClick} {...rest}>
         {children}
       </a>
     );

@@ -1,0 +1,338 @@
+/* =========================================================================================
+   ABOUT US DROPDOWN  —  v3.2 (components/Header.jsx)
+   -----------------------------------------------------------------------------------------
+   Desktop: a frosted panel that drops from the blue tab bar with three tiles, each in its own
+   colour world (About = royal blue, Ratings & Reviews = iridescent gem, Scan & Connect = mint/
+   violet with a moving scan line). Mobile: the three options sit permanently inside the menu.
+   ========================================================================================= */
+
+.nav-drop {
+  position: relative;
+  display: inline-flex;
+  z-index: 2;
+}
+.nav-drop-btn {
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  font-family: var(--ui);
+  font-weight: 500;
+  font-size: 0.88rem;
+}
+.nav-drop-btn.is-active {
+  font-weight: 600;
+}
+.nav-chev {
+  transition: transform 0.35s var(--spring);
+}
+.nav-drop.is-open .nav-chev {
+  transform: rotate(180deg);
+}
+.nav-drop.is-open .nav-drop-btn {
+  color: #1238b8;
+}
+
+.drop-panel {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  width: 400px;
+  padding: 10px;
+  display: grid;
+  gap: 4px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid rgba(14, 27, 77, 0.08);
+  box-shadow: 0 40px 80px -30px rgba(10, 20, 70, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+  transform: translateX(-50%) translateY(10px) scale(0.97);
+  transform-origin: 50% 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.4s var(--spring), visibility 0s linear 0.25s;
+  overflow: hidden;
+  isolation: isolate;
+}
+/* An invisible bridge so the pointer can travel from the tab to the panel without it closing. */
+.drop-panel::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -18px;
+  height: 18px;
+}
+.nav-drop.is-open .drop-panel {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0) scale(1);
+  transition: opacity 0.25s, transform 0.45s var(--spring), visibility 0s;
+}
+.drop-beam {
+  position: absolute;
+  inset: -60% -20% auto;
+  height: 220px;
+  z-index: -1;
+  background: radial-gradient(40% 60% at 20% 50%, rgba(47, 107, 255, 0.16), transparent 70%),
+    radial-gradient(40% 60% at 60% 50%, rgba(255, 77, 141, 0.14), transparent 70%),
+    radial-gradient(40% 60% at 90% 50%, rgba(34, 211, 197, 0.16), transparent 70%);
+  animation: dropBeam 9s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes dropBeam {
+  to {
+    transform: translateX(8%) rotate(4deg);
+  }
+}
+
+.drop-item {
+  --t1: #1f5bff;
+  --t2: #49b6ff;
+  position: relative;
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 11px 12px;
+  border-radius: 18px;
+  color: var(--ink);
+  text-decoration: none;
+  transition: background 0.25s, transform 0.3s var(--spring);
+}
+.tone-reviews {
+  --t1: #ff4d8d;
+  --t2: #22d3c5;
+}
+.tone-scan {
+  --t1: #0ea47f;
+  --t2: #7b5cff;
+}
+.nav-drop.is-open .drop-item {
+  animation: dropItemIn 0.5s var(--spring) both;
+  animation-delay: calc(0.05s + var(--k) * 60ms);
+}
+@keyframes dropItemIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) rotateX(-30deg);
+  }
+}
+.drop-item:hover,
+.drop-item:focus-visible {
+  background: linear-gradient(110deg, color-mix(in srgb, var(--t1) 11%, #fff), color-mix(in srgb, var(--t2) 9%, #fff));
+  transform: translateX(3px);
+  outline: none;
+}
+.drop-item:focus-visible {
+  box-shadow: 0 0 0 2px var(--t1);
+}
+.drop-item.is-here {
+  background: color-mix(in srgb, var(--t1) 8%, #fff);
+}
+.drop-item.is-here::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 22%;
+  bottom: 22%;
+  width: 4px;
+  border-radius: 4px;
+  background: linear-gradient(var(--t1), var(--t2));
+}
+.drop-ico {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--t1), var(--t2));
+  box-shadow: 0 12px 22px -10px var(--t1), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  overflow: hidden;
+  transform: perspective(300px) rotateY(0);
+  transition: transform 0.5s var(--spring);
+}
+.drop-item:hover .drop-ico {
+  transform: perspective(300px) rotateY(-18deg) rotateX(8deg) translateZ(6px);
+}
+.drop-ico-glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, 0.55) 50%, transparent 70%);
+  transform: translateX(-120%);
+  animation: dropGlow 3.6s ease-in-out infinite;
+  animation-delay: calc(var(--k) * 0.5s);
+}
+@keyframes dropGlow {
+  0%,
+  55% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+.drop-scan {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  top: 20%;
+  background: #fff;
+  box-shadow: 0 0 8px #fff;
+  animation: dropScan 1.8s ease-in-out infinite alternate;
+}
+@keyframes dropScan {
+  to {
+    top: 76%;
+  }
+}
+.drop-copy strong {
+  display: block;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 0.98rem;
+  line-height: 1.25;
+}
+.drop-copy small {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+.drop-go {
+  color: var(--t1);
+  transition: transform 0.3s var(--spring);
+}
+.drop-item:hover .drop-go {
+  transform: translateX(4px);
+}
+.drop-score {
+  display: grid;
+  justify-items: end;
+  line-height: 1.05;
+}
+.drop-score b {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 1.35rem;
+  background: linear-gradient(120deg, #e2457f, #2f6bff 55%, #0ea47f);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.drop-score small {
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ---------------- mobile menu group ---------------- */
+.mobile-group {
+  position: relative;
+  padding: 10px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transform-origin: 50% 100%;
+  animation: linkFlip 0.6s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+  animation-delay: calc(0.18s + var(--i) * 55ms);
+}
+.mobile-group-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 8px;
+  padding: 1px 4px 0 0;
+  font-family: var(--display);
+  font-size: 1.32rem;
+  font-weight: 700;
+  color: #fff;
+}
+.mobile-sub {
+  display: grid;
+  gap: 6px;
+}
+.mobile-sublink {
+  --t1: #49b6ff;
+  --t2: #1f5bff;
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 9px 12px 9px 9px;
+  border-radius: 15px;
+  color: #fff;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: mslIn 0.5s var(--spring) both;
+  animation-delay: calc(0.35s + var(--k) * 70ms);
+  transition: background 0.25s, color 0.25s;
+}
+.mobile-sublink.tone-reviews {
+  --t1: #ff4d8d;
+  --t2: #22d3c5;
+}
+.mobile-sublink.tone-scan {
+  --t1: #12c29b;
+  --t2: #7b5cff;
+}
+@keyframes mslIn {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+}
+.msl-ico {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--t1), var(--t2));
+}
+.msl-copy strong {
+  display: block;
+  font-family: var(--display);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.msl-copy small {
+  display: block;
+  font-size: 0.76rem;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.72);
+}
+.mobile-sublink:hover,
+.mobile-sublink:focus-visible,
+.mobile-sublink.is-active {
+  background: #fff;
+  color: #0a1a63;
+}
+.mobile-sublink:hover .msl-copy small,
+.mobile-sublink:focus-visible .msl-copy small,
+.mobile-sublink.is-active .msl-copy small {
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drop-ico-glow,
+  .drop-scan,
+  .drop-beam {
+    animation: none;
+  }
+}
+
+/* the reviews tile carries a real diamond on a light jewel-box ground */
+.tone-reviews .drop-ico,
+.mobile-sublink.tone-reviews .msl-ico {
+  background: radial-gradient(circle at 50% 38%, #ffffff, #ffe3ef 58%, #b9f3ea);
+}

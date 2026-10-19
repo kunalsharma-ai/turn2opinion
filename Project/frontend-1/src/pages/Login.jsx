@@ -18,7 +18,7 @@ export function WelcomePortal() {
     <div className="wportal" aria-hidden="true">
       <span className="wp-rays" />
       <div className="wp-blob">
-        <img src={asset('/images/people/traveller.svg')} alt="" width="220" height="260" />
+        <img src={asset('/images/people/traveller.svg')} alt="Illustration of a Turn2Opinion member signing in to take paid surveys" width="220" height="260" />
       </div>
       <span className="wp-bubble">Welcome back! 👋</span>
       {[
@@ -75,15 +75,6 @@ export default function Login() {
     if (!captcha) er.captcha = 'Complete the human check.';
     setErrors(er);
     if (Object.keys(er).length) return;
-    // setState('sending');
-    // // const res = await postJSON("/api/v1/user/login", {
-    //   const res = await api.post("/api/v1/user/login", {
-    //     mail: email.trim().toLowerCase(),
-    //     password: pw,
-    //     remember,
-    //     // captchaToken: captcha.token,
-    //     // captchaProvider: captcha.provider
-    // });
     setState('sending');
     setMsg('');
     setUnverified(false);

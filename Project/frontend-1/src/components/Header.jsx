@@ -1,13 +1,34 @@
-import { useEffect, useRef, useState } from 'react';
+// Site header: logo + language, the blue tab bar, log in / join, and the mobile menu.
+//
+// v3.2 — "About Us" is now a dropdown with three clearly visible destinations:
+//   1. About Turn2Opinion      /about/
+//   2. Our Ratings & Reviews   /about/reviews/      (previously only reachable from the footer)
+//   3. Scan & Connect          /about/scan-connect/ (the QR hub, now with its own page)
+//
+// Behaviour: opens on hover (mouse), on click/tap (touch and mouse), and on keyboard focus; Escape and
+// a click outside close it. All three links are always in the prerendered HTML (hidden with CSS, not
+// removed), so search engines and screen-reader users can reach them without JavaScript.
+// On phones the three options are shown permanently inside the menu as a group — never hidden behind
+// a second tap.
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, usePath } from '../router/Router.jsx';
 import { Logo } from './Brand.jsx';
 import Icon from './Icon.jsx';
 import { SITE } from '../config/site.js';
 import { api } from '../utils/api.js';
+import { LanguageButton } from './Language.jsx';
+import { seedTestimonials, summarise } from '../utils/reviews.js';
+import Gem from './rating/Gem.jsx';
+
+export const ABOUT_MENU = [
+  { to: '/about/', label: 'About Turn2Opinion', sub: 'Who we are, our certifications and reach', icon: 'building', tone: 'about' },
+  { to: '/about/reviews/', label: 'Our Ratings & Reviews', sub: 'Real scores from consumers and professionals', icon: 'quote', tone: 'reviews' },
+  { to: '/about/scan-connect/', label: 'Scan & Connect', sub: 'QR codes for our panels and social channels', icon: 'qr', tone: 'scan' }
+];
 
 export const NAV = [
   { to: '/', label: 'Home', icon: 'home' },
-  { to: '/about/', label: 'About Us', icon: 'users' },
+  { to: '/about/', label: 'About Us', icon: 'users', children: ABOUT_MENU },
   { to: '/paid-surveys/', label: 'Earn', icon: 'coin' },
   { to: '/how-it-works/', label: 'How It Works', icon: 'route' },
   { to: '/rewards/', label: 'Rewards', icon: 'gift' },
@@ -18,17 +39,7 @@ export const NAV = [
 ];
 
 const isActive = (path, to) => (to === '/' ? path === '/' : path.startsWith(to));
-
-// const getNavbarIcon = (icon) => {
-//   const icons = {
-//     'icon-drawer': 'layout-dashboard',
-//     'icon-user': 'user',
-//     'icon-settings': 'settings',
-//   };
-
-//   return icons[icon] || icon;
-// };
-
+const exact = (path, to) => path === to;
 
 const renderNavbarIcon = (icon, size = 17) => {
   const common = {
@@ -74,6 +85,119 @@ const renderNavbarIcon = (icon, size = 17) => {
 };
 
 
+
+/* ------------------------------------------------------------------ desktop dropdown */
+function AboutDropdown({ item, i, path, movePill }) {
+  const [open, setOpen] = useState(false);
+  const wrap = useRef(null);
+  const closeT = useRef(0);
+  const stats = useMemo(() => summarise(seedTestimonials()), []);
+  const active = isActive(path, item.to);
+
+  useEffect(() => setOpen(false), [path]);
+  useEffect(() => {
+    if (!open) return undefined;
+    const out = (e) => wrap.current && !wrap.current.contains(e.target) && setOpen(false);
+    const esc = (e) => {
+      if (e.key === 'Escape') {
+        setOpen(false);
+        wrap.current?.querySelector('.nav-drop-btn')?.focus();
+      }
+    };
+    document.addEventListener('pointerdown', out);
+    window.addEventListener('keydown', esc);
+    return () => {
+      document.removeEventListener('pointerdown', out);
+      window.removeEventListener('keydown', esc);
+    };
+  }, [open]);
+
+  const enter = (e) => {
+    clearTimeout(closeT.current);
+    if (e.pointerType === 'mouse') setOpen(true);
+  };
+  const leave = (e) => {
+    if (e.pointerType !== 'mouse') return;
+    closeT.current = setTimeout(() => setOpen(false), 180);
+  };
+
+  return (
+    <div
+      className={`nav-drop ${open ? 'is-open' : ''}`}
+      ref={wrap}
+      onPointerEnter={enter}
+      onPointerLeave={leave}
+      onBlur={(e) => !wrap.current.contains(e.relatedTarget) && setOpen(false)}
+    >
+      <button
+        type="button"
+        className={`nav-link nav-drop-btn ${active ? 'is-active' : ''}`}
+        style={{ '--i': i }}
+        aria-expanded={open}
+        aria-controls="about-menu"
+        aria-haspopup="true"
+        onClick={() => setOpen((o) => !o)}
+        onMouseEnter={(e) => movePill(e.currentTarget)}
+        onFocus={(e) => movePill(e.currentTarget)}
+        onKeyDown={(e) => {
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setOpen(true);
+            setTimeout(() => wrap.current?.querySelector('.drop-item')?.focus(), 30);
+          }
+        }}
+      >
+        {item.label}
+        <Icon name="chevron" size={14} className="nav-chev" />
+      </button>
+
+      <div className="drop-panel" id="about-menu" role="menu" aria-label="About Us">
+        <span className="drop-beam" aria-hidden="true" />
+        {item.children.map((c, k) => (
+          <Link
+            key={c.to}
+            to={c.to}
+            role="menuitem"
+            className={`drop-item tone-${c.tone} ${exact(path, c.to) ? 'is-here' : ''}`}
+            style={{ '--k': k }}
+            onClick={() => setOpen(false)}
+            onKeyDown={(e) => {
+              const items = [...wrap.current.querySelectorAll('.drop-item')];
+              const at = items.indexOf(e.currentTarget);
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                items[(at + 1) % items.length].focus();
+              } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                items[(at - 1 + items.length) % items.length].focus();
+              }
+            }}
+          >
+            <span className="drop-ico" aria-hidden="true">
+              <span className="drop-ico-glow" />
+              {c.tone === 'reviews' ? <Gem level={5} size={30} motion="float" /> : <Icon name={c.icon} size={22} />}
+              {c.tone === 'scan' && <i className="drop-scan" />}
+            </span>
+            <span className="drop-copy">
+              <strong>{c.label}</strong>
+              <small>{c.sub}</small>
+            </span>
+            {c.tone === 'reviews' && stats.avg > 0 ? (
+              <span className="drop-score" aria-label={`Average ${stats.avg.toFixed(1)} out of 5 from ${stats.count} reviews`}>
+                <b>{stats.avg.toFixed(1)}</b>
+                <small>{stats.count} reviews</small>
+              </span>
+            ) : (
+              <Icon name="arrow" size={16} className="drop-go" />
+            )}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ header */
 export default function Header() {
   const path = usePath();
   const [open, setOpen] = useState(false);
@@ -84,7 +208,8 @@ export default function Header() {
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef(null);
 
-  // "Magic pill" that glides to the hovered / focused / active link.
+  // "Magic pill" that glides to the hovered / focused / active link. Measured with bounding
+  // rectangles (not offsetLeft) because the About trigger sits inside its own positioned wrapper.
   const movePill = (el) => {
     const nav = navRef.current;
     if (!nav) return;
@@ -93,8 +218,10 @@ export default function Header() {
       nav.style.setProperty('--pill-o', '0');
       return;
     }
-    nav.style.setProperty('--pill-x', `${target.offsetLeft}px`);
-    nav.style.setProperty('--pill-w', `${target.offsetWidth}px`);
+    const a = nav.getBoundingClientRect();
+    const b = target.getBoundingClientRect();
+    nav.style.setProperty('--pill-x', `${b.left - a.left}px`);
+    nav.style.setProperty('--pill-w', `${b.width}px`);
     nav.style.setProperty('--pill-o', '1');
   };
 
@@ -161,26 +288,33 @@ useEffect(()=>{
   return (
     <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
       <div className="wrap header-row">
-        <Logo eager />
+        <div className="brand-lang">
+          <Logo eager />
+          <LanguageButton />
+        </div>
         <nav className="main-nav" aria-label="Main" ref={navRef} onMouseLeave={() => movePill()}>
           <span className="nav-pill" aria-hidden="true" />
-          {NAV.map((n, i) => (
-            <Link
-              key={n.to}
-              to={n.to}
-              className={`nav-link ${isActive(path, n.to) ? 'is-active' : ''}`}
-              style={{ '--i': i }}
-              onMouseEnter={(e) => movePill(e.currentTarget)}
-              onFocus={(e) => movePill(e.currentTarget)}
-            >
-              {n.label}
-              {n.badge && (
-                <span className="nav-badge">
-                  <Icon name="bolt" size={9} /> {n.badge}
-                </span>
-              )}
-            </Link>
-          ))}
+          {NAV.map((n, i) =>
+            n.children ? (
+              <AboutDropdown key={n.to} item={n} i={i} path={path} movePill={movePill} />
+            ) : (
+              <Link
+                key={n.to}
+                to={n.to}
+                className={`nav-link ${isActive(path, n.to) ? 'is-active' : ''}`}
+                style={{ '--i': i }}
+                onMouseEnter={(e) => movePill(e.currentTarget)}
+                onFocus={(e) => movePill(e.currentTarget)}
+              >
+                {n.label}
+                {n.badge && (
+                  <span className="nav-badge">
+                    <Icon name="bolt" size={9} /> {n.badge}
+                  </span>
+                )}
+              </Link>
+            )
+          )}
         </nav>
 
         
@@ -277,31 +411,49 @@ useEffect(()=>{
       </div>
       <div id="mobile-nav" className={`mobile-nav ${open ? 'is-open' : ''}`} hidden={!open}>
         <nav aria-label="Mobile">
-          {NAV.map((n, i) => (
-            <Link key={n.to} to={n.to} className={`mobile-link ${isActive(path, n.to) ? 'is-active' : ''}`} style={{ '--i': i }}>
-              <span className="mobile-link-label">
-                <span className="mobile-link-icon">
-                  <Icon name={n.icon} size={18} />
+          {NAV.map((n, i) =>
+            n.children ? (
+              <div key={n.to} className={`mobile-group ${isActive(path, n.to) ? 'is-active' : ''}`} style={{ '--i': i }} role="group" aria-labelledby="mg-about">
+                <p className="mobile-group-title" id="mg-about">
+                  <span className="mobile-link-icon">
+                    <Icon name={n.icon} size={18} />
+                  </span>
+                  {n.label}
+                </p>
+                <div className="mobile-sub">
+                  {n.children.map((c, k) => (
+                    <Link key={c.to} to={c.to} className={`mobile-sublink tone-${c.tone} ${exact(path, c.to) ? 'is-active' : ''}`} style={{ '--k': k }}>
+                      <span className="msl-ico" aria-hidden="true">
+                        {c.tone === 'reviews' ? <Gem level={5} size={24} motion="still" /> : <Icon name={c.icon} size={18} />}
+                      </span>
+                      <span className="msl-copy">
+                        <strong>{c.label}</strong>
+                        <small>{c.sub}</small>
+                      </span>
+                      <Icon name="arrow" size={16} />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <Link key={n.to} to={n.to} className={`mobile-link ${isActive(path, n.to) ? 'is-active' : ''}`} style={{ '--i': i }}>
+                <span className="mobile-link-label">
+                  <span className="mobile-link-icon">
+                    <Icon name={n.icon} size={18} />
+                  </span>
+                  {n.label}
+                  {n.badge && <span className="nav-badge">{n.badge}</span>}
                 </span>
-                {n.label}
-                {n.badge && <span className="nav-badge">{n.badge}</span>}
-              </span>
-              <Icon name="arrow" size={20} />
-            </Link>
-          ))}
+                <Icon name="arrow" size={20} />
+              </Link>
+            )
+          )}
         </nav>
-        {/* mobile cta */}
-        {/* <div className="mobile-cta">
-          <Link to="/login/" className="btn btn-ghost">
-            Log in
-          </Link>
-          <Link to="/join/" className="btn btn-primary">
-            Join free
-          </Link>
-        </div> */}
-
+        <div className="mobile-lang">
+          <LanguageButton compact />
+        </div>
         
-        <div className="mobile-cta">
+        {/* <div className="mobile-cta">
           {user ? (
             <div className="mobile-profile">
               <div className="mobile-profile-info">
@@ -375,7 +527,7 @@ useEffect(()=>{
               </Link>
             </>
           )}
-        </div>
+        </div> */}
 
         <div className="mobile-extra">
           <p>

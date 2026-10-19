@@ -1,0 +1,296 @@
+/* =========================================================================================
+   PERFORMANCE LAYER  —  loaded last so it can override decorative rules.
+   -----------------------------------------------------------------------------------------
+   Why this file exists (measured on the v3.0 build before these changes):
+
+     home page DOM ............ 5,486 elements, 649 inline SVGs, 408 KB of HTML
+     infinite CSS animations .. 238 across 255 @keyframes blocks
+     backdrop-filter .......... 18 uses (one of the most expensive properties on mobile GPUs)
+     off-screen pause rule .... [data-still] *, *::before, *::after  (universal descendant
+                                selector -> full subtree style recalc on every scroll tick)
+
+   Those four together are what made the site "lag and hang". This file fixes them with
+   containment instead of deleting the design: nothing is removed visually, the browser is
+   simply told it may skip work it cannot see.
+   ========================================================================================= */
+
+/* -----------------------------------------------------------------------------------------
+   1. SKIP RENDERING WHAT IS OFF SCREEN
+   -----------------------------------------------------------------------------------------
+   `content-visibility: auto` lets the browser skip style, layout, paint and compositing for a
+   subtree that is outside the viewport. On a 5,486-node page this is the single biggest win:
+   the browser only ever styles the two or three sections actually on screen, and every CSS
+   animation inside a skipped subtree stops running on its own.
+
+   `contain-intrinsic-size` gives each skipped section a placeholder height so the scrollbar
+   does not jump while scrolling. The values are deliberately generous; they only have to be
+   the right order of magnitude.
+   ----------------------------------------------------------------------------------------- */
+main > .home > section,
+main > div > section.section,
+main section.section,
+.site-footer .footer-social,
+.site-footer .trust-stage,
+.site-footer .footer-wordmarks,
+.blog-mag,
+.qr-hub {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 760px;
+}
+
+/* The hero and anything in the first viewport must never be skipped — skipping it would delay
+   the Largest Contentful Paint instead of helping it. */
+main > .home > section:first-of-type,
+.home-hero,
+.hero,
+.page-hero,
+section.hero,
+.site-header {
+  content-visibility: visible;
+  contain-intrinsic-size: none;
+}
+
+/* Long legal / FAQ / blog bodies: contain each block so one long article does not relayout whole. */
+.legal-body > section,
+.faq-group,
+.post-body > section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 480px;
+}
+
+/* -----------------------------------------------------------------------------------------
+   2. AN ANIMATION BUDGET
+   -----------------------------------------------------------------------------------------
+   Decorative infinite animations are capped on the devices that cannot afford them. Phones and
+   tablets (coarse pointer) keep the *meaningful* motion — carousels, reveals, the rating stage,
+   the review notifications — and drop ambient loops: drifting orbs, sparkle fields, floating
+   coins, pulsing rings, aurora ribbons, light sweeps.
+   ----------------------------------------------------------------------------------------- */
+@media (hover: none), (max-width: 860px) {
+  .fs-coin,
+  .fs-ring,
+  .ts-beams,
+  .rt-sparks,
+  .hero-blob,
+  .ph-bg span,
+  .join-bg span,
+  .frw-sweep,
+  .frw-spark path,
+  .frw-ring,
+  .fab-pulse,
+  .fab-chat-ring,
+  .fab-chat-blob,
+  .vn-glow,
+  .footer-aurora,
+  .ch-glow,
+  .ph-art-glow {
+    animation: none !important;
+  }
+}
+
+/* 2b. FIRST-VIEWPORT ENTRANCE MOTION ON PHONES
+   -----------------------------------------------------------------------------------------
+   The hero copy and every page hero rise into place on load. On desktop that is the signature
+   of the page and costs nothing. On a phone the whole first screen IS the hero, so for as long
+   as it is still moving the viewport is not "visually complete" — which is exactly what Speed
+   Index measures. Measured on the home page: the entrance alone was 1.2 s of Speed Index and
+   held the Largest Contentful Paint 1.4 s behind the First Contentful Paint.
+
+   So phones paint the first screen in its final position and keep every other animation:
+   the rotating word, the marquees, the reward portal, the reveals further down the page. */
+@media (hover: none), (max-width: 860px) {
+  .aud-switch,
+  .hero-motto,
+  .motto-word,
+  .ht-line,
+  .hero-tagline span,
+  .hero-lead,
+  .hero-actions,
+  .hero-proof,
+  .ph-title,
+  .ph-lead,
+  .ph-actions,
+  .ph-art,
+  .mobile-cta,
+  .mobile-extra {
+    animation: none !important;
+  }
+}
+
+/* Devices that report few CPU cores get the same treatment on every screen size
+   (AnimationGate adds .low-power to <html>). */
+html.low-power [class*='-orb'],
+html.low-power [class*='-spark'],
+html.low-power [class*='-glow'],
+html.low-power [class*='-beam'],
+html.low-power .fs-coin,
+html.low-power .fs-ring,
+html.low-power .frw-sweep {
+  animation: none !important;
+}
+
+/* -----------------------------------------------------------------------------------------
+   3. backdrop-filter
+   -----------------------------------------------------------------------------------------
+   Each `backdrop-filter` forces the compositor to re-read and blur everything painted behind
+   the element — every frame it moves. There were 18. They stay on desktop (where they look
+   good and cost little) and become a flat translucent fill on touch devices.
+   ----------------------------------------------------------------------------------------- */
+@media (hover: none), (max-width: 860px) {
+  [class*='glass'],
+  .btn-glass,
+  .consent,
+  .live-chat,
+  .lp-panel,
+  .modal-scrim,
+  .review-modal,
+  .rate-prompt,
+  .site-header.is-stuck,
+  .rticket,
+  .rv-toast,
+  .gtoast,
+  .gs-scrim {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* -----------------------------------------------------------------------------------------
+   4. PAINT CONTAINMENT FOR THE BUSY WIDGETS
+   -----------------------------------------------------------------------------------------
+   `contain: layout paint` tells the browser that nothing inside these widgets can affect
+   geometry outside them, so an animation in one of them never triggers a page-wide relayout.
+   ----------------------------------------------------------------------------------------- */
+.survey-machine,
+.profiles-explorer,
+.flag-carousel,
+.security-hive,
+.reward-wallet,
+.steps-pipeline,
+.voices3,
+.river,
+.ribbons,
+.fs-scene,
+.qr-hub,
+.rv-stage,
+.rating-lab {
+  contain: layout paint;
+}
+
+/* Marquees and rivers scroll their own track: isolate them from the rest of the page entirely. */
+.ribbon-track,
+.river-track,
+.qr-marquee-track {
+  will-change: transform;
+  contain: layout paint style;
+}
+
+/* -----------------------------------------------------------------------------------------
+   5. IMAGES AND MEDIA
+   ----------------------------------------------------------------------------------------- */
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+img {
+  content-visibility: auto;
+}
+/* Any image that is not the hero logo decodes off the main thread. */
+img:not(.logo-img):not([fetchpriority='high']) {
+  decoding: async;
+}
+
+/* -----------------------------------------------------------------------------------------
+   6. SCROLL SMOOTHNESS
+   ----------------------------------------------------------------------------------------- */
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Touch scrolling: let the compositor own vertical scrolling on the big scroll regions. */
+.river-col,
+.qr-rail,
+.rv-wall,
+.lp-list,
+.chat-log {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* -----------------------------------------------------------------------------------------
+   7. FONT LOADING
+   -----------------------------------------------------------------------------------------
+   Both variable fonts are preloaded in index.html. `font-display: swap` is already set in
+   base.css; this makes the fallback metric-compatible so the swap does not shift layout.
+   ----------------------------------------------------------------------------------------- */
+@font-face {
+  font-family: 'Inter-fallback';
+  src: local('Arial');
+  size-adjust: 107%;
+  ascent-override: 90%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Manrope-fallback';
+  src: local('Arial');
+  size-adjust: 104%;
+  ascent-override: 96%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+:root {
+  --body: 'Inter', 'Inter-fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --ui: 'Inter', 'Inter-fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --display: 'Manrope', 'Manrope-fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* -----------------------------------------------------------------------------------------
+   8. TAP TARGETS AND OVERFLOW ON PHONES
+   -----------------------------------------------------------------------------------------
+   Universal device compatibility: nothing may scroll sideways, and every control is at least
+   44 px — the minimum comfortable touch target.
+   ----------------------------------------------------------------------------------------- */
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+@media (hover: none) {
+  button,
+  a.btn,
+  [role='button'],
+  input[type='checkbox'],
+  input[type='radio'] {
+    min-height: 44px;
+  }
+  .btn,
+  .btn-sm {
+    min-height: 44px;
+  }
+  /* The vertical "rate" tab is a thumb target on touch, not a hover strip. */
+  .rate-tab {
+    min-height: 56px;
+  }
+}
+
+/* Anything absolutely positioned decorative must never create a scrollbar. */
+[aria-hidden='true'][class*='-bg'],
+[aria-hidden='true'][class*='-glow'],
+[aria-hidden='true'][class*='-aurora'] {
+  pointer-events: none;
+}

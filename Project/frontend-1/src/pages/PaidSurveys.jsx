@@ -2,8 +2,10 @@ import { Link } from '../router/Router.jsx';
 import { useReveal } from '../hooks/useMounted.js';
 import { asset } from '../config/env.js';
 import { CtaBand, FlipFaq, PageHero, SectionHead } from '../components/Common.jsx';
-import { TopicsBento } from '../components/sections/Flow.jsx';
+import SurveyMachine from '../components/sections/SurveyMachine.jsx';
 import Icon from '../components/Icon.jsx';
+import { PAID_SURVEY_FAQS as FAQS } from '../data/page-faqs.js';
+import { peopleAlt } from '../data/illustrations.js';
 
 const SURVEY_TYPES = {
   consumer: [
@@ -24,12 +26,7 @@ const SURVEY_TYPES = {
   ]
 };
 
-const FAQS = [
-  { q: 'Are paid online surveys free to join?', a: 'Yes. Turn2Opinion is completely free. You never pay to join, to receive surveys or to redeem rewards.' },
-  { q: 'How much can I earn from paid surveys?', a: 'Each survey shows its reward before you start. Earnings depend on how many surveys match your profile and how many you complete. Paid surveys are a flexible side income, not a replacement for a salary.' },
-  { q: 'Can I take paid surveys on my phone?', a: 'Yes. Most surveys work on mobile, tablet and desktop, so you can take part wherever you are.' },
-  { q: 'Why did a survey end early?', a: 'Studies need specific audiences and close when quotas fill. Screening questions make sure the right people take part. Keeping your profile complete helps you qualify more often.' }
-];
+
 
 function CardStack() {
   return (
@@ -124,7 +121,13 @@ export default function PaidSurveys() {
               <div key={k} className={`esc esc-${k}`}>
                 <div className="esc-head">
                   <span className="esc-peep" aria-hidden="true">
-                    <img src={asset(`/images/people/${k === 'consumer' ? 'shopper' : 'business'}.svg`)} alt="" width="120" height="140" loading="lazy" />
+                    <img
+                      src={asset(`/images/people/${k === 'consumer' ? 'shopper' : 'business'}.svg`)}
+                      alt={peopleAlt(k === 'consumer' ? 'shopper' : 'business')}
+                      width="120"
+                      height="140"
+                      loading="lazy"
+                    />
                   </span>
                   <div>
                     <h3>{k === 'consumer' ? 'Consumer surveys' : 'Business surveys'}</h3>
@@ -198,8 +201,8 @@ export default function PaidSurveys() {
 
       <section className="section s-gold" aria-labelledby="top-h">
         <div className="wrap">
-          <SectionHead id="top-h" title="Popular survey topics" />
-          <TopicsBento />
+          <SectionHead id="top-h" title="Browse a few of our paid surveys" lead="Consumer and professional surveys with their typical reward and length. Press a slot to see the details." />
+          <SurveyMachine />
         </div>
       </section>
 

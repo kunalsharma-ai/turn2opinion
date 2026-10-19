@@ -86,6 +86,36 @@ export const ROUTES = [
     sitemap: { priority: '0.7', changefreq: 'monthly' }
   },
   {
+    // Ratings & reviews live under About, because they are part of who we are rather than a
+    // marketing page. Linked from the About page, the testimonial section, the rating panel,
+    // the review notifications and the footer.
+    path: '/about/reviews/',
+    load: page(() => import('./pages/Reviews.jsx')),
+    seo: {
+      title: 'Member Ratings & Reviews | Turn2Opinion',
+      description:
+        'Real Turn2Opinion ratings and reviews from consumers and business professionals in dozens of countries. See the average score, how members rate surveys, rewards, support and mobile, and read every review in full.',
+      crumb: 'Our Ratings & Reviews',
+      parent: { path: '/about/', name: 'About' },
+      schema: ['aggregateRating']
+    },
+    sitemap: { priority: '0.8', changefreq: 'weekly' }
+  },
+  {
+    // Scan & Connect (v3.2): the QR hub — panels, parent company and social channels — on its own
+    // page, reachable from the About Us menu. The same hub still closes every other page's footer.
+    path: '/about/scan-connect/',
+    load: page(() => import('./pages/ScanConnect.jsx')),
+    seo: {
+      title: 'Scan & Connect – QR Codes & Social Channels | Turn2Opinion',
+      description:
+        'Scan a QR code to open Turn2Opinion, our sister panels MyFrequentRewards and MyHealthOpinions, Frequent Research, or follow us on Instagram, Facebook, LinkedIn, YouTube and WhatsApp.',
+      crumb: 'Scan & Connect',
+      parent: { path: '/about/', name: 'About' }
+    },
+    sitemap: { priority: '0.5', changefreq: 'monthly' }
+  },
+  {
     path: '/blog/',
     load: page(() => import('./pages/Blog.jsx')),
     seo: {
@@ -149,7 +179,7 @@ export const ROUTES = [
     },
     sitemap: false
   },
-    {
+  {
     path: '/forgot-password/',
     load: page(() => import('./pages/ForgotPassword.jsx')),
     seo: {

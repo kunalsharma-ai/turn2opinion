@@ -3,7 +3,8 @@ import { useReveal } from '../hooks/useMounted.js';
 import Icon from '../components/Icon.jsx';
 import { CtaBand, SectionHead } from '../components/Common.jsx';
 import QuickAnswers from '../components/sections/QuickAnswers.jsx';
-import { StepsPipeline, TopicsBento } from '../components/sections/Flow.jsx';
+import { StepsPipeline } from '../components/sections/Flow.jsx';
+import SurveyMachine from '../components/sections/SurveyMachine.jsx';
 import ProfilesExplorer from '../components/sections/ProfilesExplorer.jsx';
 import FlagCarousel from '../components/sections/FlagCarousel.jsx';
 import CredentialScanner from '../components/sections/CredentialScanner.jsx';
@@ -56,13 +57,17 @@ export default function Home() {
       {/* TOPICS */}
       <section className="section s-paper" aria-labelledby="topics-title">
         <div className="wrap split-head">
-          <SectionHead id="topics-title" title="Surveys on things you already know" lead="Nobody expects you to be an expert. If you shop, scroll, eat out, travel or go to work, you already have answers brands are looking for." />
+          <SectionHead
+            id="topics-title"
+            title="We value your feedback – your opinion gets rewarded"
+            lead="Browse a few of our paid surveys. Every one shows its reward and length before you start – and you learn something new along the way."
+          />
           <Link to="/paid-surveys/" className="btn btn-ink" data-reveal>
             Explore paid surveys
           </Link>
         </div>
         <div className="wrap">
-          <TopicsBento />
+          <SurveyMachine />
         </div>
       </section>
 
@@ -122,10 +127,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
-      <section className="section s-sky" aria-labelledby="t-title">
+      {/* TESTIMONIALS — the Opinion Atlas is a dark, cinematic stage, so the section carries the
+          night grade rather than the old pale sky one. */}
+      <section className="section s-night" aria-labelledby="t-title">
         <div className="wrap">
-          <SectionHead id="t-title" title="Hear it from members" lead="Real reviews from real members. Post yours and it shows up here straight away." />
+          <SectionHead
+            id="t-title"
+            kicker="Member voices"
+            title="Hear it from members, wherever they answered from"
+            lead="Every review below is from a member we hold a record for — with their country, their role and the score they actually gave. Post yours and it lands here straight away."
+          />
           <Testimonials />
         </div>
       </section>

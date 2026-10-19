@@ -1,0 +1,369 @@
+/* ==========================================================================================
+   Multilanguage layer (ported from MyHealthOpinions v3.3 "Aurora Prism", adapted to Turn2Opinion).
+   Loaded LAST (see index.css).
+
+   • English  = the original Turn2Opinion white theme and blue grading. Nothing below changes English except
+                the new language button, the footer wordmarks and the performance guards.
+   • Every other language = its own colour grade (--lg1 / --lg2 / --lg3, set by src/i18n/I18nProvider.jsx →
+                applyGrade) on html[data-theme='dark']: midnight header, the same home hero over a WebGL aurora,
+                re-graded buttons, page heroes and footer. Content sections stay white.
+   ========================================================================================== */
+
+:root {
+  /* English grade (Turn2Opinion royal blue → violet → sky) — prerendered, so no colour flash */
+  --lg1: #1f5bff;
+  --lg2: #7b5cff;
+  --lg3: #49b6ff;
+  --lg-night: #070a22;
+}
+
+/* ---------------- Script-aware font stacks ----------------
+   Manrope/Inter cover Latin, Cyrillic and Greek; other scripts use the system's best face (no extra downloads,
+   works offline and in mainland China). */
+html[lang^='zh-CN'] { --body: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', 'Inter', sans-serif; --display: 'Manrope', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif; --ui: var(--body); }
+html[lang^='zh-TW'] { --body: 'PingFang TC', 'Microsoft JhengHei', 'Noto Sans TC', 'Inter', sans-serif; --display: 'Manrope', 'PingFang TC', 'Microsoft JhengHei', 'Noto Sans TC', sans-serif; --ui: var(--body); }
+html[lang='ja'] { --body: 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', 'Noto Sans JP', 'Inter', sans-serif; --display: 'Manrope', 'Hiragino Sans', 'Yu Gothic UI', 'Noto Sans JP', sans-serif; --ui: var(--body); }
+html[lang='ko'] { --body: 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', 'Inter', sans-serif; --display: 'Manrope', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif; --ui: var(--body); }
+html[lang='ar'], html[lang='fa'], html[lang='ur'] { --body: 'Geeza Pro', 'Segoe UI', 'Noto Naskh Arabic', 'Noto Sans Arabic', Tahoma, sans-serif; --display: var(--body); --ui: var(--body); }
+html[lang='he'] { --body: 'Arial Hebrew', 'Segoe UI', 'Noto Sans Hebrew', 'Inter', sans-serif; --display: var(--body); --ui: var(--body); }
+html[lang='hi'], html[lang='mr'] { --body: 'Kohinoor Devanagari', 'Nirmala UI', 'Noto Sans Devanagari', 'Inter', sans-serif; --display: var(--body); --ui: var(--body); }
+html[lang='bn'], html[lang='ta'], html[lang='te'], html[lang='gu'], html[lang='pa'], html[lang='kn'], html[lang='ml'] { --body: 'Nirmala UI', 'Noto Sans', system-ui, sans-serif; --display: var(--body); --ui: var(--body); }
+html[lang='th'] { --body: 'Thonburi', 'Leelawadee UI', 'Noto Sans Thai', 'Inter', sans-serif; --display: var(--body); --ui: var(--body); }
+/* Non-Latin scripts: no negative tracking, a little more line height. */
+html:is([lang^='zh'], [lang='ja'], [lang='ko'], [lang='ar'], [lang='fa'], [lang='ur'], [lang='he'], [lang='hi'], [lang='mr'], [lang='bn'], [lang='ta'], [lang='te'], [lang='gu'], [lang='pa'], [lang='kn'], [lang='ml'], [lang='th']) :is(h1, h2, h3, .hero-title, .ph-title) {
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+/* Translated sentences are longer than English: let words wrap inside chips and buttons. */
+html:not([lang='en']) .btn { white-space: normal; text-align: center; line-height: 1.2; padding-block: 8px; }
+html:not([lang='en']) .ws-one { display: inline !important; white-space: normal !important; }
+
+/* ---------------- Language button (header, mobile menu, footer) ---------------- */
+.brand-lang { display: flex; align-items: center; gap: 10px; flex: none; min-width: 0; }
+.lang-btn {
+  position: relative; display: inline-flex; align-items: center; gap: 8px; flex: none;
+  height: 44px; padding: 0 12px 0 4px; border-radius: 999px; border: 0;
+  color: var(--ink); background: #fff;
+  box-shadow: 0 8px 20px -12px rgba(14, 27, 77, 0.45);
+  font-family: var(--ui); font-weight: 600; font-size: 0.9rem; isolation: isolate;
+  transition: background 0.3s, box-shadow 0.3s, transform 0.25s var(--ease);
+}
+.lang-btn::before {
+  content: ''; position: absolute; inset: -1px; z-index: -1; border-radius: inherit; padding: 1.5px;
+  background: conic-gradient(from var(--lb-a, 0deg), var(--lg1), var(--lg2), var(--lg3), var(--lg1));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: 0.95;
+}
+.lang-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 26px -12px color-mix(in srgb, var(--lg1) 70%, transparent); }
+.lb-orb {
+  position: relative; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; overflow: hidden;
+  background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.9), transparent 32%), conic-gradient(from 200deg, var(--lg1), var(--lg2), var(--lg3), var(--lg1));
+  box-shadow: 0 6px 16px -6px var(--lg1), inset 0 -4px 8px rgba(0, 0, 0, 0.25);
+}
+.lb-orb::after {
+  content: ''; position: absolute; inset: 0; border-radius: 50%;
+  background: repeating-linear-gradient(90deg, transparent 0 6px, rgba(255, 255, 255, 0.18) 6px 7px);
+  mix-blend-mode: overlay; animation: lb-spin 9s linear infinite;
+}
+@keyframes lb-spin { to { transform: rotate(360deg); } }
+.lb-glyph { position: relative; z-index: 1; font-weight: 700; font-size: 0.95rem; line-height: 1; color: #fff; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45); }
+.lb-txt { max-width: 9.5em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lb-caret { opacity: 0.7; }
+.lang-btn.is-compact { height: 40px; }
+.mobile-lang { display: flex; justify-content: center; margin: 4px 0 14px; }
+.site-footer .lang-btn { color: #fff; background: rgba(255, 255, 255, 0.07); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); }
+.footer-bottom { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; }
+.footer-bottom .lang-btn { margin-inline-start: auto; }
+
+/* Header fit: the language orb stays in front at every width; its label shows when there is room. */
+@media (max-width: 1560px) {
+  .site-header .lang-btn:not(.is-compact) .lb-txt,
+  .site-header .lang-btn:not(.is-compact) .lb-caret { display: none; }
+  .site-header .lang-btn:not(.is-compact) { padding: 0 4px; gap: 0; }
+  .site-header .header-row { gap: 12px; }
+}
+@media (max-width: 1440px) and (min-width: 1261px) {
+  .site-header .nav-link { padding: 8px 9px; font-size: 0.84rem; }
+  .site-header .nav-badge { display: none; }
+}
+@media (max-width: 1340px) and (min-width: 1261px) {
+  .site-header .logo-stage { width: 140px !important; height: 43px !important; }
+}
+@media (max-width: 420px) {
+  .site-header .lang-btn:not(.is-compact) { height: 38px; }
+  .site-header .lb-orb { width: 30px; height: 30px; }
+  .brand-lang { gap: 6px; }
+}
+
+/* ---------------- Grade wave (language change) ---------------- */
+.grade-wave { position: fixed; inset: 0; z-index: 2000; pointer-events: none; overflow: hidden; }
+.grade-wave i { position: absolute; left: var(--x); top: var(--y); width: 30px; height: 30px; margin: -15px 0 0 -15px; border-radius: 50%; transform: scale(0); opacity: 0.55; animation: gw-grow 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+.grade-wave i:nth-child(1) { background: var(--w1); }
+.grade-wave i:nth-child(2) { background: var(--w2); animation-delay: 0.08s; opacity: 0.45; }
+.grade-wave i:nth-child(3) { background: var(--w3); animation-delay: 0.16s; opacity: 0.35; }
+.grade-wave b { position: absolute; left: 50%; top: 50%; font-family: var(--display); font-size: clamp(120px, 26vw, 320px); line-height: 1; color: #fff; transform: translate(-50%, -50%) scale(0.6); opacity: 0; text-shadow: 0 20px 80px rgba(0, 0, 0, 0.3); animation: gw-glyph 1.2s var(--ease) forwards; }
+@keyframes gw-grow { 0% { transform: scale(0); } 70% { opacity: 0.5; } 100% { transform: scale(160); opacity: 0; } }
+@keyframes gw-glyph { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.6) rotate(-8deg); } 35% { opacity: 0.95; } 100% { opacity: 0; transform: translate(-50%, -50%) scale(1.15) rotate(0); } }
+
+/* ---------------- Language picker ---------------- */
+html.lp-open body { overflow: hidden; }
+.lp { position: fixed; inset: 0; z-index: 1500; display: grid; place-items: center; padding: 16px; }
+.lp-backdrop { position: absolute; inset: 0; background: rgba(5, 8, 30, 0.72); animation: lp-fade 0.3s ease; }
+@keyframes lp-fade { from { opacity: 0; } }
+.lp-panel {
+  position: relative; width: min(1040px, 100%); height: min(860px, calc(100svh - 32px)); display: flex; flex-direction: column; overflow: hidden;
+  border-radius: 30px; color: #fff; outline: none; contain: layout paint;
+  background: linear-gradient(160deg, #111a52, #070b26 70%);
+  box-shadow: 0 50px 120px -30px rgba(0, 0, 0, 0.9), inset 0 0 0 1px rgba(255, 255, 255, 0.09);
+  animation: lp-in 0.45s var(--ease);
+}
+@keyframes lp-in { from { opacity: 0; transform: translateY(24px) scale(0.97); } }
+.lp-aurora { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.lp-aurora i { position: absolute; width: 60%; aspect-ratio: 1; border-radius: 50%; opacity: 0.35; -webkit-mask-image: radial-gradient(closest-side, #000, transparent); mask-image: radial-gradient(closest-side, #000, transparent); }
+.lp-aurora i:nth-child(1) { background: var(--lg1); left: -20%; top: -40%; }
+.lp-aurora i:nth-child(2) { background: var(--lg3); right: -25%; top: -20%; }
+.lp-aurora i:nth-child(3) { background: var(--lg2); left: 30%; bottom: -55%; opacity: 0.2; }
+.lp-head { position: relative; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 26px 28px 12px; }
+.lp-kicker { display: inline-flex; align-items: center; gap: 6px; margin: 0 0 6px; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.6); }
+.lp-title { margin: 0; color: #fff; font-size: clamp(1.6rem, 3.6vw, 2.6rem); line-height: 1.15; min-height: 1.3em; }
+.lp-rot { display: block; }
+.lp-rot span { display: inline-block; background: linear-gradient(110deg, #fff 20%, var(--c) 120%); -webkit-background-clip: text; background-clip: text; color: transparent; animation: lp-word 0.55s var(--ease); }
+@keyframes lp-word { from { opacity: 0; transform: translateY(14px); filter: blur(4px); } }
+.lp-sub { margin: 6px 0 0; color: rgba(255, 255, 255, 0.66); }
+.lp-tools { display: flex; align-items: center; gap: 8px; flex: none; }
+.lp-sound { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 14px; border: 0; border-radius: 999px; color: #fff; font-family: var(--ui); font-weight: 600; font-size: 0.85rem; background: rgba(255, 255, 255, 0.08); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14); }
+.lps-ic { display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; }
+.lps-ic i { width: 3px; border-radius: 2px; background: currentColor; height: 4px; }
+.lp-sound.on .lps-ic i { animation: eq 1s ease-in-out infinite; }
+.lp-sound.on .lps-ic i:nth-child(2) { animation-delay: -0.3s; }
+.lp-sound.on .lps-ic i:nth-child(3) { animation-delay: -0.6s; }
+@keyframes eq { 0%, 100% { height: 4px; } 50% { height: 14px; } }
+.lp-close { width: 40px; height: 40px; border: 0; border-radius: 50%; display: grid; place-items: center; color: #fff; background: rgba(255, 255, 255, 0.08); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14); }
+.lp-close:hover, .lp-sound:hover { background: rgba(255, 255, 255, 0.16); }
+.lp-search { position: relative; display: flex; align-items: center; gap: 10px; margin: 6px 28px 10px; padding: 0 16px; height: 50px; border-radius: 16px; background: rgba(255, 255, 255, 0.07); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); color: rgba(255, 255, 255, 0.7); }
+.lp-search input { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent; color: #fff; font-size: 16px; } /* ≥16px: no iOS zoom-in on focus */
+.lp-search input::placeholder { color: rgba(255, 255, 255, 0.5); }
+.lp-search:focus-within { box-shadow: inset 0 0 0 2px var(--lg3); }
+.lp-clear { width: 30px; height: 30px; flex: none; display: grid; place-items: center; border: 0; border-radius: 50%; color: #fff; background: rgba(255, 255, 255, 0.12); }
+.lp-clear:hover { background: rgba(255, 255, 255, 0.22); }
+.lp-scroll { position: relative; flex: 1; min-height: 0; overflow-y: auto; padding: 4px 28px 28px; overscroll-behavior: contain; contain: content; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.25) transparent; }
+.lp-group h3 { margin: 18px 0 10px; color: rgba(255, 255, 255, 0.55); font-family: var(--ui); font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.lp-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; contain: layout; }
+.lp-tile { position: relative; width: 100%; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 0; border-radius: 18px; text-align: start; color: #fff; overflow: hidden; isolation: isolate; background: rgba(255, 255, 255, 0.045); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.09); transition: transform 0.3s var(--ease), box-shadow 0.3s, background 0.3s; }
+.lp-tile::before { content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0; transition: opacity 0.35s; background: linear-gradient(120deg, color-mix(in srgb, var(--t1) 55%, transparent), color-mix(in srgb, var(--t2) 40%, transparent) 60%, color-mix(in srgb, var(--t3) 35%, transparent)); }
+.lp-tile:hover, .lp-tile:focus-visible { transform: translateY(-3px); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--t1) 60%, transparent), 0 16px 34px -18px var(--t1); }
+.lp-tile:hover::before, .lp-tile:focus-visible::before, .lp-tile.is-on::before { opacity: 1; }
+.lp-tile.is-on { box-shadow: inset 0 0 0 2px #fff; }
+.lp-tile.is-featured { padding: 14px 16px; }
+.lt-orb { width: 44px; height: 44px; flex: none; border-radius: 14px; display: grid; place-items: center; font-weight: 700; font-size: 1.15rem; background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.7), transparent 40%), linear-gradient(135deg, var(--t1), var(--t2) 70%, var(--t3)); box-shadow: 0 8px 18px -8px var(--t1), inset 0 -3px 6px rgba(0, 0, 0, 0.2); transition: transform 0.45s cubic-bezier(0.34, 1.6, 0.64, 1); }
+.lt-orb b { text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); }
+.lp-tile:hover .lt-orb { transform: rotate(-10deg) scale(1.08); }
+.lt-txt { display: grid; min-width: 0; line-height: 1.25; }
+.lt-txt b { font-size: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: system-ui, -apple-system, 'Segoe UI', 'Noto Sans', sans-serif; }
+.lt-txt small { color: rgba(255, 255, 255, 0.58); font-size: 0.76rem; }
+.lt-sound { margin-inline-start: auto; display: inline-flex; align-items: flex-end; gap: 2px; height: 14px; opacity: 0; transition: opacity 0.3s; }
+.lt-sound i { width: 3px; height: 5px; border-radius: 2px; background: #fff; }
+.lp-tile:hover .lt-sound { opacity: 0.8; }
+.lp-tile:hover .lt-sound i { animation: eq 0.9s ease-in-out infinite; }
+.lp-tile:hover .lt-sound i:nth-child(2) { animation-delay: -0.25s; }
+.lp-tile:hover .lt-sound i:nth-child(3) { animation-delay: -0.5s; }
+.lp-tile:hover .lt-sound i:nth-child(4) { animation-delay: -0.75s; }
+.lt-check { position: absolute; right: 10px; top: 10px; color: #fff; }
+.lp-tile.is-on .lt-sound { display: none; }
+.lp-empty { color: rgba(255, 255, 255, 0.7); padding: 24px 0; }
+@media (max-width: 640px) {
+  .lp { padding: 0; place-items: end stretch; }
+  .lp-panel { height: 92svh; border-radius: 26px 26px 0 0; }
+  .lp-head { padding: 20px 18px 8px; }
+  .lp-search { margin: 6px 18px 8px; }
+  .lp-scroll { padding: 2px 18px 24px; }
+  .lp-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .lp-tile { padding: 9px; gap: 9px; }
+  .lt-orb { width: 36px; height: 36px; font-size: 1rem; border-radius: 11px; }
+  .lt-txt b { font-size: 0.9rem; }
+}
+/* Smoothness: everything behind the picker pauses while it is open. */
+html.lp-open main *, html.lp-open main *::before, html.lp-open main *::after,
+html.lp-open .site-footer *, html.lp-open .site-header * { animation-play-state: paused !important; }
+html.lp-open .cursor-layer, html.lp-open [class*='cursor-'] { display: none; }
+
+/* Translation status pill */
+.tx-pill { position: fixed; left: 50%; bottom: 18px; z-index: 1200; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 10px; max-width: calc(100vw - 32px); padding: 10px 16px; border-radius: 999px; color: #fff; font-size: 0.86rem; font-weight: 600; background: rgba(8, 12, 40, 0.94); box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(255, 255, 255, 0.12); animation: lp-in 0.35s var(--ease); }
+.tx-pill.is-action { padding: 4px; }
+.tx-pill.is-action button { display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border: 0; border-radius: 999px; color: #fff; font-weight: 700; background: linear-gradient(120deg, var(--lg1), var(--lg3)); }
+.tx-pill.is-info { border-radius: 18px; font-weight: 500; }
+.tx-pill.is-info button { color: rgba(255, 255, 255, 0.7); flex: none; background: none; border: 0; }
+.tx-spin { width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.25); border-top-color: var(--lg2); animation: lb-spin 0.8s linear infinite; }
+
+/* ==========================================================================================
+   NON-ENGLISH COLOUR GRADES (html[data-theme='dark']). English keeps the original Turn2Opinion look.
+   ========================================================================================== */
+html[data-theme='dark'] ::selection { background: color-mix(in srgb, var(--lg1) 30%, transparent); }
+
+/* Header: midnight glass bar with a language-coloured hairline; the tab bar takes the language grade. */
+html[data-theme='dark'] .site-header::before { background: color-mix(in srgb, var(--lg-night) 94%, transparent); backdrop-filter: none; -webkit-backdrop-filter: none; }
+html[data-theme='dark'] .site-header::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: linear-gradient(90deg, var(--lg1), var(--lg3), var(--lg2), var(--lg1)); }
+html[data-theme='dark'] .site-header.is-scrolled { box-shadow: 0 16px 40px -24px rgba(0, 0, 0, 0.8); }
+html[data-theme='dark'] .site-header .logo { padding: 3px 10px; border-radius: 14px; background: #fff; box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.6); }
+html[data-theme='dark'] .site-header .lang-btn { color: #fff; background: rgba(255, 255, 255, 0.07); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); }
+html[data-theme='dark'] .main-nav { background: linear-gradient(110deg, color-mix(in srgb, var(--lg1) 85%, #000), var(--lg1) 35%, var(--lg3) 65%, color-mix(in srgb, var(--lg2) 80%, #000)); background-size: 220% 100%; box-shadow: 0 10px 26px -14px var(--lg1), inset 0 1px 0 rgba(255, 255, 255, 0.25); }
+html[data-theme='dark'] .nav-link:hover, html[data-theme='dark'] .nav-link:focus-visible, html[data-theme='dark'] .nav-link.is-active { color: color-mix(in srgb, var(--lg1) 75%, #000); }
+html[data-theme='dark'] .main-nav:hover .nav-link.is-active:not(:hover) { color: #fff; }
+html[data-theme='dark'] .site-header .btn-ghost { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.3); }
+html[data-theme='dark'] .site-header .btn-ghost:hover { background: #fff; color: var(--ink); border-color: #fff; }
+html[data-theme='dark'] .burger { background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2); }
+html[data-theme='dark'] .burger span { background: #fff; }
+
+/* Buttons and accents follow the language grade */
+html[data-theme='dark'] .btn-primary {
+  background: linear-gradient(120deg, var(--lg1), var(--lg3) 60%, var(--lg2));
+  background-size: 160% 100%;
+  color: #fff;
+  box-shadow: 0 14px 30px -14px color-mix(in srgb, var(--lg1) 85%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: background-position 0.6s var(--ease), transform 0.25s var(--spring), box-shadow 0.25s var(--ease);
+}
+html[data-theme='dark'] .btn-primary:hover { background-position: 100% 0; }
+html[data-theme='dark'] .btn-ghost:hover { border-color: var(--lg1); color: var(--lg1); }
+
+/* Home hero: the SAME hero, animation and taglines, over the language's own WebGL aurora. */
+.hero-aurora { position: absolute; inset: 0; z-index: -2; pointer-events: none; overflow: hidden; background: var(--lg-night); }
+.aurora-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity 1.2s ease;
+  background: radial-gradient(60% 70% at 70% 30%, color-mix(in srgb, var(--lg1) 55%, transparent), transparent 70%), radial-gradient(50% 60% at 15% 80%, color-mix(in srgb, var(--lg3) 40%, transparent), transparent 70%), var(--lg-night); }
+.aurora-canvas.is-ready, .aurora-canvas.is-fallback { opacity: 1; }
+.hero.is-graded { background: var(--lg-night); color: rgba(255, 255, 255, 0.86); }
+.hero.is-graded::after { inset: auto 0 -1px 0; height: 120px; background: linear-gradient(to top, #fff, transparent) !important; }
+.hero.is-graded .hero-bg > .hero-blob, .hero.is-graded .hero-bg > .hero-grid { display: none; }
+.hero.is-graded .hero-bubble { opacity: 0.35; }
+.hero.is-graded .hero-title, .hero.is-graded .ht-line.l1 { color: #fff; }
+.hero.is-graded .ht-line.l2 { background-image: linear-gradient(100deg, #fff 10%, color-mix(in srgb, var(--lg3) 70%, #fff) 45%, var(--lg2) 75%, var(--lg1)); }
+.hero.is-graded .hero-tagline { color: #fff; border-image: linear-gradient(var(--lg2), var(--lg1)) 1; }
+.hero.is-graded .hero-lead { color: rgba(255, 255, 255, 0.76); }
+.hero.is-graded .rotator { color: #fff; }
+.hero.is-graded .rotator-word { background: linear-gradient(transparent 62%, color-mix(in srgb, var(--lg2) 60%, transparent) 62%); }
+.hero.is-graded .motto-word.w1 { color: color-mix(in srgb, var(--lg3) 70%, #fff); }
+.hero.is-graded .motto-word.w2 { color: color-mix(in srgb, var(--lg2) 75%, #fff); }
+.hero.is-graded .motto-word.w3 { background-image: linear-gradient(90deg, #ffd166, var(--lg1)); }
+.hero.is-graded .aud-switch { background: rgba(255, 255, 255, 0.08); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16); }
+.hero.is-graded .aud-switch button { color: rgba(255, 255, 255, 0.85); }
+.hero.is-graded .aud-switch button.is-on { color: #fff; }
+.hero.is-graded .aud-knob { background: linear-gradient(120deg, var(--lg1), var(--lg3)) !important; }
+.hero.is-graded .role-track span { color: #fff; background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.16); }
+.hero.is-graded .hero-proof li { color: rgba(255, 255, 255, 0.9); }
+.hero.is-graded .hero-proof .icon { color: var(--lg3); }
+.hero.is-graded .btn-ghost { background: rgba(255, 255, 255, 0.06); color: #fff; border-color: rgba(255, 255, 255, 0.3); }
+.hero.is-graded .btn-ghost:hover { background: #fff; color: var(--ink); border-color: #fff; }
+
+/* Inner page heroes pick up the language grade */
+html[data-theme='dark'] .page-hero .ph-b1 { background: var(--lg1) !important; }
+html[data-theme='dark'] .page-hero .ph-b2 { background: var(--lg3) !important; }
+html[data-theme='dark'] .page-hero .ph-b3 { background: var(--lg2) !important; }
+html[data-theme='dark'] .ph-dark { background: radial-gradient(900px 420px at 85% -10%, color-mix(in srgb, var(--lg1) 30%, transparent), transparent 70%), radial-gradient(700px 380px at 0% 110%, color-mix(in srgb, var(--lg3) 22%, transparent), transparent 70%), var(--lg-night); }
+html[data-theme='dark'] .ph-beam { background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--lg2) 60%, transparent), transparent); }
+
+/* Footer re-grade */
+html[data-theme='dark'] .footer-aurora { background: conic-gradient(from 180deg at 50% 50%, color-mix(in srgb, var(--lg1) 35%, transparent), color-mix(in srgb, var(--lg2) 35%, transparent), color-mix(in srgb, var(--lg3) 30%, transparent), color-mix(in srgb, var(--lg1) 35%, transparent)); }
+html[data-theme='dark'] .site-footer { border-top: 2px solid transparent; border-image: linear-gradient(90deg, var(--lg1), var(--lg3), var(--lg2)) 1; }
+
+/* RTL (Arabic, Persian, Urdu, Hebrew): keep the brand bar anchored like the LTR site, mirror the content. */
+html[dir='rtl'] .site-header .header-row { direction: ltr; }
+html[dir='rtl'] .site-header .main-nav { direction: rtl; }
+html[dir='rtl'] .fr-wordmark, html[dir='rtl'] .lp-rot, html[dir='rtl'] .hero-art { direction: ltr; }
+html[dir='rtl'] .hero-tagline { padding-left: 0; padding-right: 16px; border-left: 0; border-right: 4px solid; }
+
+/* ==========================================================================================
+   Footer: giant animated wordmarks — TURN2OPINION (large) above Frequent Research (smaller)
+   ========================================================================================== */
+.footer-wordmarks { margin-top: 10px; }
+.fr-wordmark { position: relative; margin: 34px 0 6px; padding: 6px 0; border-top: 1px solid rgba(255, 255, 255, 0.07); border-bottom: 1px solid rgba(255, 255, 255, 0.07); overflow: hidden; }
+.fr-wordmark svg { display: block; width: 100%; height: auto; overflow: visible; }
+.frw-glyphs { font-family: 'Manrope', 'Inter', system-ui, sans-serif; font-weight: 800; letter-spacing: -6px; }
+/* --- v3.1: the big name at the bottom of the page, properly animated ------------------------
+   Six layers, all transform/opacity, all inside the footer's content-visibility boundary so
+   nothing here runs until the visitor has actually scrolled to the bottom. */
+.frw-guides line {
+  stroke: rgba(255, 255, 255, 0.07);
+  stroke-width: 1;
+  stroke-dasharray: 1700;
+  stroke-dashoffset: 1700;
+  animation: frw-guide 2.4s var(--ease) forwards;
+  animation-delay: calc(var(--i) * 0.14s);
+}
+@keyframes frw-guide { to { stroke-dashoffset: 0; } }
+
+.frw-outline { fill: none; stroke: rgba(255, 255, 255, 0.16); stroke-width: 1.4; paint-order: stroke; animation: frw-breathe 6s ease-in-out infinite; }
+@keyframes frw-breathe { 0%, 100% { stroke: rgba(255, 255, 255, 0.14); } 50% { stroke: rgba(255, 255, 255, 0.4); } }
+
+/* the specular sweep */
+.frw-sweep { opacity: 0.26; animation: frw-sweep 7s cubic-bezier(0.45, 0, 0.2, 1) infinite; }
+@keyframes frw-sweep { 0% { transform: translateX(0); } 70%, 100% { transform: translateX(2140px); } }
+
+/* an aurora drifting through the letterforms */
+.frw-aurora { opacity: 0.4; mix-blend-mode: screen; animation: frw-aurora 14s ease-in-out infinite alternate; }
+@keyframes frw-aurora { 0% { transform: translateX(-24%) scaleY(1); } 100% { transform: translateX(24%) scaleY(1.3); } }
+
+/* motes caught inside the glyphs */
+.frw-mote { fill: #fff; opacity: 0; animation: frw-mote 5.5s ease-in-out infinite; animation-delay: calc(var(--k) * 0.62s); }
+@keyframes frw-mote {
+  0%, 100% { opacity: 0; transform: translateY(26px); }
+  40% { opacity: 0.85; }
+  70% { opacity: 0.2; transform: translateY(-26px); }
+}
+.frw-spark path { fill: #ffd34d; transform-box: fill-box; transform-origin: center; animation: frw-twinkle 2.6s ease-in-out infinite; }
+@keyframes frw-twinkle { 0%, 100% { transform: scale(0.6) rotate(0); opacity: 0.5; } 50% { transform: scale(1.1) rotate(45deg); opacity: 1; } }
+.frw-ring { fill: none; stroke: #49b6ff; stroke-width: 3; opacity: 0.55; stroke-dasharray: 60 210; transform-box: fill-box; transform-origin: center; animation: lb-spin 9s linear infinite; }
+.fr-wordmark:hover .frw-outline { stroke: rgba(255, 255, 255, 0.32); }
+.footer-wordmarks .fr-wordmark.wm-sm { margin-top: 0; border-top: 0; opacity: 0.9; width: min(78%, 980px); margin-inline: auto; }
+.footer-wordmarks .fr-wordmark.wm-sm .frw-ring { stroke: #2bd38f; }
+@media (max-width: 640px) { .fr-wordmark { margin-top: 24px; } .frw-glyphs { letter-spacing: -3px; } }
+
+/* ==========================================================================================
+   Performance guards (same as MyHealthOpinions v3)
+   ========================================================================================== */
+/* 1. Off-screen sections pause every animation inside them (AnimationGate sets data-still).
+   NOTE: the universal descendant form ([data-still] *) used to live here. It forced a full-subtree
+   style recalculation every time a section crossed the viewport, which is what made scrolling stutter
+   on long pages. Pausing is now done by `content-visibility: auto` (see styles/perf.css), which skips
+   rendering off-screen subtrees outright — animations inside them stop without any selector matching.
+   The attribute is kept for the few elements that must freeze even while on screen. */
+[data-still] { animation-play-state: paused !important; }
+html[data-hidden] * { animation-play-state: paused !important; }
+
+/* 2. Big blurred blobs: a radial mask instead of filter: blur(40–80px) — same soft look, a fraction of the GPU cost. */
+.hero-blob, .ph-bg span, .join-bg span, .ph-art-glow, .ch-glow, .footer-aurora, .vn-glow {
+  filter: none !important;
+  -webkit-mask-image: radial-gradient(closest-side, #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 100%);
+}
+
+/* 3. Respect reduced motion everywhere. */
+@media (prefers-reduced-motion: reduce) {
+  .grade-wave { display: none; }
+  .frw-sweep, .frw-spark path, .frw-ring, .frw-aurora, .frw-mote, .frw-outline, .lb-orb::after { animation: none !important; }
+  .frw-guides line { stroke-dashoffset: 0; animation: none !important; }
+}
+
+/* RTL: sliding-knob switches animate with translateX, so they keep their LTR geometry (labels still read RTL). */
+html[dir='rtl'] :is(.aud-switch, .mode-switch, .duo-switch, .ds-switch, [class*='-switch']) { direction: ltr; }
+html[dir='rtl'] :is(.aud-switch, .mode-switch, .duo-switch, .ds-switch, [class*='-switch']) > * { direction: rtl; }
+
+/* CJK in the vertical "Rate your experience" tab: upright characters read top-to-bottom (no 180° turn). */
+html:is([lang^='zh'], [lang='ja'], [lang='ko']) .rate-tab { transform: none; text-orientation: upright; letter-spacing: 0.08em; border-radius: 16px 0 0 16px; }
+html[dir='rtl'] .rate-tab { direction: ltr; }
+/* Translated taglines are one sentence (see WordSplit.jsx): never stretch them with justified spacing. */
+html:not([lang='en']) :is(.ph-tagline, .hero-tagline, .qa-bubble p) { text-align: start; }
+@media (max-width: 600px) { .footer-bottom { padding-bottom: 96px; } } /* keep the language button clear of the floating WhatsApp / live-help buttons */
+/* Small phones: logo + language orb + Join + menu must fit in 320–420 px without sideways scroll. */
+@media (max-width: 440px) {
+  .site-header .logo-stage { width: 132px !important; height: 40px !important; }
+  .site-header .header-row { gap: 8px; }
+  .header-cta { gap: 6px; }
+}
+@media (max-width: 360px) {
+  .site-header .logo-stage { width: 108px !important; height: 33px !important; }
+  .site-header .lang-btn:not(.is-compact) { height: 34px; }
+  .site-header .lb-orb { width: 28px; height: 28px; }
+  .site-header .lb-glyph { font-size: 0.8rem; }
+  .header-cta .btn-primary { padding: 0 10px; font-size: 0.86rem; }
+  .burger { width: 38px; }
+}

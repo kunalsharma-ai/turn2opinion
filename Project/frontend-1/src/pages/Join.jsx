@@ -1,11 +1,5 @@
 // Free sign-up: 3-step wizard with live member-card preview, full validation, full DOB (calendar),
 // country flags + dial codes, guardian email for under-18s and CAPTCHA.
-//
-// FLOW (new order):
-//   step 0  About you            -> PUT  /api/v1/user  (verification mail is sent)  -> "Check your inbox"
-//   mail link (?user=&code=)     -> verify, user data reloaded, jumps to step 1
-//   step 1  Secure your account  -> PATCH /api/v1/user (password) -> login (token) -> consents saved
-//   step 2  Contact & profile    -> PUT /api/v1/user/:id (phone, country, guardianEmail) + PUT /api/v1/answer (pro) -> success
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from '../router/Router.jsx';
 import { ENV, asset } from '../config/env.js';
@@ -614,30 +608,6 @@ const submitSignup = async () => {
         return;
       }
 
-      // if (f.type === 'pro') {
-      //   const workPayload = {
-      //     jobTitle: f.jobTitle.trim(),
-      //     industry: f.industry,
-      //     company: f.company.trim(),
-      //     workEmail: f.workEmail
-      //       ? f.workEmail.trim().toLowerCase()
-      //       : undefined,
-      //   };
-
-      //   const workResp = await api.patch('/api/v1/me/answers', {
-      //     answers: WORK_LEVELS.map((l) => ({ question: l.name, answer: f[l.key] })),
-      //   });
-
-      //   if (workResp.status !== 'success') {
-      //     setState('error');
-      //     setMsg(failureMessage({ data: workResp }));
-      //     return;
-      //   }
-      // }
-      // try { localStorage.removeItem(TYPE_KEY); } catch (e) { /* ignore */ }
-      // window.history.replaceState(null, '', window.location.pathname);
-      // setQueryParams({});
-      // setState('created');
 
       if (f.type === 'pro') {
         const workPayload = {};

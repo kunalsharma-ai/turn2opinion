@@ -1,124 +1,139 @@
-// 24/7 live help: an instant answer engine built from our FAQ, with one-tap hand-off to a person
-// on WhatsApp, email or (optionally) Tawk.to live agents. Plays a soft "pop" when opened and on replies.
+// 24/7 live help: instant answers drawn from every question & answer on the website (see src/utils/assistant.js),
+// each with a link to the page that explains it. Questions the site doesn't cover collect the visitor's name,
+// email, phone (optional) and country and go to the support team (VITE_API_ENQUIRY_URL). Hand-off to WhatsApp,
+// email or (optionally) Tawk.to live agents is always one tap away. Plays a soft "pop" when opened and on replies.
 import { useEffect, useRef, useState } from 'react';
 import { ENV } from '../config/env.js';
 import { SITE, waLink } from '../config/site.js';
 import { hrefFor } from '../router/Router.jsx';
 import { pop, setSoundEnabled, soundEnabled } from '../utils/sound.js';
+import { postJSON, failureMessage } from '../utils/api.js';
+import { session } from '../utils/storage.js';
+import { track } from '../utils/analytics.js';
+import { COUNTRIES } from '../data/countries.js';
 import { T2OMark } from './Brand.jsx';
 import Icon from './Icon.jsx';
 
-const KB = [
-  {
-    id: 'join',
-    keys: ['join', 'register', 'sign up', 'signup', 'account', 'start', 'create', 'free', 'enroll', 'enrol'],
-    a: 'Joining is free and takes about two minutes: add your details, verify your email and phone, and you’ll start receiving survey invitations that match your profile.',
-    link: ['/join/', 'Create my free account']
-  },
-  {
-    id: 'pay',
-    keys: ['pay', 'payment', 'paid', 'redeem', 'reward', 'paypal', 'wire', 'bank', 'amazon', 'gift', 'cash', 'money', 'withdraw', 'incentive'],
-    a: 'You earn points for every completed survey. Once you reach the threshold in your dashboard you can redeem them. Members in India can choose UPI, PayPal, wire transfer or an Amazon gift card; members outside India can choose PayPal, wire transfer or an Amazon gift card.',
-    link: ['/rewards/', 'See reward options']
-  },
-  {
-    id: 'upi',
-    keys: ['upi', 'gpay', 'phonepe', 'paytm', 'bhim'],
-    a: 'Yes – UPI is available for members in India, alongside PayPal, wire transfer and Amazon gift cards. UPI is an India-only method, so members in other countries can choose PayPal, wire transfer or an Amazon gift card.',
-    link: ['/rewards/', 'Compare payout methods']
-  },
-  {
-    id: 'time',
-    keys: ['how long', 'when', 'receive', 'delay', 'pending', 'weeks', 'not received', 'status'],
-    a: 'After you request a redemption we verify your profile and completions, then our accounts team processes it. Transfers can take up to 2–3 weeks because they run in batches. Double-check your payment details to avoid delays.'
-  },
-  {
-    id: 'surveys',
-    keys: ['survey', 'no survey', 'invitation', 'invite', 'how many', 'more surveys', 'available', 'notification', 'how surveys work'],
-    a: 'Invitations are matched to your profile. Complete every profile section, set your ideal survey frequency, and turn on SMS, WhatsApp or email alerts so you never miss one.',
-    link: ['/how-it-works/', 'How it works']
-  },
-  {
-    id: 'screen',
-    keys: ['screen', 'disqualif', 'terminated', 'closed', 'quota', 'kicked', 'not eligible', 'over quota'],
-    a: 'Each study needs a specific audience, so screening questions come first. If you don’t match, or the quota is already full, the survey closes early. Accurate, honest profile answers mean fewer screen-outs over time.'
-  },
-  {
-    id: 'pro',
-    keys: ['business', 'professional', 'b2b', 'job', 'manager', 'director', 'it ', 'doctor', 'company', 'work email'],
-    a: 'Yes – professionals are very welcome. Add your job title, industry and department to your profile to unlock business studies for IT, finance, HR, healthcare, marketing, operations and many more roles.',
-    link: ['/paid-surveys/', 'Explore ways to earn']
-  },
-  {
-    id: 'countries',
-    keys: ['country', 'countries', 'india', 'usa', 'uk', 'where', 'region', 'available in'],
-    a: 'We invite consumers and professionals across North and South America, Europe, Asia Pacific, the Middle East and Africa. Sign up with your real country of residence – it’s validated for every survey.'
-  },
-  {
-    id: 'privacy',
-    keys: ['privacy', 'data', 'safe', 'secure', 'share', 'sell', 'gdpr', 'personal', 'spam'],
-    a: 'Your details are secured with us and never sold or shared for advertising. Survey answers are reported in aggregate, not linked to your identity.',
-    link: ['/profiling/', 'Trust & Safety']
-  },
-  {
-    id: 'password',
-    keys: ['password', 'login', 'log in', 'forgot', 'reset', 'can’t access', 'cant access', 'locked'],
-    a: 'You can change your password under Settings → Change Password after logging in. If you can’t log in, use “Forgot password?” on the login page or email us from your registered address.',
-    link: ['/login/', 'Go to login']
-  },
-  {
-    id: 'delete',
-    keys: ['delete', 'remove', 'cancel', 'close account', 'unsubscribe'],
-    a: 'Log in, open My Profile (top right) and choose Delete Account, then confirm by email. You can restore it within 30 days; after that all data is removed.'
-  },
-  {
-    id: 'email',
-    keys: ['change email', 'update email', 'email address', 'new email'],
-    a: 'For security, registered emails can’t be changed in the dashboard. Email support@turn2opinion.com from your registered address and we’ll help.'
-  },
-  {
-    id: 'age',
-    keys: ['age', 'old', 'minor', 'teen', 'under 18', 'student'],
-    a: 'Students and adults of all ages can join. Members under 18 need to inform a parent or guardian and provide their email during sign-up.'
-  },
-  {
-    id: 'investment',
-    keys: ['investment', 'fee', 'cost', 'charge', 'scam', 'legit', 'genuine', 'real'],
-    a: 'Turn2Opinion never asks for money – not to join, not to unlock surveys, not to withdraw. We’re part of Frequent Research, an ISO 9001, ISO 27001 and ISO 20252 certified research company and ESOMAR member.'
-  }
-];
-
 const TOPICS = [
   { id: 'join', label: 'Join free', q: 'How do I join?', icon: 'sparkles', c: '#1F5BFF' },
-  { id: 'pay', label: 'Get paid', q: 'How do I get paid?', icon: 'wallet', c: '#12C29B' },
-  { id: 'surveys', label: 'Surveys', q: 'How do surveys work?', icon: 'chat', c: '#FFB020' },
-  { id: 'pro', label: 'Professionals', q: 'Can professionals join?', icon: 'briefcase', c: '#7B5CFF' },
+  { id: 'methods', label: 'Get paid', q: 'How do I get paid?', icon: 'wallet', c: '#12C29B' },
+  { id: 'types', label: 'Surveys', q: 'What kind of surveys are there?', icon: 'chat', c: '#FFB020' },
+  { id: 'professional', label: 'Professionals', q: 'Can business professionals join?', icon: 'briefcase', c: '#7B5CFF' },
   { id: 'privacy', label: 'My data', q: 'Is my data safe?', icon: 'shield', c: '#FF5C7A' },
   { id: 'human', label: 'Talk to a person', q: 'Talk to a person', icon: 'headset', c: '#0E1B4D' }
 ];
 
 const CHIPS = [
   ['Is UPI available?', 'upi'],
-  ['I forgot my password', 'password'],
-  ['Why was I screened out?', 'screen'],
-  ['How long do payouts take?', 'time'],
-  ['Is it really free?', 'investment'],
+  ['How much can I earn?', 'earn'],
+  ['I forgot my password', 'forgot'],
+  ['Why was I screened out?', 'screenout'],
+  ['How long do payouts take?', 'paytime'],
+  ['Is it legit?', 'legit'],
   ['Can students join?', 'age'],
-  ['Can professionals join?', 'pro']
+  ['Which countries?', 'countries']
 ];
 
-function answerFor(text) {
-  const t = ` ${text.toLowerCase()} `;
-  let best = null;
-  let score = 0;
-  for (const k of KB) {
-    const s = k.keys.reduce((n, key) => n + (t.includes(key) ? key.length : 0), 0);
-    if (s > score) {
-      score = s;
-      best = k;
+const LEAD_KEY = 't2o_chat_lead_v1';
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+let enginePromise = null;
+const loadEngine = () => (enginePromise = enginePromise || import('../utils/assistant.js'));
+
+/** In-chat form: collects contact details for questions the website doesn't answer. */
+function LeadForm({ question, onSent }) {
+  const [f, setF] = useState(() => ({ name: '', email: '', phone: '', country: '', message: question || '', hp: '' }));
+  const [err, setErr] = useState({});
+  const [state, setState] = useState('idle');
+  const [msg, setMsg] = useState('');
+  const set = (k) => (e) => {
+    setF({ ...f, [k]: e.target.value });
+    if (err[k]) setErr({ ...err, [k]: '' });
+  };
+  const send = async (e) => {
+    e.preventDefault();
+    const x = {};
+    if (f.name.trim().length < 2) x.name = 'Enter your full name.';
+    if (!EMAIL_RE.test(f.email.trim())) x.email = 'Enter a valid email.';
+    const digits = f.phone.replace(/\D/g, '');
+    if (digits && (digits.length < 6 || digits.length > 15)) x.phone = 'Check the number (6–15 digits).';
+    if (!f.country) x.country = 'Choose your country.';
+    if (f.message.trim().length < 3) x.message = 'Type your question.';
+    setErr(x);
+    if (Object.keys(x).length) return;
+    const sent = session.get(LEAD_KEY + '_n', 0);
+    if (sent >= 3) {
+      setMsg('You’ve sent a few requests already – our team will reply soon. For anything urgent, use WhatsApp.');
+      return;
     }
-  }
-  return best;
+    setState('sending');
+    const lead = { name: f.name.trim(), email: f.email.trim().toLowerCase(), phone: digits ? f.phone.trim() : '', country: f.country };
+    const res = await postJSON(ENV.API_ENQUIRY_URL, {
+      ...lead,
+      topic: 'Live chat question',
+      message: f.message.trim().slice(0, 1000),
+      source: 'live-chat',
+      page: typeof window !== 'undefined' ? window.location.pathname : '',
+      website: f.hp
+    });
+    if (res.ok) {
+      session.set(LEAD_KEY, lead);
+      session.set(LEAD_KEY + '_n', sent + 1);
+      track('chat_lead', { country: f.country });
+      onSent(lead);
+    } else {
+      setState('idle');
+      setMsg(failureMessage(res));
+    }
+  };
+  return (
+    <form className="lead-card" onSubmit={send} noValidate>
+      <p className="lead-title">
+        <Icon name="mail" size={16} /> Send your question to our team
+      </p>
+      <label className="lead-f">
+        <span>Full name *</span>
+        <input value={f.name} onChange={set('name')} autoComplete="name" maxLength={80} aria-invalid={!!err.name} />
+        {err.name && <em>{err.name}</em>}
+      </label>
+      <label className="lead-f">
+        <span>Email *</span>
+        <input type="email" inputMode="email" value={f.email} onChange={set('email')} autoComplete="email" maxLength={120} aria-invalid={!!err.email} />
+        {err.email && <em>{err.email}</em>}
+      </label>
+      <div className="lead-row">
+        <label className="lead-f">
+          <span>Phone (optional)</span>
+          <input type="tel" inputMode="tel" value={f.phone} onChange={set('phone')} autoComplete="tel" maxLength={20} placeholder="+91 98…" aria-invalid={!!err.phone} />
+          {err.phone && <em>{err.phone}</em>}
+        </label>
+        <label className="lead-f">
+          <span>Country *</span>
+          <select value={f.country} onChange={set('country')} autoComplete="country" aria-invalid={!!err.country}>
+            <option value="">Select…</option>
+            {COUNTRIES.map((c) => (
+              <option key={c.c} value={c.c}>
+                {c.n}
+              </option>
+            ))}
+          </select>
+          {err.country && <em>{err.country}</em>}
+        </label>
+      </div>
+      <label className="lead-f">
+        <span>Your question *</span>
+        <textarea rows={2} value={f.message} onChange={set('message')} maxLength={1000} aria-invalid={!!err.message} />
+        {err.message && <em>{err.message}</em>}
+      </label>
+      <input className="hp-field" tabIndex={-1} autoComplete="off" aria-hidden="true" value={f.hp} onChange={set('hp')} name="website" />
+      {msg && <p className="lead-msg">{msg}</p>}
+      <button type="submit" className="lead-send" disabled={state === 'sending'}>
+        {state === 'sending' ? 'Sending…' : 'Send to support'} <Icon name="send" size={14} />
+      </button>
+      <p className="lead-privacy">
+        <Icon name="lock" size={11} /> Used only to answer you. See our <a href={hrefFor('/privacy/')}>privacy policy</a>.
+      </p>
+    </form>
+  );
 }
 
 let tawkLoaded = false;
@@ -162,31 +177,62 @@ export default function LiveChat({ open, onClose }) {
     if (list.current && msgs.length) list.current.scrollTo({ top: list.current.scrollHeight, behavior: 'smooth' });
   }, [msgs, typing]);
 
-  const reply = (entry, fallbackText) => {
-    setTyping(true);
-    setTimeout(() => {
-      setTyping(false);
-      pop({ pitch: 1.25, volume: 0.16 });
-      if (entry === 'human') {
-        setMsgs((m) => [...m, { from: 'bot', text: 'Happy to connect you with our support team. Pick whatever is easiest:', human: true }]);
-        return;
-      }
-      if (!entry) {
-        setMsgs((m) => [
-          ...m,
-          { from: 'bot', text: `I don’t have a ready answer for “${fallbackText.slice(0, 60)}”, but a person on our team does. Reach them below – we reply around the clock.`, human: true }
-        ]);
-        return;
-      }
-      setMsgs((m) => [...m, { from: 'bot', text: entry.a, link: entry.link }]);
-    }, 650 + Math.random() * 500);
+  useEffect(() => {
+    if (open) loadEngine();
+  }, [open]);
+
+  const botSay = (m) => {
+    setTyping(false);
+    pop({ pitch: 1.25, volume: 0.16 });
+    setMsgs((cur) => [...cur, { from: 'bot', ...m }]);
   };
 
-  const ask = (q, id) => {
+  const leadOrHandoff = (question, intro) => {
+    const lead = session.get(LEAD_KEY, null);
+    if (lead) {
+      botSay({ text: `${intro} I can pass this to our team using the details you gave earlier (${lead.email}).`, resend: question, human: true });
+    } else {
+      botSay({ text: `${intro} Share your details and our support team will reply by email as soon as possible.`, lead: question, human: true });
+    }
+  };
+
+  const ask = async (q, id) => {
     setMsgs((m) => [...m, { from: 'me', text: q }]);
-    if (id === 'human') return reply('human');
-    const entry = id ? KB.find((k) => k.id === id) : answerFor(q);
-    reply(entry, q);
+    setTyping(true);
+    const started = Date.now();
+    const eng = await loadEngine();
+    await new Promise((r) => setTimeout(r, Math.max(0, 550 + Math.random() * 400 - (Date.now() - started))));
+    if (id === 'human') {
+      const h = eng.byId('human');
+      return leadOrHandoff(q, h ? h.a : 'Sure – our support team is happy to help.');
+    }
+    const res = id ? { best: eng.byId(id), confidence: 'high', related: [] } : eng.ask(q);
+    const best = res.best;
+    if (!best || res.confidence === 'none') {
+      return leadOrHandoff(q, 'I couldn’t find that on our website yet, but a person on our team can answer it.');
+    }
+    const related = (res.related || []).map((r) => r.q);
+    botSay({
+      text: best.a,
+      title: res.confidence === 'mid' ? best.q : '',
+      src: best.src || null,
+      related,
+      human: !!best.handoff && !best.lead,
+      lead: best.lead ? q : null
+    });
+  };
+
+  const resend = async (question, idx) => {
+    const lead = session.get(LEAD_KEY, null);
+    if (!lead) return;
+    setMsgs((m) => m.map((x, i) => (i === idx ? { ...x, resend: null } : x)));
+    const res = await postJSON(ENV.API_ENQUIRY_URL, { ...lead, topic: 'Live chat question', message: question, source: 'live-chat' });
+    botSay({ text: res.ok ? `Sent ✓ Our team will reply to ${lead.email}.` : failureMessage(res) });
+  };
+
+  const onLeadSent = (idx) => (lead) => {
+    setMsgs((m) => m.map((x, i) => (i === idx ? { ...x, lead: null } : x)));
+    botSay({ text: `Thanks, ${lead.name.split(' ')[0]}! Your question is with our support team and we’ll reply to ${lead.email}. Need it faster? WhatsApp us any time.`, done: true });
   };
 
   const submit = (e) => {
@@ -266,11 +312,43 @@ export default function LiveChat({ open, onClose }) {
               </span>
             )}
             <div className="bubble-body">
+              {m.title && (
+                <p className="bubble-title">
+                  <Icon name="sparkles" size={13} /> {m.title}
+                </p>
+              )}
               <p>{m.text}</p>
-              {m.link && (
-                <a className="bubble-link" href={hrefFor(m.link[0])} onClick={onClose}>
-                  {m.link[1]} <Icon name="arrow" size={14} />
-                </a>
+              {m.src && m.src.length > 0 && (
+                <div className="bubble-src">
+                  <span>Read more:</span>
+                  {m.src.map(([path, label]) =>
+                    /^https?:/.test(path) ? (
+                      <a key={path} href={path} target="_blank" rel="noopener noreferrer">
+                        {label} <Icon name="external" size={12} />
+                      </a>
+                    ) : (
+                      <a key={path + label} href={hrefFor(path)} onClick={onClose}>
+                        {label} <Icon name="arrow" size={12} />
+                      </a>
+                    )
+                  )}
+                </div>
+              )}
+              {m.related && m.related.length > 0 && (
+                <div className="bubble-related">
+                  <span>Related questions</span>
+                  {m.related.map((rq) => (
+                    <button type="button" key={rq} onClick={() => ask(rq)}>
+                      {rq}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {m.lead && <LeadForm question={m.lead} onSent={onLeadSent(i)} />}
+              {m.resend && (
+                <button type="button" className="lead-send" onClick={() => resend(m.resend, i)}>
+                  Send this question to the team <Icon name="send" size={14} />
+                </button>
               )}
               {m.human && (
                 <div className="handoff">

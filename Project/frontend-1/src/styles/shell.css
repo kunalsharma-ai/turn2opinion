@@ -1,0 +1,6 @@
+/* CSS bundle 3 of 4 — SHELL. Loaded blocking on every page, after the route bundle.
+   Header menu, the language button and picker, and the performance layer, which stays last so it
+   can still override the decorative rules above it. */
+@import './nav-menu.css';
+@import './i18n.css';
+@import './perf.css';

@@ -1,7 +1,24 @@
-/* Global stylesheet entry – imported once in src/entry-client.jsx */
-@import './base.css';
-@import './components.css';
-@import './layout.css';
+/* Global stylesheet — the full cascade in one file, in exactly the order the browser sees in
+   production. Used by `npm run dev` and by the single-file preview (scripts/build-preview.mjs).
+
+   The production build does NOT ship this file. It ships these same five bundles separately, so
+   a page only pays for the CSS it actually needs:
+
+     1. core.css    base + components + layout         blocking, every page
+     2. home.css    the section components              blocking, every page
+                    (the survey machine, flag wall, blog cards, reward routes, security hive —
+                     they are on the inner pages too, which is why this one is shared)
+     3. pages.css   the inner pages' own layout         blocking, every page EXCEPT the home page
+                    (prerender writes the <link>; src/app/styles.js adds it on a client-side
+                     navigation away from the home page)
+     4. shell.css   nav-menu + i18n + perf              blocking, every page
+     5. late.css    widgets + reviews + rating +        NON-blocking (media=print -> all)
+                    voices + qr + perf
+
+   Importing the bundles here rather than the parts keeps dev, preview and production on one
+   cascade: change the order in one of the bundles and every surface follows. */
+@import './core.css';
 @import './home.css';
 @import './pages.css';
-@import './widgets.css';
+@import './shell.css';
+@import './late.css';

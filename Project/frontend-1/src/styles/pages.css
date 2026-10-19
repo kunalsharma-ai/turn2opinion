@@ -2615,23 +2615,6 @@ g:nth-child(4) .sb-pulse {
     grid-template-columns: 70px 1fr 90px;
   }
 }
-.live-dot {
-  display: inline-block;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #22d38a;
-  box-shadow: 0 0 0 0 rgba(34, 211, 138, 0.6);
-  animation: livePulse 1.8s infinite;
-}
-@keyframes livePulse {
-  70% {
-    box-shadow: 0 0 0 8px rgba(34, 211, 138, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(34, 211, 138, 0);
-  }
-}
 .sent {
   text-align: center;
   padding: 30px 0;
@@ -4361,9 +4344,6 @@ code {
   right: 0;
   left: auto;
 }
-.rm-panel {
-  overflow-x: hidden;
-}
 
 /* ================= Join (round 5): aurora stage, unlock trail, glowing form ================= */
 .join {
@@ -4782,16 +4762,6 @@ code {
   text-align: center !important;
   color: var(--muted);
 }
-
-.login-card h2,
-.login-card .login-sub {
-  text-align: center;
-}
-
-.login-card .padlock {
-  margin-left: auto;
-  margin-right: auto;
-}
 @media (max-width: 860px) {
   .wportal {
     width: min(100%, 340px);
@@ -5199,7 +5169,6 @@ code {
   }
 }
 
-
 /* ================= Three gates: a member walks through three scanners ================= */
 .gatewalk {
   display: grid;
@@ -5218,7 +5187,7 @@ code {
   height: 6px;
   border-radius: 6px;
   background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.25) 0 18px, transparent 18px 30px);
-  animation: dash 1.2s linear infinite;
+  animation: dashFloor 1.2s linear infinite;
   background-size: 30px 6px;
 }
 .gw-arch {
@@ -5388,7 +5357,8 @@ code {
     margin-left: -26px;
   }
 }
-@keyframes dash {
+/* Renamed from `dash` (home.css defines a different animation under that name). */
+@keyframes dashFloor {
   to {
     background-position: 30px 0;
   }

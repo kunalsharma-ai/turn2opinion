@@ -52,7 +52,7 @@ function ProfileBuilder() {
       <div className="pb-card" aria-hidden="true">
         <div className="pb-top">
           <span className="pb-photo">
-            <img src={asset('/images/people/health.svg')} alt="" width="120" height="140" />
+            <img src={asset('/images/people/health.svg')} alt="Illustration of a healthcare professional completing her survey profile" width="120" height="140" />
           </span>
           <div className="pb-id">
             <strong>Member profile</strong>
@@ -165,7 +165,7 @@ export default function Profiling() {
                 </span>
               ))}
               <span className="gw-walker">
-                <img src={asset('/images/people/retiree.svg')} alt="" width="80" height="96" />
+                <img src={asset('/images/people/retiree.svg')} alt="Illustration of a retired panel member whose profile matches a new survey" width="80" height="96" />
               </span>
               <span className="gw-flag">
                 <Icon name="check" size={18} /> Verified

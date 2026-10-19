@@ -81,7 +81,7 @@ export function VerificationStack() {
       <div className="idcard" aria-hidden="true">
         <div className="id-head">
           <span className="id-photo">
-            <img src={asset('/images/people/finance.svg')} alt="" width="90" height="108" />
+            <img src={asset('/images/people/finance.svg')} alt="Illustration of a panel member whose personal details are kept private" width="90" height="108" />
           </span>
           <span className="id-lines">
             <strong>Member ID</strong>

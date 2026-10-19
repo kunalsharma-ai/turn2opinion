@@ -1,8 +1,9 @@
-import { asset } from '../config/env.js';
 import { SITE, waLink } from '../config/site.js';
-import { Link } from '../router/Router.jsx';
+import { Link, usePath } from '../router/Router.jsx';
 import { FrLogo, Logo, T2OMark } from './Brand.jsx';
 import Icon from './Icon.jsx';
+import { LanguageButton } from './Language.jsx';
+import QrHub from './sections/QrHub.jsx';
 
 const COLS = [
   {
@@ -19,6 +20,8 @@ const COLS = [
     title: 'Learn',
     links: [
       ['/about/', 'About us'],
+      ['/about/reviews/', 'Ratings & reviews'],
+      ['/about/scan-connect/', 'Scan & connect'],
       ['/blog/', 'Blogs'],
       ['/faq/', 'FAQ'],
       ['/contact/', 'Contact'],
@@ -75,38 +78,106 @@ function RewardCube() {
   );
 }
 
-function SocialCard({ s, i }) {
+/** Giant outlined wordmark (same treatment as the MyFrequentRewards / MyHealthOpinions footers): construction
+ *  guide lines, a hairline outline on every letter, a colour fill that grows from dark on the left to bright brand
+ *  colours on the right, a light sweep gliding across the letters, a twinkling spark and a spinning ring.
+ *  Pure SVG + CSS (transform/opacity only); paused while off-screen by AnimationGate. */
+const WORDMARK_GRADES = {
+  // TURN2OPINION: midnight navy → logo navy → royal blue → sky → violet → reward gold
+  t2o: [['0', '#0a1238', 0], ['.12', '#13205e', 0.6], ['.34', '#1544c9', 1], ['.52', '#1f5bff', 1], ['.68', '#49b6ff', 1], ['.84', '#7b5cff', 1], ['1', '#ffb020', 1]],
+  // Frequent Research: navy → gold → coral → magenta (as on MyFrequentRewards)
+  fr: [['0', '#11143a', 0], ['.16', '#1b1d47', 0.55], ['.42', '#6e5a22', 1], ['.6', '#c99a1c', 1], ['.78', '#d2584a', 1], ['1', '#c0326f', 1]]
+};
+
+export function BrandWordmark({ text, grade = 't2o', id = grade, size = 'lg' }) {
+  const W = 1600;
+  const fontSize = size === 'lg' ? 200 : 120;
+  const H = size === 'lg' ? 230 : 150;
+  const base = size === 'lg' ? 182 : 116;
+  const cap = base - fontSize * 0.6;
+  const mid = (cap + base) / 2;
+
+  // v3.1: the big name at the bottom of the page now has a proper animated treatment.
+  // Six layers, every one of them transform- or opacity-only so the whole thing stays on the
+  // compositor, and all of it inside the footer's content-visibility boundary so nothing runs
+  // until the visitor actually scrolls down to it:
+  //
+  //   1. construction guides that draw themselves in
+  //   2. the colour-graded fill
+  //   3. an aurora that drifts through the letterforms (masked to the glyphs)
+  //   4. a specular sweep that glides left to right
+  //   5. a hairline outline that breathes
+  //   6. drifting motes and a spark, caught inside the letters
   return (
-    <a
-      className={`social-card social-${s.id}`}
-      href={s.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{ '--i': i }}
-      aria-label={`Turn2Opinion on ${s.label} (opens in a new tab)`}
-    >
-      <span className="social-flip">
-        <span className="social-front">
-          <span className="social-icon">
-            <Icon name={s.id} size={26} />
-          </span>
-          <span className="social-name">{s.label}</span>
-          <span className="social-handle">{s.handle}</span>
-          <span className="social-hint">
-            <Icon name="search" size={13} /> Hover or tap for QR
-          </span>
-        </span>
-        <span className="social-back">
-          <img src={asset(s.qr)} alt={`QR code linking to Turn2Opinion on ${s.label}`} width="120" height="120" loading="lazy" />
-          <span className="social-scan">Scan to follow</span>
-        </span>
-      </span>
-    </a>
+    <div className={`fr-wordmark wm-${size} notranslate`} translate="no" aria-hidden="true">
+      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id={`${id}-fill`} x1="0" y1="0" x2={W} y2="0" gradientUnits="userSpaceOnUse">
+            {WORDMARK_GRADES[grade].map(([o, c, op]) => (
+              <stop key={o} offset={o} stopColor={c} stopOpacity={op} />
+            ))}
+          </linearGradient>
+
+          {/* The aurora that moves behind the letters */}
+          <linearGradient id={`${id}-aurora`} x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stopColor="#49b6ff" stopOpacity="0" />
+            <stop offset=".25" stopColor="#7b5cff" stopOpacity=".75" />
+            <stop offset=".5" stopColor="#12c29b" stopOpacity=".85" />
+            <stop offset=".75" stopColor="#ffb020" stopOpacity=".7" />
+            <stop offset="1" stopColor="#ff5c7a" stopOpacity="0" />
+          </linearGradient>
+
+          <linearGradient id={`${id}-sweep`} x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stopColor="#fff" stopOpacity="0" />
+            <stop offset=".5" stopColor="#fff" stopOpacity=".92" />
+            <stop offset="1" stopColor="#fff" stopOpacity="0" />
+          </linearGradient>
+
+          <mask id={`${id}-mask`} maskUnits="userSpaceOnUse" x="0" y="0" width={W} height={H}>
+            <text x={W / 2} y={base} textAnchor="middle" className="frw-glyphs" fontSize={fontSize} fill="#fff" textLength={W - 80} lengthAdjust="spacingAndGlyphs">
+              {text}
+            </text>
+          </mask>
+        </defs>
+
+        {/* 1. construction guides */}
+        <g className="frw-guides">
+          {[H * 0.06, cap, base, H * 0.93].map((y, i) => (
+            <line key={y} x1="0" x2={W} y1={y} y2={y} style={{ '--i': i }} />
+          ))}
+        </g>
+
+        {/* 2. the graded fill */}
+        <text x={W / 2} y={base} textAnchor="middle" className="frw-glyphs frw-fill" fontSize={fontSize} fill={`url(#${id}-fill)`} textLength={W - 80} lengthAdjust="spacingAndGlyphs">
+          {text}
+        </text>
+
+        {/* 3–6. everything that lives *inside* the letterforms */}
+        <g mask={`url(#${id}-mask)`}>
+          <rect className="frw-aurora" x={-W} y="0" width={W * 2} height={H} fill={`url(#${id}-aurora)`} />
+          {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+            <circle key={i} className="frw-mote" style={{ '--k': i }} cx={(W / 8) * i + 60} cy={mid} r={size === 'lg' ? 5 : 3.5} />
+          ))}
+          <rect className="frw-sweep" x="-460" y="0" width="460" height={H} fill={`url(#${id}-sweep)`} />
+        </g>
+
+        {/* 5. breathing outline */}
+        <text x={W / 2} y={base} textAnchor="middle" className="frw-glyphs frw-outline" fontSize={fontSize} textLength={W - 80} lengthAdjust="spacingAndGlyphs">
+          {text}
+        </text>
+
+        <g className="frw-spark" transform={`translate(${W - 28} ${H * 0.22})`}>
+          <path d="M0 -14 L3.5 -3.5 L14 0 L3.5 3.5 L0 14 L-3.5 3.5 L-14 0 L-3.5 -3.5 Z" />
+        </g>
+        <circle className="frw-ring" cx={W - 10} cy={H * 0.65} r={H * 0.18} />
+      </svg>
+    </div>
   );
 }
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const onScanPage = usePath().startsWith('/about/scan-connect');
   return (
     <footer className="site-footer">
       <div className="footer-aurora" aria-hidden="true" />
@@ -141,25 +212,10 @@ export default function Footer() {
           <RewardCube />
         </section>
 
-        <section className="footer-social" aria-labelledby="follow-title">
-          <div className="footer-social-head">
-            <h2 id="follow-title">Follow the conversation</h2>
-            <p>New survey drops, payout tips and member stories – wherever you scroll.</p>
-          </div>
-          <div className="social-grid">
-            {SITE.social.map((s, i) => (
-              <SocialCard key={s.id} s={s} i={i} />
-            ))}
-            <div className="social-card social-site" style={{ '--i': 4 }}>
-              <span className="social-flip is-static">
-                <span className="social-back is-front">
-                  <img src={asset('/images/qr/turn2opinion-website-qr.png')} alt="QR code to open turn2opinion.com" width="120" height="120" loading="lazy" />
-                  <span className="social-scan">Scan to join on mobile</span>
-                </span>
-              </span>
-            </div>
-          </div>
-        </section>
+        {/* Scan & Connect: QR codes for every social platform plus all three panels and the
+            parent company. Replaces the old four-tile social strip. */}
+        {/* On the Scan & Connect page the hub is the page itself, so it is not repeated here. */}
+        {onScanPage ? null : <QrHub />}
 
         <div className="footer-main">
           <div className="footer-brand">
@@ -215,41 +271,51 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="parent-band">
-          <div className="pb-logo">
-            <span className="pb-orbit" aria-hidden="true">
-              <i />
-              <i />
-              <i />
-            </span>
-            <FrLogo width={130} />
+        <div className="trust-stage">
+          <span className="ts-beams" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+          <div className="ts-top">
+            <div className="ts-plinth">
+              <span className="ts-halo" aria-hidden="true" />
+              <span className="ts-card">
+                <FrLogo width={150} />
+              </span>
+              <span className="ts-reflect" aria-hidden="true" />
+            </div>
+            <div className="ts-copy">
+              <p className="ts-kicker">
+                <Icon name="building" size={15} /> The company behind Turn2Opinion
+              </p>
+              <p className="ts-name">
+                <span>Frequent Research</span> Fieldwork Solutions Pvt. Ltd.
+              </p>
+              <p className="ts-desc">Full-service market research from New Delhi, trusted by brands, agencies and public bodies.</p>
+              <a href={SITE.parentUrl} target="_blank" rel="noopener noreferrer" className="ts-link">
+                Visit Frequent Research <Icon name="external" size={14} />
+              </a>
+            </div>
           </div>
-          <div className="pb-copy">
-            <p className="pb-kicker">The company behind Turn2Opinion</p>
-            <p className="pb-name">Frequent Research Fieldwork Solutions Pvt. Ltd.</p>
-            <p className="pb-desc">Full-service market research from New Delhi – trusted by brands, agencies and public bodies.</p>
-            <a href={SITE.parentUrl} target="_blank" rel="noopener noreferrer" className="pb-link">
-              Visit Frequent Research <Icon name="external" size={14} />
-            </a>
-          </div>
-          <ul className="medals" aria-label="Certifications and affiliations">
-            {SITE.certifications.map((c, i) => (
-              <li key={c.id} style={{ '--i': i }} title={c.note}>
-                <span className="medal-disc">
-                  <Icon name="shield" size={16} />
-                </span>
-                <strong>{c.label}</strong>
-                <small>{c.note}</small>
-              </li>
-            ))}
-          </ul>
+          {/* The "Our Affiliations" logo strip (ISO 27001 / ISO 20252 / ISO 9001 / ESOMAR / MSME)
+              was removed from the footer on request — v3.1. The certifications themselves are
+              unchanged and still published on the About page and in the structured data; only this
+              footer strip is gone. SITE.certifications remains the single source for them. */}
+        </div>
+
+        <div className="footer-wordmarks">
+          <BrandWordmark text="TURN2OPINION" grade="t2o" />
+          <BrandWordmark text="Frequent Research" grade="fr" size="sm" />
         </div>
 
         <div className="footer-bottom">
           <p>
-            © {year} Turn2Opinion · A brand of {SITE.legalName}
+            <span className="notranslate" translate="no">© {year} Turn2Opinion · </span>
+            <span>A brand of</span> <span className="notranslate" translate="no">{SITE.legalName}</span>
           </p>
           <p>Rewards and payment methods vary by country. Survey availability depends on your profile.</p>
+          <LanguageButton compact />
         </div>
       </div>
     </footer>

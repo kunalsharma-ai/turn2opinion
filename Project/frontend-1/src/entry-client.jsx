@@ -3,10 +3,20 @@ import { createRoot, hydrateRoot } from 'react-dom/client';
 import App from './App.jsx';
 import { preloadPath } from './app/routeCache.js';
 import { normalizePath, isHashMode } from './router/Router.jsx';
-import './styles/index.css';
+
+// Dev and the single-file preview use one combined stylesheet. The production build ships the
+// same rules as four separate bundles, linked by scripts/prerender.mjs — see src/styles/index.css.
+if (import.meta.env.DEV) import('./styles/index.css');
 
 const container = document.getElementById('root');
 const path = isHashMode() ? normalizePath(location.hash.replace(/^#/, '') || '/') : normalizePath(location.pathname);
+
+/** Runs after the browser has actually painted a frame (two frames, to be sure), or straight
+ *  away if there is nothing painted yet to protect. */
+function afterFirstPaint(fn) {
+  if (typeof requestAnimationFrame !== 'function') return fn();
+  return requestAnimationFrame(() => requestAnimationFrame(() => fn()));
+}
 
 // Load the current page module first so hydration matches the prerendered HTML exactly.
 preloadPath(path).finally(() => {
@@ -16,7 +26,17 @@ preloadPath(path).finally(() => {
     </StrictMode>
   );
   const prerendered = container.firstElementChild && !isHashMode();
-  if (prerendered) hydrateRoot(container, app);
-  else createRoot(container).render(app);
-  document.documentElement.classList.add('js-ready');
+  const start = () => {
+    if (prerendered) hydrateRoot(container, app);
+    else createRoot(container).render(app);
+    document.documentElement.classList.add('js-ready');
+  };
+  // Every route is prerendered, so the page the visitor is looking at is already complete and
+  // readable. Hydration is a few hundred milliseconds of uninterruptible main-thread work, so it
+  // waits for the browser to put that first frame on screen instead of racing it: the text,
+  // layout and images appear at the same moment either way, and the Largest Contentful Paint no
+  // longer sits behind React. Without prerendered markup there is nothing to show yet, so that
+  // render starts immediately.
+  if (prerendered) afterFirstPaint(start);
+  else start();
 });
