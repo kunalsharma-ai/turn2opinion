@@ -353,15 +353,15 @@ useEffect(()=>{
                 <div className="profile-dropdown">
                   {(user.navbar || [
                   ]).map((item) => (
-                    <Link
+                    <a
                       key={item.text}
-                      to={item.link || '/'}
+                      href={item.link || '/'}
                       className="profile-dropdown-item"
                       onClick={() => setProfileOpen(false)}
                     >
                       {item.icon && renderNavbarIcon(item.icon, 17)}
                       <span>{item.text}</span>
-                    </Link>
+                    </a>
                   ))}
 
 

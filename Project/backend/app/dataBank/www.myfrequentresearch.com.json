@@ -1,0 +1,3602 @@
+[
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel fits neatly around running my shop. The polls are short, and the vouchers I earn actually help with everyday business costs",
+		"reviewer": {
+			"name": { "first": "Adrian Cole", "last": "" },
+			"address": [{ "country": "GB" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I like that the business surveys are brief and clearly written. Redeeming points took a little patience the first time, but the reward arrived",
+		"reviewer": {
+			"name": { "first": "Monica Reyes", "last": "" },
+			"address": [{ "country": "US" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "This is a practical panel for busy professionals. I can share a quick opinion between meetings, and the points add up to useful gift cards",
+		"reviewer": {
+			"name": { "first": "Trevor Nguyen", "last": "" },
+			"address": [{ "country": "CA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The surveys are relevant to small businesses, and the reward idea is good. I would like more frequent chances to earn points during quieter weeks",
+		"reviewer": {
+			"name": { "first": "Belinda Fraser", "last": "" },
+			"address": [{ "country": "AU" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I joined to see whether business surveys would be worth my time. Most are short enough to finish on my phone, and the reward options are sensible",
+		"reviewer": {
+			"name": { "first": "Karan Bedi", "last": "" },
+			"address": [{ "country": "IN" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "A straightforward business rewards panel. The questions are clear, and I appreciate being able to choose vouchers that suit my team",
+		"reviewer": {
+			"name": { "first": "Petra Vogel", "last": "" },
+			"address": [{ "country": "DE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The surveys are quick and do not feel like a chore. I would enjoy more hospitality-related topics, but the reward process is dependable",
+		"reviewer": {
+			"name": { "first": "Olivier Marchand", "last": "" },
+			"address": [{ "country": "FR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel has been a pleasant surprise. The polls are short, and I have already redeemed points for a store voucher",
+		"reviewer": {
+			"name": { "first": "Nuria Campos", "last": "" },
+			"address": [{ "country": "ES" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The panel is useful, and the surveys are easy to understand. A clearer explanation of how points convert into rewards would help new business members",
+		"reviewer": {
+			"name": { "first": "Stefano Ricci", "last": "" },
+			"address": [{ "country": "IT" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I can complete a survey during a coffee break, which suits my schedule. The reward catalogue is decent, though I would like more business-related options",
+		"reviewer": {
+			"name": { "first": "Jeroen Mulder", "last": "" },
+			"address": [{ "country": "NL" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The business surveys are focused and respectful of time. I have recommended the panel to a colleague who also manages a small team",
+		"reviewer": {
+			"name": { "first": "Annika Sjöberg", "last": "" },
+			"address": [{ "country": "SE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "Good panel for quick professional feedback. The points are easy to track, and redemption has been smooth so far",
+		"reviewer": {
+			"name": { "first": "Eirik Hansen", "last": "" },
+			"address": [{ "country": "NO" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I appreciate the short format and clear questions. Earning rewards for business opinions feels more useful than I expected",
+		"reviewer": {
+			"name": { "first": "Maja Kristensen", "last": "" },
+			"address": [{ "country": "DK" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The surveys are fair, and the panel works well. More frequent reward confirmations would make it easier to stay engaged",
+		"reviewer": {
+			"name": { "first": "Antti Korhonen", "last": "" },
+			"address": [{ "country": "FI" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I have had a good experience with the business panel. The surveys are brief, and the voucher selection is practical for office use",
+		"reviewer": {
+			"name": { "first": "Siobhan Doyle", "last": "" },
+			"address": [{ "country": "IE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel is simple and honest. I answer a few questions after work, and the points have added up to a useful fuel voucher",
+		"reviewer": {
+			"name": { "first": "Grant Whitaker", "last": "" },
+			"address": [{ "country": "NZ" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The platform is clean and quick. I would like more surveys about sales and client management, but the reward process is reliable",
+		"reviewer": {
+			"name": { "first": "Cheryl Teo", "last": "" },
+			"address": [{ "country": "SG" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I like that the surveys do not take long. The points are clear, and I can redeem them for vouchers that help with small business purchases",
+		"reviewer": {
+			"name": { "first": "Rizal Hamzah", "last": "" },
+			"address": [{ "country": "MY" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The panel is useful and easy to use. More short business polls would help me earn rewards more consistently",
+		"reviewer": {
+			"name": { "first": "Marie Fernandez", "last": "" },
+			"address": [{ "country": "PH" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I have had a positive experience. The surveys are relevant to business owners, and the reward options are practical",
+		"reviewer": {
+			"name": { "first": "Sibusiso Ndlovu", "last": "" },
+			"address": [{ "country": "ZA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "A reliable business rewards panel. The questions are clear, and I have not had any trouble with point tracking or redemption",
+		"reviewer": {
+			"name": { "first": "Rashid Al Marri", "last": "" },
+			"address": [{ "country": "AE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I enjoy the short surveys between tasks. The rewards are modest but useful, and the platform is easy to navigate",
+		"reviewer": {
+			"name": { "first": "Huda Al Otaibi", "last": "" },
+			"address": [{ "country": "SA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The panel respects my working day. Surveys are brief, and I can choose vouchers that are helpful for both work and home",
+		"reviewer": {
+			"name": { "first": "Naveed Ahmed", "last": "" },
+			"address": [{ "country": "QA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The surveys are clear, and the points system works. I would like faster reward delivery, but the overall experience is fine",
+		"reviewer": {
+			"name": { "first": "Paula Mendes", "last": "" },
+			"address": [{ "country": "BR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I have completed a few business surveys and found them relevant. The mobile layout is simple, and the rewards are a nice extra",
+		"reviewer": {
+			"name": { "first": "Arturo Jiménez", "last": "" },
+			"address": [{ "country": "MX" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel is a good way to share professional opinions without a big time commitment. The vouchers are useful too",
+		"reviewer": {
+			"name": { "first": "Carla Domínguez", "last": "" },
+			"address": [{ "country": "AR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The site is easy to use, and the surveys are short. I would enjoy more retail-specific topics, but the reward process is solid",
+		"reviewer": {
+			"name": { "first": "Rodrigo Vargas", "last": "" },
+			"address": [{ "country": "CL" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I have recommended this panel to a colleague. The surveys are clear, the points are fair, and redemption is straightforward",
+		"reviewer": {
+			"name": { "first": "Juliana Castro", "last": "" },
+			"address": [{ "country": "CO" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "It works well, and the surveys are simple. A few more short daily polls would help me earn rewards more often",
+		"reviewer": {
+			"name": { "first": "Marco Salinas", "last": "" },
+			"address": [{ "country": "PE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I like the quick surveys and the clear points balance. The reward options are decent, though I would like more variety",
+		"reviewer": {
+			"name": { "first": "Agnieszka Kowalczyk", "last": "" },
+			"address": [{ "country": "PL" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "Very easy to use. I answer a survey with my morning coffee, and the points have already added up to a useful voucher",
+		"reviewer": {
+			"name": { "first": "Rui Costa", "last": "" },
+			"address": [{ "country": "PT" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The questions are clear, and I enjoy the business opinion polls. I would like more stationery and office supply rewards",
+		"reviewer": {
+			"name": { "first": "Petra Nováková", "last": "" },
+			"address": [{ "country": "CZ" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel is straightforward and reliable. I have cashed out once, and the voucher arrived quickly",
+		"reviewer": {
+			"name": { "first": "Alexandru Ionescu", "last": "" },
+			"address": [{ "country": "RO" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "Good site with simple surveys. More frequent cashback offers would make it more appealing for business expenses",
+		"reviewer": {
+			"name": { "first": "Katalin Farkas", "last": "" },
+			"address": [{ "country": "HU" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I enjoy the short polls between shifts. The rewards are not huge, but they are real and easy to claim",
+		"reviewer": {
+			"name": { "first": "Yiannis Petrou", "last": "" },
+			"address": [{ "country": "GR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The panel is well organized and easy to trust. I appreciate the clear instructions and the useful gift card selection",
+		"reviewer": {
+			"name": { "first": "Selin Kaya", "last": "" },
+			"address": [{ "country": "TR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The surveys are short, and the points add up. I would like more mobile-friendly tasks for quick breaks",
+		"reviewer": {
+			"name": { "first": "Takumi Ito", "last": "" },
+			"address": [{ "country": "JP" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I have had a good experience. The polls are quick, and I can redeem points for vouchers I actually use in the business",
+		"reviewer": {
+			"name": { "first": "Min-ji Lee", "last": "" },
+			"address": [{ "country": "KR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The site is useful and easy to navigate. A clearer explanation of reward tiers would help new business members",
+		"reviewer": {
+			"name": { "first": "Andi Pratama", "last": "" },
+			"address": [{ "country": "ID" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I do a few surveys each week. The questions are simple, and the points are a nice little bonus",
+		"reviewer": {
+			"name": { "first": "Somchai Ritthichai", "last": "" },
+			"address": [{ "country": "TH" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel has been a pleasant way to earn small rewards. The surveys are clear, and redemption is simple",
+		"reviewer": {
+			"name": { "first": "Mai Nguyen", "last": "" },
+			"address": [{ "country": "VN" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I like the daily polls and the points system. The rewards could be a bit faster, but the experience is positive",
+		"reviewer": {
+			"name": { "first": "Chidi Okeke", "last": "" },
+			"address": [{ "country": "NG" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The surveys are short and respectful of my time. I have recommended it to colleagues at the salon",
+		"reviewer": {
+			"name": { "first": "Njeri Mwangi", "last": "" },
+			"address": [{ "country": "KE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "It is a decent rewards site. The surveys are clear, but I would like more options for small cash payouts",
+		"reviewer": {
+			"name": { "first": "Kweku Asante", "last": "" },
+			"address": [{ "country": "GH" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I enjoy the product opinion surveys. The site is easy to use, and I can complete tasks while waiting for customers",
+		"reviewer": {
+			"name": { "first": "Mona Khalil", "last": "" },
+			"address": [{ "country": "EG" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "A reliable portal with quick polls. I like that I can see my points clearly and choose when to redeem",
+		"reviewer": {
+			"name": { "first": "Rachid Bennani", "last": "" },
+			"address": [{ "country": "MA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "Good for earning small rewards between lectures. I would enjoy more surveys about fashion and beauty businesses",
+		"reviewer": {
+			"name": { "first": "Leila Trabelsi", "last": "" },
+			"address": [{ "country": "TN" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The site works well on my phone. Surveys are short, and the reward redemption has been smooth every time",
+		"reviewer": {
+			"name": { "first": "Imran Sheikh", "last": "" },
+			"address": [{ "country": "PK" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The surveys are fair, and the points are clear. More frequent reward confirmations would improve the experience",
+		"reviewer": {
+			"name": { "first": "Farida Yasmin", "last": "" },
+			"address": [{ "country": "BD" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I have had a good experience so far. The polls are quick, and the vouchers are useful for everyday business needs",
+		"reviewer": {
+			"name": { "first": "Chamara Silva", "last": "" },
+			"address": [{ "country": "LK" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel is simple and honest. I do a few surveys after a trek, and the points have added up nicely",
+		"reviewer": {
+			"name": { "first": "Bina Shrestha", "last": "" },
+			"address": [{ "country": "NP" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The portal is easy to use during breaks. I would like more trade-related surveys, but the reward process is reliable",
+		"reviewer": {
+			"name": { "first": "Graham Hughes", "last": "" },
+			"address": [{ "country": "GB" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I appreciate the short surveys and the clear points system. I have redeemed a gift card already, and it was straightforward",
+		"reviewer": {
+			"name": { "first": "Denise Carter", "last": "" },
+			"address": [{ "country": "US" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "Good site with simple polls. A few more cashback options would make it more useful for daily business shopping",
+		"reviewer": {
+			"name": { "first": "Patrick O’Neil", "last": "" },
+			"address": [{ "country": "CA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I enjoy the quick surveys between appointments. The points are fair, and the voucher selection is decent",
+		"reviewer": {
+			"name": { "first": "Rebecca Shaw", "last": "" },
+			"address": [{ "country": "AU" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel has been a nice find. The polls are short, and I can redeem points for vouchers I actually need",
+		"reviewer": {
+			"name": { "first": "Manish Agarwal", "last": "" },
+			"address": [{ "country": "IN" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The surveys are clear and easy to complete. I would like more reward options for local shops and cafés",
+		"reviewer": {
+			"name": { "first": "Sabine Wagner", "last": "" },
+			"address": [{ "country": "DE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I have had a positive experience. The daily polls are quick, and the points add up faster than I expected",
+		"reviewer": {
+			"name": { "first": "Éric Lemaire", "last": "" },
+			"address": [{ "country": "FR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The site is fine, and the surveys are simple. More frequent small rewards would help keep me motivated",
+		"reviewer": {
+			"name": { "first": "Carmen Delgado", "last": "" },
+			"address": [{ "country": "ES" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I like the short tasks and the clear points balance. The vouchers are useful, though I would like more variety",
+		"reviewer": {
+			"name": { "first": "Paolo Ferrari", "last": "" },
+			"address": [{ "country": "IT" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "A friendly rewards portal with quick surveys. I have recommended it to a colleague at the café",
+		"reviewer": {
+			"name": { "first": "Lisa van Dijk", "last": "" },
+			"address": [{ "country": "NL" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The surveys are short and easy to fit into my day. I would enjoy more product-testing opportunities",
+		"reviewer": {
+			"name": { "first": "Erik Lundgren", "last": "" },
+			"address": [{ "country": "SE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I like that the surveys are clear and not too long. The points system is simple, and redemption is straightforward",
+		"reviewer": {
+			"name": { "first": "Kari Solberg", "last": "" },
+			"address": [{ "country": "NO" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "Good site with simple polls. A faster reward confirmation would improve the overall experience",
+		"reviewer": {
+			"name": { "first": "Peter Christensen", "last": "" },
+			"address": [{ "country": "DK" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I do a survey or two on my break. The questions are easy to follow, and the rewards are a nice extra",
+		"reviewer": {
+			"name": { "first": "Jari Mäkinen", "last": "" },
+			"address": [{ "country": "FI" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel has been reliable. I have cashed out twice, and both times the voucher arrived without any problem",
+		"reviewer": {
+			"name": { "first": "Niamh Kelly", "last": "" },
+			"address": [{ "country": "IE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The site is easy to use on my phone. I would like more surveys about rural and outdoor products",
+		"reviewer": {
+			"name": { "first": "Simon Wright", "last": "" },
+			"address": [{ "country": "NZ" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I appreciate the clear surveys and the quick points. Redemption was simple, and the voucher options are practical",
+		"reviewer": {
+			"name": { "first": "Rachel Ng", "last": "" },
+			"address": [{ "country": "SG" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The panel is useful and the surveys are fair. More short daily polls would help me participate more often",
+		"reviewer": {
+			"name": { "first": "Aina Zulkifli", "last": "" },
+			"address": [{ "country": "MY" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I have had a good experience so far. The surveys are short, and the points are easy to track",
+		"reviewer": {
+			"name": { "first": "Liza Bautista", "last": "" },
+			"address": [{ "country": "PH" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel is straightforward and honest. I do a few polls each week, and the rewards have been reliable",
+		"reviewer": {
+			"name": { "first": "Mandla Khumalo", "last": "" },
+			"address": [{ "country": "ZA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The portal is clean and easy to navigate. I would like more beauty and skincare surveys, but the experience is positive",
+		"reviewer": {
+			"name": { "first": "Ayesha Al Falasi", "last": "" },
+			"address": [{ "country": "AE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I have had no issues with the site. The surveys are clear, and the reward redemption process is simple",
+		"reviewer": {
+			"name": { "first": "Turki Al Harbi", "last": "" },
+			"address": [{ "country": "SA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The surveys are fine, and the points are clear. A few more reward options for families would be welcome",
+		"reviewer": {
+			"name": { "first": "Mariam Thomas", "last": "" },
+			"address": [{ "country": "QA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I enjoy the quick polls between clients. The points add up, and the vouchers are useful for everyday items",
+		"reviewer": {
+			"name": { "first": "Rafael Costa", "last": "" },
+			"address": [{ "country": "BR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "A positive experience overall. The surveys are short, and I can redeem points for vouchers I actually use",
+		"reviewer": {
+			"name": { "first": "Lucía Ramírez", "last": "" },
+			"address": [{ "country": "MX" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The site is easy to use, and the surveys are clear. I would like more food and drink opinion polls",
+		"reviewer": {
+			"name": { "first": "Diego Fernández", "last": "" },
+			"address": [{ "country": "AR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I have recommended this to a friend. The surveys are quick, and the points system is transparent",
+		"reviewer": {
+			"name": { "first": "Paula Herrera", "last": "" },
+			"address": [{ "country": "CL" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "Good rewards site with simple tasks. A clearer summary of my completed surveys would help me keep track",
+		"reviewer": {
+			"name": { "first": "Camilo Restrepo", "last": "" },
+			"address": [{ "country": "CO" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I like the daily polls and the points balance. The voucher selection is decent, though I would like more variety",
+		"reviewer": {
+			"name": { "first": "Rosa Medina", "last": "" },
+			"address": [{ "country": "PE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel is easy to fit into a busy day. The surveys are short, and redemption has been reliable",
+		"reviewer": {
+			"name": { "first": "Marek Lewandowski", "last": "" },
+			"address": [{ "country": "PL" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The portal is friendly and easy to use. I would enjoy more surveys about local services and shops",
+		"reviewer": {
+			"name": { "first": "Sofia Almeida", "last": "" },
+			"address": [{ "country": "PT" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I have had a smooth experience. The surveys are clear, and the points add up nicely over the week",
+		"reviewer": {
+			"name": { "first": "Tomáš Novotný", "last": "" },
+			"address": [{ "country": "CZ" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The surveys are clear and the site is stable. More reward transparency would make it easier to stay motivated",
+		"reviewer": {
+			"name": { "first": "Maria Popa", "last": "" },
+			"address": [{ "country": "RO" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I enjoy the quick product polls. The layout is simple, and the invitations are not too frequent",
+		"reviewer": {
+			"name": { "first": "Péter Szabó", "last": "" },
+			"address": [{ "country": "HU" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The portal has been a good fit for me. Surveys are short, and I appreciate the clear points system",
+		"reviewer": {
+			"name": { "first": "Katerina Nikolaou", "last": "" },
+			"address": [{ "country": "GR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I do a survey after work. The questions are easy to follow, and the vouchers are a nice little extra",
+		"reviewer": {
+			"name": { "first": "Burak Yılmaz", "last": "" },
+			"address": [{ "country": "TR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "Everything is neatly organized. The surveys are quick, and the reward process has been dependable",
+		"reviewer": {
+			"name": { "first": "Yumi Watanabe", "last": "" },
+			"address": [{ "country": "JP" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The site works well and the surveys are fair. A little more variety in rewards would improve it",
+		"reviewer": {
+			"name": { "first": "Ji-hoon Park", "last": "" },
+			"address": [{ "country": "KR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I can complete surveys between rides. The mobile layout is clear, and the points are easy to track",
+		"reviewer": {
+			"name": { "first": "Budi Hartono", "last": "" },
+			"address": [{ "country": "ID" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I have had a very good experience. The surveys are short, and the voucher options are practical",
+		"reviewer": {
+			"name": { "first": "Siriporn Chaiyaporn", "last": "" },
+			"address": [{ "country": "TH" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The surveys are relevant and not too long. I would appreciate more invitations for food product studies",
+		"reviewer": {
+			"name": { "first": "Hung Nguyen", "last": "" },
+			"address": [{ "country": "VN" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel feels honest and easy to use. The polls are quick, and redemption has been simple",
+		"reviewer": {
+			"name": { "first": "Ngozi Eze", "last": "" },
+			"address": [{ "country": "NG" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The site is easy to use and the surveys are fair. Faster reward confirmation would make it better",
+		"reviewer": {
+			"name": { "first": "David Ochieng", "last": "" },
+			"address": [{ "country": "KE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I enjoy sharing my opinions on everyday products. The surveys are usually well designed and quick",
+		"reviewer": {
+			"name": { "first": "Akosua Boateng", "last": "" },
+			"address": [{ "country": "GH" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The portal is reliable and easy to navigate. I appreciate the clear surveys and the useful vouchers",
+		"reviewer": {
+			"name": { "first": "Tarek Fathy", "last": "" },
+			"address": [{ "country": "EG" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "Good experience overall. The surveys are short, and I like that I can choose when to redeem",
+		"reviewer": {
+			"name": { "first": "Leila Bennani", "last": "" },
+			"address": [{ "country": "MA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I have been impressed by the simplicity. The surveys are clear, and the points system is easy to understand",
+		"reviewer": {
+			"name": { "first": "Sami Trabelsi", "last": "" },
+			"address": [{ "country": "TN" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The site is useful and the surveys are clear. More short polls would help me participate more often",
+		"reviewer": {
+			"name": { "first": "Hina Iqbal", "last": "" },
+			"address": [{ "country": "PK" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I have had a good experience so far. The questions are relevant, and the site is easy to use",
+		"reviewer": {
+			"name": { "first": "Kamal Hossain", "last": "" },
+			"address": [{ "country": "BD" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The portal respects my time and keeps the surveys focused. I have recommended it to friends who own small businesses",
+		"reviewer": {
+			"name": { "first": "Nadeesha Fernando", "last": "" },
+			"address": [{ "country": "LK" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I like the variety of quick surveys. It is easy to participate when I have a quiet moment",
+		"reviewer": {
+			"name": { "first": "Pemba Sherpa", "last": "" },
+			"address": [{ "country": "NP" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "A smooth and well-managed rewards site. I can see my points clearly, and the vouchers are actually useful",
+		"reviewer": {
+			"name": { "first": "Helen Brooks", "last": "" },
+			"address": [{ "country": "GB" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "Good site with fair surveys. More detailed reward updates would make the experience more satisfying",
+		"reviewer": {
+			"name": { "first": "Jason Miller", "last": "" },
+			"address": [{ "country": "US" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I appreciate the short surveys and the respectful tone. The portal is easy to fit into my week",
+		"reviewer": {
+			"name": { "first": "Sophie Tremblay", "last": "" },
+			"address": [{ "country": "CA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel is one of the better rewards portals I have used. It is clear, quick, and well organized",
+		"reviewer": {
+			"name": { "first": "Daniel Foster", "last": "" },
+			"address": [{ "country": "AU" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The surveys are well structured, and the platform feels modern. I would enjoy more studies about mobile apps",
+		"reviewer": {
+			"name": { "first": "Sneha Kapoor", "last": "" },
+			"address": [{ "country": "IN" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The experience has been consistently good. Survey instructions are clear, and I have not had any reward issues",
+		"reviewer": {
+			"name": { "first": "Thomas Richter", "last": "" },
+			"address": [{ "country": "DE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The site is reliable and easy to use. I would like a few more surveys that match my everyday business interests",
+		"reviewer": {
+			"name": { "first": "Nathalie Girard", "last": "" },
+			"address": [{ "country": "FR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "Good survey flow and clear questions. I appreciate that the portal does not overcomplicate the process",
+		"reviewer": {
+			"name": { "first": "Alberto Romero", "last": "" },
+			"address": [{ "country": "ES" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I have enjoyed the surveys I received. They are relevant, short, and easy to complete on my phone",
+		"reviewer": {
+			"name": { "first": "Valentina Ricci", "last": "" },
+			"address": [{ "country": "IT" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The interface is clean and responsive. I would like more invitations for technology and gadget surveys",
+		"reviewer": {
+			"name": { "first": "Thomas Bakker", "last": "" },
+			"address": [{ "country": "NL" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "A positive and friendly rewards portal. The questions are clear, and the points system feels transparent",
+		"reviewer": {
+			"name": { "first": "Maria Johansson", "last": "" },
+			"address": [{ "country": "SE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "Good experience with clear surveys. More frequent updates on reward options would help",
+		"reviewer": {
+			"name": { "first": "Ole Dahl", "last": "" },
+			"address": [{ "country": "NO" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I like the calm design and the short survey lengths. It is easy to participate without feeling rushed",
+		"reviewer": {
+			"name": { "first": "Anne Kristensen", "last": "" },
+			"address": [{ "country": "DK" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel is well organized and easy to trust. I have completed several surveys and found them worthwhile",
+		"reviewer": {
+			"name": { "first": "Matti Heikkinen", "last": "" },
+			"address": [{ "country": "FI" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The surveys are straightforward, and the site works well on mobile. I have had a good overall experience",
+		"reviewer": {
+			"name": { "first": "Ciara O’Brien", "last": "" },
+			"address": [{ "country": "IE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I appreciate how clear the invitations are. The portal is easy to use, and the questions are never confusing",
+		"reviewer": {
+			"name": { "first": "Emma Campbell", "last": "" },
+			"address": [{ "country": "NZ" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The site is efficient and the surveys are fair. A wider range of reward choices would make it better",
+		"reviewer": {
+			"name": { "first": "Bryan Lim", "last": "" },
+			"address": [{ "country": "SG" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I enjoy the product opinion polls and the clear survey instructions. The experience has been positive so far",
+		"reviewer": {
+			"name": { "first": "Syafiqah Ismail", "last": "" },
+			"address": [{ "country": "MY" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The portal is easy to use even when I am on the go. Surveys are short, and I can track my points quickly",
+		"reviewer": {
+			"name": { "first": "Ramon Mendoza", "last": "" },
+			"address": [{ "country": "PH" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "Good variety and a friendly feel. I would like more surveys about everyday household products",
+		"reviewer": {
+			"name": { "first": "Palesa Nkosi", "last": "" },
+			"address": [{ "country": "ZA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I have had a smooth experience from registration onward. The questions are relevant and the interface is reliable",
+		"reviewer": {
+			"name": { "first": "Saeed Al Suwaidi", "last": "" },
+			"address": [{ "country": "AE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The portal is well organized and the surveys are clear. More frequent invitations would keep me more active",
+		"reviewer": {
+			"name": { "first": "Maha Al Dossari", "last": "" },
+			"address": [{ "country": "SA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I like the straightforward survey process. The site is stable and the questions are easy to follow",
+		"reviewer": {
+			"name": { "first": "Ravi Patel", "last": "" },
+			"address": [{ "country": "QA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel has been a great way to share opinions. The surveys are short and the reward system is clear",
+		"reviewer": {
+			"name": { "first": "Juliana Oliveira", "last": "" },
+			"address": [{ "country": "BR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I have completed a few surveys and found them fair. The mobile layout is simple and easy to use",
+		"reviewer": {
+			"name": { "first": "Héctor Hernández", "last": "" },
+			"address": [{ "country": "MX" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The portal feels friendly and respectful. I appreciate the clear instructions and the variety of quick polls",
+		"reviewer": {
+			"name": { "first": "Mariana Rossi", "last": "" },
+			"address": [{ "country": "AR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "Good site overall. I would like a clearer explanation of how survey invitations are selected",
+		"reviewer": {
+			"name": { "first": "Andrés Fuentes", "last": "" },
+			"address": [{ "country": "CL" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The surveys are relevant and easy to complete. I have had a positive experience with the portal",
+		"reviewer": {
+			"name": { "first": "Carolina Restrepo", "last": "" },
+			"address": [{ "country": "CO" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I appreciate the short research topics. The site is easy to navigate, and the time estimates are accurate",
+		"reviewer": {
+			"name": { "first": "Luis Mendoza", "last": "" },
+			"address": [{ "country": "PE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "A well-run portal with clear surveys. I would enjoy more studies about customer service experiences",
+		"reviewer": {
+			"name": { "first": "Ewa Wójcik", "last": "" },
+			"address": [{ "country": "PL" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The experience has been smooth and rewarding. I like that surveys are short and the instructions are clear",
+		"reviewer": {
+			"name": { "first": "Pedro Carvalho", "last": "" },
+			"address": [{ "country": "PT" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The portal is useful and easy to use. Faster reward confirmation would improve the overall experience",
+		"reviewer": {
+			"name": { "first": "Jana Procházková", "last": "" },
+			"address": [{ "country": "CZ" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I like the simple layout and the sensible questions. The site has been reliable each time I have used it",
+		"reviewer": {
+			"name": { "first": "Bogdan Dumitru", "last": "" },
+			"address": [{ "country": "RO" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel is easy to trust. The surveys are clear, and I never feel like my time is being wasted",
+		"reviewer": {
+			"name": { "first": "Eszter Szabó", "last": "" },
+			"address": [{ "country": "HU" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "Good experience with relevant surveys. I would appreciate more invitations related to travel and food",
+		"reviewer": {
+			"name": { "first": "Nikos Dimitriou", "last": "" },
+			"address": [{ "country": "GR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The portal is well designed and easy to use. I have completed several surveys and found them interesting",
+		"reviewer": {
+			"name": { "first": "Zeynep Kaya", "last": "" },
+			"address": [{ "country": "TR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The surveys are clear and the site is stable. More variety in reward options would be welcome",
+		"reviewer": {
+			"name": { "first": "Hiroshi Tanaka", "last": "" },
+			"address": [{ "country": "JP" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I enjoy the mix of topics and the clean interface. The portal is easy to fit into a busy day",
+		"reviewer": {
+			"name": { "first": "Seo-yeon Choi", "last": "" },
+			"address": [{ "country": "KR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I have had a very positive experience. The surveys are short, and the points tracking is easy to understand",
+		"reviewer": {
+			"name": { "first": "Dewi Anggraini", "last": "" },
+			"address": [{ "country": "ID" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The questions are relevant and the site is simple. I would like more surveys about local consumer habits",
+		"reviewer": {
+			"name": { "first": "Somchai Wongchai", "last": "" },
+			"address": [{ "country": "TH" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel is organized and user-friendly. I appreciate the clear invitations and the respectful survey design",
+		"reviewer": {
+			"name": { "first": "Thao Pham", "last": "" },
+			"address": [{ "country": "VN" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The site is reliable and the surveys are fair. More frequent reward updates would keep me motivated",
+		"reviewer": {
+			"name": { "first": "Tunde Adebayo", "last": "" },
+			"address": [{ "country": "NG" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I like the straightforward process. The surveys are easy to follow, and the site works well on my phone",
+		"reviewer": {
+			"name": { "first": "Mercy Wambui", "last": "" },
+			"address": [{ "country": "KE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The experience has been encouraging. I feel my opinions are valued, and the surveys are clear and well timed",
+		"reviewer": {
+			"name": { "first": "Kojo Antwi", "last": "" },
+			"address": [{ "country": "GH" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "Good portal with useful surveys. I would enjoy more studies about media and everyday products",
+		"reviewer": {
+			"name": { "first": "Nour El Sayed", "last": "" },
+			"address": [{ "country": "EG" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The site is easy to navigate, and the questions are well written. I have recommended it to a colleague",
+		"reviewer": {
+			"name": { "first": "Hamza Berrada", "last": "" },
+			"address": [{ "country": "MA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The portal is useful and the surveys are clear. A few more short polls would help me participate more often",
+		"reviewer": {
+			"name": { "first": "Amira Gharbi", "last": "" },
+			"address": [{ "country": "TN" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I have had a good experience. The surveys are relevant, and the platform is stable and easy to use",
+		"reviewer": {
+			"name": { "first": "Bilal Ahmed", "last": "" },
+			"address": [{ "country": "PK" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel feels friendly and trustworthy. The questions are clear, and I can complete surveys without confusion",
+		"reviewer": {
+			"name": { "first": "Farhana Akter", "last": "" },
+			"address": [{ "country": "BD" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The interface is clean and responsive. I would like more technology-focused surveys, but the overall quality is strong",
+		"reviewer": {
+			"name": { "first": "Sachin Jayasuriya", "last": "" },
+			"address": [{ "country": "LK" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I appreciate the respectful tone and clear instructions. The portal is easy to use and the rewards are transparent",
+		"reviewer": {
+			"name": { "first": "Pooja Adhikari", "last": "" },
+			"address": [{ "country": "NP" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "Good site with clear surveys. More frequent reward confirmations would improve the experience for me",
+		"reviewer": {
+			"name": { "first": "Peter Collins", "last": "" },
+			"address": [{ "country": "GB" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I like the variety of survey topics. The portal is easy to navigate, and I have not had any issues",
+		"reviewer": {
+			"name": { "first": "Amanda Foster", "last": "" },
+			"address": [{ "country": "US" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The surveys are short and rarely too long. I have enjoyed participating and will continue",
+		"reviewer": {
+			"name": { "first": "Liam Scott", "last": "" },
+			"address": [{ "country": "CA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "A positive experience overall. The questions are clear, and the portal respects my time",
+		"reviewer": {
+			"name": { "first": "Mia Robinson", "last": "" },
+			"address": [{ "country": "AU" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel is well organized and easy to use. I appreciate the relevant invitations and clear points tracking",
+		"reviewer": {
+			"name": { "first": "Arjun Sharma", "last": "" },
+			"address": [{ "country": "IN" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The site is reliable and the surveys are fair. More short studies would help me stay active",
+		"reviewer": {
+			"name": { "first": "Hannah Schmitt", "last": "" },
+			"address": [{ "country": "DE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I like the clean design and the sensible questions. The experience has been smooth so far",
+		"reviewer": {
+			"name": { "first": "Lucas Bernard", "last": "" },
+			"address": [{ "country": "FR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The portal is easy to trust. Surveys are clear, and I can complete them without feeling rushed",
+		"reviewer": {
+			"name": { "first": "Elena Torres", "last": "" },
+			"address": [{ "country": "ES" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "Good variety of topics and a friendly interface. I would enjoy more surveys about creative services",
+		"reviewer": {
+			"name": { "first": "Alessandro Greco", "last": "" },
+			"address": [{ "country": "IT" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I have had a consistently good experience. The invitations are relevant, and the platform is simple to use",
+		"reviewer": {
+			"name": { "first": "Sanne Visser", "last": "" },
+			"address": [{ "country": "NL" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The surveys are clear and the site is stable. Clearer reward milestones would make it stronger",
+		"reviewer": {
+			"name": { "first": "Viktor Nilsson", "last": "" },
+			"address": [{ "country": "SE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I enjoy the thoughtful survey questions. The portal is easy to use and does not overwhelm my inbox",
+		"reviewer": {
+			"name": { "first": "Astrid Haugen", "last": "" },
+			"address": [{ "country": "NO" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel is a reliable site with a clean interface. I can complete surveys quickly and track progress easily",
+		"reviewer": {
+			"name": { "first": "Emil Rasmussen", "last": "" },
+			"address": [{ "country": "DK" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The experience has been positive. I would like more surveys related to customer service and retail",
+		"reviewer": {
+			"name": { "first": "Emilia Virtanen", "last": "" },
+			"address": [{ "country": "FI" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The portal is straightforward and well managed. I appreciate the clear questions and the reward process",
+		"reviewer": {
+			"name": { "first": "Patrick Kelly", "last": "" },
+			"address": [{ "country": "IE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "Good site with useful surveys. A more detailed activity history would be helpful",
+		"reviewer": {
+			"name": { "first": "Ruby Mitchell", "last": "" },
+			"address": [{ "country": "NZ" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I like the friendly feel and the clear survey instructions. The platform is easy to navigate",
+		"reviewer": {
+			"name": { "first": "Jia Hui Ong", "last": "" },
+			"address": [{ "country": "SG" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I have had a great experience so far. The surveys are relevant, and the reward system is easy to understand",
+		"reviewer": {
+			"name": { "first": "Imran Hashim", "last": "" },
+			"address": [{ "country": "MY" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The surveys are clear and fit around my shifts. I would appreciate more short evening surveys",
+		"reviewer": {
+			"name": { "first": "Jasmine Cruz", "last": "" },
+			"address": [{ "country": "PH" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The portal is respectful and well organized. I feel comfortable sharing opinions, and the process is simple",
+		"reviewer": {
+			"name": { "first": "Naledi Mahlangu", "last": "" },
+			"address": [{ "country": "ZA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The site is reliable and the surveys are fair. More reward flexibility would improve the experience",
+		"reviewer": {
+			"name": { "first": "Yasmin Al Hashimi", "last": "" },
+			"address": [{ "country": "AE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I enjoy the research topics and the clear questions. The platform is stable and easy to use",
+		"reviewer": {
+			"name": { "first": "Fahad Al Otaibi", "last": "" },
+			"address": [{ "country": "SA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel has been a positive experience. The surveys are well timed, and I never feel pressured to finish quickly",
+		"reviewer": {
+			"name": { "first": "Maya Thomas", "last": "" },
+			"address": [{ "country": "QA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "Good survey variety and a simple interface. I would like more invitations for consumer product research",
+		"reviewer": {
+			"name": { "first": "Gabriel Souza", "last": "" },
+			"address": [{ "country": "BR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I like that I can share opinions easily between classes. The surveys are clear and the rewards are motivating",
+		"reviewer": {
+			"name": { "first": "Valeria Torres", "last": "" },
+			"address": [{ "country": "MX" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The portal works well and the surveys are clear. A faster reward confirmation would make it better",
+		"reviewer": {
+			"name": { "first": "Nicolás Pérez", "last": "" },
+			"address": [{ "country": "AR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I have had a good experience. The questions are relevant, and the platform is easy to use on mobile",
+		"reviewer": {
+			"name": { "first": "Antonia Silva", "last": "" },
+			"address": [{ "country": "CL" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The portal is friendly and easy to trust. I appreciate the clear invitations and the thoughtful survey design",
+		"reviewer": {
+			"name": { "first": "Felipe Ramírez", "last": "" },
+			"address": [{ "country": "CO" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I enjoy the variety of surveys. The site is simple to navigate, and the time estimates are useful",
+		"reviewer": {
+			"name": { "first": "Luciana Flores", "last": "" },
+			"address": [{ "country": "PE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I have completed several surveys without any trouble. The questions are clear, and the points tracking is straightforward",
+		"reviewer": {
+			"name": { "first": "Tomasz Lewandowski", "last": "" },
+			"address": [{ "country": "PL" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "Good site with clear surveys. More frequent invitations in my areas of interest would help",
+		"reviewer": {
+			"name": { "first": "Inês Martins", "last": "" },
+			"address": [{ "country": "PT" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "The platform is reliable and easy to use. I would like more surveys about everyday household products",
+		"reviewer": {
+			"name": { "first": "Martin Kučera", "last": "" },
+			"address": [{ "country": "CZ" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel is well organized and user-friendly. I appreciate the clear questions and the respectful tone",
+		"reviewer": {
+			"name": { "first": "Ioana Stan", "last": "" },
+			"address": [{ "country": "RO" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I have had a positive experience. The surveys are relevant, and the portal does not send too many reminders",
+		"reviewer": {
+			"name": { "first": "Gábor Tóth", "last": "" },
+			"address": [{ "country": "HU" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The experience has been smooth and rewarding. I like that the surveys are short and easy to understand",
+		"reviewer": {
+			"name": { "first": "Eleni Papadaki", "last": "" },
+			"address": [{ "country": "GR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The portal is useful and the surveys are fair. A clearer reward history would improve transparency",
+		"reviewer": {
+			"name": { "first": "Ayşe Çelik", "last": "" },
+			"address": [{ "country": "TR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I like the clean interface and the clear survey flow. The portal is easy to use on a busy day",
+		"reviewer": {
+			"name": { "first": "Rina Kobayashi", "last": "" },
+			"address": [{ "country": "JP" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel has been reliable and friendly. The questions are well written, and the reward process is clear",
+		"reviewer": {
+			"name": { "first": "Hyun-woo Jung", "last": "" },
+			"address": [{ "country": "KR" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "Good variety of topics and a friendly layout. I would enjoy more surveys about small businesses",
+		"reviewer": {
+			"name": { "first": "Siti Nurhaliza", "last": "" },
+			"address": [{ "country": "ID" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "I appreciate the thoughtful surveys and the easy navigation. The portal has been a good use of my spare time",
+		"reviewer": {
+			"name": { "first": "Kanya Pongsak", "last": "" },
+			"address": [{ "country": "TH" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The portal is straightforward and the surveys are clear. More short surveys would help me participate more often",
+		"reviewer": {
+			"name": { "first": "Quang Le", "last": "" },
+			"address": [{ "country": "VN" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I have had a good experience. The questions are relevant, and the platform is easy to use on my phone",
+		"reviewer": {
+			"name": { "first": "Ifeoma Nwosu", "last": "" },
+			"address": [{ "country": "NG" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "The portal is well managed and easy to trust. I appreciate the clear invitations and the fair survey lengths",
+		"reviewer": {
+			"name": { "first": "Peter Mwangi", "last": "" },
+			"address": [{ "country": "KE" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I enjoy sharing my feedback, and the surveys are usually well designed. The experience has been positive",
+		"reviewer": {
+			"name": { "first": "Abena Asante", "last": "" },
+			"address": [{ "country": "GH" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "5",
+		"message": "MyFrequentReward Business Panel is friendly, clear, and easy to use. I have recommended it to colleagues who enjoy quick polls",
+		"reviewer": {
+			"name": { "first": "Yara Mahmoud", "last": "" },
+			"address": [{ "country": "EG" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "3",
+		"message": "The portal is reliable and the surveys are clear. More reward options would make it more appealing",
+		"reviewer": {
+			"name": { "first": "Reda El Fassi", "last": "" },
+			"address": [{ "country": "MA" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": "4",
+		"message": "I have had a positive experience overall. The surveys are relevant, and the platform is simple to navigate",
+		"reviewer": {
+			"name": { "first": "Sarra Ben Youssef", "last": "" },
+			"address": [{ "country": "TN" }],
+			"category": "b2b"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward has been a lovely surprise. The daily polls are quick, and I have already redeemed points for a coffee voucher.",
+		"reviewer": {
+			"name": { "first": " Sophie Allen", "last": "" },
+			"address": [{ "country": "GB" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The app is easy to use, and I like that I can earn a little something while waiting between jobs. Redemption could be a bit faster, but overall it is worth it.",
+		"reviewer": {
+			"name": { "first": " Michael Torres", "last": "" },
+			"address": [{ "country": "US" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I joined for the gift cards and stayed for the fun surveys. They are short, clear, and I never feel like I am wasting time.",
+		"reviewer": {
+			"name": { "first": " Emma Wilson", "last": "" },
+			"address": [{ "country": "CA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " Good site with decent rewards. I would like more shopping-related tasks, but the ones I get are usually simple enough to finish on my break.",
+		"reviewer": {
+			"name": { "first": " Jack Miller", "last": "" },
+			"address": [{ "country": "AU" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I enjoy sharing my opinion on everyday products. The points add up nicely, and the mobile layout is friendly for busy days.",
+		"reviewer": {
+			"name": { "first": " Priya Sharma", "last": "" },
+			"address": [{ "country": "IN" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " Very smooth experience so far. The surveys are not too long, and the reward options are actually useful.",
+		"reviewer": {
+			"name": { "first": " Lena Becker", "last": "" },
+			"address": [{ "country": "DE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I like the daily check-in tasks. They are quick, and I can do them while having lunch. The vouchers are a nice bonus.",
+		"reviewer": {
+			"name": { "first": " Lucas Martin", "last": "" },
+			"address": [{ "country": "FR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward feels honest and simple. I have cashed out twice already, and both times the process was straightforward.",
+		"reviewer": {
+			"name": { "first": " Marta Ruiz", "last": "" },
+			"address": [{ "country": "ES" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The surveys are fine, and the points system works. I would appreciate a few more cashback offers on everyday shopping.",
+		"reviewer": {
+			"name": { "first": " Giulia Conti", "last": "" },
+			"address": [{ "country": "IT" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " Good panel for spare moments. The questions are easy to follow, and I have had no trouble with my rewards so far.",
+		"reviewer": {
+			"name": { "first": " Daan Visser", "last": "" },
+			"address": [{ "country": "NL" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I have recommended this to my sister. The tasks are short, the points are clear, and the gift card selection is better than I expected.",
+		"reviewer": {
+			"name": { "first": " Elin Larsson", "last": "" },
+			"address": [{ "country": "SE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The site is simple, and I can use it on my phone at sea. Some surveys are a bit repetitive, but the rewards make it worthwhile.",
+		"reviewer": {
+			"name": { "first": " Henrik Dahl", "last": "" },
+			"address": [{ "country": "NO" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " A friendly rewards portal with quick polls. I like that I can see my points balance clearly and choose when to redeem.",
+		"reviewer": {
+			"name": { "first": " Freja Nielsen", "last": "" },
+			"address": [{ "country": "DK" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " It works well enough, and the surveys are fair. More frequent reward confirmations would make it easier to stay motivated.",
+		"reviewer": {
+			"name": { "first": " Mikko Laine", "last": "" },
+			"address": [{ "country": "FI" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I have had a good experience. The surveys are short, and the voucher options are practical for everyday use.",
+		"reviewer": {
+			"name": { "first": " Aoife Byrne", "last": "" },
+			"address": [{ "country": "IE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward is easy to fit around my day. I do a few polls, earn points, and redeem them for fuel vouchers. Simple and useful.",
+		"reviewer": {
+			"name": { "first": " Liam Scott", "last": "" },
+			"address": [{ "country": "NZ" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The portal is clean and quick. I would like a few more food and dining surveys, but the ones I get are relevant enough.",
+		"reviewer": {
+			"name": { "first": " Mei Lin Tan", "last": "" },
+			"address": [{ "country": "SG" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I appreciate that the surveys are not too long. The points add up faster than I expected, and redemption was easy.",
+		"reviewer": {
+			"name": { "first": " Aisyah Rahman", "last": "" },
+			"address": [{ "country": "MY" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " Decent rewards site. The polls are simple, though I wish there were more options for mobile load and small vouchers.",
+		"reviewer": {
+			"name": { "first": " Carlo Reyes", "last": "" },
+			"address": [{ "country": "PH" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I like the daily tasks. They are quick, and I can do them before my shift starts. The rewards are a nice extra.",
+		"reviewer": {
+			"name": { "first": " Thandi Nkosi", "last": "" },
+			"address": [{ "country": "ZA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " Good experience overall. The surveys are clear, and the reward redemption process has been reliable every time.",
+		"reviewer": {
+			"name": { "first": " Omar Al Nuaimi", "last": "" },
+			"address": [{ "country": "AE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I enjoy the shopping opinion polls. The layout is easy to use, and I can complete a survey between classes.",
+		"reviewer": {
+			"name": { "first": " Nora Al Qahtani", "last": "" },
+			"address": [{ "country": "SA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The portal feels trustworthy. I have redeemed points for a grocery voucher, and it arrived without any hassle.",
+		"reviewer": {
+			"name": { "first": " Faisal Khan", "last": "" },
+			"address": [{ "country": "QA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The surveys are okay, and the points system is clear. I would like faster payouts, but the overall experience is fine.",
+		"reviewer": {
+			"name": { "first": " Camila Almeida", "last": "" },
+			"address": [{ "country": "BR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I have had a positive run with this site. The surveys are short, and the gift card options are useful for everyday expenses.",
+		"reviewer": {
+			"name": { "first": " Diego Hernández", "last": "" },
+			"address": [{ "country": "MX" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward is a nice way to earn a little extra. The polls are fun, and I like that I can choose vouchers that suit me.",
+		"reviewer": {
+			"name": { "first": " Sofía Romero", "last": "" },
+			"address": [{ "country": "AR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The site is easy to navigate. I would enjoy more surveys about food and drink, but the reward process is solid.",
+		"reviewer": {
+			"name": { "first": " Tomás Fuentes", "last": "" },
+			"address": [{ "country": "CL" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I have recommended this to a friend. The surveys are clear, the points are fair, and redemption is straightforward.",
+		"reviewer": {
+			"name": { "first": " Valentina Rojas", "last": "" },
+			"address": [{ "country": "CO" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " It works well, and the surveys are simple. A few more short daily polls would help me stay engaged.",
+		"reviewer": {
+			"name": { "first": " Jorge Salazar", "last": "" },
+			"address": [{ "country": "PE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I like the quick surveys and the clear points balance. The reward options are decent, though I would like more variety.",
+		"reviewer": {
+			"name": { "first": " Katarzyna Nowak", "last": "" },
+			"address": [{ "country": "PL" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " Very easy to use. I do a survey with my morning coffee, and the points have already added up to a useful voucher.",
+		"reviewer": {
+			"name": { "first": " João Pereira", "last": "" },
+			"address": [{ "country": "PT" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The questions are clear, and I enjoy the product opinion polls. I would like more book and stationery-related rewards.",
+		"reviewer": {
+			"name": { "first": " Lucie Dvořáková", "last": "" },
+			"address": [{ "country": "CZ" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward is straightforward and reliable. I have cashed out once, and the voucher arrived quickly.",
+		"reviewer": {
+			"name": { "first": " Andrei Popescu", "last": "" },
+			"address": [{ "country": "RO" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " Good site with simple surveys. More frequent cashback offers would make it more appealing for everyday shopping.",
+		"reviewer": {
+			"name": { "first": " Eszter Nagy", "last": "" },
+			"address": [{ "country": "HU" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I enjoy the short polls between shifts. The rewards are not huge, but they are real and easy to claim.",
+		"reviewer": {
+			"name": { "first": " Nikos Papadopoulos", "last": "" },
+			"address": [{ "country": "GR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The portal is well organized and easy to trust. I appreciate the clear instructions and the useful gift card selection.",
+		"reviewer": {
+			"name": { "first": " Elif Yılmaz", "last": "" },
+			"address": [{ "country": "TR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The surveys are short, and the points add up. I would like more mobile-friendly tasks for quick breaks.",
+		"reviewer": {
+			"name": { "first": " Haruto Sato", "last": "" },
+			"address": [{ "country": "JP" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I have had a good experience. The polls are quick, and I can redeem points for vouchers I actually use.",
+		"reviewer": {
+			"name": { "first": " Ji-woo Kim", "last": "" },
+			"address": [{ "country": "KR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The site is useful and easy to navigate. A clearer explanation of reward tiers would help new members.",
+		"reviewer": {
+			"name": { "first": " Putri Lestari", "last": "" },
+			"address": [{ "country": "ID" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I do a few surveys each week. The questions are simple, and the points are a nice little bonus.",
+		"reviewer": {
+			"name": { "first": " Niran Chaiyaporn", "last": "" },
+			"address": [{ "country": "TH" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward has been a pleasant way to earn small rewards. The surveys are clear, and redemption is simple.",
+		"reviewer": {
+			"name": { "first": " Linh Nguyen", "last": "" },
+			"address": [{ "country": "VN" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I like the daily polls and the points system. The rewards could be a bit faster, but the experience is positive.",
+		"reviewer": {
+			"name": { "first": " Chinedu Okafor", "last": "" },
+			"address": [{ "country": "NG" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The surveys are short and respectful of my time. I have recommended it to colleagues at the salon.",
+		"reviewer": {
+			"name": { "first": " Wanjiku Kamau", "last": "" },
+			"address": [{ "country": "KE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " It is a decent rewards site. The surveys are clear, but I would like more options for small cash payouts.",
+		"reviewer": {
+			"name": { "first": " Kwame Mensah", "last": "" },
+			"address": [{ "country": "GH" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I enjoy the product opinion surveys. The site is easy to use, and I can complete tasks while waiting for customers.",
+		"reviewer": {
+			"name": { "first": " Mariam Hassan", "last": "" },
+			"address": [{ "country": "EG" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " A reliable portal with quick polls. I like that I can see my points clearly and choose when to redeem.",
+		"reviewer": {
+			"name": { "first": " Youssef El Amrani", "last": "" },
+			"address": [{ "country": "MA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " Good for earning small rewards between lectures. I would enjoy more surveys about fashion and beauty products.",
+		"reviewer": {
+			"name": { "first": " Ines Ben Ali", "last": "" },
+			"address": [{ "country": "TN" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The site works well on my phone. Surveys are short, and the reward redemption has been smooth every time.",
+		"reviewer": {
+			"name": { "first": " Hamza Ali", "last": "" },
+			"address": [{ "country": "PK" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The surveys are fair, and the points are clear. More frequent reward confirmations would improve the experience.",
+		"reviewer": {
+			"name": { "first": " Nusrat Jahan", "last": "" },
+			"address": [{ "country": "BD" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I have had a good experience so far. The polls are quick, and the vouchers are useful for everyday shopping.",
+		"reviewer": {
+			"name": { "first": " Kavindu Perera", "last": "" },
+			"address": [{ "country": "LK" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward is simple and honest. I do a few surveys after a trek, and the points have added up nicely.",
+		"reviewer": {
+			"name": { "first": " Anisha Shrestha", "last": "" },
+			"address": [{ "country": "NP" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The portal is easy to use during breaks. I would like more food and drink surveys, but the reward process is reliable.",
+		"reviewer": {
+			"name": { "first": " Oliver Bennett", "last": "" },
+			"address": [{ "country": "GB" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I appreciate the short surveys and the clear points system. I have redeemed a gift card already, and it was straightforward.",
+		"reviewer": {
+			"name": { "first": " Grace Miller", "last": "" },
+			"address": [{ "country": "US" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " Good site with simple polls. A few more cashback options would make it more useful for daily shopping.",
+		"reviewer": {
+			"name": { "first": " Ethan Clarke", "last": "" },
+			"address": [{ "country": "CA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I enjoy the quick surveys between walks. The points are fair, and the voucher selection is decent.",
+		"reviewer": {
+			"name": { "first": " Chloe Wilson", "last": "" },
+			"address": [{ "country": "AU" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward has been a nice find. The polls are short, and I can redeem points for vouchers I actually need.",
+		"reviewer": {
+			"name": { "first": " Rohan Mehta", "last": "" },
+			"address": [{ "country": "IN" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The surveys are clear and easy to complete. I would like more reward options for local shops and cafés.",
+		"reviewer": {
+			"name": { "first": " Lena Fischer", "last": "" },
+			"address": [{ "country": "DE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I have had a positive experience. The daily polls are quick, and the points add up faster than I expected.",
+		"reviewer": {
+			"name": { "first": " Antoine Dubois", "last": "" },
+			"address": [{ "country": "FR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The site is fine, and the surveys are simple. More frequent small rewards would help keep me motivated.",
+		"reviewer": {
+			"name": { "first": " Lucía Navarro", "last": "" },
+			"address": [{ "country": "ES" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I like the short tasks and the clear points balance. The vouchers are useful, though I would like more variety.",
+		"reviewer": {
+			"name": { "first": " Marco Bianchi", "last": "" },
+			"address": [{ "country": "IT" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " A friendly rewards portal with quick surveys. I have recommended it to a colleague at the café.",
+		"reviewer": {
+			"name": { "first": " Femke Jansen", "last": "" },
+			"address": [{ "country": "NL" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The surveys are short and easy to fit into my day. I would enjoy more product-testing opportunities.",
+		"reviewer": {
+			"name": { "first": " Oskar Andersson", "last": "" },
+			"address": [{ "country": "SE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I like that the surveys are clear and not too long. The points system is simple, and redemption is straightforward.",
+		"reviewer": {
+			"name": { "first": " Maja Larsen", "last": "" },
+			"address": [{ "country": "NO" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " Good site with simple polls. A faster reward confirmation would improve the overall experience.",
+		"reviewer": {
+			"name": { "first": " Freja Nielsen", "last": "" },
+			"address": [{ "country": "DK" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I do a survey or two on my break. The questions are easy to follow, and the rewards are a nice extra.",
+		"reviewer": {
+			"name": { "first": " Lauri Mäkinen", "last": "" },
+			"address": [{ "country": "FI" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward has been reliable. I have cashed out twice, and both times the voucher arrived without any problem.",
+		"reviewer": {
+			"name": { "first": " Niamh Byrne", "last": "" },
+			"address": [{ "country": "IE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The site is easy to use on my phone. I would like more surveys about rural and outdoor products.",
+		"reviewer": {
+			"name": { "first": " Jack Thompson", "last": "" },
+			"address": [{ "country": "NZ" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I appreciate the clear surveys and the quick points. Redemption was simple, and the voucher options are practical.",
+		"reviewer": {
+			"name": { "first": " Mei Ling Lim", "last": "" },
+			"address": [{ "country": "SG" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The panel is useful and the surveys are fair. More short daily polls would help me participate more often.",
+		"reviewer": {
+			"name": { "first": " Farah Aziz", "last": "" },
+			"address": [{ "country": "MY" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I have had a good experience so far. The surveys are short, and the points are easy to track.",
+		"reviewer": {
+			"name": { "first": " Angela Reyes", "last": "" },
+			"address": [{ "country": "PH" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward is straightforward and honest. I do a few polls each week, and the rewards have been reliable.",
+		"reviewer": {
+			"name": { "first": " Sipho Dlamini", "last": "" },
+			"address": [{ "country": "ZA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The portal is clean and easy to navigate. I would like more beauty and skincare surveys, but the experience is positive.",
+		"reviewer": {
+			"name": { "first": " Fatima Al Nuaimi", "last": "" },
+			"address": [{ "country": "AE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I have had no issues with the site. The surveys are clear, and the reward redemption process is simple.",
+		"reviewer": {
+			"name": { "first": " Abdullah Al Qahtani", "last": "" },
+			"address": [{ "country": "SA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The surveys are fine, and the points are clear. A few more reward options for families would be welcome.",
+		"reviewer": {
+			"name": { "first": " Reem Haddad", "last": "" },
+			"address": [{ "country": "QA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I enjoy the quick polls between clients. The points add up, and the vouchers are useful for everyday items.",
+		"reviewer": {
+			"name": { "first": " Lucas Almeida", "last": "" },
+			"address": [{ "country": "BR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " A positive experience overall. The surveys are short, and I can redeem points for vouchers I actually use.",
+		"reviewer": {
+			"name": { "first": " Fernanda López", "last": "" },
+			"address": [{ "country": "MX" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The site is easy to use, and the surveys are clear. I would like more food and drink opinion polls.",
+		"reviewer": {
+			"name": { "first": " Mateo Herrera", "last": "" },
+			"address": [{ "country": "AR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I have recommended this to a friend. The surveys are quick, and the points system is transparent.",
+		"reviewer": {
+			"name": { "first": " Catalina Muñoz", "last": "" },
+			"address": [{ "country": "CL" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " Good rewards site with simple tasks. A clearer summary of my completed surveys would help me keep track.",
+		"reviewer": {
+			"name": { "first": " Andrés Castillo", "last": "" },
+			"address": [{ "country": "CO" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I like the daily polls and the points balance. The voucher selection is decent, though I would like more variety.",
+		"reviewer": {
+			"name": { "first": " Camila Vargas", "last": "" },
+			"address": [{ "country": "PE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward is easy to fit into a busy day. The surveys are short, and redemption has been reliable.",
+		"reviewer": {
+			"name": { "first": " Piotr Zieliński", "last": "" },
+			"address": [{ "country": "PL" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The portal is friendly and easy to use. I would enjoy more surveys about local services and shops.",
+		"reviewer": {
+			"name": { "first": " Ana Sousa", "last": "" },
+			"address": [{ "country": "PT" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I have had a smooth experience. The surveys are clear, and the points add up nicely over the week.",
+		"reviewer": {
+			"name": { "first": " Jakub Novák", "last": "" },
+			"address": [{ "country": "CZ" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The surveys are clear and the site is stable. More reward transparency would make it easier to stay motivated.",
+		"reviewer": {
+			"name": { "first": " Elena Ionescu", "last": "" },
+			"address": [{ "country": "RO" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I enjoy the quick product polls. The layout is simple, and the invitations are not too frequent.",
+		"reviewer": {
+			"name": { "first": " Bence Kovács", "last": "" },
+			"address": [{ "country": "HU" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The portal has been a good fit for me. Surveys are short, and I appreciate the clear points system.",
+		"reviewer": {
+			"name": { "first": " Maria Georgiou", "last": "" },
+			"address": [{ "country": "GR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I do a survey after work. The questions are easy to follow, and the vouchers are a nice little extra.",
+		"reviewer": {
+			"name": { "first": " Mehmet Demir", "last": "" },
+			"address": [{ "country": "TR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " Everything is neatly organized. The surveys are quick, and the reward process has been dependable.",
+		"reviewer": {
+			"name": { "first": " Yui Nakamura", "last": "" },
+			"address": [{ "country": "JP" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The site works well and the surveys are fair. A little more variety in rewards would improve it.",
+		"reviewer": {
+			"name": { "first": " Min-seo Park", "last": "" },
+			"address": [{ "country": "KR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I can complete surveys between rides. The mobile layout is clear, and the points are easy to track.",
+		"reviewer": {
+			"name": { "first": " Budi Santoso", "last": "" },
+			"address": [{ "country": "ID" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I have had a very good experience. The surveys are short, and the voucher options are practical.",
+		"reviewer": {
+			"name": { "first": " Pimchanok Srisuk", "last": "" },
+			"address": [{ "country": "TH" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The surveys are relevant and not too long. I would appreciate more invitations for food product studies.",
+		"reviewer": {
+			"name": { "first": " Minh Tran", "last": "" },
+			"address": [{ "country": "VN" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward feels honest and easy to use. The polls are quick, and redemption has been simple.",
+		"reviewer": {
+			"name": { "first": " Amaka Eze", "last": "" },
+			"address": [{ "country": "NG" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The site is easy to use and the surveys are fair. Faster reward confirmation would make it better.",
+		"reviewer": {
+			"name": { "first": " Brian Otieno", "last": "" },
+			"address": [{ "country": "KE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I enjoy sharing my opinions on everyday products. The surveys are usually well designed and quick.",
+		"reviewer": {
+			"name": { "first": " Ama Boateng", "last": "" },
+			"address": [{ "country": "GH" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The portal is reliable and easy to navigate. I appreciate the clear surveys and the useful vouchers.",
+		"reviewer": {
+			"name": { "first": " Ahmed Fathy", "last": "" },
+			"address": [{ "country": "EG" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " Good experience overall. The surveys are short, and I like that I can choose when to redeem.",
+		"reviewer": {
+			"name": { "first": " Salma Bennani", "last": "" },
+			"address": [{ "country": "MA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I have been impressed by the simplicity. The surveys are clear, and the points system is easy to understand.",
+		"reviewer": {
+			"name": { "first": " Karim Trabelsi", "last": "" },
+			"address": [{ "country": "TN" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The site is useful and the surveys are clear. More short polls would help me participate more often.",
+		"reviewer": {
+			"name": { "first": " Sana Iqbal", "last": "" },
+			"address": [{ "country": "PK" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I have had a good experience so far. The questions are relevant, and the site is easy to use.",
+		"reviewer": {
+			"name": { "first": " Rafiq Islam", "last": "" },
+			"address": [{ "country": "BD" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The portal respects my time and keeps the surveys focused. I have recommended it to friends who enjoy quick polls.",
+		"reviewer": {
+			"name": { "first": " Dilani Fernando", "last": "" },
+			"address": [{ "country": "LK" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I like the variety of quick surveys. It is easy to participate when I have a quiet moment.",
+		"reviewer": {
+			"name": { "first": " Rohan Gurung", "last": "" },
+			"address": [{ "country": "NP" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " A smooth and well-managed rewards site. I can see my points clearly, and the vouchers are actually useful.",
+		"reviewer": {
+			"name": { "first": " Sophie Turner", "last": "" },
+			"address": [{ "country": "GB" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " Good site with fair surveys. More detailed reward updates would make the experience more satisfying.",
+		"reviewer": {
+			"name": { "first": " Marcus Reed", "last": "" },
+			"address": [{ "country": "US" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I appreciate the short surveys and the respectful tone. The portal is easy to fit into my week.",
+		"reviewer": {
+			"name": { "first": " Olivia Grant", "last": "" },
+			"address": [{ "country": "CA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward is one of the better rewards portals I have used. It is clear, quick, and well organized.",
+		"reviewer": {
+			"name": { "first": " Noah Harris", "last": "" },
+			"address": [{ "country": "AU" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The surveys are well structured, and the platform feels modern. I would enjoy more studies about mobile apps.",
+		"reviewer": {
+			"name": { "first": " Ananya Rao", "last": "" },
+			"address": [{ "country": "IN" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The experience has been consistently good. Survey instructions are clear, and I have not had any reward issues.",
+		"reviewer": {
+			"name": { "first": " Felix Braun", "last": "" },
+			"address": [{ "country": "DE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The site is reliable and easy to use. I would like a few more surveys that match my everyday interests.",
+		"reviewer": {
+			"name": { "first": " Chloé Moreau", "last": "" },
+			"address": [{ "country": "FR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " Good survey flow and clear questions. I appreciate that the portal does not overcomplicate the process.",
+		"reviewer": {
+			"name": { "first": " Javier Romero", "last": "" },
+			"address": [{ "country": "ES" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I have enjoyed the surveys I received. They are relevant, short, and easy to complete on my phone.",
+		"reviewer": {
+			"name": { "first": " Francesca Ricci", "last": "" },
+			"address": [{ "country": "IT" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The interface is clean and responsive. I would like more invitations for technology and gadget surveys.",
+		"reviewer": {
+			"name": { "first": " Daan Bakker", "last": "" },
+			"address": [{ "country": "NL" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " A positive and friendly rewards portal. The questions are clear, and the points system feels transparent.",
+		"reviewer": {
+			"name": { "first": " Elin Johansson", "last": "" },
+			"address": [{ "country": "SE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " Good experience with clear surveys. More frequent updates on reward options would help.",
+		"reviewer": {
+			"name": { "first": " Henrik Dahl", "last": "" },
+			"address": [{ "country": "NO" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I like the calm design and the short survey lengths. It is easy to participate without feeling rushed.",
+		"reviewer": {
+			"name": { "first": " Sofie Kristensen", "last": "" },
+			"address": [{ "country": "DK" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward is well organized and easy to trust. I have completed several surveys and found them worthwhile.",
+		"reviewer": {
+			"name": { "first": " Mikko Heikkinen", "last": "" },
+			"address": [{ "country": "FI" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The surveys are straightforward, and the site works well on mobile. I have had a good overall experience.",
+		"reviewer": {
+			"name": { "first": " Ciara O’Sullivan", "last": "" },
+			"address": [{ "country": "IE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I appreciate how clear the invitations are. The portal is easy to use, and the questions are never confusing.",
+		"reviewer": {
+			"name": { "first": " Isla Campbell", "last": "" },
+			"address": [{ "country": "NZ" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The site is efficient and the surveys are fair. A wider range of reward choices would make it better.",
+		"reviewer": {
+			"name": { "first": " Jun Hao Lee", "last": "" },
+			"address": [{ "country": "SG" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I enjoy the product opinion polls and the clear survey instructions. The experience has been positive so far.",
+		"reviewer": {
+			"name": { "first": " Nadia Ismail", "last": "" },
+			"address": [{ "country": "MY" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The portal is easy to use even when I am on the go. Surveys are short, and I can track my points quickly.",
+		"reviewer": {
+			"name": { "first": " Carlo Mendoza", "last": "" },
+			"address": [{ "country": "PH" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " Good variety and a friendly feel. I would like more surveys about everyday household products.",
+		"reviewer": {
+			"name": { "first": " Lerato Nkosi", "last": "" },
+			"address": [{ "country": "ZA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I have had a smooth experience from registration onward. The questions are relevant and the interface is reliable.",
+		"reviewer": {
+			"name": { "first": " Khalid Al Suwaidi", "last": "" },
+			"address": [{ "country": "AE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The portal is well organized and the surveys are clear. More frequent invitations would keep me more active.",
+		"reviewer": {
+			"name": { "first": " Noura Al Dossari", "last": "" },
+			"address": [{ "country": "SA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I like the straightforward survey process. The site is stable and the questions are easy to follow.",
+		"reviewer": {
+			"name": { "first": " Samir Patel", "last": "" },
+			"address": [{ "country": "QA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward has been a great way to share opinions. The surveys are short and the reward system is clear.",
+		"reviewer": {
+			"name": { "first": " Beatriz Oliveira", "last": "" },
+			"address": [{ "country": "BR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I have completed a few surveys and found them fair. The mobile layout is simple and easy to use.",
+		"reviewer": {
+			"name": { "first": " Ricardo Hernández", "last": "" },
+			"address": [{ "country": "MX" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The portal feels friendly and respectful. I appreciate the clear instructions and the variety of quick polls.",
+		"reviewer": {
+			"name": { "first": " Julieta Rossi", "last": "" },
+			"address": [{ "country": "AR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " Good site overall. I would like a clearer explanation of how survey invitations are selected.",
+		"reviewer": {
+			"name": { "first": " Sebastián Fuentes", "last": "" },
+			"address": [{ "country": "CL" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The surveys are relevant and easy to complete. I have had a positive experience with the portal.",
+		"reviewer": {
+			"name": { "first": " Paula Restrepo", "last": "" },
+			"address": [{ "country": "CO" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I appreciate the short research topics. The site is easy to navigate, and the time estimates are accurate.",
+		"reviewer": {
+			"name": { "first": " Jorge Mendoza", "last": "" },
+			"address": [{ "country": "PE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " A well-run portal with clear surveys. I would enjoy more studies about customer service experiences.",
+		"reviewer": {
+			"name": { "first": " Agnieszka Wójcik", "last": "" },
+			"address": [{ "country": "PL" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The experience has been smooth and rewarding. I like that surveys are short and the instructions are clear.",
+		"reviewer": {
+			"name": { "first": " Miguel Carvalho", "last": "" },
+			"address": [{ "country": "PT" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The portal is useful and easy to use. Faster reward confirmation would improve the overall experience.",
+		"reviewer": {
+			"name": { "first": " Tereza Procházková", "last": "" },
+			"address": [{ "country": "CZ" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I like the simple layout and the sensible questions. The site has been reliable each time I have used it.",
+		"reviewer": {
+			"name": { "first": " Mihai Dumitru", "last": "" },
+			"address": [{ "country": "RO" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward is easy to trust. The surveys are clear, and I never feel like my time is being wasted.",
+		"reviewer": {
+			"name": { "first": " Anna Szabó", "last": "" },
+			"address": [{ "country": "HU" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " Good experience with relevant surveys. I would appreciate more invitations related to travel and food.",
+		"reviewer": {
+			"name": { "first": " Kostas Dimitriou", "last": "" },
+			"address": [{ "country": "GR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The portal is well designed and easy to use. I have completed several surveys and found them interesting.",
+		"reviewer": {
+			"name": { "first": " Zeynep Kaya", "last": "" },
+			"address": [{ "country": "TR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The surveys are clear and the site is stable. More variety in reward options would be welcome.",
+		"reviewer": {
+			"name": { "first": " Akira Tanaka", "last": "" },
+			"address": [{ "country": "JP" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I enjoy the mix of topics and the clean interface. The portal is easy to fit into a busy day.",
+		"reviewer": {
+			"name": { "first": " Seo-yeon Choi", "last": "" },
+			"address": [{ "country": "KR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I have had a very positive experience. The surveys are short, and the points tracking is easy to understand.",
+		"reviewer": {
+			"name": { "first": " Dewi Anggraini", "last": "" },
+			"address": [{ "country": "ID" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The questions are relevant and the site is simple. I would like more surveys about local consumer habits.",
+		"reviewer": {
+			"name": { "first": " Somchai Wongchai", "last": "" },
+			"address": [{ "country": "TH" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward is organized and user-friendly. I appreciate the clear invitations and the respectful survey design.",
+		"reviewer": {
+			"name": { "first": " Thao Pham", "last": "" },
+			"address": [{ "country": "VN" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The site is reliable and the surveys are fair. More frequent reward updates would keep me motivated.",
+		"reviewer": {
+			"name": { "first": " Tunde Adebayo", "last": "" },
+			"address": [{ "country": "NG" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I like the straightforward process. The surveys are easy to follow, and the site works well on my phone.",
+		"reviewer": {
+			"name": { "first": " Mercy Wambui", "last": "" },
+			"address": [{ "country": "KE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The experience has been encouraging. I feel my opinions are valued, and the surveys are clear and well timed.",
+		"reviewer": {
+			"name": { "first": " Kojo Antwi", "last": "" },
+			"address": [{ "country": "GH" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " Good portal with useful surveys. I would enjoy more studies about media and everyday products.",
+		"reviewer": {
+			"name": { "first": " Nour El Sayed", "last": "" },
+			"address": [{ "country": "EG" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The site is easy to navigate, and the questions are well written. I have recommended it to a colleague.",
+		"reviewer": {
+			"name": { "first": " Hamza Berrada", "last": "" },
+			"address": [{ "country": "MA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The portal is useful and the surveys are clear. A few more short polls would help me participate more often.",
+		"reviewer": {
+			"name": { "first": " Amira Gharbi", "last": "" },
+			"address": [{ "country": "TN" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I have had a good experience. The surveys are relevant, and the platform is stable and easy to use.",
+		"reviewer": {
+			"name": { "first": " Bilal Ahmed", "last": "" },
+			"address": [{ "country": "PK" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward feels friendly and trustworthy. The questions are clear, and I can complete surveys without confusion.",
+		"reviewer": {
+			"name": { "first": " Farhana Akter", "last": "" },
+			"address": [{ "country": "BD" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The interface is clean and responsive. I would like more technology-focused surveys, but the overall quality is strong.",
+		"reviewer": {
+			"name": { "first": " Sachin Jayasuriya", "last": "" },
+			"address": [{ "country": "LK" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I appreciate the respectful tone and clear instructions. The portal is easy to use and the rewards are transparent.",
+		"reviewer": {
+			"name": { "first": " Pooja Adhikari", "last": "" },
+			"address": [{ "country": "NP" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " Good site with clear surveys. More frequent reward confirmations would improve the experience for me.",
+		"reviewer": {
+			"name": { "first": " Harry Collins", "last": "" },
+			"address": [{ "country": "GB" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I like the variety of survey topics. The portal is easy to navigate, and I have not had any issues.",
+		"reviewer": {
+			"name": { "first": " Ella Foster", "last": "" },
+			"address": [{ "country": "US" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The surveys are short and rarely too long. I have enjoyed participating and will continue.",
+		"reviewer": {
+			"name": { "first": " Liam Scott", "last": "" },
+			"address": [{ "country": "CA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " A positive experience overall. The questions are clear, and the portal respects my time.",
+		"reviewer": {
+			"name": { "first": " Mia Robinson", "last": "" },
+			"address": [{ "country": "AU" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward is well organized and easy to use. I appreciate the relevant invitations and clear points tracking.",
+		"reviewer": {
+			"name": { "first": " Arjun Sharma", "last": "" },
+			"address": [{ "country": "IN" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The site is reliable and the surveys are fair. More short studies would help me stay active.",
+		"reviewer": {
+			"name": { "first": " Hannah Schmitt", "last": "" },
+			"address": [{ "country": "DE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I like the clean design and the sensible questions. The experience has been smooth so far.",
+		"reviewer": {
+			"name": { "first": " Lucas Bernard", "last": "" },
+			"address": [{ "country": "FR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The portal is easy to trust. Surveys are clear, and I can complete them without feeling rushed.",
+		"reviewer": {
+			"name": { "first": " Elena Torres", "last": "" },
+			"address": [{ "country": "ES" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " Good variety of topics and a friendly interface. I would enjoy more surveys about creative services.",
+		"reviewer": {
+			"name": { "first": " Alessandro Greco", "last": "" },
+			"address": [{ "country": "IT" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I have had a consistently good experience. The invitations are relevant, and the platform is simple to use.",
+		"reviewer": {
+			"name": { "first": " Sanne Visser", "last": "" },
+			"address": [{ "country": "NL" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The surveys are clear and the site is stable. Clearer reward milestones would make it stronger.",
+		"reviewer": {
+			"name": { "first": " Viktor Nilsson", "last": "" },
+			"address": [{ "country": "SE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I enjoy the thoughtful survey questions. The portal is easy to use and does not overwhelm my inbox.",
+		"reviewer": {
+			"name": { "first": " Astrid Haugen", "last": "" },
+			"address": [{ "country": "NO" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward is a reliable site with a clean interface. I can complete surveys quickly and track progress easily.",
+		"reviewer": {
+			"name": { "first": " Emil Rasmussen", "last": "" },
+			"address": [{ "country": "DK" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The experience has been positive. I would like more surveys related to customer service and retail.",
+		"reviewer": {
+			"name": { "first": " Emilia Virtanen", "last": "" },
+			"address": [{ "country": "FI" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The portal is straightforward and well managed. I appreciate the clear questions and the reward process.",
+		"reviewer": {
+			"name": { "first": " Patrick Kelly", "last": "" },
+			"address": [{ "country": "IE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " Good site with useful surveys. A more detailed activity history would be helpful.",
+		"reviewer": {
+			"name": { "first": " Ruby Mitchell", "last": "" },
+			"address": [{ "country": "NZ" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I like the friendly feel and the clear survey instructions. The platform is easy to navigate.",
+		"reviewer": {
+			"name": { "first": " Jia Hui Ong", "last": "" },
+			"address": [{ "country": "SG" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I have had a great experience so far. The surveys are relevant, and the reward system is easy to understand.",
+		"reviewer": {
+			"name": { "first": " Imran Hashim", "last": "" },
+			"address": [{ "country": "MY" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The surveys are clear and fit around my shifts. I would appreciate more short evening surveys.",
+		"reviewer": {
+			"name": { "first": " Jasmine Cruz", "last": "" },
+			"address": [{ "country": "PH" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The portal is respectful and well organized. I feel comfortable sharing opinions, and the process is simple.",
+		"reviewer": {
+			"name": { "first": " Naledi Mahlangu", "last": "" },
+			"address": [{ "country": "ZA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The site is reliable and the surveys are fair. More reward flexibility would improve the experience.",
+		"reviewer": {
+			"name": { "first": " Yasmin Al Hashimi", "last": "" },
+			"address": [{ "country": "AE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I enjoy the research topics and the clear questions. The platform is stable and easy to use.",
+		"reviewer": {
+			"name": { "first": " Fahad Al Otaibi", "last": "" },
+			"address": [{ "country": "SA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward has been a positive experience. The surveys are well timed, and I never feel pressured to finish quickly.",
+		"reviewer": {
+			"name": { "first": " Maya Thomas", "last": "" },
+			"address": [{ "country": "QA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " Good survey variety and a simple interface. I would like more invitations for consumer product research.",
+		"reviewer": {
+			"name": { "first": " Gabriel Souza", "last": "" },
+			"address": [{ "country": "BR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I like that I can share opinions easily between classes. The surveys are clear and the rewards are motivating.",
+		"reviewer": {
+			"name": { "first": " Valeria Torres", "last": "" },
+			"address": [{ "country": "MX" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The portal works well and the surveys are clear. A faster reward confirmation would make it better.",
+		"reviewer": {
+			"name": { "first": " Nicolás Pérez", "last": "" },
+			"address": [{ "country": "AR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I have had a good experience. The questions are relevant, and the platform is easy to use on mobile.",
+		"reviewer": {
+			"name": { "first": " Antonia Silva", "last": "" },
+			"address": [{ "country": "CL" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The portal is friendly and easy to trust. I appreciate the clear invitations and the thoughtful survey design.",
+		"reviewer": {
+			"name": { "first": " Felipe Ramírez", "last": "" },
+			"address": [{ "country": "CO" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I enjoy the variety of surveys. The site is simple to navigate, and the time estimates are useful.",
+		"reviewer": {
+			"name": { "first": " Luciana Flores", "last": "" },
+			"address": [{ "country": "PE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I have completed several surveys without any trouble. The questions are clear, and the points tracking is straightforward.",
+		"reviewer": {
+			"name": { "first": " Tomasz Lewandowski", "last": "" },
+			"address": [{ "country": "PL" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " Good site with clear surveys. More frequent invitations in my areas of interest would help.",
+		"reviewer": {
+			"name": { "first": " Inês Martins", "last": "" },
+			"address": [{ "country": "PT" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " The platform is reliable and easy to use. I would like more surveys about everyday household products.",
+		"reviewer": {
+			"name": { "first": " Martin Kučera", "last": "" },
+			"address": [{ "country": "CZ" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward is well organized and user-friendly. I appreciate the clear questions and the respectful tone.",
+		"reviewer": {
+			"name": { "first": " Ioana Stan", "last": "" },
+			"address": [{ "country": "RO" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I have had a positive experience. The surveys are relevant, and the portal does not send too many reminders.",
+		"reviewer": {
+			"name": { "first": " Gábor Tóth", "last": "" },
+			"address": [{ "country": "HU" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The experience has been smooth and rewarding. I like that the surveys are short and easy to understand.",
+		"reviewer": {
+			"name": { "first": " Eleni Papadaki", "last": "" },
+			"address": [{ "country": "GR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The portal is useful and the surveys are fair. A clearer reward history would improve transparency.",
+		"reviewer": {
+			"name": { "first": " Ayşe Çelik", "last": "" },
+			"address": [{ "country": "TR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I like the clean interface and the clear survey flow. The portal is easy to use on a busy day.",
+		"reviewer": {
+			"name": { "first": " Rina Kobayashi", "last": "" },
+			"address": [{ "country": "JP" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward has been reliable and friendly. The questions are well written, and the reward process is clear.",
+		"reviewer": {
+			"name": { "first": " Hyun-woo Jung", "last": "" },
+			"address": [{ "country": "KR" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " Good variety of topics and a friendly layout. I would enjoy more surveys about small businesses.",
+		"reviewer": {
+			"name": { "first": " Siti Nurhaliza", "last": "" },
+			"address": [{ "country": "ID" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " I appreciate the thoughtful surveys and the easy navigation. The portal has been a good use of my spare time.",
+		"reviewer": {
+			"name": { "first": " Kanya Pongsak", "last": "" },
+			"address": [{ "country": "TH" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The portal is straightforward and the surveys are clear. More short surveys would help me participate more often.",
+		"reviewer": {
+			"name": { "first": " Quang Le", "last": "" },
+			"address": [{ "country": "VN" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I have had a good experience. The questions are relevant, and the platform is easy to use on my phone.",
+		"reviewer": {
+			"name": { "first": " Ifeoma Nwosu", "last": "" },
+			"address": [{ "country": "NG" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " The portal is well managed and easy to trust. I appreciate the clear invitations and the fair survey lengths.",
+		"reviewer": {
+			"name": { "first": " Peter Mwangi", "last": "" },
+			"address": [{ "country": "KE" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I enjoy sharing my feedback, and the surveys are usually well designed. The experience has been positive.",
+		"reviewer": {
+			"name": { "first": " Abena Asante", "last": "" },
+			"address": [{ "country": "GH" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 5",
+		"message": " MyFrequentReward is friendly, clear, and easy to use. I have recommended it to colleagues who enjoy quick polls.",
+		"reviewer": {
+			"name": { "first": " Yara Mahmoud", "last": "" },
+			"address": [{ "country": "EG" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 3",
+		"message": " The portal is reliable and the surveys are clear. More reward options would make it more appealing.",
+		"reviewer": {
+			"name": { "first": " Reda El Fassi", "last": "" },
+			"address": [{ "country": "MA" }],
+			"category": "b2c"
+		}
+	},
+	{
+		"rate": " 4",
+		"message": " I have had a positive experience overall. The surveys are relevant, and the platform is simple to navigate.",
+		"reviewer": {
+			"name": { "first": " Sarra Ben Youssef", "last": "" },
+			"address": [{ "country": "TN" }],
+			"category": "b2c"
+		}
+	}
+]

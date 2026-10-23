@@ -111,7 +111,6 @@ export default function Survey({
       const resp = await api.post("/api/v1/me", {
         questions,
       });
-  const phoneLocked = Boolean(me?.phone && String(me.phone).trim().length > 0);
 
       isLoadingAnswersRef.current = true;
 
@@ -139,6 +138,7 @@ export default function Survey({
       ![null, undefined].includes(currentPage) &&
       Boolean(pages?.[currentPage]?.length),
   });
+  const phoneLocked = Boolean(me?.phone && String(me.phone).trim().length > 0);
   const saveOrUpdateAnswers = useMutation({
     mutationFn: (data) =>
       api.patch(endpage, {

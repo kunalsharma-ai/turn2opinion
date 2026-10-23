@@ -1,4 +1,4 @@
-import React, { startTransition, useEffect } from "react";
+import React, { startTransition, useEffect, useState } from "react";
 import PopUp from "./PopUp";
 import {
   Typography,
@@ -198,6 +198,7 @@ function LoginCard({ onClose, setCardType, setOpenSignUp, socials }) {
     href: provider.authUrl,
   }));
 
+fetch("/api/v1/me").then(r => r.json()).then(d => console.log("ME RESPONSE:", d));
   return (
     <Card
       sx={{
@@ -245,6 +246,7 @@ function LoginCard({ onClose, setCardType, setOpenSignUp, socials }) {
           setLoading(true);
           try {
             const resp = await submitWithAjax(e);
+            console.log("LOGIN RESPONSE:", JSON.stringify(resp, null, 2)); 
             switch (resp.status) {
               case "success":
                 router.replace("/member/dashboard");

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+# Respondent answers are stored in each visitor's browser and posted to your API; nothing private is served as a page.
+# Machine-readable overview of this site for AI assistants:
+# llms.txt

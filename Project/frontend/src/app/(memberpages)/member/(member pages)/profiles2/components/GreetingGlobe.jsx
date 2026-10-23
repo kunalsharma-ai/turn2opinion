@@ -2,7 +2,7 @@ import { memo, useEffect, useRef } from 'react';
 import { GREETINGS } from '../i18n/en.js';
 import { BY } from '../i18n/languages.js';
 import { t, lang, useI18n } from '../i18n/index.js';
-import ORB from './orb.js';   // inlined (not an <img>) so it never becomes the page's LCP element
+import ORB from '../lib/orb-svg.js';   // inlined (not an <img>) so it never becomes the page's LCP element
 
 /* A 3D globe of greetings that spins around the Turn2Opinion orb.
    Drawn on two small canvases (words behind the orb, words in front of it) — well under a

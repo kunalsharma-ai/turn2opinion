@@ -22,11 +22,12 @@ import socialsRouter from "./api/Socials.js";
 import cpiRouter from "./api/CPI.js";
 import { isAuthenticated } from "../utils/index.js";
 import followSocialRouter from "./api/FollowSocial.js";
-
+import testimonialRouter from "./api/Testimonials.js";
 import meRouter from "./api/Me.js";
 import changeEmail from "./api/changeEmail.js"
 const router = express.Router();
 router
+    .use("/api/v1/testimonial", testimonialRouter)
     .use("/api/v1/llm", llmRouter)
     .use("/api/v1/newsletter", (r, s) => {
         console.log(r);
@@ -72,8 +73,8 @@ function responseTimeout(timeout = 30_000) {
     return (req, res, next) => {
         console.log("Setting up timer for 30 sec")
         let finished = false;
-        
-        const clock = setInterval(() => {            
+
+        const clock = setInterval(() => {
             console.log((new Date).toISOString());
         }, 1000)
         const timer = setTimeout(() => {

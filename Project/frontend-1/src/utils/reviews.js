@@ -9,24 +9,34 @@
 //
 // v3.1 adds the four facet scores (see src/data/reviewFacets.js) and the audience world, both of
 // which the testimonial wall and the reviews page use for colour grading.
-import { ENV } from '../config/env.js';
-import { getJSON, postJSON } from './api.js';
-import { store } from './storage.js';
-import { TESTIMONIALS } from '../data/testimonials.js';
-import { FACETS, facetAverage } from '../data/reviewFacets.js';
+import { ENV } from "../config/env.js";
+import { getJSON, postJSON } from "./api.js";
+import { store } from "./storage.js";
+import { TESTIMONIALS } from "../data/testimonials.js";
+import { FACETS, facetAverage } from "../data/reviewFacets.js";
 
-const LOCAL_KEY = 't2o_my_reviews_v1';
-const EVENT = 't2o:review';
+const LOCAL_KEY = "t2o_my_reviews_v1";
+const EVENT = "t2o:review";
 let channel = null;
 
 function getChannel() {
-  if (channel || typeof window === 'undefined' || !('BroadcastChannel' in window)) return channel;
-  channel = new BroadcastChannel('t2o-reviews');
-  channel.onmessage = (e) => window.dispatchEvent(new CustomEvent(EVENT, { detail: e.data }));
+  if (
+    channel ||
+    typeof window === "undefined" ||
+    !("BroadcastChannel" in window)
+  )
+    return channel;
+  channel = new BroadcastChannel("t2o-reviews");
+  channel.onmessage = (e) =>
+    window.dispatchEvent(new CustomEvent(EVENT, { detail: e.data }));
   return channel;
 }
 
-const clean = (s, max) => String(s || '').replace(/[<>]/g, '').trim().slice(0, max);
+const clean = (s, max) =>
+  String(s || "")
+    .replace(/[<>]/g, "")
+    .trim()
+    .slice(0, max);
 const score = (n) => {
   const v = Math.round(Number(n));
   return v >= 1 && v <= 5 ? v : 0;
@@ -35,7 +45,7 @@ const score = (n) => {
 /** Keep only the known facet keys, each 0 (unset) or 1–5. */
 function cleanFacets(f) {
   const out = {};
-  if (!f || typeof f !== 'object') return out;
+  if (!f || typeof f !== "object") return out;
   for (const { key } of FACETS) {
     const v = score(f[key]);
     if (v) out[key] = v;
@@ -43,21 +53,51 @@ function cleanFacets(f) {
   return out;
 }
 
+/** Keep four detail ratings: [surveys, rewards, support, mobile]. */
+function cleanDetailRating(values) {
+  if (!Array.isArray(values)) return [];
+
+  return values.slice(0, 4).map((value) => {
+    if (value === null || value === undefined || value === "") return null;
+
+    const n = Number(value);
+    return Number.isFinite(n) && n >= 1 && n <= 5 ? n : null;
+  });
+}
+
 export function normaliseReview(r) {
   const facets = cleanFacets(r.facets);
   return {
-    id: String(r.id || `r-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`),
+    id: String(
+      r.id || `r-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    ),
     name: clean(r.name, 60),
     country: clean(r.country, 2).toUpperCase(),
     company: clean(r.company, 80),
     role: clean(r.role, 80),
-    audience: r.audience === 'professional' || r.audience === 'consumer' ? r.audience : '',
-    rating: r.rating == null || r.rating === '' ? 0 : Math.min(5, Math.max(1, Math.round(Number(r.rating)) || 5)), // 0 = no rating on record
+    audience:
+      r.audience === "professional" || r.audience === "consumer"
+        ? r.audience
+        : "",
+    rating:
+      r.rating == null || r.rating === ""
+        ? 0
+        : Math.min(5, Math.max(1, Math.round(Number(r.rating)) || 5)),
     facets,
-    text: clean(r.text, 600).replace(/\s{2,}/g, ' '),
-    tags: Array.isArray(r.tags) ? r.tags.map((t) => clean(t, 30)).filter(Boolean).slice(0, 4) : [],
-    date: r.date === '' ? '' : r.date || new Date().toISOString(),
-    mine: !!r.mine
+    detailrating: cleanDetailRating(r.detailrating),
+    text: clean(r.text, 600).replace(/\s{2,}/g, " "),
+    tags: Array.isArray(r.tags)
+      ? r.tags
+          .map((t) =>
+            typeof t === "string"
+              ? clean(t, 30)
+              : clean(t?.label ?? t?.name ?? "", 30),
+          )
+          .filter(Boolean)
+          .slice(0, 4)
+      : [],
+    date: r.date === "" ? "" : r.date || new Date().toISOString(),
+    mine: !!r.mine,
   };
 }
 
@@ -76,7 +116,7 @@ export async function submitReview(input) {
     captchaToken: input.captchaToken || null,
     captchaProvider: input.captchaProvider || null,
     // Private: for verifying the reviewer. The backend must never return these in GET responses.
-    contact: input.contact || null
+    contact: input.contact || null,
   });
   // Show it to the author immediately either way; the server decides what everyone else sees.
   const mine = store.get(LOCAL_KEY, []);
@@ -94,7 +134,11 @@ export function getMyReviews() {
 export async function fetchApprovedReviews() {
   if (ENV.DEMO_MODE) return [];
   const data = await getJSON(ENV.API_REVIEWS_URL);
-  const list = Array.isArray(data) ? data : data && Array.isArray(data.reviews) ? data.reviews : [];
+  const list = Array.isArray(data)
+    ? data
+    : data && Array.isArray(data.reviews)
+      ? data.reviews
+      : [];
   return list.map(normaliseReview).filter((r) => r.text && r.name);
 }
 
@@ -119,17 +163,26 @@ export function summarise(list) {
   const rated = list.filter((r) => r.rating > 0);
   const count = rated.length;
   const avg = count ? rated.reduce((a, r) => a + r.rating, 0) / count : 0;
-  const dist = [5, 4, 3, 2, 1].map((s) => rated.filter((r) => r.rating === s).length);
+  const dist = [5, 4, 3, 2, 1].map(
+    (s) => rated.filter((r) => r.rating === s).length,
+  );
 
   const facets = {};
   for (const f of FACETS) {
     const vals = list.map((r) => (r.facets || {})[f.key]).filter((n) => n > 0);
-    facets[f.key] = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+    facets[f.key] = vals.length
+      ? vals.reduce((a, b) => a + b, 0) / vals.length
+      : 0;
   }
 
   const forAudience = (k) => {
-    const sub = rated.filter((r) => r.audience === k || (!r.audience && k === 'consumer'));
-    return { count: sub.length, avg: sub.length ? sub.reduce((a, r) => a + r.rating, 0) / sub.length : 0 };
+    const sub = rated.filter(
+      (r) => r.audience === k || (!r.audience && k === "consumer"),
+    );
+    return {
+      count: sub.length,
+      avg: sub.length ? sub.reduce((a, r) => a + r.rating, 0) / sub.length : 0,
+    };
   };
 
   return {
@@ -137,8 +190,11 @@ export function summarise(list) {
     count,
     dist,
     facets,
-    byAudience: { consumer: forAudience('consumer'), professional: forAudience('professional') },
-    countries: new Set(list.map((r) => r.country).filter(Boolean)).size
+    byAudience: {
+      consumer: forAudience("consumer"),
+      professional: forAudience("professional"),
+    },
+    countries: new Set(list.map((r) => r.country).filter(Boolean)).size,
   };
 }
 

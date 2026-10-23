@@ -75,7 +75,8 @@ class ValidUser {
       if (!this.emailVerified())
         return this.router.replace(`/?verifyemail=${this.userinfo.mail}`);
 
-      if (!this.termsAccepted()) return this.router.replace("/auth/terms");
+      if (!this.termsAccepted()) {
+        return this.router.replace(`/user/terms-${this.userinfo.category}.html`);}
 
       if (!(await this.hasCompletedWelcomeSurvey()))
         return this.router.replace("/survey?name=welcome");

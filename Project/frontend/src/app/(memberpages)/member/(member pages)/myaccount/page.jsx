@@ -100,10 +100,10 @@ const getGenderIcon = (gender) => {
 };
 
 const getAge = (age) => {
-  if(!age) return "";
+  if (!age) return "";
   const { years = 0, month = 0, day = 0 } = age;
   return month > 0 || day > 0 ? years + 1 : years;
-}
+};
 
 export default function page() {
   const user = useMember();
@@ -289,9 +289,9 @@ function Stats() {
 
 function UserInfo({ user }) {
   const form = useForm({
-    mode:"onChange"
+    mode: "onChange",
   });
-    const {
+  const {
     formState: { errors },
   } = form;
 
@@ -323,11 +323,9 @@ function UserInfo({ user }) {
   };
 
   const handleAlternateDone = async (field) => {
-    const fieldName =
-      field === "email" ? "alternate-email" : "alternate-phone";
+    const fieldName = field === "email" ? "alternate-email" : "alternate-phone";
 
-    const formField =
-      field === "email" ? "alternateEmail" : "alternatePhone";
+    const formField = field === "email" ? "alternateEmail" : "alternatePhone";
 
     const value = form.getValues(formField);
 
@@ -367,13 +365,13 @@ function UserInfo({ user }) {
 
   const userData = [
     {
-      type:"view",
+      type: "view",
       icon: <CakeIcon sx={{ fontSize: 18 }} />,
       label: "Birth Date",
       value: `${new Date(user?.dob).showDate()} (${getAge(user?.age)} yrs)`,
     },
     {
-      type:"view",
+      type: "view",
       icon: <EventNoteIcon sx={{ fontSize: 18 }} />,
       label: "Joined on",
       value: new Date(user?.createdAt).showDate(),
@@ -406,7 +404,7 @@ function UserInfo({ user }) {
       label: "Alternate Mobile",
       value: user?.["alternate-phone"] || "",
       placeholder: "Enter alternate phone",
-   },
+    },
   ];
 
   return (
@@ -551,7 +549,9 @@ function UserInfo({ user }) {
               "Mobile",
               "Alternate Mobile",
             ].includes(item.label);
-            const text = visibleFields[index] ? item.value : maskValue(item.value);
+            const text = visibleFields[index]
+              ? item.value
+              : maskValue(item.value);
 
             const valueSx = {
               color: "#fff",
@@ -560,7 +560,11 @@ function UserInfo({ user }) {
               flex: 1,
               minWidth: 0,
               ...(isTooltipField
-                ? { overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }
+                ? {
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }
                 : { wordBreak: "break-word" }),
             };
 
@@ -571,18 +575,42 @@ function UserInfo({ user }) {
             );
 
             return (
-              <Grid key={index} size={12} container alignItems="flex-start" spacing={0}>
-                <Box sx={{ mr: 1, display: "flex", alignItems: "center", pt: 0.3 }}>
+              <Grid
+                key={index}
+                size={12}
+                container
+                alignItems="flex-start"
+                spacing={0}
+              >
+                <Box
+                  sx={{ mr: 1, display: "flex", alignItems: "center", pt: 0.3 }}
+                >
                   {item.icon}
                 </Box>
 
                 <Box sx={{ flex: 1, minWidth: 0 }}>
-                  <Box sx={{ display: "flex", alignItems: "center", width: "100%", minWidth: 0 }}>
-                    <Typography sx={{ color: "#eee", pr: 0.5, whiteSpace: "nowrap" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      width: "100%",
+                      minWidth: 0,
+                    }}
+                  >
+                    <Typography
+                      sx={{ color: "#eee", pr: 0.5, whiteSpace: "nowrap" }}
+                    >
                       {item.label}:
                     </Typography>
 
-                    <Box sx={{ display: "flex", alignItems: "center", flex: 1, minWidth: 0 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        flex: 1,
+                        minWidth: 0,
+                      }}
+                    >
                       {isTooltipField && visibleFields[index] ? (
                         <Tooltip title={item.value || ""} placement="top">
                           {valueNode}
@@ -620,9 +648,23 @@ function UserInfo({ user }) {
                   </Box>
 
                   {isEditing && (
-                    <Box sx={{ display: "flex", alignItems: "center", width: "100%", mt: 0.5 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        width: "100%",
+                        mt: 0.5,
+                      }}
+                    >
                       {item.field === "phone" ? (
-                        <Box sx={{ flex: 1, minWidth: 0, position: "relative", zIndex: 20 }}>
+                        <Box
+                          sx={{
+                            flex: 1,
+                            minWidth: 0,
+                            position: "relative",
+                            zIndex: 20,
+                          }}
+                        >
                           <Form.Phone
                             control={form.control}
                             name="alternatePhone"
@@ -655,8 +697,12 @@ function UserInfo({ user }) {
                               backgroundColor: "transparent",
                             }}
                             sx={{
-                              "& .MuiInputBase-root": { backgroundColor: "transparent" },
-                              "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                              "& .MuiInputBase-root": {
+                                backgroundColor: "transparent",
+                              },
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                border: "none",
+                              },
                               "& .MuiInput-underline:before": {
                                 borderBottomColor: "rgba(245, 160, 0, 0.5)",
                               },
@@ -675,8 +721,9 @@ function UserInfo({ user }) {
                       <IconButton
                         size="small"
                         onClick={() => {
-                          if(!errors.alternateEmail) handleAlternateDone(item.field)}
-                        }
+                          if (!errors.alternateEmail)
+                            handleAlternateDone(item.field);
+                        }}
                         sx={{ color: "#fff", ml: 0.5, flexShrink: 0 }}
                       >
                         <CheckIcon fontSize="small" />
@@ -707,13 +754,31 @@ function UserInfo({ user }) {
 const methodFieldsConfig = {
   "wire-transfer": [
     { key: "bankName", label: "Bank", placeholder: "Enter bank name" },
-    { key: "ifsc", label: "IFSC/IBAN/SWIFT", placeholder: "Enter IFSC/IBAN/SWIFT code" },
-    { key: "bankAccount", label: "Account Number", placeholder: "Enter account number" },
+    {
+      key: "ifsc",
+      label: "IFSC/IBAN/SWIFT",
+      placeholder: "Enter IFSC/IBAN/SWIFT code",
+    },
+    {
+      key: "bankAccount",
+      label: "Account Number",
+      placeholder: "Enter account number",
+    },
   ],
   upi: [{ key: "upiAccount", label: "VPA", placeholder: "Enter UPI ID" }],
-  paypal: [{ key: "paypalAccount", label: "PayPal Email", placeholder: "Enter PayPal email" }],
+  paypal: [
+    {
+      key: "paypalAccount",
+      label: "PayPal Email",
+      placeholder: "Enter PayPal email",
+    },
+  ],
   "amazon-gift-card": [
-    { key: "amazonAccount", label: "Amazon ID", placeholder: "Enter Amazon Giftcard ID" },
+    {
+      key: "amazonAccount",
+      label: "Amazon ID",
+      placeholder: "Enter Amazon Giftcard ID",
+    },
   ],
 };
 
@@ -768,7 +833,10 @@ function Payment() {
 
   const hasData = (methodValue) => {
     const fields = methodFieldsConfig[methodValue] || [];
-    return fields.length > 0 && fields.every((f) => payment[f.key]?.toString().trim());
+    return (
+      fields.length > 0 &&
+      fields.every((f) => payment[f.key]?.toString().trim())
+    );
   };
 
   const handleFieldChange = (key) => (e) => {
@@ -776,88 +844,98 @@ function Payment() {
   };
 
   const handleAccordionChange = (methodValue) => (e, isExpanded) => {
-  setExpandedMethod(isExpanded ? methodValue : false);
-  if (!isExpanded) handleCancelEdit();   // accordion band ho to edit cancel
-};
-
-const handleEditField = (methodValue, fieldKey) => {
-  // pehle koi aur field edit mein tha to uski value wapas kar do
-  if (editing && editBackup !== null) {
-    setPayment((prev) => ({ ...prev, [editing.field]: editBackup }));
-  }
-  setEditBackup(payment[fieldKey] ?? "");
-  setEditing({ method: methodValue, field: fieldKey });
-};
-
-const handleCancelEdit = () => {
-  if (editing && editBackup !== null) {
-    setPayment((prev) => ({ ...prev, [editing.field]: editBackup }));
-  }
-  setEditing(null);
-  setEditBackup(null);
-};
-
-const handleSaveField = async (fieldKey) => {
-  const apiKeyMap = {
-    ifsc: "payment-method-bank-ifsc",
-    bankAccount: "payment-method-bank-account",
-    bankName: "payment-method-bank-name",
-    amazonAccount: "payment-method-amazon",
-    paypalAccount: "payment-method-paypal",
-    upiAccount: "payment-method-upi",
+    setExpandedMethod(isExpanded ? methodValue : false);
+    if (!isExpanded) handleCancelEdit(); // accordion band ho to edit cancel
   };
 
-  try {
-    const resp = await api.patch(`/api/v1/me/answer`, {
-      [apiKeyMap[fieldKey]]: payment[fieldKey],  
-    });
-    useToast(resp);
-    if (primaryMethod && !hasData(primaryMethod)) {
-      setPrimaryMethod(null);
-      await api.patch(`/api/v1/me/answer`, { "payment-method-primary": "" });
+  const handleEditField = (methodValue, fieldKey) => {
+    // pehle koi aur field edit mein tha to uski value wapas kar do
+    if (editing && editBackup !== null) {
+      setPayment((prev) => ({ ...prev, [editing.field]: editBackup }));
     }
-    await member.Reload();
-  } catch (error) {
-    console.error(`Failed to update ${fieldKey}:`, error);
-  } finally {
+    setEditBackup(payment[fieldKey] ?? "");
+    setEditing({ method: methodValue, field: fieldKey });
+  };
+
+  const handleCancelEdit = () => {
+    if (editing && editBackup !== null) {
+      setPayment((prev) => ({ ...prev, [editing.field]: editBackup }));
+    }
     setEditing(null);
     setEditBackup(null);
-  }
-};
+  };
 
- const handleSetPrimary = async (methodValue) => {
-  if (!hasData(methodValue)) {
-    useToast({ status: "error", message: "Please fill in the details first." });
-    return;
-  }
+  const handleSaveField = async (fieldKey) => {
+    const apiKeyMap = {
+      ifsc: "payment-method-bank-ifsc",
+      bankAccount: "payment-method-bank-account",
+      bankName: "payment-method-bank-name",
+      amazonAccount: "payment-method-amazon",
+      paypalAccount: "payment-method-paypal",
+      upiAccount: "payment-method-upi",
+    };
 
-  if (primaryMethod === methodValue) return;
+    try {
+      const resp = await api.patch(`/api/v1/me/answer`, {
+        [apiKeyMap[fieldKey]]: payment[fieldKey],
+      });
+      useToast(resp);
+      if (primaryMethod && !hasData(primaryMethod)) {
+        setPrimaryMethod(null);
+        await api.patch(`/api/v1/me/answer`, { "payment-method-primary": "" });
+      }
+      await member.Reload();
+    } catch (error) {
+      console.error(`Failed to update ${fieldKey}:`, error);
+    } finally {
+      setEditing(null);
+      setEditBackup(null);
+    }
+  };
 
-  const previous = primaryMethod;
-  setPrimaryMethod(methodValue); 
+  const handleSetPrimary = async (methodValue) => {
+    if (!hasData(methodValue)) {
+      useToast({
+        status: "error",
+        message: "Please fill in the details first.",
+      });
+      return;
+    }
 
-  try {
-    const resp = await api.patch(`/api/v1/me/answer`, {
-      "payment-method-primary": methodValue,
-    });
-    useToast(resp);
-  } catch (error) {
-    console.error(`Failed to set primary payment method:`, error);
-    setPrimaryMethod(previous); 
-  }
-};
+    if (primaryMethod === methodValue) return;
+
+    const previous = primaryMethod;
+    setPrimaryMethod(methodValue);
+
+    try {
+      const resp = await api.patch(`/api/v1/me/answer`, {
+        "payment-method-primary": methodValue,
+      });
+      useToast(resp);
+    } catch (error) {
+      console.error(`Failed to set primary payment method:`, error);
+      setPrimaryMethod(previous);
+    }
+  };
 
   const sortedOptions = React.useMemo(() => {
-  return [...paymentOptions].sort((a, b) => {
-    if (a.value === primaryMethod) return -1;
-    if (b.value === primaryMethod) return 1;
-    return 0; 
-  });
-}, [paymentOptions, primaryMethod]);
+    return [...paymentOptions].sort((a, b) => {
+      if (a.value === primaryMethod) return -1;
+      if (b.value === primaryMethod) return 1;
+      return 0;
+    });
+  }, [paymentOptions, primaryMethod]);
   return (
     <Grid size={12} container spacing={2} justifyContent="center">
       {/* Header */}
-      <Box width="100%" display="flex" alignItems="center" px={1} pt={1} minHeight={46}>
+      <Box
+        width="100%"
+        display="flex"
+        alignItems="center"
+        px={1}
+        pt={1}
+        minHeight={46}
+      >
         <Typography
           sx={{
             fontSize: "15px",
@@ -892,8 +970,17 @@ const handleSaveField = async (fieldKey) => {
                   borderRadius: "10px !important",
                 }}
               >
-                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: "#fff" }} />}>
-                  <Box sx={{ display: "flex", alignItems: "center", width: "100%", gap: 1 }}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon sx={{ color: "#fff" }} />}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      width: "100%",
+                      gap: 1,
+                    }}
+                  >
                     {filled && (
                       <Box
                         sx={{
@@ -906,25 +993,31 @@ const handleSaveField = async (fieldKey) => {
                       />
                     )}
 
-                    <Typography sx={{ flex: 1, fontWeight: 500 }}>{method.label}</Typography>
+                    <Typography sx={{ flex: 1, fontWeight: 500 }}>
+                      {method.label}
+                    </Typography>
 
-                     <IconButton
-                        component="span"
-                        size="small"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleSetPrimary(methodValue);
-                        }}
-                        sx={{
-                          color: isPrimary
-                            ? "secondary.main"
-                            : filled
+                    <IconButton
+                      component="span"
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSetPrimary(methodValue);
+                      }}
+                      sx={{
+                        color: isPrimary
+                          ? "secondary.main"
+                          : filled
                             ? "#fff"
-                            : "rgba(255,255,255,0.3)", 
-                        }}
-                      >
-                        {isPrimary ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
-                      </IconButton>
+                            : "rgba(255,255,255,0.3)",
+                      }}
+                    >
+                      {isPrimary ? (
+                        <StarIcon fontSize="small" />
+                      ) : (
+                        <StarBorderIcon fontSize="small" />
+                      )}
+                    </IconButton>
                   </Box>
                 </AccordionSummary>
 
@@ -932,13 +1025,31 @@ const handleSaveField = async (fieldKey) => {
                   <Grid container spacing={1}>
                     {fields.map((f) => {
                       const isFieldEditing =
-                        editing?.method === methodValue && editing?.field === f.key;
+                        editing?.method === methodValue &&
+                        editing?.field === f.key;
 
                       return (
-                        <Grid key={f.key} size={12} container alignItems="center" spacing={0}
-                          sx={{ background: "rgba(255,255,255,0.06)", borderRadius: "10px", px: 1.5, py: 1 }}
+                        <Grid
+                          key={f.key}
+                          size={12}
+                          container
+                          alignItems="center"
+                          spacing={0}
+                          sx={{
+                            background: "rgba(255,255,255,0.06)",
+                            borderRadius: "10px",
+                            px: 1.5,
+                            py: 1,
+                          }}
                         >
-                          <Box sx={{ display: "flex", alignItems: "center", flex: 1, minWidth: 0 }}>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              flex: 1,
+                              minWidth: 0,
+                            }}
+                          >
                             {isFieldEditing ? (
                               <TextField
                                 fullWidth
@@ -949,23 +1060,44 @@ const handleSaveField = async (fieldKey) => {
                                 placeholder={f.placeholder}
                                 size="small"
                                 InputProps={{ disableUnderline: true }}
-                                sx={{ flex: 1, minWidth: 0, "& .MuiInputBase-input": { color: "#fff", fontSize: 13 } }}
+                                sx={{
+                                  flex: 1,
+                                  minWidth: 0,
+                                  "& .MuiInputBase-input": {
+                                    color: "#fff",
+                                    fontSize: 13,
+                                  },
+                                }}
                               />
                             ) : (
                               <Typography
                                 component="span"
                                 noWrap
                                 sx={{
-                                  color: payment[f.key] ? "#fff" : "rgba(255,255,255,0.55)",
-                                  fontWeight: 600, flex: 1, fontSize: 13,
-                                  overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", minWidth: 0,
+                                  color: payment[f.key]
+                                    ? "#fff"
+                                    : "rgba(255,255,255,0.55)",
+                                  fontWeight: 600,
+                                  flex: 1,
+                                  fontSize: 13,
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  whiteSpace: "nowrap",
+                                  minWidth: 0,
                                 }}
                               >
                                 {payment[f.key] ? "xxxxxx" : f.placeholder}
                               </Typography>
                             )}
 
-                            <Box sx={{ display: "flex", alignItems: "center", flexShrink: 0, ml: 1 }}>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                flexShrink: 0,
+                                ml: 1,
+                              }}
+                            >
                               <IconButton
                                 size="small"
                                 onClick={() =>
@@ -973,9 +1105,17 @@ const handleSaveField = async (fieldKey) => {
                                     ? handleSaveField(f.key)
                                     : handleEditField(methodValue, f.key)
                                 }
-                                sx={{ color: isFieldEditing ? "secondary.main" : "#fff" }}
+                                sx={{
+                                  color: isFieldEditing
+                                    ? "secondary.main"
+                                    : "#fff",
+                                }}
                               >
-                                {isFieldEditing ? <CheckIcon fontSize="small" /> : <EditIcon fontSize="small" />}
+                                {isFieldEditing ? (
+                                  <CheckIcon fontSize="small" />
+                                ) : (
+                                  <EditIcon fontSize="small" />
+                                )}
                               </IconButton>
 
                               {isFieldEditing && (
@@ -1234,7 +1374,7 @@ function Summary() {
     api
       .get(`/api/v1/me/points`)
       .then((resp) => {
-        if (resp.status === "error") router.replace("/survey?name=welcome");
+        // if (resp.status === "error") router.replace("/survey?name=welcome");
         let data = resp.data;
         setPoints(data.totalPoints);
         setThreshold(data.threshold);
@@ -1265,47 +1405,71 @@ function Summary() {
       label: "Rewards Processed Summary",
       render: (
         <Grid size={12} container justifyContent="center">
-         <Datatable
-          isLoading={false}
-          pagination={[10, 20, 50]}
-          pageSize={20}
-          hideColumnSelector
-          hideDownloadnoDataMsg="No Record Found."
-          data={[]}
-          extra={
-            <Box px={{ xs:0, md: 2 }} my={{ xs: 1, md: 0 }}>
-              <DateRangeSelector 
-                onUpdate={(e) => {
-                  setRewardsDateRange(
-                    e.map((d) => new Date(d.toDate()).toISOString().split("T")[0]),
-                  );
-                }}
-              />
-            </Box>
-          }
-          columns={[
-            { id: "claimedPoints", label: "Claimed Points", render: (info) => `${info.claimedPoints} pts` },
-            { id: "claimedAmount", label: "Claimed Amount", render: (info) => `₹${info.claimedAmount}` },
-            { id: "dateTime", label: "Date - Time", render: (info) => new Date(info.dateTime).toLocaleString() },
-            { id: "transactionId", label: "Transaction ID", render: (info) => info.transactionId },
-            { id: "paymentMethod", label: "Payment Method", render: (info) => info.paymentMethod },
-            {
-              id: "paymentProcessedDate",
-              label: "Payment Processed Date",
-              render: (info) =>
-                info.paymentProcessedDate
-                  ? new Date(info.paymentProcessedDate).toLocaleDateString()
-                  : "-",
-            },
-            {
-              id: "status",
-              label: "Status",
-              render: (info) => (
-                <span style={{ textTransform: "capitalize" }}>{info.status}</span>
-              ),
-            },
-          ]}
-         />
+          <Datatable
+            isLoading={false}
+            pagination={[10, 20, 50]}
+            pageSize={20}
+            hideColumnSelector
+            hideDownloadnoDataMsg="No Record Found."
+            data={[]}
+            extra={
+              <Box px={{ xs: 0, md: 2 }} my={{ xs: 1, md: 0 }}>
+                <DateRangeSelector
+                  onUpdate={(e) => {
+                    setRewardsDateRange(
+                      e.map(
+                        (d) => new Date(d.toDate()).toISOString().split("T")[0],
+                      ),
+                    );
+                  }}
+                />
+              </Box>
+            }
+            columns={[
+              {
+                id: "claimedPoints",
+                label: "Claimed Points",
+                render: (info) => `${info.claimedPoints} pts`,
+              },
+              {
+                id: "claimedAmount",
+                label: "Claimed Amount",
+                render: (info) => `₹${info.claimedAmount}`,
+              },
+              {
+                id: "dateTime",
+                label: "Date - Time",
+                render: (info) => new Date(info.dateTime).toLocaleString(),
+              },
+              {
+                id: "transactionId",
+                label: "Transaction ID",
+                render: (info) => info.transactionId,
+              },
+              {
+                id: "paymentMethod",
+                label: "Payment Method",
+                render: (info) => info.paymentMethod,
+              },
+              {
+                id: "paymentProcessedDate",
+                label: "Payment Processed Date",
+                render: (info) =>
+                  info.paymentProcessedDate
+                    ? new Date(info.paymentProcessedDate).toLocaleDateString()
+                    : "-",
+              },
+              {
+                id: "status",
+                label: "Status",
+                render: (info) => (
+                  <span style={{ textTransform: "capitalize" }}>
+                    {info.status}
+                  </span>
+                ),
+              },
+            ]}
+          />
         </Grid>
       ),
     },
@@ -1323,16 +1487,30 @@ function Summary() {
                 <DateRangeSelector
                   onUpdate={(e) => {
                     setRejectedDataRange(
-                      e.map((d) => new Date(d.toDate()).toISOString().split("T")[0]),
+                      e.map(
+                        (d) => new Date(d.toDate()).toISOString().split("T")[0],
+                      ),
                     );
                   }}
                 />
               </Box>
             }
             columns={[
-              { id: "survey", label: "Survey Name", render: (info) => info.survey?.name },
-              { id: "createdAt", label: "created At", render: (info) => new Date(info.createdAt).toLocaleString() },
-              { id: "points", label: "Points", render: (info) => `${info.points} pts` },
+              {
+                id: "survey",
+                label: "Survey Name",
+                render: (info) => info.survey?.name,
+              },
+              {
+                id: "createdAt",
+                label: "created At",
+                render: (info) => new Date(info.createdAt).toLocaleString(),
+              },
+              {
+                id: "points",
+                label: "Points",
+                render: (info) => `${info.points} pts`,
+              },
               { id: "reason", label: "Reason", render: (info) => info.reason },
               { id: "status", label: "Status", render: (info) => info.status },
             ]}

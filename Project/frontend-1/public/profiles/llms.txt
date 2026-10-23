@@ -1,0 +1,35 @@
+# Turn2Opinion Respondent Profile
+
+> Turn2Opinion is a global research community. On this page a respondent builds their profile, a set of short, themed questionnaires about who they are, their work, home, shopping, food, technology, media, gaming, health, sport, travel and research preferences. Completed profiles are used only to match the respondent with suitable paid surveys and research studies. The page works in 135 languages.
+
+Key facts:
+- 50 profiles: 37 for adults and 13 for respondents under 18. About 850 questions in total, and each profile takes 1 to 6 minutes.
+- Every profile category has its own visual "world", for example Executive suite (professional), Game arena (gaming), Care clinic (health), Wealth desk (finance) and Departures (travel).
+- Languages: 135. The interface text is hand-translated for 24 languages: English, Chinese (Simplified and Traditional), Spanish, Hindi, Arabic, French, Portuguese, Bengali, Russian, Japanese, German, Korean, Indonesian, Italian, Turkish, Vietnamese, Thai, Urdu, Polish, Dutch, Persian, Tamil and Swahili. Every other language, and all question text, is machine-translated. Arabic, Hebrew, Persian, Urdu and other right-to-left languages display right-to-left.
+- Language selection: the browser's language is detected automatically. A visitor can change it with the language button in the header, the language strip under the header, or the 3D greeting globe, or by adding `?lang=<code>` to the URL (for example `?lang=zh-CN`, `?lang=es`, `?lang=ar`).
+- Answers are saved in the respondent's browser as they go (autosave), and completed profiles are sent to Turn2Opinion's servers. Every answer can be edited after completion. Changes to identity details (name, email, phone, date of birth, gender, country) are reviewed to keep the panel secure.
+- The hub lists profiles in separate sections: in progress, still to complete (grouped by topic), Completed profiles (each with an Edit button), and Additional details last.
+- Choosing "Other" in any question opens a required "Please specify" box. The written answer is saved as `<question>-other`.
+- Members reach these profiles after registering (consent is collected at registration), so the profile pages never ask for consent and never show a CAPTCHA.
+- Answers are validated as the respondent types, and problems are graded instead of simply rejected. Clear errors (for example, impossible dates or disposable email domains) must be fixed. Likely mistakes (for example, "gmial.com") get a "please check" note that the respondent can accept. Choosing "Other" always asks the respondent to specify. Email and phone can optionally be verified with a one-time code in Additional details. Names in every script are accepted, phone numbers are stored in international E.164 format, and income is asked as a range in the local currency.
+- "Additional details" is the last profile: verified contact details, nationality and residence, address, household, work, education, survey participation, payout details, social profiles and accessibility needs. Completed profiles are listed in their own section and can be edited at any time.
+- Each profile has its own address, for example `#/b2c/travel`.
+- Privacy: answers are used only to match the respondent with research studies. Sensitive questions are optional where possible.
+- Rewards (Opinion City): every completed profile earns 100 Opinion Points, and 1,000 points = 1 USD. Points are awarded once per profile; editing answers later never adds more. Adults can earn up to 3,700 points ($3.70) and respondents under 18 up to 1,300 points ($1.30).
+- Each profile is a tower in the respondent's own "Opinion City" skyline on the hub. Completing a profile builds its tower: it rises from its plot, its windows light up, its emoji lands on the roof and a firework sends +100 points to the points counter in the header. The city grows through five levels: Hamlet, Town, City, Metropolis and Megacity. The city takes the colours and the sounds of the respondent's language.
+- Reminder e-mails: members with unfinished profiles receive an "Opinion City" e-mail at most once every 2 days, in their language (24 languages, English otherwise), showing their skyline, points, cash value, city level, progress by topic and links straight into the next profiles. Every e-mail has a one-click unsubscribe link, and the e-mails stop when every profile is complete.
+
+## Pages and data
+
+- [Profile builder](./): the single-page app. It shows the profile hub, then the question flow for the chosen profile, then a completion screen.
+- [Question bank (core)](data/core.json): questions (`Q`), option lists (`O`), aliases (`A`, `L`) and lazy-loaded list index.
+- [Cities by country](data/city/US.json): one file per ISO country code, keyed by state code.
+- [Job titles by department](data/jobrole/0.json): one file per department (see `lazy.jobrole` in core.json).
+- [Interface translations](i18n/ui/zh-CN.json): hand-written UI text per language (`ui`) plus profile, group and world names (`c`).
+- [Image alt text](alt-text.json): a description of every image used on the page.
+- [Reminder e-mail images](images/email/meta.json): the skyline and plot images used in the Opinion City reminder e-mails, with the profile list they are drawn from.
+
+## Optional
+
+- [Web app manifest](manifest.webmanifest)
+- [Open Graph image](og-image.png)

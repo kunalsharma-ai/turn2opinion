@@ -14,7 +14,7 @@ export default function ProfileCard({ p, i, k, st, v = 'bento', hidden, onOpen }
   const [e1, e2, e3] = profileEmoji(p.s);
   const style = { '--k': Math.min(k, 16), '--pa': tw.a, '--pb': tw.a2, '--pc': tw.a3, '--ppat': pp[0], '--ppsz': pp[1], '--pdark': tw.dark ? tw.bg : 'transparent' };
   const status = s.st === 'done' ? t('f_done') : s.st === 'prog' ? t('st_prog', { pct: s.pct }) : t('f_new');
-  const name = pnameT(p), src = `/illustrations/${id}.svg`;
+  const name = pnameT(p), src = `/profiles/illustrations/${id}.svg`;
   return (
     <button className={'pcard v-' + v + (tw.dark ? ' dk' : '') + (p.c === 'minor' ? ' teen' : '')} type="button" data-i={i} data-st={s.st} style={style} hidden={hidden}
       aria-label={t('card_aria', { name, n, status })} onClick={() => onOpen(i)} onPointerEnter={prefetchCore} onFocus={prefetchCore}>
@@ -34,6 +34,7 @@ export default function ProfileCard({ p, i, k, st, v = 'bento', hidden, onOpen }
           <span className="mq">{t('card_meta', { n, m })}</span>
           <span className={'pill ' + s.st}>{s.st === 'done' && <Icon n="check" />}{status}</span>
         </span>
+        <span className={'rwchip' + (s.st === 'done' ? ' got' : '')} aria-hidden="true">{s.st === 'done' ? '✅ ' + t('rw_earned') : '🏗️ ' + t('rw_plus', { n: 100 })}</span>
         <span className="pbar" aria-hidden="true"><i style={{ '--w': s.pct + '%' }} /></span>
         {s.st === 'done' && <span className="pv-edit"><Icon n="edit" />{t('edit_responses')}</span>}
       </span>

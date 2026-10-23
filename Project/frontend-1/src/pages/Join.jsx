@@ -1,6 +1,7 @@
 // Free sign-up: 3-step wizard with live member-card preview, full validation, full DOB (calendar),
 // country flags + dial codes, guardian email for under-18s and CAPTCHA.
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { isValidPhoneNumber } from 'libphonenumber-js';
 import { Link } from '../router/Router.jsx';
 import { ENV, asset } from '../config/env.js';
 import { SITE } from '../config/site.js';
@@ -17,11 +18,27 @@ import SocialAuth from '../components/SocialAuth.jsx';
 import FollowUs from '../components/FollowUs.jsx';
 import ResendVerify from '../components/ResendVerify.jsx';
 
-const category={ consumer:"b2c"}
+const emailCheck = {
+  validateDomain: async (v) => {
+    try {
+      const r = await api.post('/api/v1/validator/email', { email: v });
+      return !!r?.valid;
+    } catch { return true; } // network fail pe block mat karo, server baad mein bhi check karta hai
+  },
+  checkDuplicate: async (v) => {
+    try {
+      const { data } = await api.post('/api/v1/user/check', { mail: v });
+      return !isNaN(data) && data <= 0;
+    } catch { return true; }
+  }
+};
+
+const category = { consumer: "b2c", pro: "b2b" };
 const STEPS = ['About you', 'Secure your account', 'Contact & profile'];
 const STEP_ICONS = ['user', 'lock', 'phone'];
 const TYPE_KEY = 't2o_join_type';
 const PENDING_JOIN_KEY = 't2o_pending_registration';
+const RESUME_KEY = 't2o_resume_signup';
 const NAME_RE = /^[\p{L}][\p{L} .'-]{0,48}$/u;
 const GENDERS = [
   'Female',
@@ -111,10 +128,10 @@ const initial = {
 };
 
 const WORK_LEVELS = [
-  { key: 'empstat',    name: 'empstat',    label: 'Employment status', api: 'api/v1/option/empstat',    parent: null,         method: 'get'  },
-  { key: 'industry',   name: 'industry',   label: 'Industry',          api: 'api/v1/option/industry',   parent: 'empstat',    method: 'post' },
-  { key: 'sector',     name: 'sector',     label: 'Specialization',    api: 'api/v1/option/sector',     parent: 'industry',   method: 'post' },
-  { key: 'department', name: 'department', label: 'Department',        api: 'api/v1/option/department', parent: 'sector',     method: 'post' },
+  { key: 'empstat',    name: 'empstat',    label: 'Employment status', api: '/api/v1/option/empstat',    parent: null,         method: 'get'  },
+  { key: 'industry',   name: 'industry',   label: 'Industry',          api: '/api/v1/option/industry',   parent: 'empstat',    method: 'post' },
+  { key: 'sector',     name: 'sector',     label: 'Specialization',    api: '/api/v1/option/sector',     parent: 'industry',   method: 'post' },
+  { key: 'department', name: 'department', label: 'Department',        api: '/api/v1/option/department', parent: 'sector',     method: 'post' },
   { key: 'jobTitle',   name: 'jobrole',    label: 'Job title',         api: '/api/v1/option/jobrole',    parent: 'department', method: 'post' },
 ];
 // dropdown ki value aur save hone wali answer dono label hi rakhte hain
@@ -161,14 +178,11 @@ function validate(step, f) {
 
     if (!f.dial) {
       e.phone = 'Choose your country code.';
-    } else if (
-      digits.length < 6 ||
-      digits.length > 14 ||
-      dialDigits.length + digits.length > 15
-    ) {
-      e.phone =
-        'Enter a valid mobile number (6–14 digits, without the country code).';
-    } else if (/^(\d)\1+$/.test(digits)) {
+    } 
+    else if (!isValidPhoneNumber(`+${dialDigits}${digits}`)) {
+      e.phone = 'Enter a valid mobile number for the selected country.';
+    }
+     else if (/^(\d)\1+$/.test(digits)) {
       e.phone = 'That number doesn’t look real.';
     }
     if (f.type === 'pro') {
@@ -267,14 +281,17 @@ export default function Join() {
   const [workOpts, setWorkOpts] = useState({});
   const [workLoading, setWorkLoading] = useState({});
   const [duplicate, setDuplicate] = useState(false);
+  const [emailErr, setEmailErr] = useState('');
   // password set hone ke baad login + consents ka status (retry-safe)
   const session = useRef({ loggedIn: false, consentSaved: false });
 
   const age = ageOn(f.dob);
   const minor = age !== null && age < SITE.adultAge;
   const live = validate(step, f);
-  const errOf = (k) => (touched[k] || submitted ? live[k] || '' : '');
-  const okOf = (k) => touched[k] && !live[k];
+  // const errOf = (k) => (touched[k] || submitted ? live[k] || '' : '');
+  // const okOf = (k) => touched[k] && !live[k];
+  const errOf = (k) => (touched[k] || submitted ? live[k] || (k === 'email' ? emailErr : '') || '' : '');
+  const okOf = (k) => touched[k] && !live[k] && !(k === 'email' && emailErr);
 
   const set = (k, v) => setF((p) => ({ ...p, [k]: v }));
   const touch = (k) => () => setTouched((t) => ({ ...t, [k]: true }));
@@ -302,6 +319,21 @@ const loadWorkOptions = async (lvl, parentVal) => {
 useEffect(() => {
   if (f.type === 'pro' && step === 2) loadWorkOptions(WORK_LEVELS[0]);
 }, [f.type, step]); // eslint-disable-line react-hooks/exhaustive-deps // eslint-disable-line react-hooks/exhaustive-deps
+
+
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  const queries = Object.fromEntries(params.entries());
+
+  if (!(queries.category)) return;
+
+  setF(prev => ({
+    ...prev,
+    type: queries?.category==="professional"?"pro":"consumer"
+  }));
+},[])
+
+console.log(f)
 
 useEffect(() => {
   const params = new URLSearchParams(window.location.search);
@@ -333,7 +365,7 @@ useEffect(() => {
           email: u.mail ?? p.email,
           dob: u.dob ? String(u.dob).slice(0, 10) : p.dob,
           gender: u.gender ?? p.gender,
-          type: savedType || (u.category && u.category !== 'b2c' ? 'pro' : 'consumer'),
+          type: savedType || (u.category === 'b2b' ? 'pro' : 'consumer'),
         }));
       }
 
@@ -346,6 +378,39 @@ useEffect(() => {
     }
   })();
 }, []);
+
+
+// Login se aaya incomplete user: ?user=<id>&resume=1 -> seedha step 2
+useEffect(() => {
+  const q = new URLSearchParams(window.location.search);
+  if (q.get('resume') !== '1' || !q.get('user')) return;
+
+  let saved = null;
+  try { saved = JSON.parse(sessionStorage.getItem(RESUME_KEY)); } catch (e) { /* ignore */ }
+
+  // data nahi mila (direct URL khola) -> wapas login
+  if (!saved || String(saved.user) !== q.get('user')) {
+    window.location.replace('/login/');
+    return;
+  }
+
+  setF((p) => ({
+    ...p,
+    firstName: saved.firstName ?? p.firstName,
+    lastName: saved.lastName ?? p.lastName,
+    email: saved.email ?? p.email,
+    dob: saved.dob ?? p.dob,
+    gender: saved.gender ?? p.gender,
+    type: saved.type ?? p.type,
+  }));
+  setQueryParams({ user: q.get('user') });
+
+  // user pehle hi login ho chuka hai aur consents step 1 mein save ho chuki hain
+  session.current = { loggedIn: true, consentSaved: true };
+
+  setPendingSignup(true);
+  setStep(2);
+}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (f.country && !f.dial) set('dial', f.country);
@@ -406,6 +471,22 @@ const onWorkChange = (idx, val) => {
   };
 
   // ---------- STEP 0: About you -> create user + send verification mail ----------
+  const checkEmail = async () => {
+  const v = f.email.trim().toLowerCase();
+  if (!EMAIL_RE.test(v)) return true; // format error validate() already dikha raha hai
+  if (!(await emailCheck.validateDomain(v))) {
+    setEmailErr('This email domain looks invalid or can’t receive mail.');
+    return false;
+  }
+  if (!(await emailCheck.checkDuplicate(v))) {
+    setDuplicate(true); // tumhara existing "Email already registered" + ResendVerify UI khulega
+    setMsg('This email is already registered.');
+    setState('error');
+    return false;
+  }
+  setEmailErr('');
+  return true;
+};
   const next = async (e) => {
     e?.preventDefault();
     const v = validate(0, f);
@@ -414,6 +495,8 @@ const onWorkChange = (idx, val) => {
       focusFirstError(v);
       return;
     }
+    setState('sending');
+    if (!(await checkEmail())) { setSubmitted(true); if (state !== 'error') setState('idle'); return; }
     await submitSignup();
   };
 
@@ -422,6 +505,7 @@ const submitSignup = async () => {
   setMsg('');
 
   try {
+    console.log('signup payload category:', category[f.type], 'type:', f.type);
     let res = await api.put(`/api/v1/user`,{
       category: category[f.type],
       name: {
@@ -441,6 +525,7 @@ const submitSignup = async () => {
 
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     })
+  console.log({res});
     if (res.status === "success") {
       try { localStorage.setItem(TYPE_KEY, f.type); } catch (e) { /* ignore */ }
       setPendingSignup(true);
@@ -479,11 +564,16 @@ const submitSignup = async () => {
     if (!session.current.consentSaved) {
       try {
         const r = await api.put(`/api/v1/user/${queryParams.user}`, {
-          consents: {
-            terms: f.terms,
-            research: f.research,
-            marketing: f.marketing,
-          },
+          // consents: {
+          //   terms: f.terms,
+          //   research: f.research,
+          //   marketing: f.marketing,
+          // },
+          joiningTerms: [
+            f.terms && 'privacy-policy',
+            f.marketing && 'newsletter',
+            f.research && 'video-concent',
+          ].filter(Boolean),
         });
         session.current.consentSaved = r?.status === 'success';
         if (!session.current.consentSaved) console.error('Consent save failed:', r);
@@ -598,9 +688,6 @@ const submitSignup = async () => {
         guardianEmail: minor
           ? f.guardianEmail.trim().toLowerCase()
           : undefined,
-        // notificationChannels: Object.keys(f.channels)
-        //   .filter((k) => f.channels[k])
-        //   .concat('dashboard'),
       });
       if (upd.status !== 'success') {
         setState('error');
@@ -608,23 +695,24 @@ const submitSignup = async () => {
         return;
       }
 
-
+      const answerPayload = {
+        'communication-methods': Object.keys(f.channels).filter((k) => f.channels[k]).concat('dashboard'),
+      };
       if (f.type === 'pro') {
-        const workPayload = {};
-        WORK_LEVELS.forEach((l) => {
-          workPayload[l.name] = f[l.key];
-        });
+        WORK_LEVELS.forEach((l) => { answerPayload[l.name] = f[l.key]; });
+        if (f.company.trim()) answerPayload.companyname = f.company.trim();
+        if (f.workEmail.trim()) answerPayload.workemail = f.workEmail.trim().toLowerCase();
+      }
 
-        const workResp = await api.patch('/api/v1/me/answer', workPayload);
-
-        if (workResp.status !== 'success') {
-          setState('error');
-          setMsg(failureMessage({ data: workResp }));
-          return;
-        }
+      const ansResp = await api.patch('/api/v1/me/answer', answerPayload);
+      if (ansResp.status !== 'success') {
+        setState('error');
+        setMsg(failureMessage({ data: ansResp }));
+        return;
       }
       try {
         localStorage.removeItem(PENDING_JOIN_KEY);
+        sessionStorage.removeItem(RESUME_KEY);
       } catch (e) {
         console.error('Unable to clear pending registration:', e);
       }
@@ -835,7 +923,8 @@ const submitSignup = async () => {
                 </div>
                 <div data-k="email">
                   <Field id="j-email" label="Email address" error={errOf('email')} valid={okOf('email')} hint="We’ll send a verification link here.">
-                    <input id="j-email" className="input" type="email" value={f.email} onChange={(e) => set('email', e.target.value)} onBlur={touch('email')} autoComplete="email" maxLength={120} aria-invalid={!!errOf('email')} />
+                    <input id="j-email" className="input" type="email" value={f.email} onChange={(e) => { set('email', e.target.value); setEmailErr(''); }}
+onBlur={() => { touch('email')(); checkEmail(); }} autoComplete="email" maxLength={120} aria-invalid={!!errOf('email')} />
                   </Field>
                 </div>
                 <div data-k="dob">

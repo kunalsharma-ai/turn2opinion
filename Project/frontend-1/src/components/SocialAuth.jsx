@@ -63,6 +63,7 @@ export default function SocialAuth() {
   const [providers, setProviders] = useState([]);
 
   useEffect(() => {
+    console.log("loading socials")
     api
       .post('/api/v1/auth/socials', {})
       .then((resp) => setProviders(resp?.data ?? []))

@@ -1,6 +1,6 @@
 // Home hero: consumer / professional switch that re-tunes the tagline, the rotating audience word,
 // the persona orbit and the animated "survey → reward unlocked" phone. No fake amounts are shown.
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from '../../router/Router.jsx';
 import { prefersReducedMotion } from '../../hooks/useMounted.js';
 import Icon from '../Icon.jsx';
@@ -11,6 +11,7 @@ import AuroraCanvas from '../AuroraCanvas.jsx';
 import { peopleAlt } from '../../data/illustrations.js';
 import { useI18n } from '../../i18n/I18nProvider.jsx';
 import { tr } from '../../i18n/engine.js';
+import { api } from '../../utils/api.js';
 
 export const AUDIENCES = {
   consumer: {
@@ -307,9 +308,10 @@ export default function HomeHero() {
             {a.lead} <Rotator words={a.who} /> {a.leadEnd}
           </p>
           <div className="hero-actions">
-            <Link to="/join/" className="btn btn-primary btn-lg btn-shimmer">
+          
+            <a href={`/join?category=${aud}`} className="btn btn-primary btn-lg btn-shimmer">
               {a.cta} <Icon name="arrow" size={18} />
-            </Link>
+            </a>
             <Link to="/how-it-works/" className="btn btn-ghost btn-lg">
               <Icon name="play" size={18} /> How it works
             </Link>

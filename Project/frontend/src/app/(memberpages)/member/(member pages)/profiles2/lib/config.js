@@ -10,11 +10,13 @@
      },
      images: { travel: '/img/travel.jpg' },   // optional: photo per world id for the stage panel
      api: '/api',                             // optional: validation/OTP/risk API (server/api-server.mjs); without it OTP runs in demo mode
+     progressEndpoint: 'https://api.example.com/t2o/progress', // optional (v5.2): Opinion City progress for the 2-day reminder e-mails (server/reminders)
+     memberId: '<panel member id>',           // optional: your member id, so reminders reach the right account (default: this browser's install id)
    }</script>
    Without an endpoint, answers are saved on the device exactly like the original page,
    and a 't2o:profile-submit' window event is dispatched with the payload. */
 export const CFG = Object.assign(
-  { endpoint: '', method: 'POST', headers: {}, credentials: 'same-origin', dataUrl: '', images: {}, translate: {}, api: '' },
+  { endpoint: '', method: 'POST', headers: {}, credentials: 'same-origin', dataUrl: '', images: {}, translate: {}, api: '', progressEndpoint: '', memberId: '' },
   (typeof window !== 'undefined' && window.T2O_CONFIG) || {}
 );
 

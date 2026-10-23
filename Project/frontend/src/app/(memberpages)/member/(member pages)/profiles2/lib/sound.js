@@ -19,7 +19,7 @@ const SCALES = {
 const mtof = (m) => 440 * Math.pow(2, (m - 69) / 12);
 
 export const sound = {
-  on: LS.get('ui:sound') !== 'on',
+  on: LS.get('ui:sound') !== 'off',
   ctx: null, out: null, verb: null, nb: null,
   setOn(v) { this.on = v; LS.set('ui:sound', v ? 'on' : 'off'); },
   /* Create/resume the audio context. Call from inside a click/keypress. */
@@ -162,6 +162,66 @@ export const sound = {
     const c = this.prime(); if (!c || !this.on) return;
     const t = c.currentTime + 0.02;
     this.tone(880, t, 0.18, 0.07, 'sine'); this.tone(1318.5, t + 0.06, 0.25, 0.05, 'sine');
+  },
+
+  /* ---------- Opinion City reward sounds ----------
+     Voiced with the current language's own instrument and scale (the same family as its language motif:
+     koto in Japanese, sitar in Hindi, oud in Arabic, flamenco guitar in Spanish…), so every language's city
+     sounds different. build(): a tower rises · windows(): lights come on floor by floor ·
+     firework(): rocket and burst · land(): +100 lands in the header · levelUp(): the city reaches a new level. */
+  _specs: {},
+  _spec(code) { return this._specs[code] || (this._specs[code] = MOTIFS[code] || generated(code)); },
+  _deg(spec, d, o = 0) { const sc = SCALES[spec.scale] || SCALES.major, n = sc.length, k = Math.floor(d / n), i = ((d % n) + n) % n; return mtof(spec.root + sc[i] + 12 * (k + o)); },
+  _lv(spec, f, t, d, vol) {
+    switch (spec.inst) {
+      case 'pluck': case 'tremolo': case 'strum': return this.pluck(f, t, Math.max(0.4, d), vol * 1.2, spec.opt);
+      case 'bell': return this.fm(f, t, Math.max(0.5, d), vol * 0.8, Object.assign({ ratio: 3.5, index: 2.4 }, spec.opt));
+      case 'flute': return this.flute(f, t, Math.max(0.2, d * 0.8), vol, spec.opt);
+      case 'reed': return this.reed(f, t, Math.max(0.2, d * 0.8), vol * 0.6, spec.opt);
+      case 'bow': return this.bow(f, t, Math.max(0.25, d), vol * 0.55, spec.opt);
+      case 'brass': return this.brass(f, t, Math.max(0.2, d * 0.7), vol * 0.5);
+      default: return this.tone(f, t, d, vol, 'triangle');
+    }
+  },
+  build(code = 'en') {
+    const c = this.prime(); if (!c || !this.on) return;
+    const t = c.currentTime + 0.02, sp = this._spec(code);
+    /* construction rumble rising with the tower */
+    const n = c.createBufferSource(); n.buffer = this.noise(); n.loop = true;
+    const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(160, t); lp.frequency.exponentialRampToValueAtTime(900, t + 0.75);
+    const g = c.createGain(); this.env(g, t, 0.08, 0.16, 0.85); n.connect(lp).connect(g); this.send(g, 0.2); n.start(t); n.stop(t + 0.9);
+    this.drum('kick', t, 0.35);
+    [0, 1, 2, 3, 4, 5, 7].forEach((d, i) => this._lv(sp, this._deg(sp, d), t + 0.1 + i * 0.085, 0.22, 0.07 + i * 0.008));
+    if (sp.perc && sp.perc[0]) this.drum(sp.perc[0][1], t + 0.72, 0.45);
+  },
+  windows(code = 'en', floors = 6) {
+    const c = this.prime(); if (!c || !this.on) return;
+    const t = c.currentTime + 0.02, sp = this._spec(code);
+    for (let i = 0; i < floors; i++) this.fm(this._deg(sp, 7 + i, 1), t + i * 0.07, 0.35, 0.025, { ratio: 2.76, index: 1.1, wet: 0.6 });
+  },
+  firework() {
+    const c = this.prime(); if (!c || !this.on) return;
+    const t = c.currentTime + 0.02;
+    const w = c.createBufferSource(); w.buffer = this.noise();
+    const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 6; bp.frequency.setValueAtTime(500, t); bp.frequency.exponentialRampToValueAtTime(4200, t + 0.5);
+    const g = c.createGain(); this.env(g, t, 0.05, 0.12, 0.55, 'lin'); w.connect(bp).connect(g); this.send(g, 0.3); w.start(t); w.stop(t + 0.6);
+    const b = t + 0.55; this.drum('kick', b, 0.55); this.drum('clap', b, 0.4);
+    for (let i = 0; i < 14; i++) { const n = c.createBufferSource(); n.buffer = this.noise(); const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 3000 + Math.random() * 4000; const gg = c.createGain(); const st = b + 0.08 + Math.random() * 0.7; this.env(gg, st, 0.002, 0.05 + Math.random() * 0.05, 0.05); n.connect(hp).connect(gg); this.send(gg, 0.5); n.start(st, Math.random()); n.stop(st + 0.08); }
+  },
+  land(code = 'en') {
+    const c = this.prime(); if (!c || !this.on) return;
+    const t = c.currentTime + 0.01, sp = this._spec(code);
+    this._lv(sp, this._deg(sp, 4, 1), t, 0.3, 0.09); this._lv(sp, this._deg(sp, 7, 1), t + 0.08, 0.5, 0.1);
+    this.fm(this._deg(sp, 9, 1), t + 0.08, 0.6, 0.03, { ratio: 3.5, index: 1.4 });
+  },
+  levelUp(code = 'en') {
+    const c = this.prime(); if (!c || !this.on) return;
+    const t = c.currentTime + 0.03, sp = this._spec(code);
+    [0, 2, 4, 7].forEach((d, i) => this._lv(sp, this._deg(sp, d), t + i * 0.11, 0.45, 0.1));
+    [0, 2, 4].forEach((d) => this._lv(sp, this._deg(sp, d + 7), t + 0.5, 1.2, 0.07));
+    if (sp.gong) this.gong(this._deg(sp, 0, -1), t + 0.5, 2, 0.1);
+    this.drum('kick', t + 0.5, 0.5);
+    (sp.perc || []).slice(0, 3).forEach(([b, k, v]) => this.drum(k, t + 0.5 + b * 0.12, v));
   },
 
   /* ---------- question clicks ----------

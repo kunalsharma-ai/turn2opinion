@@ -129,7 +129,7 @@ async function loadBundle(code) {
   let b = null;
   if (typeof window !== 'undefined' && window.T2O_I18N && window.T2O_I18N[code]) { b = window.T2O_I18N[code]; bundleCache.set(code, b); return b; }
   try { b = JSON.parse(LS.get('t2o:ui:' + code) || 'null'); } catch (e) { b = null; }
-  const fresh = fetch(`i18n/ui/${code}.json?v=3`).then((r) => (r.ok ? r.json() : null)).then((j) => {
+  const fresh = fetch(`/profiles/i18n/ui/${code}.json?v=3`).then((r) => (r.ok ? r.json() : null)).then((j) => {
     if (j) { LS.set('t2o:ui:' + code, JSON.stringify(j)); bundleCache.set(code, j); }
     return j;
   }).catch(() => null);
@@ -144,9 +144,9 @@ let packList = null;   // i18n/content/index.json lists which languages have a p
 function loadPack(code) {
   if (packs.has(code)) return packs.get(code);
   if (typeof location !== 'undefined' && location.protocol === 'file:') return Promise.resolve(null);
-  if (!packList) packList = fetch('i18n/content/index.json').then((r) => (r.ok ? r.json() : [])).catch(() => []);
+  if (!packList) packList = fetch('/profiles/i18n/content/index.json').then((r) => (r.ok ? r.json() : [])).catch(() => []);
   const p = packList.then((list) => (Array.isArray(list) && list.includes(code)
-    ? fetch(`i18n/content/${code}.json`).then((r) => (r.ok ? r.json() : null)).catch(() => null) : null));
+    ? fetch(`/profiles/i18n/content/${code}.json`).then((r) => (r.ok ? r.json() : null)).catch(() => null) : null));
   packs.set(code, p);
   return p;
 }

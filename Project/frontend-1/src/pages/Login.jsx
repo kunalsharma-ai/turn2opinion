@@ -10,6 +10,7 @@ import { EMAIL_RE, Field } from '../components/FormFields.jsx';
 import Icon from '../components/Icon.jsx';
 import SocialAuth from '../components/SocialAuth.jsx';
 import ResendVerify from '../components/ResendVerify.jsx';
+import { isProfileIncomplete, saveResumeData } from '../utils/profileGate.js';
 import FollowUs from '../components/FollowUs.jsx';
 
 /** Welcome portal: a member waves from a morphing portal while their rewards, surveys and security status orbit. */
@@ -54,6 +55,7 @@ export default function Login() {
   const [state, setState] = useState('idle');
   const [msg, setMsg] = useState('');
   const [unverified, setUnverified] = useState(false);
+  const [incomplete, setIncomplete] = useState(null);
   const onCaptcha = useCallback((t) => setCaptcha(t), []);
 
   useEffect(() => {
@@ -94,6 +96,11 @@ export default function Login() {
        try {
           const me = await api.get('/api/v1/me');
           if (me?.status === 'success' && me.data) {
+            if (isProfileIncomplete(me.data)) {
+              setIncomplete(me.data);
+              setState('idle');
+              return;
+            }
             localStorage.setItem('user', JSON.stringify(me.data));
           }
         } catch (err) {
@@ -117,6 +124,10 @@ export default function Login() {
     }
     
   };
+const goResume = () => {
+  const uid = saveResumeData(incomplete);
+  window.location.assign(`/join/?user=${uid}&resume=1`);
+};
 const isNew = new URLSearchParams(window.location.search).get('new') === '1';
 if (unverified) {
   return (
@@ -137,6 +148,79 @@ if (unverified) {
         Login with another account
       </button>
     </ResendVerify>
+  );
+}
+
+if (incomplete) {
+  const first = incomplete.name?.first;
+  const steps = [
+    ['About you', true],
+    ['Secure your account', true],
+    ['Contact & profile', false],
+  ];
+  return (
+    <section className="login">
+      <div className="login-bg" aria-hidden="true" />
+      <div className="wrap login-grid">
+        <div className="login-art">
+          <Breadcrumbs items={[{ label: 'Login' }]} />
+          <h1>You’re almost in{first ? `, ${first}` : ''}!</h1>
+          <p className="login-tag">One last step and your account is ready – your surveys and rewards are waiting.</p>
+          <WelcomePortal />
+        </div>
+        <div className="login-card">
+          <div className="login-card-glow" aria-hidden="true" />
+          <span className="padlock" aria-hidden="true">
+            <span className="pl-shackle" />
+            <span className="pl-body">
+              <Icon name="lock" size={18} />
+            </span>
+          </span>
+          <h2>Complete your joining</h2>
+          <p className="login-sub" style={{ textAlign: 'center' }}>
+            Your account isn’t fully created yet. Finish the last step first, then you can sign in.
+          </p>
+
+          <ul style={{ listStyle: 'none', padding: 0, margin: '20px 0', display: 'grid', gap: 12 }}>
+            {steps.map(([label, done]) => (
+              <li key={label} style={{ display: 'flex', alignItems: 'center', gap: 10, fontWeight: done ? 500 : 700 }}>
+                <Icon name={done ? 'check' : 'arrow'} size={16} />
+                <span>{label}</span>
+                <small style={{ marginLeft: 'auto', opacity: 0.7 }}>{done ? 'Done' : 'Pending'}</small>
+              </li>
+            ))}
+          </ul>
+
+          <button type="button" className="btn btn-primary btn-block btn-lg" onClick={goResume}>
+            Complete joining <Icon name="arrow" size={18} />
+          </button>
+                    <button
+            type="button"
+            style={{
+              display: 'block',
+              margin: '16px auto 0',
+              background: 'none',
+              border: 'none',
+              padding: '4px 8px',
+              cursor: 'pointer',
+              font: 'inherit',
+              fontWeight: 600,
+              color: '#1F5BFF',
+              textDecoration: 'underline',
+              textUnderlineOffset: 3,
+              transition: 'color .2s',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = '#12C29B'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = '#1F5BFF'; }}
+            onFocus={(e) => { e.currentTarget.style.color = '#12C29B'; }}
+            onBlur={(e) => { e.currentTarget.style.color = '#1F5BFF'; }}
+            onClick={() => { setIncomplete(null); setEmail(''); setPw(''); setResetKey((k) => k + 1); }}
+          >
+            Login with another account
+          </button>
+        </div>
+      </div>
+    </section>
   );
 }
 

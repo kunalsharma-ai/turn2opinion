@@ -11,6 +11,7 @@ export { default as Answers } from "./Answers.js";
 export { default as Response } from "./Response.js";
 export { default as Rewards } from "./Rewards.js";
 export { default as SurveyProject } from "./ProjectLaunch.js";
+export { default as Testimonial } from "./Testimonials.js";
 export { default as Socials } from "./Socials.js";
 export { default as SupportTicket } from "./SupportTicket.js";
 export { default as SupportComment } from "./SupportComment.js";

@@ -11,6 +11,7 @@ import SocialRedirect from './components/SocialRedirect.jsx';
 import AnimationGate from './components/AnimationGate.jsx';
 import { I18nProvider } from './i18n/I18nProvider.jsx';
 import { useI18n } from './i18n/I18nProvider.jsx';
+import MemberGuard from './components/MemberGuard.jsx';
 
 const LanguagePicker = lazy(() => import('./components/LanguagePicker.jsx').then((m) => ({ default: m.LanguagePicker })));
 const TranslateStatus = lazy(() => import('./components/LanguagePicker.jsx').then((m) => ({ default: m.TranslateStatus })));
@@ -87,7 +88,9 @@ function Shell() {
   let content;
   if (ready) {
     const Page = getPage(route);
-    content = <Page key={path} params={params} data={getData(path)} />;
+    const page = <Page key={path} params={params} data={getData(path)} />;
+    // member area ke pages: pehle check ho ki profile complete hai ya nahi
+    content = path.startsWith('/member/') ? <MemberGuard>{page}</MemberGuard> : page;
     last.current = content;
   } else content = last.current;
 

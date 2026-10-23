@@ -10,7 +10,71 @@ import { loadDone } from '../lib/storage.js';
 import { flagFor, themeId, pnameT, qText, ansLabel } from '../lib/present.js';
 import { sound } from '../lib/sound.js';
 import { useToast } from './Toasts.jsx';
-import { t, tr, nf, useI18n } from '../i18n/index.js';
+import { t, tr, nf, lang, useI18n } from '../i18n/index.js';
+import { towerSpec, towerSVG, towerBox, CITY_DEFS } from '../lib/city-art.js';
+import { totalPoints, fmtUsd, markPaid, isPaid, POINTS_PER_PROFILE, POINTS_PER_USD } from '../lib/rewards.js';
+import { skyFirework, flyToPill, pillPop } from '../lib/cityfx.js';
+import { profileKey } from '../lib/storage.js';
+import { reducedMotion } from '../lib/fx.js';
+import Odo from './Odo.jsx';
+import { ensureCityStyles } from '../lib/city-style.js';
+
+ensureCityStyles();
+
+/* Opinion City reward on the completion screen (first finish only): the profile's tower rises from its
+   blueprint between the respondent's other towers, its windows light up floor by floor, the emoji lands on
+   the roof and a firework bursts with +100 Opinion Points. The odometer rolls to the new balance. */
+function TowerRise({ p }) {
+  const box = useRef(null), sp = towerSpec(p.s);
+  const after = totalPoints(), before = Math.max(0, after - POINTS_PER_PROFILE);
+  const [phase, setPhase] = useState(0), [v, setV] = useState(before);
+  const hood = PROFILES.filter((q) => q.c === p.c && q !== p && loadDone(q)).slice(0, 6).map((q) => towerSpec(q.s));
+  const left = hood.filter((_, i) => i % 2 === 0), right = hood.filter((_, i) => i % 2 === 1);
+  useEffect(() => {
+    if (reducedMotion()) { setPhase(3); setV(after); return undefined; }
+    const code = lang(), T = [];
+    T.push(setTimeout(() => { setPhase(1); sound.build(code); }, 1300));
+    T.push(setTimeout(() => { setPhase(2); sound.windows(code, 6); }, 2150));
+    T.push(setTimeout(() => {
+      setPhase(3); setV(after); sound.firework();
+      const host = box.current, tw = host && host.querySelector('.tr-main .tw-art');
+      if (!tw) return;
+      const hr = host.getBoundingClientRect(), r = tw.getBoundingClientRect(), x = r.left - hr.left + r.width / 2, y1 = Math.max(30, r.top - hr.top - 56), key = profileKey(p);
+      skyFirework(host, x, r.top - hr.top, y1, [sp.a, sp.a2, sp.a3, '#ffd66b'], t('rw_plus', { n: POINTS_PER_PROFILE })).then(() => {
+        if (isPaid(key) || !box.current) return null;
+        return flyToPill({ x: hr.left + x, y: hr.top + y1 }, t('rw_plus', { n: POINTS_PER_PROFILE }), [sp.a2, sp.a3, '#ffd66b']);
+      }).then((el) => { if (el) { markPaid(key); pillPop(el); sound.land(code); } });
+    }, 3050));
+    return () => T.forEach(clearTimeout);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const toNext = POINTS_PER_USD - (after % POINTS_PER_USD);
+  const mini = (s, k) => <span key={k} className="tr-n" style={{ aspectRatio: '40 / ' + towerBox(s).vbH }} dangerouslySetInnerHTML={{ __html: towerSVG(s, 'lit') }} />;
+  return (
+    <div className={'trise ph' + phase} ref={box} role="group" aria-label={t('cel_rw_title')}>
+      <svg className="city-defs" width="0" height="0" aria-hidden="true" focusable="false"><defs dangerouslySetInnerHTML={{ __html: CITY_DEFS }} /></svg>
+      <div className="tr-scene" aria-hidden="true">
+        <span className="sky-stars" /><span className="tr-glow" />
+        <div className="tr-row">
+          {left.map(mini)}
+          <span className="tr-main" style={{ aspectRatio: '40 / ' + towerBox(sp).vbH }}>
+            <span className="tr-bp" dangerouslySetInnerHTML={{ __html: towerSVG(sp, 'plot') }} />
+            <span className="tw-clip"><span className="tw-art" dangerouslySetInnerHTML={{ __html: towerSVG(sp, 'lit') }} /></span>
+            <span className="tr-emo">{profileEmoji(p.s)[0]}</span>
+          </span>
+          {right.map(mini)}
+        </div>
+        <span className="tr-street" />
+      </div>
+      <div className="tr-txt">
+        <p className="tr-title">{t('cel_rw_title')}</p>
+        <p className="tr-got"><span className="tr-plus">{t('cel_rw_got', { n: nf(POINTS_PER_PROFILE) })}</span></p>
+        <p className="tr-bal"><Odo value={v} /> <span>{t('rw_pts')} · {fmtUsd(v)}</span></p>
+        <p className="tr-next">{t('cel_rw_next', { n: nf(toNext), usd: fmtUsd((Math.floor(after / POINTS_PER_USD) + 1) * POINTS_PER_USD) })}</p>
+        <span className="sr">{t('cel_rw_bal', { pts: nf(after), usd: fmtUsd(after) })}</span>
+      </div>
+    </div>
+  );
+}
 
 function Badge({ tw, emo }) {
   return (
@@ -85,6 +149,7 @@ export default function Completion({ s, tw, msg, celebrate, act }) {
         <div className="stats">
           <span><b>{nf(count)}</b>{t('st_answers')}</span><span><b>{nf(100)}%</b>{t('st_complete')}</span><span><b>{nf(dn)}/{nf(all.length)}</b>{t('st_profiles')}</span>
         </div>
+        {celebrate && <TowerRise p={p} />}
         <div className="acts">
           <button className="btn pr big" id="ea" type="button" onClick={act.editAll}><Icon n="edit" />{t('edit_responses')}</button>
           <button className="btn gh" id="hb" type="button" onClick={act.home}><Icon n="arrow-l" className="flip" />{t('all_profiles')}</button>

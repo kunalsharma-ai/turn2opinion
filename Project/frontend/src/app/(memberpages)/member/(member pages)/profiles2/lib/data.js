@@ -9,7 +9,7 @@ import { CFG } from './config.js';
 const filled = (a) => a != null && a !== '' && !(Array.isArray(a) && !a.length);
 
 export const PROFILES = IDX;
-const BASE = (CFG.dataUrl || '/data').replace(/\/$/, '') + '/';
+const BASE = (CFG.dataUrl || '/profiles/data').replace(/\/$/, '') + '/';
 
 let embedded = null;
 async function fromEmbedded() {

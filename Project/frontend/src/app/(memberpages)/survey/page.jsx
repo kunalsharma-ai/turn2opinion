@@ -45,7 +45,9 @@ export default function page() {
       user.terms === undefined ||
       user.terms.length === 0
     ) {
-      router.replace("/auth/terms");
+    const category = (user?.category || "").trim().toLowerCase();
+    if (category === "b2b") return router.replace("/user/professionalterms.html");
+    if(category === "consumer") return router.replace("/user/consumerterm.html");  
     }
   }, [user]);
   const {
