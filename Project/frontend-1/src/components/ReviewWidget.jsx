@@ -18,18 +18,19 @@
 //     scrolling, so it never feels like the same popup nagging;
 //   * "Not now" costs a full interval; the × closes it for the session;
 //   * at most 3 sessions ever, at least 2 days apart.
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { session, store } from '../utils/storage.js';
 import { submitReview } from '../utils/reviews.js';
 import { track } from '../utils/analytics.js';
 import { failureMessage } from '../utils/api.js';
 import { playSuccess, playTick } from '../utils/sound.js';
-import { AUDIENCES, audienceOf, HIGHLIGHTS, LEVELS, levelOf, STARTERS } from '../data/reviewFacets.js';
+import { audienceOf, HIGHLIGHTS, LEVELS, levelOf, STARTERS } from '../data/reviewFacets.js';
+import { loadGemConfig, refreshMe, useGemConfig, useMe } from '../utils/gems.js';
 import { COUNTRIES } from '../data/countries.js';
 import Captcha from './Captcha.jsx';
 import Icon from './Icon.jsx';
 import { Flag } from './Brand.jsx';
-import { CountryPicker, Field, PhoneField, EMAIL_RE } from './FormFields.jsx';
+import { Field } from './FormFields.jsx';
 import GemForge from './rating/GemForge.jsx';
 import FacetDials from './rating/FacetDials.jsx';
 import Gem from './rating/Gem.jsx';
@@ -39,97 +40,27 @@ import { Link } from '../router/Router.jsx';
 const KEY = 't2o_review_prompt_v1';
 const SESSION_SHOWN = 't2o_review_prompt_session';
 const blankFacets = () => ({ worth: 0, rewards: 0, support: 0, device: 0 });
-const blankForm = () => ({ name: '', lastName: '', email: '', phoneCc: '', phone: '', country: '', company: '', role: '', text: '' });
+const blankForm = () => ({ text: '' });
 const STEPS = [
-  ['Your world', 'users'],
   ['Your gem', 'sparkles'],
   ['Your words', 'pen'],
-  ['About you', 'id']
+  ['Publish', 'send']
 ];
-
-/* ------------------------------------------------------------------ step 1 scene cards */
-function WorldCard({ a, on, onPick }) {
-  const ref = useRef(null);
-  const tilt = (e) => {
-    const el = ref.current;
-    if (!el || e.pointerType !== 'mouse') return;
-    const r = el.getBoundingClientRect();
-    el.style.setProperty('--rx', `${((e.clientY - r.top) / r.height - 0.5) * -12}deg`);
-    el.style.setProperty('--ry', `${((e.clientX - r.left) / r.width - 0.5) * 14}deg`);
-  };
-  const reset = () => {
-    ref.current?.style.setProperty('--rx', '0deg');
-    ref.current?.style.setProperty('--ry', '0deg');
-  };
-  const consumer = a.key === 'consumer';
-  return (
-    <button
-      ref={ref}
-      type="button"
-      className={`world w-${a.key} ${on ? 'is-on' : ''}`}
-      style={{ '--w1': a.c1, '--w2': a.c2, '--w3': a.c3 }}
-      aria-pressed={on}
-      onPointerMove={tilt}
-      onPointerLeave={reset}
-      onClick={onPick}
-    >
-      <span className="world-scene" aria-hidden="true">
-        <span className="ws-sun" />
-        {consumer ? (
-          <>
-            <span className="ws-phone">
-              <i className="ws-notch" />
-              <i className="ws-bar b1" />
-              <i className="ws-bar b2" />
-              <i className="ws-coin" />
-            </span>
-            {['bag', 'cup', 'heart', 'gift', 'game', 'plane'].map((ic, i) => (
-              <span key={ic} className="ws-float" style={{ '--i': i }}>
-                <Icon name={ic} size={18} />
-              </span>
-            ))}
-          </>
-        ) : (
-          <>
-            <span className="ws-laptop">
-              <span className="ws-screen">
-                {[0.45, 0.7, 0.55, 0.9, 0.75].map((h, i) => (
-                  <i key={i} style={{ '--h': h, '--i': i }} />
-                ))}
-                <svg viewBox="0 0 100 40" className="ws-line">
-                  <path d="M2 34 L22 26 L40 30 L60 14 L80 18 L98 4" />
-                </svg>
-              </span>
-              <span className="ws-base" />
-            </span>
-            {['briefcase', 'chip', 'pulse', 'bank', 'target', 'globe'].map((ic, i) => (
-              <span key={ic} className="ws-float" style={{ '--i': i }}>
-                <Icon name={ic} size={18} />
-              </span>
-            ))}
-          </>
-        )}
-      </span>
-      <span className="world-copy">
-        <span className="world-tag">
-          <Icon name={a.icon} size={14} /> I’m a {consumer ? 'consumer' : 'professional'}
-        </span>
-        <strong>{a.label}</strong>
-        <small>{a.pitch}</small>
-      </span>
-      <span className="world-go" aria-hidden="true">
-        {on ? <Icon name="check" size={18} strokeWidth={3} /> : <Icon name="arrow" size={18} />}
-      </span>
-    </button>
-  );
-}
 
 /* ================================================================================
    The studio (modal)
    ================================================================================ */
-function OpinionStudio({ open, initialRating, onClose, onDone }) {
+function OpinionStudio({ open, initialRating, onClose, onDone, user }) {
+  // Category login se aati hai (ek user = ek category) — ab user se chunwate nahi.
+  const aud = user && user.category === 'b2b' ? 'professional' : 'consumer';
+  // Identity ab form se nahi, logged-in profile se. Field names apne user object ke hisaab se badlo.
+  const profile = {
+    name: (user && (user.firstName || user.name)) || '',
+    country: ((user && user.country) || '').toUpperCase(),
+    company: '', 
+    role: ''
+  };
   const [step, setStep] = useState(1);
-  const [aud, setAud] = useState('');
   const [v, setV] = useState(initialRating || 4);
   const [facets, setFacets] = useState(blankFacets);
   const [tags, setTags] = useState([]);
@@ -153,7 +84,6 @@ function OpinionStudio({ open, initialRating, onClose, onDone }) {
   useEffect(() => {
     if (!open) return undefined;
     setStep(1);
-    setAud('');
     setV(initialRating || 4);
     setFacets(blankFacets());
     setTags([]);
@@ -217,14 +147,6 @@ function OpinionStudio({ open, initialRating, onClose, onDone }) {
 
   const validate = () => {
     const e = {};
-    if (form.name.trim().length < 2) e.name = 'Enter your first name (at least 2 letters).';
-    else if (!/^[\p{L} .'-]+$/u.test(form.name.trim())) e.name = 'Use letters only.';
-    if (form.lastName.trim() && !/^[\p{L} .'-]+$/u.test(form.lastName.trim())) e.lastName = 'Use letters only.';
-    if (!EMAIL_RE.test(form.email.trim())) e.email = 'Enter a valid email address, e.g. name@example.com.';
-    if (!form.country) e.country = 'Pick your country so we can show your flag.';
-    const digits = form.phone.replace(/\D/g, '');
-    if (digits && (digits.length < 6 || digits.length > 14)) e.phone = 'Enter 6–14 digits, without the country code.';
-    else if (digits && !form.phoneCc) e.phone = 'Pick the country dial code.';
     if (form.text.trim().length < 20) e.text = 'Tell us a little more – at least 20 characters.';
     if (!agree) e.agree = 'Tick the box so we can publish your review.';
     if (!captcha) e.captcha = 'Complete the human check.';
@@ -234,27 +156,27 @@ function OpinionStudio({ open, initialRating, onClose, onDone }) {
 
   const send = async (ev) => {
     ev.preventDefault();
-    if (step < 4) return;
+    if (step < 3) return;
     if (!validate()) {
       setTimeout(() => dialog.current?.querySelector('.has-error input, .has-error textarea, .field-error')?.scrollIntoView({ block: 'center', behavior: 'smooth' }), 30);
       return;
     }
     setState('sending');
-    const digits = form.phone.replace(/\D/g, '');
     const res = await submitReview({
-      name: form.name,
-      country: form.country,
-      company: form.company,
-      role: form.role,
+      // Identity profile se aati hai; submitReview ise server ko NAHI bhejta (server token se khud lega),
+      // sirf author ko turant apna card dikhane ke liye use hoti hai.
+      userId: user && user.id,
+      name: profile.name,
+      country: profile.country,
+      company: profile.company,
+      role: profile.role,
       audience: aud,
       text: form.text,
       rating,
       facets,
       tags,
       captchaToken: captcha && captcha.token,
-      captchaProvider: captcha && captcha.provider,
-      // Private contact details: sent to the backend for verification only, never published.
-      contact: { lastName: form.lastName.trim(), email: form.email.trim(), phoneCountry: digits ? form.phoneCc : '', phone: digits }
+      captchaProvider: captcha && captcha.provider
     });
     track('review_submit', { rating, audience: aud });
     if (!res.ok) setMsg(failureMessage(res));
@@ -267,13 +189,13 @@ function OpinionStudio({ open, initialRating, onClose, onDone }) {
   };
 
   const chips = rating >= 4 ? HIGHLIGHTS.up : rating === 3 ? [...HIGHLIGHTS.up.slice(0, 4), ...HIGHLIGHTS.down.slice(0, 2)] : HIGHLIGHTS.down;
-  const countryName = (COUNTRIES.find((c) => c.c === form.country) || {}).n || '';
+  const countryName = (COUNTRIES.find((c) => c.c === profile.country) || {}).n || '';
   const draft = {
     id: 'draft',
-    name: form.name.trim() || 'Your name',
-    role: form.role.trim(),
-    company: form.company.trim(),
-    country: form.country,
+    name: profile.name || 'Your name',
+    role: profile.role,
+    company: profile.company,
+    country: profile.country,
     audience: aud || 'consumer',
     rating,
     facets,
@@ -320,13 +242,13 @@ function OpinionStudio({ open, initialRating, onClose, onDone }) {
               <p className="gd-kicker">
                 <Icon name="check" size={14} strokeWidth={3} /> Delivered to the wall
               </p>
-              <h2 id="studio-title">Thank you, {form.name.trim().split(' ')[0] || 'friend'}!</h2>
+              <h2 id="studio-title">Thank you, {profile.name.split(' ')[0] || 'friend'}!</h2>
               <p className="gd-text">
                 Your {L.gem.toLowerCase()} — <strong>{rating}/5 · {L.word}</strong> — has landed in <strong>Member voices</strong>
                 {countryName ? (
                   <>
                     {' '}
-                    under the <Flag code={form.country} size={16} /> <strong>{countryName}</strong> flag
+                    under the <Flag code={profile.country} size={16} /> <strong>{countryName}</strong> flag
                   </>
                 ) : null}
                 . You can see it there right now.
@@ -348,7 +270,7 @@ function OpinionStudio({ open, initialRating, onClose, onDone }) {
               <ol className="gs-rail" aria-label="Progress">
                 {STEPS.map(([s, ic], i) => {
                   const n = i + 1;
-                  const can = n < step || (n === 2 && aud) || (n === 3 && aud && step >= 2) || (n === 4 && step >= 3);
+                  const can = n < step || (n === 2 && step >= 1) || (n === 3 && step >= 2);
                   return (
                     <li key={s} className={step === n ? 'is-on' : step > n ? 'is-done' : ''}>
                       <button type="button" disabled={!can || n === step} onClick={() => goto(n)} aria-current={step === n ? 'step' : undefined}>
@@ -360,42 +282,12 @@ function OpinionStudio({ open, initialRating, onClose, onDone }) {
                     </li>
                   );
                 })}
-                <span className="gr-fill" style={{ '--p': (step - 1) / 3 }} aria-hidden="true" />
+                <span className="gr-fill" style={{ '--p': (step - 1) / (STEPS.length - 1) }} aria-hidden="true" />
               </ol>
 
-              {/* ================= STEP 1 — which world ================= */}
+              {/* ================= STEP 1 — the gem ================= */}
               {step === 1 && (
-                <div className="gs-pane gp-who" key="s1">
-                  <p className="gs-eyebrow">
-                    <Gem level={5} size={20} motion="float" /> Opinion Gems · 2 minutes
-                  </p>
-                  <h2 id="studio-title">
-                    First things first — <span>which world are you from?</span>
-                  </h2>
-                  <p className="gs-sub">Consumers and business professionals see different sides of Turn2Opinion, so their reviews live in two different colour worlds.</p>
-                  <div className="worlds">
-                    {Object.values(AUDIENCES).map((a) => (
-                      <WorldCard
-                        key={a.key}
-                        a={a}
-                        on={aud === a.key}
-                        onPick={() => {
-                          setAud(a.key);
-                          playTick(a.key === 'consumer' ? 2 : 4);
-                          setTimeout(() => setStep(2), 380);
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <p className="gs-foot-note">
-                    <Icon name="lock" size={14} /> Your email and phone are only used to verify the review. They are never published.
-                  </p>
-                </div>
-              )}
-
-              {/* ================= STEP 2 — the gem ================= */}
-              {step === 2 && (
-                <div className="gs-pane gp-rate" key="s2">
+                <div className="gs-pane gp-rate" key="s1">
                   <h2 id="studio-title">
                     What is your experience worth? <span>Pick a gem.</span>
                   </h2>
@@ -425,19 +317,16 @@ function OpinionStudio({ open, initialRating, onClose, onDone }) {
                   </div>
 
                   <div className="gs-actions">
-                    <button type="button" className="btn btn-ghost" onClick={() => setStep(1)}>
-                      <Icon name="arrowLeft" size={18} /> Back
-                    </button>
-                    <button type="button" className="btn btn-primary btn-shimmer" onClick={() => setStep(3)}>
+                    <button type="button" className="btn btn-primary btn-shimmer" onClick={() => setStep(2)}>
                       Next: your words <Icon name="arrow" size={18} />
                     </button>
                   </div>
                 </div>
               )}
 
-              {/* ================= STEP 3 — words + live preview ================= */}
-              {step === 3 && (
-                <div className="gs-pane gp-words" key="s3">
+              {/* ================= STEP 2 — words + live preview ================= */}
+              {step === 2 && (
+                <div className="gs-pane gp-words" key="s2">
                   <h2 id="studio-title">
                     Tell other {world.key === 'professional' ? 'professionals' : 'members'} <span>what it is really like</span>
                   </h2>
@@ -448,7 +337,7 @@ function OpinionStudio({ open, initialRating, onClose, onDone }) {
                     <span className="gsr-aud">
                       <Icon name={world.icon} size={13} /> {world.label}
                     </span>
-                    <button type="button" onClick={() => setStep(2)}>
+                    <button type="button" onClick={() => setStep(1)}>
                       Change
                     </button>
                   </div>
@@ -492,98 +381,25 @@ function OpinionStudio({ open, initialRating, onClose, onDone }) {
                   </div>
 
                   <div className="gs-actions">
-                    <button type="button" className="btn btn-ghost" onClick={() => setStep(2)}>
+                    <button type="button" className="btn btn-ghost" onClick={() => setStep(1)}>
                       <Icon name="arrowLeft" size={18} /> Back
                     </button>
-                    <button type="button" className="btn btn-primary btn-shimmer" onClick={() => validateWords() && setStep(4)}>
-                      Next: about you <Icon name="arrow" size={18} />
+                    <button type="button" className="btn btn-primary btn-shimmer" onClick={() => validateWords() && setStep(3)}>
+                      Next: publish <Icon name="arrow" size={18} />
                     </button>
                   </div>
                 </div>
               )}
 
-              {/* ================= STEP 4 — identity ================= */}
-              {step === 4 && (
-                <div className="gs-pane gp-you" key="s4">
+              {/* ================= STEP 3 — publish ================= */}
+              {step === 3 && (
+                <div className="gs-pane gp-you" key="s3">
                   <h2 id="studio-title">
-                    Who should we credit? <span>Sign your {world.key === 'professional' ? 'pass' : 'postcard'}.</span>
+                    Ready to publish? <span>Check your {world.key === 'professional' ? 'pass' : 'postcard'}.</span>
                   </h2>
 
                   <div className="gs-split">
                     <div className="gs-fields">
-                      <fieldset className="gs-set set-must">
-                        <legend>
-                          <span className="gss-badge">Required</span> The must-haves
-                        </legend>
-                        <div className="form-grid two">
-                          <Field id="rv-name" label="First name" error={errors.name}>
-                            <input id="rv-name" className="input" value={form.name} onChange={set('name')} maxLength={60} autoComplete="given-name" />
-                          </Field>
-                          <Field id="rv-email" label="Email ID" error={errors.email} hint="Never published — only to verify you">
-                            <input id="rv-email" className="input" type="email" inputMode="email" value={form.email} onChange={set('email')} maxLength={120} autoComplete="email" />
-                          </Field>
-                          <Field id="rv-country" label="Country" error={errors.country} className="field-wide">
-                            <CountryPicker
-                              id="rv-country"
-                              value={form.country}
-                              invalid={!!errors.country}
-                              onChange={(c) => {
-                                setForm((f) => ({ ...f, country: c, phoneCc: f.phoneCc || c }));
-                                clearErr('country');
-                              }}
-                            />
-                          </Field>
-                        </div>
-                        <div className={`gs-flagstage ${form.country ? 'has-flag' : ''}`} aria-live="polite">
-                          {form.country ? (
-                            <>
-                              <span className="gfs-pole" aria-hidden="true" />
-                              <span className="gfs-flag" key={form.country}>
-                                <Flag code={form.country} size={64} title={countryName} />
-                              </span>
-                              <span className="gfs-copy">
-                                <strong>{countryName}</strong>
-                                <small>Your review will fly this flag</small>
-                              </span>
-                            </>
-                          ) : (
-                            <span className="gfs-empty">
-                              <Icon name="globe" size={18} /> Pick your country and your flag goes up here
-                            </span>
-                          )}
-                        </div>
-                      </fieldset>
-
-                      <fieldset className="gs-set set-opt">
-                        <legend>
-                          <span className="gss-badge is-opt">Optional</span> Nice to add
-                        </legend>
-                        <div className="form-grid two">
-                          <Field id="rv-last" label="Last name" optional error={errors.lastName}>
-                            <input id="rv-last" className="input" value={form.lastName} onChange={set('lastName')} maxLength={60} autoComplete="family-name" />
-                          </Field>
-                          <Field id="rv-role" label="Designation" optional>
-                            <input id="rv-role" className="input" value={form.role} onChange={set('role')} maxLength={80} autoComplete="organization-title" placeholder={world.askRole} />
-                          </Field>
-                          <Field id="rv-company" label="Company name" optional>
-                            <input id="rv-company" className="input" value={form.company} onChange={set('company')} maxLength={80} autoComplete="organization" placeholder={world.askName} />
-                          </Field>
-                          <Field id="rv-phone" label="Phone number" optional error={errors.phone} hint="Country, dial code and flag — kept private">
-                            <PhoneField
-                              id="rv-phone"
-                              country={form.phoneCc}
-                              number={form.phone}
-                              onCountry={(c) => setForm((f) => ({ ...f, phoneCc: c }))}
-                              onNumber={(n) => {
-                                setForm((f) => ({ ...f, phone: n }));
-                                clearErr('phone');
-                              }}
-                              invalid={!!errors.phone}
-                            />
-                          </Field>
-                        </div>
-                      </fieldset>
-
                       <label className={`check ${errors.agree ? 'has-error' : ''}`}>
                         <input
                           type="checkbox"
@@ -594,7 +410,7 @@ function OpinionStudio({ open, initialRating, onClose, onDone }) {
                           }}
                         />
                         <span className="check-ui" />
-                        <span>Publish my review with my first name, designation, company and country flag. My email, last name and phone stay private.</span>
+                        <span>Publish my review with my first name, designation, company and country flag from my profile. My email and phone stay private.</span>
                       </label>
                       {errors.agree && <p className="field-error">{errors.agree}</p>}
 
@@ -603,7 +419,7 @@ function OpinionStudio({ open, initialRating, onClose, onDone }) {
                       {errors.text && (
                         <p className="field-error">
                           {errors.text}{' '}
-                          <button type="button" className="link-arrow" onClick={() => setStep(3)}>
+                          <button type="button" className="link-arrow" onClick={() => setStep(2)}>
                             Edit your words
                           </button>
                         </p>
@@ -619,7 +435,7 @@ function OpinionStudio({ open, initialRating, onClose, onDone }) {
                   </div>
 
                   <div className="gs-actions">
-                    <button type="button" className="btn btn-ghost" onClick={() => setStep(3)}>
+                    <button type="button" className="btn btn-ghost" onClick={() => setStep(2)}>
                       <Icon name="arrowLeft" size={18} /> Back
                     </button>
                     <button type="submit" className="btn btn-primary btn-shimmer" disabled={state === 'sending'}>
@@ -640,6 +456,11 @@ function OpinionStudio({ open, initialRating, onClose, onDone }) {
    The launcher: side tab + the delayed, well-behaved ask
    ================================================================================ */
 export default function ReviewWidget({ ready }) {
+  const { user, loading } = useMe();
+  const loggedIn = !!user && !loading;
+  console.log('REVIEW WIDGET', { ready, loggedIn, user });
+  const audience = user && user.category === 'b2b' ? 'professional' : 'consumer';
+  useGemConfig(); // gems endpoint se aaye to is widget (aur uske bachhe) dobara render ho
   const [modal, setModal] = useState(false);
   const [rating, setRating] = useState(0);
   const [prompt, setPrompt] = useState(false);
@@ -653,11 +474,17 @@ export default function ReviewWidget({ ready }) {
     track('review_open', { rating: r });
   }, []);
 
+  // Login hone par us category ke gems/chips/starters/facets endpoint se lao.
   useEffect(() => {
+    if (loggedIn) loadGemConfig(audience);
+  }, [loggedIn, audience]);
+
+  useEffect(() => {
+    if (!loggedIn) return undefined;
     const h = (e) => openModal((e && e.detail && e.detail.rating) || 0);
     window.addEventListener('t2o:open-review', h);
     return () => window.removeEventListener('t2o:open-review', h);
-  }, [openModal]);
+  }, [openModal, loggedIn]);
 
   // Tell the notification stream an ask is on screen (on phones only one of them may show).
   useEffect(() => {
@@ -667,7 +494,8 @@ export default function ReviewWidget({ ready }) {
 
   // --- the delayed, repeating ask ---------------------------------------------------------
   useEffect(() => {
-    if (!ready) return undefined;
+    if (!ready || !loggedIn) return undefined;
+    if (user.hasReviewed) return undefined; // backend se aane wala flag (apne user object ka naam lagao)
     const st = store.get(KEY, { count: 0, last: 0, submitted: false });
     if (st.submitted || st.count >= 3 || Date.now() - st.last < 2 * 864e5) return undefined;
 
@@ -707,9 +535,10 @@ export default function ReviewWidget({ ready }) {
       clearInterval(iv);
       window.removeEventListener('scroll', onScroll);
     };
-  }, [ready]);
+  }, [ready, loggedIn]);
 
   const done = () => {
+    refreshMe();
     const st = store.get(KEY, { count: 0, last: 0 });
     store.set(KEY, { ...st, submitted: true });
     setPrompt(false);
@@ -721,17 +550,19 @@ export default function ReviewWidget({ ready }) {
     shownThisSession.current = 9;
   };
 
-  const askLevels = useMemo(() => LEVELS, []);
+  const askLevels = LEVELS; // gems.js isi array ko in-place update karta hai
   const closeModal = useCallback(() => setModal(false), []);
+
+  if (!loggedIn) return null; // logged-out user ko popup/modal kuch nahi
 
   return (
     <>
-      <button type="button" className="rate-tab" onClick={() => openModal(0)} aria-label="Rate us — rate your experience">
+      {/* <button type="button" className="rate-tab" onClick={() => openModal(0)} aria-label="Rate us — rate your experience">
         <span className="rate-tab-gem" aria-hidden="true">
           <Gem level={5} size={22} motion="float" />
         </span>
         <span className="rate-tab-text">Rate us</span>
-      </button>
+      </button> */}
 
       {prompt && (
         <div className="gask" role="dialog" aria-labelledby="ask-title">
@@ -759,7 +590,7 @@ export default function ReviewWidget({ ready }) {
         </div>
       )}
 
-      <OpinionStudio open={modal} initialRating={rating} onClose={closeModal} onDone={done} />
+      <OpinionStudio open={modal} initialRating={rating} onClose={closeModal} onDone={done} user={user} />
     </>
   );
 }

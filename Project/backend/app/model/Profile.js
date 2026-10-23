@@ -26,6 +26,11 @@ export default mongooseModel(
             trim: true,
             lowercase: true
         },
+        points:{
+            type:Number,
+            min:[0,"at least zero points required in each profile"],
+            default:50
+        }
     },
     [
         [

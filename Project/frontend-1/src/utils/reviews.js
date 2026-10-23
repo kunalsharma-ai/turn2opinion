@@ -10,7 +10,7 @@
 // v3.1 adds the four facet scores (see src/data/reviewFacets.js) and the audience world, both of
 // which the testimonial wall and the reviews page use for colour grading.
 import { ENV } from "../config/env.js";
-import { getJSON, postJSON } from "./api.js";
+import { api } from "./api.js";
 import { store } from "./storage.js";
 import { TESTIMONIALS } from "../data/testimonials.js";
 import { FACETS, facetAverage } from "../data/reviewFacets.js";
@@ -45,6 +45,10 @@ const score = (n) => {
 /** Keep only the known facet keys, each 0 (unset) or 1–5. */
 function cleanFacets(f) {
   const out = {};
+  // Backend array bhejta hai: [{ key, value }, ...] — object format bhi chalta rahega.
+  if (Array.isArray(f)) {
+    f = Object.fromEntries(f.map((x) => [x && x.key, x && x.value]));
+  }
   if (!f || typeof f !== "object") return out;
   for (const { key } of FACETS) {
     const v = score(f[key]);
@@ -101,39 +105,60 @@ export function normaliseReview(r) {
   };
 }
 
+const mineKey = (userId) => (userId ? `${LOCAL_KEY}_${userId}` : LOCAL_KEY);
+
 export async function submitReview(input) {
   const review = normaliseReview({ ...input, mine: true });
-  const res = await postJSON(ENV.API_REVIEWS_URL, {
-    name: review.name,
-    country: review.country,
-    company: review.company,
-    role: review.role,
-    audience: review.audience,
+  // Identity (name/country/company/role/audience/contact) ab server ko nahi jaati —
+  // backend logged-in user (token) se khud leta hai. Auth header/cookie postJSON/api.js se jaana chahiye.
+  const payload = {
     rating: review.rating,
-    facets: review.facets,
+    facets: Object.entries(review.facets).map(([key, value]) => ({ key, value })),
     text: review.text,
     tags: review.tags,
     captchaToken: input.captchaToken || null,
     captchaProvider: input.captchaProvider || null,
-    // Private: for verifying the reviewer. The backend must never return these in GET responses.
-    contact: input.contact || null,
-  });
+  };
+  let res;
+  if (ENV.DEMO_MODE) {
+    res = { ok: true, demo: true, data: { message: "Preview mode: nothing was sent." } };
+  } else {
+    try {
+      const raw = await api.post('/api/v1/testimonial', payload);
+      // api.post success par seedha body deta hai, fail par error-body (throw nahi karta).
+      const failed = !raw || raw.success === false || !!raw.error;
+      res = { ok: !failed, status: failed ? 400 : 200, data: raw };
+    } catch {
+      res = { ok: false, status: 0, data: null, error: "network" };
+    }
+  }
+  // const res = await api.post(ENV.API_REVIEWS_URL, {
+  //   rating: review.rating,
+  //   facets: Object.entries(review.facets).map(([key, value]) => ({ key, value })),
+  //   text: review.text,
+  //   tags: review.tags,
+  //   captchaToken: input.captchaToken || null,
+  //   captchaProvider: input.captchaProvider || null,
+  // });
+
   // Show it to the author immediately either way; the server decides what everyone else sees.
-  const mine = store.get(LOCAL_KEY, []);
-  store.set(LOCAL_KEY, [review, ...mine].slice(0, 10));
+  
+  const k = mineKey(input.userId);
+  const mine = store.get(k, []);
+  store.set(k, [review, ...mine].slice(0, 10));
   window.dispatchEvent(new CustomEvent(EVENT, { detail: review }));
   const ch = getChannel();
   if (ch) ch.postMessage(review);
   return { ...res, review };
 }
 
-export function getMyReviews() {
-  return store.get(LOCAL_KEY, []).map(normaliseReview);
+export function getMyReviews(userId) {
+  return store.get(mineKey(userId), []).map(normaliseReview);
 }
 
 export async function fetchApprovedReviews() {
   if (ENV.DEMO_MODE) return [];
-  const data = await getJSON(ENV.API_REVIEWS_URL);
+  const data = await api.get("/api/v1/testimonial");
   const list = Array.isArray(data)
     ? data
     : data && Array.isArray(data.reviews)

@@ -11,24 +11,23 @@ const resolveMx = promisify(dns.resolveMx)
 export default mongooseModel(
     "User",
     {
-        nayaHai:{
-            type:Boolean,
+        nayaHai: {
+            type: Boolean,
             default: true,
         },
-         tourStatus:{
-              seenRoutes:{
-                type:mongoose.Schema.Types.Mixed,
-                default:{},
-              },
+        tourStatus: {
+            seenRoutes: {
+                type: mongoose.Schema.Types.Mixed,
+                default: {},
             },
+        },
         respondentID: {
             type: String
         },
         qualityScore: {
             type: Number,
             default: 100,
-            min: [0, "Minimum score should not go below zero"],
-            max: [200, "Quality score cannot exceed 200"]
+            min: [0, "Minimum score should not go below zero"]
         },
         category: {
             type: String,
@@ -235,7 +234,7 @@ export default mongooseModel(
             default: "respondent",
             lowercase: true,
             trim: true,
-            enum: ["respondent", "administrator", "root","admin"],
+            enum: ["respondent", "administrator", "root", "admin"],
             select: false
         },
         paymentMethod: {
@@ -299,7 +298,6 @@ export default mongooseModel(
                 default: null
             }
         }
-
     },
     [
         [
@@ -314,11 +312,11 @@ export default mongooseModel(
     ],
     {
         virtuals: {
-            country:function(){
-                let {address}=this;
-                if(!address || !Array.isArray(address) || address.length===0)return "";
-                let {country}=address[0];
-                if(!country)return "";
+            country: function () {
+                let { address } = this;
+                if (!address || !Array.isArray(address) || address.length === 0) return "";
+                let { country } = address[0];
+                if (!country) return "";
                 return country.toUpperCase();
             },
             fullName: function () {

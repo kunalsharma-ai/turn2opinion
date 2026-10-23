@@ -1,0 +1,56 @@
+/* ───────────────────────────────────────────────────────────────
+   Turn2Opinion survey design system
+   Ported verbatim from Turn2Opinion_Respondent_Profile.html.
+
+   t2o-core.css    layout, question card, every field widget, hub
+   t2o-worlds.css  per-category palettes, selected via html[data-t="…"]
+   t2o-flags.css   country-flag sprite position map
+   t2o-city.css    Opinion City board (only needed on the hub)
+
+   Import once, in the layout that wraps the survey:
+       import "@/styles/t2o.css";
+   ─────────────────────────────────────────────────────────────── */
+
+@import "./t2o-core.css";
+@import "./t2o-worlds.css";
+@import "./t2o-flags.css";
+@import "./t2o-city.css";
+
+/* ── Bridge layer ──────────────────────────────────────────────
+   The preview was a standalone page; inside the Next.js app the
+   survey lives under #t2o. Everything below adapts the ported
+   sheet to that, and nothing below overrides the design itself.  */
+
+#t2o {
+  /* The preview set these on :root. Scope them so the rest of the
+     app keeps its own MUI theme untouched. */
+  font-family: var(--fb, Inter, "Inter Fallback", system-ui, sans-serif);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* MUI injects a baseline that would otherwise win over the ported
+   button/input resets, because its styles load later in the cascade. */
+#t2o button,
+#t2o input,
+#t2o select,
+#t2o textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* Next.js <Image> and plain <img> both need this inside the stage. */
+#t2o img {
+  max-width: 100%;
+}
+
+/* The preview animated on first paint. Respect the OS setting. */
+@media (prefers-reduced-motion: reduce) {
+  #t2o *,
+  #t2o *::before,
+  #t2o *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
