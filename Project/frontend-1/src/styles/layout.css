@@ -118,14 +118,33 @@ html.nav-open body {
   font-size: 0.6rem;
   font-weight: 700;
   color: #fff;
+  position: relative;
   background: linear-gradient(135deg, #ff5c7a, #ff9d00);
-  box-shadow: 0 0 0 0 rgba(255, 92, 122, 0.6);
-  animation: badgePulse 2s ease-in-out infinite;
+}
+.nav-badge::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #ff5c7a;
+  z-index: -1;
+  animation: badgePing 2s ease-out infinite;
+}
+@keyframes badgePing {
+  from {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  60%,
+  to {
+    transform: scale(1.5, 1.9);
+    opacity: 0;
+  }
 }
 @keyframes badgePulse {
+  /* compositor-only (transform): the old box-shadow ring repainted on every frame */
   50% {
-    box-shadow: 0 0 0 5px rgba(255, 92, 122, 0);
-    transform: translateY(-1px);
+    transform: translateY(-1px) scale(1.08);
   }
 }
 .header-cta {
@@ -648,11 +667,12 @@ html.nav-open body {
 .ph-beam {
   position: absolute;
   top: -40%;
-  left: -30%;
+  left: -40%;
   width: 40%;
   height: 180%;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.09), transparent);
   transform: rotate(18deg);
+  /* slides with transform (one layer, no layout); it used to animate `left`, which moved layout */
   animation: beamSweep 9s ease-in-out infinite;
 }
 .ph-light .ph-beam {
@@ -661,11 +681,11 @@ html.nav-open body {
 @keyframes beamSweep {
   0%,
   20% {
-    left: -40%;
+    transform: translateX(0) rotate(18deg);
   }
   70%,
   100% {
-    left: 120%;
+    transform: translateX(400%) rotate(18deg);
   }
 }
 .ph-token {
@@ -1544,7 +1564,7 @@ html.nav-open body {
   background: linear-gradient(180deg, rgba(255, 214, 120, 0.22), transparent 75%);
   filter: blur(8px);
   transform-origin: 50% 0;
-  animation: beamSweep 9s ease-in-out infinite alternate;
+  animation: tsBeamSweep 9s ease-in-out infinite alternate;
 }
 .ts-beams i:nth-child(1) {
   left: 18%;
@@ -1558,7 +1578,7 @@ html.nav-open body {
   left: 76%;
   animation-delay: -6s;
 }
-@keyframes beamSweep {
+@keyframes tsBeamSweep {
   from {
     transform: rotate(-14deg);
   }
@@ -1595,9 +1615,9 @@ html.nav-open body {
   background: #fff;
   box-shadow: 0 30px 50px -24px rgba(0, 0, 0, 0.8), inset 0 -4px 0 rgba(14, 27, 77, 0.08);
   transform-style: preserve-3d;
-  animation: plinthTilt 8s ease-in-out infinite;
+  animation: tsPlinthTilt 8s ease-in-out infinite;
 }
-@keyframes plinthTilt {
+@keyframes tsPlinthTilt {
   0%,
   100% {
     transform: rotateY(-14deg) rotateX(6deg) translateY(0);

@@ -12,6 +12,7 @@ import Gem from './Gem.jsx';
 import { countryName } from './VoiceCard.jsx';
 import GemScore from './GemScore.jsx';
 import { levelOf } from '../../data/reviewFacets.js';
+import { useMounted } from '../../hooks/useMounted.js';
 
 const isPro = (r) => r.audience === 'professional';
 const firstSentence = (t = '', max = 90) => {
@@ -93,6 +94,9 @@ export function ReviewsHero({ list, stats, countries, onRate }) {
     }
     return out;
   }, [list]);
+  // The two rings are decoration (aria-hidden) and the heaviest part of the page, so they are
+  // drawn in the browser right after start-up rather than shipped in the prerendered HTML.
+  const mounted = useMounted();
   const ringA = picks.filter((_, k) => k % 2 === 0).slice(0, 8);
   const ringB = picks.filter((_, k) => k % 2 === 1).slice(0, 8);
   return (
@@ -165,6 +169,7 @@ export function ReviewsHero({ list, stats, countries, onRate }) {
 
         <div className="rvx-stage" aria-hidden="true">
           <div className="rvx-3d">
+            {mounted && (
             <div className="rvx-ring ra" style={{ '--n': ringA.length }}>
               {ringA.map((r, k) => (
                 <figure key={r.id} className={`rvx-chip ${isPro(r) ? 'is-pro' : 'is-con'}`} style={{ '--i': k }}>
@@ -176,6 +181,8 @@ export function ReviewsHero({ list, stats, countries, onRate }) {
                 </figure>
               ))}
             </div>
+            )}
+            {mounted && (
             <div className="rvx-ring rb" style={{ '--n': ringB.length }}>
               {ringB.map((r, k) => (
                 <figure key={r.id} className={`rvx-chip ${isPro(r) ? 'is-pro' : 'is-con'}`} style={{ '--i': k }}>
@@ -187,6 +194,7 @@ export function ReviewsHero({ list, stats, countries, onRate }) {
                 </figure>
               ))}
             </div>
+            )}
             <div className="rvx-core">
               <span className="rvx-halo" />
               <Gem level={top.v} size={128} motion="spin" />
@@ -202,7 +210,7 @@ export function ReviewsHero({ list, stats, countries, onRate }) {
 
       <div className="gvh-flags rvx-flags" aria-label="Countries our reviewers answered from">
         <div className="gvf-track">
-          {[...countries, ...countries].map(([c], i) => (
+          {[...countries, ...(mounted ? countries : [])].map(([c], i) => (
             <span key={`${c}-${i}`} className="gvf-flag" aria-hidden={i >= countries.length}>
               <Flag code={c} size={22} />
               <small>{countryName(c)}</small>

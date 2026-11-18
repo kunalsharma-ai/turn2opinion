@@ -127,16 +127,24 @@ export default function Gem({ level = 4, size = 64, motion = 'float', className 
   const shades = [L.c1, L.c2, L.c3, L.c3];
   const Cut = CUTS[L.v - 1];
   const a11y = title ? { role: 'img', 'aria-label': title } : { 'aria-hidden': 'true' };
+  // Small gems (badges, chips, card scores) skip the moving gleam and the sparkles: at that size
+  // they are invisible, yet across a page of reviews they added up to hundreds of always-running
+  // animations, and the gleam (an SVG transform) can only animate on the main thread.
+  const small = size < 30;
   return (
     <span className={`gem gem-${L.key} gm-${motion} ${className}`} style={{ '--g1': L.c1, '--g2': L.c2, '--g3': L.c3, '--gs': `${size}px` }}>
       <span className="gem-tilt">
         <svg viewBox="0 0 100 100" width={size} height={size} {...a11y}>
           <defs>
+            {/* only the pebble (level 1) fills with this gradient; the faceted cuts use flat shades */}
+            {L.v === 1 && (
             <radialGradient id={`${g}b`} cx="35%" cy="30%" r="75%">
               <stop offset="0" stopColor={L.c1} />
               <stop offset=".6" stopColor={L.c2} />
               <stop offset="1" stopColor={L.c3} />
             </radialGradient>
+            )}
+            {!small && (
             <linearGradient id={`${g}s`} x1="0" y1="0" x2="1" y2="1">
               <stop offset="0" stopColor="#fff" stopOpacity="0" />
               <stop offset=".45" stopColor="#fff" stopOpacity="0" />
@@ -144,19 +152,22 @@ export default function Gem({ level = 4, size = 64, motion = 'float', className 
               <stop offset=".55" stopColor="#fff" stopOpacity="0" />
               <stop offset="1" stopColor="#fff" stopOpacity="0" />
             </linearGradient>
+            )}
+            {!small && (
             <clipPath id={`${g}c`}>
               <Cut s={shades} g={g} />
             </clipPath>
+            )}
           </defs>
           <Cut s={shades} g={g} />
-          {L.v > 1 && (
+          {!small && L.v > 1 && (
             <g clipPath={`url(#${g}c)`}>
               <rect className="gem-gleam" x="-100" y="0" width="100" height="100" fill={`url(#${g}s)`} />
             </g>
           )}
         </svg>
       </span>
-      {L.v >= 4 && (
+      {!small && L.v >= 4 && (
         <span className="gem-sparks" aria-hidden="true">
           <i />
           <i />

@@ -4,6 +4,7 @@
 import { createServer } from 'node:http';
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { extname, join, normalize, resolve } from 'node:path';
+import { createGzip } from 'node:zlib';
 
 const dir = resolve(process.argv[2] || 'dist/client');
 const port = Number(process.env.PORT || 4173);
@@ -47,6 +48,8 @@ createServer((req, res) => {
   }
   const type = TYPES[extname(file)] || 'application/octet-stream';
   const cache = /\/assets\//.test(file) ? 'public, max-age=31536000, immutable' : 'no-cache';
-  res.writeHead(status, { 'Content-Type': type, 'Cache-Control': cache });
-  createReadStream(file).pipe(res);
+  // Compress text like every production host does, so local Lighthouse runs measure what visitors get.
+  const zip = /text|json|xml|svg|javascript|manifest/.test(type) && /\bgzip\b/.test(req.headers['accept-encoding'] || '');
+  res.writeHead(status, { 'Content-Type': type, 'Cache-Control': cache, ...(zip ? { 'Content-Encoding': 'gzip', Vary: 'Accept-Encoding' } : {}) });
+  (zip ? createReadStream(file).pipe(createGzip({ level: 6 })) : createReadStream(file)).pipe(res);
 }).listen(port, () => console.log(`Preview: http://localhost:${port}  (serving ${dir})`));

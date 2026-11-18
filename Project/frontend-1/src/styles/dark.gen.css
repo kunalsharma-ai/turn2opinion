@@ -156,6 +156,9 @@
 :where(html[data-mode='dark']) .input-icon > .icon:first-child {
     color: #b7bed8
 }
+:where(html[data-mode='dark']) .cp-ph {
+    color: #b6bdd8
+}
 :where(html[data-mode='dark']) .cp-caret {
     color: #b7bed8
 }
@@ -914,6 +917,9 @@
 :where(html[data-mode='dark']) .aud-timer {
     background-color: rgba(11, 17, 40, 0.85)
 }
+:where(html[data-mode='dark']) .gem-sparks i {
+    background-color: #0b1128
+}
 :where(html[data-mode='dark']) .rw-track span {
     background-image: linear-gradient(90deg, #ffd68c, #ff5c7a)
 }
@@ -958,7 +964,7 @@
     color: #d9deef
 }
 :where(html[data-mode='dark']) .abn-legend .c {
-    color: #f39dac
+    color: #e990a3
 }
 :where(html[data-mode='dark']) .abn-legend .p {
     color: #8cabff
@@ -1067,6 +1073,9 @@
 }
 :where(html[data-mode='dark']) .ld-stamp {
     color: #8cabff
+}
+:where(html[data-mode='dark']) .legal-tag:nth-of-type(3) {
+    color: #d9deef
 }
 :where(html[data-mode='dark']) .jar-body {
     border: 3px solid rgba(23, 33, 79, 0.6)
@@ -1694,6 +1703,12 @@
 :where(html[data-mode='dark']) .rs-star {
     background-color: #0b1128
 }
+:where(html[data-mode='dark']) .gvh-flags {
+    border-top: 1px solid rgba(23, 33, 79, 0.08)
+}
+:where(html[data-mode='dark']) .gvf-flag {
+    border: 1px solid rgba(23, 33, 79, 0.1)
+}
 :where(html[data-mode='dark']) #t2o {
     color: #d9deef
 }
@@ -1910,9 +1925,6 @@
 :where(html[data-mode='dark']) .rv-gate:hover .rvg-go {
     background-color: #0b1128;
     color: #dee1f2
-}
-:where(html[data-mode='dark']) .gem-sparks i {
-    background-color: #0b1128
 }
 :where(html[data-mode='dark']) .fg-ped-top {
     background-image: radial-gradient(ellipse at 50% 40%, #0b1128, #161b2c 60%, #1f2535)
@@ -2194,12 +2206,6 @@
 :where(html[data-mode='dark']) .gvv-stats {
     border-top: 1px solid rgba(23, 33, 79, 0.1)
 }
-:where(html[data-mode='dark']) .gvh-flags {
-    border-top: 1px solid rgba(23, 33, 79, 0.08)
-}
-:where(html[data-mode='dark']) .gvf-flag {
-    border: 1px solid rgba(23, 33, 79, 0.1)
-}
 :where(html[data-mode='dark']) .gsc-row button {
     border: 1px solid color-mix(in srgb, var(--g2) 30%, #17214f);
     background-image: linear-gradient(180deg, color-mix(in srgb, var(--g1) 20%, #0b1128), #0b1128 70%)
@@ -2244,36 +2250,6 @@
 :where(html[data-mode='dark']) .gwl-empty {
     color: #b7bed8
 }
-:where(html[data-mode='dark']) .scn-code {
-    background-color: #0b1128
-}
-:where(html[data-mode='dark']) .scn-phone {
-    border: 5px solid #17265d
-}
-:where(html[data-mode='dark']) .scn-pop {
-    background-color: #0b1128;
-    color: #dee1f2
-}
-:where(html[data-mode='dark']) .scn-pop .icon {
-    color: #72f3d3
-}
-:where(html[data-mode='dark']) .scn-steps li {
-    background-image: linear-gradient(180deg, #0b142c, #0b1128)
-}
-:where(html[data-mode='dark']) .scn-n {
-    color: rgba(140, 171, 255, 0.12)
-}
-:where(html[data-mode='dark']) .scn-steps strong {
-    color: #d9deef
-}
-:where(html[data-mode='dark']) .scn-steps p {
-    color: #b7bed8
-}
-:where(html[data-mode='dark']) .scn-safe {
-    border: 1px solid #74571d;
-    background-color: #31250c;
-    color: #f0e7d2
-}
 :where(html[data-mode='dark']) .qr-hub {
     border: 1px solid rgba(23, 33, 79, 0.14)
 }
@@ -2301,6 +2277,9 @@
 }
 :where(html[data-mode='dark']) .snc-b {
     background-color: #0b1128
+}
+:where(html[data-mode='dark']) .snc-b small {
+    color: color-mix(in srgb, var(--p1) 72%, #f2f3f8)
 }
 :where(html[data-mode='dark']) .vs-play__ring {
     border: 2px solid rgba(23, 33, 79, 0.7)
@@ -2493,4 +2472,34 @@
 }
 :where(html[data-mode='dark']) .mode-tw {
     background-color: #0b1128
+}
+:where(html[data-mode='dark']) .scn-code {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .scn-phone {
+    border: 5px solid #17265d
+}
+:where(html[data-mode='dark']) .scn-pop {
+    background-color: #0b1128;
+    color: #dee1f2
+}
+:where(html[data-mode='dark']) .scn-pop .icon {
+    color: #72f3d3
+}
+:where(html[data-mode='dark']) .scn-steps li {
+    background-image: linear-gradient(180deg, #0b142c, #0b1128)
+}
+:where(html[data-mode='dark']) .scn-n {
+    color: rgba(140, 171, 255, 0.12)
+}
+:where(html[data-mode='dark']) .scn-steps strong {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .scn-steps p {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .scn-safe {
+    border: 1px solid #74571d;
+    background-color: #31250c;
+    color: #f0e7d2
 }

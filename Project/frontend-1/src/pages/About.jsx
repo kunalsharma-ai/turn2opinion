@@ -74,7 +74,8 @@ function OpinionGlobe() {
 const ROTATE = ['real rewards', 'better products', 'smarter policies', 'clearer decisions'];
 function RotatingWords() {
   return (
-    <span className="rw" aria-label={ROTATE[0]}>
+    <span className="rw">
+      <span className="sr-only">{ROTATE[0]}</span>
       <span className="rw-track" aria-hidden="true">
         {[...ROTATE, ROTATE[0]].map((w, i) => (
           <span key={i}>{w}</span>

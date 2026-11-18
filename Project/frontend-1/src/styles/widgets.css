@@ -436,9 +436,9 @@
   display: flex;
   gap: 8px;
   max-width: 92%;
-  animation: bubbleIn 0.45s var(--spring);
+  animation: chatBubbleIn 0.45s var(--spring);
 }
-@keyframes bubbleIn {
+@keyframes chatBubbleIn {
   from {
     opacity: 0;
     transform: translateY(10px) scale(0.92);
@@ -619,15 +619,7 @@
   gap: 5px;
 }
 
-/* brand mark animation */
-.t2o-mark.is-spinning .t2o-arrows {
-  transform-origin: 32px 32px;
-  animation: spin 6s linear infinite;
-}
-.t2o-mark .t2o-two {
-  transform-origin: 32px 32px;
-  animation: twoBreathe 3s ease-in-out infinite;
-}
+/* brand mark: see home.css (blocking, the mark is in the home hero) */
 @keyframes twoBreathe {
   50% {
     transform: scale(1.08);
@@ -1750,7 +1742,27 @@
 .tt-sun {
   background: radial-gradient(circle at 35% 30%, #fff8cf, #ffd23f 55%, #ff9f1a);
   box-shadow: 0 0 0 6px rgba(255, 223, 90, 0.3), 0 0 22px 6px rgba(255, 200, 40, 0.75);
-  animation: ttSun 3s ease-in-out infinite;
+}
+/* the glow breathes on its own layer (scale + opacity) rather than by repainting the shadow */
+.tt-sun::after {
+  content: '';
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 210, 60, 0.6) 30%, rgba(255, 200, 40, 0) 70%);
+  animation: ttSunGlow 3s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes ttSunGlow {
+  0%,
+  100% {
+    transform: scale(0.85);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.9;
+  }
 }
 @keyframes ttSun {
   50% {
@@ -2236,7 +2248,7 @@ html[data-mode='dark'] .tt-seg button[aria-pressed='true'] {
   rotate: 45deg;
   background: conic-gradient(from var(--gem-ang), #ff4d8d, #ffd166, #22d3c5, #7b5cff, #ff4d8d);
   box-shadow: 0 14px 28px -10px rgba(123, 92, 255, 0.85);
-  animation: gemSpin 4s linear infinite;
+  animation: rateGemAng 4s linear infinite;
   transition: transform 0.35s var(--spring);
 }
 @property --gem-ang {
@@ -2244,7 +2256,7 @@ html[data-mode='dark'] .tt-seg button[aria-pressed='true'] {
   inherits: false;
   initial-value: 0deg;
 }
-@keyframes gemSpin {
+@keyframes rateGemAng {
   to {
     --gem-ang: 360deg;
   }
@@ -2790,13 +2802,29 @@ html.low-power .amb {
   width: 4px;
   translate: -50% 0;
   border-radius: 4px;
-  background: linear-gradient(180deg, #ff5cc8, #7b5cff 30%, #25d366 55%, #1f5bff 85%);
+  overflow: hidden;
   opacity: 0.55;
-  filter: blur(1px);
   box-shadow: 0 0 14px rgba(123, 92, 255, 0.6);
   z-index: -1;
-  background-size: 100% 200%;
-  animation: railFlow 4s linear infinite;
+}
+/* The colours flow down as one tall strip that slides (transform), not a repainted background. */
+.fab-rail::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 200%;
+  background: linear-gradient(180deg, #ff5cc8, #7b5cff 15%, #25d366 27.5%, #1f5bff 42.5%, #ff5cc8 50%, #7b5cff 65%, #25d366 77.5%, #1f5bff 92.5%, #ff5cc8);
+  animation: railSlide 4s linear infinite;
+}
+@keyframes railSlide {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: none;
+  }
 }
 @keyframes railFlow {
   to {
@@ -3091,6 +3119,8 @@ html.low-power .amb {
 }
 @media (prefers-reduced-motion: reduce) {
   .fab-rail,
+  .fab-rail::before,
+  .tt-sun::after,
   .fab-face::after,
   .fab-ring,
   .fab-lock,
@@ -3103,4 +3133,12 @@ html.low-power .amb {
   .fab-trio .fab-tip {
     display: none;
   }
+}
+
+/* The closed chat is clipped to nothing, but its header aurora and wave would still repaint every
+   frame on every page. Pause everything inside it until it opens. */
+.chat:not(.is-open) *,
+.chat:not(.is-open) *::before,
+.chat:not(.is-open) *::after {
+  animation-play-state: paused !important;
 }

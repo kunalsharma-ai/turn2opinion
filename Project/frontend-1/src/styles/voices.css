@@ -433,12 +433,24 @@
 }
 .ps-holo {
   position: absolute;
-  inset: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 260%;
   z-index: 0;
   background: linear-gradient(115deg, transparent 30%, rgba(73, 182, 255, 0.16) 42%, rgba(0, 212, 160, 0.2) 48%, rgba(255, 77, 141, 0.14) 54%, transparent 66%);
-  background-size: 260% 100%;
-  animation: psHolo 6.5s ease-in-out infinite;
+  /* the band slides as a layer (transform) instead of repainting its background every frame */
+  animation: psHoloSlide 6.5s ease-in-out infinite;
   pointer-events: none;
+}
+@keyframes psHoloSlide {
+  0%,
+  100% {
+    transform: translateX(-61.5%);
+  }
+  50% {
+    transform: none;
+  }
 }
 @keyframes psHolo {
   0%,
@@ -696,22 +708,6 @@
   gap: clamp(24px, 4vw, 56px);
   align-items: center;
 }
-.gvh-crumbs {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 18px;
-  font-size: 0.8rem;
-  color: #9fb3ff;
-}
-.gvh-crumbs a {
-  color: #cfe0ff;
-  text-decoration: none;
-}
-.gvh-crumbs a:hover {
-  text-decoration: underline;
-}
 .gvh-kicker {
   display: inline-flex;
   align-items: center;
@@ -883,48 +879,6 @@
   line-height: 1.3;
   color: #9fb3ff;
 }
-.gvh-flags {
-  position: relative;
-  margin-top: clamp(32px, 5vw, 60px);
-  padding: 12px 0;
-  overflow: hidden;
-  background: rgba(0, 0, 0, 0.22);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  -webkit-mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-}
-.gvf-track {
-  display: flex;
-  gap: 10px;
-  width: max-content;
-  animation: gvMarquee 60s linear infinite;
-}
-.gvh-flags:hover .gvf-track {
-  animation-play-state: paused;
-}
-@keyframes gvMarquee {
-  to {
-    transform: translateX(-50%);
-  }
-}
-.gvf-flag {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 5px 12px 5px 6px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-.gvf-flag .flag {
-  border-radius: 3px;
-}
-.gvf-flag small {
-  font-size: 0.8rem;
-  color: #dfe6ff;
-  white-space: nowrap;
-}
-
 /* the scale */
 .gsc-row {
   display: grid;
@@ -1367,300 +1321,8 @@
   }
 }
 
-/* ===================== 4. Scan & Connect page ===================== */
-.scn-art {
-  position: relative;
-  width: min(380px, 100%);
-  height: 320px;
-  margin-inline: auto;
-}
-.scn-code {
-  position: absolute;
-  left: 2%;
-  top: 56px;
-  width: 172px;
-  padding: 12px;
-  border-radius: 20px;
-  background: #fff;
-  box-shadow: 0 30px 50px -24px rgba(0, 0, 0, 0.6);
-  transform: rotate(-7deg);
-  overflow: hidden;
-  animation: scnBob 6s ease-in-out infinite;
-}
-.scn-code img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-@keyframes scnBob {
-  50% {
-    translate: 0 -8px;
-  }
-}
-.scn-sweep {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: -30%;
-  height: 30%;
-  background: linear-gradient(180deg, transparent, rgba(34, 211, 197, 0.5), transparent);
-  animation: scnSweep 2.4s ease-in-out infinite;
-}
-@keyframes scnSweep {
-  to {
-    transform: translateY(440%);
-  }
-}
-.scn-phone {
-  position: absolute;
-  right: 4%;
-  top: 14px;
-  width: 136px;
-  height: 260px;
-  border-radius: 28px;
-  border: 5px solid #e3e9ff;
-  background: linear-gradient(180deg, #0b1540, #1f3fbf);
-  box-shadow: 0 34px 60px -28px rgba(0, 0, 0, 0.7);
-  transform: rotate(8deg);
-  animation: scnPhone 6s ease-in-out infinite;
-}
-@keyframes scnPhone {
-  50% {
-    transform: rotate(5deg) translateY(-10px);
-  }
-}
-.scn-cam {
-  position: absolute;
-  top: 32px;
-  left: 14px;
-  right: 14px;
-  height: 104px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.08);
-}
-.scn-cam .c {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  border: 3px solid #5ef2c9;
-}
-.scn-cam .tl {
-  top: 6px;
-  left: 6px;
-  border-right: 0;
-  border-bottom: 0;
-  border-radius: 6px 0 0 0;
-}
-.scn-cam .tr {
-  top: 6px;
-  right: 6px;
-  border-left: 0;
-  border-bottom: 0;
-  border-radius: 0 6px 0 0;
-}
-.scn-cam .bl {
-  bottom: 6px;
-  left: 6px;
-  border-right: 0;
-  border-top: 0;
-  border-radius: 0 0 0 6px;
-}
-.scn-cam .br {
-  bottom: 6px;
-  right: 6px;
-  border-left: 0;
-  border-top: 0;
-  border-radius: 0 0 6px 0;
-}
-.scn-laser {
-  position: absolute;
-  left: 10px;
-  right: 10px;
-  top: 12%;
-  height: 2px;
-  background: #ff4d8d;
-  box-shadow: 0 0 12px #ff4d8d;
-  animation: scnLaser 1.8s ease-in-out infinite alternate;
-}
-@keyframes scnLaser {
-  to {
-    transform: translateY(78px);
-  }
-}
-.scn-pop {
-  position: absolute;
-  left: 10px;
-  right: 10px;
-  bottom: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 8px 6px;
-  border-radius: 12px;
-  background: #fff;
-  font-family: var(--ui);
-  font-weight: 700;
-  font-size: 0.62rem;
-  color: #0b1540;
-  animation: scnPop 4s ease infinite;
-}
-.scn-pop .icon {
-  color: #0ea47f;
-}
-@keyframes scnPop {
-  0%,
-  35% {
-    opacity: 0;
-    transform: translateY(10px) scale(0.9);
-  }
-  45%,
-  90% {
-    opacity: 1;
-    transform: none;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-.scn-orb {
-  position: absolute;
-  display: grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  color: #fff;
-  box-shadow: 0 12px 22px -10px rgba(0, 0, 0, 0.6);
-  animation: wsFloat 4.4s ease-in-out infinite;
-  animation-delay: calc(var(--i) * -0.8s);
-}
-.o-instagram {
-  top: 0;
-  left: 30%;
-  background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af);
-}
-.o-facebook {
-  bottom: 26px;
-  left: 0;
-  background: #1877f2;
-}
-.o-linkedin {
-  bottom: 0;
-  left: 40%;
-  background: #0a66c2;
-}
-.o-youtube {
-  top: 46%;
-  left: 47%;
-  background: #ff0033;
-}
-.o-whatsapp {
-  top: 4px;
-  left: 2%;
-  background: #25d366;
-}
-.qr-hub.is-page {
-  margin: 0;
-}
-.qr-page-h {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0 0 18px;
-  font-family: var(--display);
-  font-weight: 800;
-  font-size: 1.2rem;
-  color: #fff;
-}
-.qr-sep + .qr-page-h {
-  margin-top: 6px;
-}
-.scn-steps {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.scn-steps li {
-  position: relative;
-  padding: 28px 20px 22px;
-  border-radius: 24px;
-  border: 1px solid var(--line);
-  background: linear-gradient(180deg, #f4f7ff, #fff);
-  text-align: center;
-}
-.scn-n {
-  position: absolute;
-  top: 10px;
-  left: 16px;
-  font-family: var(--display);
-  font-weight: 800;
-  font-size: 2.6rem;
-  line-height: 1;
-  color: rgba(31, 91, 255, 0.12);
-}
-.scn-ico {
-  display: grid;
-  place-items: center;
-  width: 62px;
-  height: 62px;
-  margin: 0 auto 12px;
-  border-radius: 20px;
-  color: #fff;
-  background: linear-gradient(135deg, #1f5bff, #49b6ff);
-  box-shadow: 0 16px 26px -14px #1f5bff;
-  animation: wsFloat 4.6s ease-in-out infinite;
-  animation-delay: calc(var(--i) * -1.2s);
-}
-.scn-steps li:nth-child(2) .scn-ico {
-  background: linear-gradient(135deg, #7b5cff, #ff4d8d);
-  box-shadow: 0 16px 26px -14px #7b5cff;
-}
-.scn-steps li:nth-child(3) .scn-ico {
-  background: linear-gradient(135deg, #0ea47f, #5ef2c9);
-  box-shadow: 0 16px 26px -14px #0ea47f;
-}
-.scn-steps strong {
-  display: block;
-  font-family: var(--display);
-  font-weight: 800;
-  font-size: 1.06rem;
-  color: var(--ink);
-}
-.scn-steps p {
-  margin: 6px 0 0;
-  font-size: 0.92rem;
-  color: var(--muted);
-}
-.scn-safe {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  max-width: 760px;
-  margin: 26px auto 0;
-  padding: 14px 16px;
-  border-radius: 16px;
-  border: 1px solid #ffe2a8;
-  background: #fff7e6;
-  font-size: 0.9rem;
-  color: #6b4a00;
-}
-.scn-safe .icon {
-  flex: none;
-  margin-top: 3px;
-}
-@media (max-width: 760px) {
-  .scn-steps {
-    grid-template-columns: 1fr;
-  }
-  .scn-art {
-    height: 290px;
-  }
-}
+/* 4. Scan & Connect page: see scanconnect.css (in the pages bundle). */
+
 
 @media (prefers-reduced-motion: reduce) {
   .ps-holo,

@@ -9,6 +9,8 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // A deferred script tag, so registering the service worker never blocks the first paint.
+      injectRegister: 'script-defer',
       workbox: {
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         // Every route is prerendered into its own HTML file after this build runs, so the service

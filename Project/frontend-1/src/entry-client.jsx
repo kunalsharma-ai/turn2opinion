@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import { StrictMode, startTransition } from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import App from './App.jsx';
 import { preloadPath } from './app/routeCache.js';
@@ -27,7 +27,9 @@ preloadPath(path).finally(() => {
   );
   const prerendered = container.firstElementChild && !isHashMode();
   const start = () => {
-    if (prerendered) hydrateRoot(container, app);
+    // Hydrating inside a transition lets React work in short slices and yield to the browser
+    // between them, so taps and scrolls are never stuck behind one long hydration task.
+    if (prerendered) startTransition(() => hydrateRoot(container, app));
     else createRoot(container).render(app);
     document.documentElement.classList.add('js-ready');
   };
