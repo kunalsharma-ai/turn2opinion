@@ -24,7 +24,7 @@ Based on the SEOptimer audit of turn2opinion.com (18 Nov 2026, overall B-).
 
 ## Steps only you can take
 
-1. **Deploy the prerendered build.** Run `npm run build` in `Project/frontend-1` and serve `dist/client` (not the Vite dev server). The audit's "Rendering 9785%" means the live HTML is almost empty and JavaScript builds the page, which is what you get from a dev server or a client-only build.
+1. **Deploy the prerendered build.** Run `npm run build` in `Project/frontend-1` and serve `dist/client` (not the Vite dev server). With Docker, the image uses `Project/frontend-1/nginx.conf` and the Dockerfile must copy `dist/client`: `COPY --from=builder /frfs/dist/client/ /usr/share/nginx/html/`. The audit's "Rendering 9785%" means the live HTML is almost empty and JavaScript builds the page, which is what you get from a dev server or a client-only build.
 2. **Apply `deploy/nginx.conf`** (or copy its redirect and cache blocks into your OpenResty gateway). This fixes "Avoid multiple page redirects" (1.65 s on mobile) and "Browser caching".
 3. **Add a DMARC record** in GoDaddy DNS (ns13/ns14.domaincontrol.com): TXT host `_dmarc`, value `v=DMARC1; p=none; rua=mailto:support@turn2opinion.com; fo=1`. After a few weeks of clean reports, move to `p=quarantine`.
 4. ~~Create an X (Twitter) account~~ Done: @TurnToOpinion is linked in this PR.
