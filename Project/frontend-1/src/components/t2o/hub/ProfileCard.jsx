@@ -57,7 +57,7 @@ export default function ProfileCard({
           height="240"
           loading="lazy"
           decoding="async"
-          alt=""
+          alt={`${world} profile illustration`}
           src={`/t2o/assets/img/${world}.svg`}
           onError={(e) => {
             e.currentTarget.src = "/t2o/assets/img/identity.svg";

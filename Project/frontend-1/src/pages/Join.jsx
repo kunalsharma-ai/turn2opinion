@@ -237,7 +237,7 @@ function MemberCard({ f, step }) {
           <span>{f.dob ? `Born ${formatDate(f.dob)}` : 'Member since today'}</span>
         </div>
       </div>
-      <img className="mcard-peep" src={asset(`/images/people/${f.type === 'pro' ? 'business' : 'shopper'}.svg`)} alt="" width="160" height="190" key={f.type} />
+      <img className="mcard-peep" src={asset(`/images/people/${f.type === 'pro' ? 'business' : 'shopper'}.svg`)} alt={f.type === 'pro' ? 'Business professional taking paid surveys' : 'Consumer taking paid surveys'} width="160" height="190" key={f.type} />
       {['₹', '$', '€', '£'].map((c, i) => (
         <span key={c} className={`mc-coin k${i}`}>
           {c}
@@ -324,6 +324,8 @@ useEffect(() => {
 useEffect(() => {
   const params = new URLSearchParams(window.location.search);
   const queries = Object.fromEntries(params.entries());
+  // /join/professional/ is the clean URL; ?category= still works for old links.
+  if (/\/join\/professional\/?$/.test(window.location.pathname)) queries.category = 'professional';
 
   if (!(queries.category)) return;
 
@@ -333,7 +335,6 @@ useEffect(() => {
   }));
 },[])
 
-console.log(f)
 
 useEffect(() => {
   const params = new URLSearchParams(window.location.search);

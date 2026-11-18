@@ -309,7 +309,7 @@ export default function HomeHero() {
           </p>
           <div className="hero-actions">
           
-            <a href={`/join?category=${aud}`} className="btn btn-primary btn-lg btn-shimmer">
+            <a href={aud === 'professional' ? '/join/professional/' : '/join/'} className="btn btn-primary btn-lg btn-shimmer">
               {a.cta} <Icon name="arrow" size={18} />
             </a>
             <Link to="/how-it-works/" className="btn btn-ghost btn-lg">

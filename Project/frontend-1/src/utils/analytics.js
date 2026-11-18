@@ -42,6 +42,11 @@ function loadGtm() {
   document.head.appendChild(s);
 }
 
+// Meta Pixel consent: the base code in the page head starts revoked (see src/seo/seo.js).
+function metaConsent(c) {
+  if (typeof window.fbq === 'function') window.fbq('consent', c && c.marketing ? 'grant' : 'revoke');
+}
+
 /** Call once on startup. */
 export function initAnalytics() {
   if (typeof window === 'undefined') return;
@@ -49,6 +54,7 @@ export function initAnalytics() {
   gtag('consent', 'default', { ...consentState(null), wait_for_update: 500 });
   if (c) {
     gtag('consent', 'update', consentState(c));
+    metaConsent(c);
     if (c.analytics || c.marketing) loadGtm();
   }
 }
@@ -57,6 +63,7 @@ export function saveConsent(c) {
   const value = { necessary: true, analytics: !!c.analytics, marketing: !!c.marketing, preferences: !!c.preferences, ts: Date.now() };
   store.set(CONSENT_KEY, value);
   gtag('consent', 'update', consentState(value));
+  metaConsent(value);
   if (value.analytics || value.marketing) loadGtm();
   window.dispatchEvent(new CustomEvent('t2o:consent', { detail: value }));
   return value;
@@ -68,6 +75,11 @@ export function track(event, params = {}) {
   dl().push({ event, ...params });
 }
 
+let firstView = true;
 export function trackPageView(path, title) {
   track('page_view', { page_path: path, page_title: title });
+  // The pixel base code in the page head already counts the first page; count each in-app
+  // navigation after it (held back by fbq until marketing consent is granted).
+  if (firstView) firstView = false;
+  else if (typeof window.fbq === 'function') window.fbq('track', 'PageView');
 }

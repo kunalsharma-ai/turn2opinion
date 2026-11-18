@@ -11,10 +11,10 @@ export const ROUTES = [
     path: '/',
     load: page(() => import('./pages/Home.jsx')),
     seo: {
-      title: 'Paid Online Surveys & Rewards | Turn2Opinion',
+      title: 'Paid Online Surveys for Cash & Rewards | Turn2Opinion',
       description:
-        'Earn money online without investment by sharing your opinion. Join Turn2Opinion free and take paid surveys as a consumer or business professional, then redeem rewards your way.',
-      schema: ['website', 'organization']
+        'Earn money online without investment. Take paid surveys for cash as a consumer or professional, join Turn2Opinion free and redeem PayPal, UPI or gift cards.',
+      schema: ['website', 'organization', 'localBusiness']
     },
     sitemap: { priority: '1.0', changefreq: 'weekly' }
   },
@@ -22,9 +22,9 @@ export const ROUTES = [
     path: '/how-it-works/',
     load: page(() => import('./pages/HowItWorks.jsx')),
     seo: {
-      title: 'How Paid Online Surveys Work | Turn2Opinion',
+      title: 'How Paid Online Surveys Work – Earn Rewards | Turn2Opinion',
       description:
-        'See how Turn2Opinion works: create a free profile, receive matching survey invitations, share honest opinions and redeem rewards through PayPal, wire transfer, gift cards or UPI in India.',
+        'See how Turn2Opinion works: create a free profile, get matching survey invites, share honest opinions and redeem PayPal, wire, gift card or UPI rewards.',
       crumb: 'How It Works'
     },
     sitemap: { priority: '0.9', changefreq: 'monthly' }
@@ -35,7 +35,7 @@ export const ROUTES = [
     seo: {
       title: 'Paid Online Surveys – Share Your Opinion & Earn Rewards',
       description:
-        'Explore paid online surveys for consumers and professionals. Get paid to do surveys on shopping, technology, health, finance and business topics – no investment needed.',
+        'Explore paid online surveys for consumers and professionals. Get paid to do surveys on shopping, tech, health, finance and business – no investment needed.',
       crumb: 'Paid Surveys'
     },
     sitemap: { priority: '0.9', changefreq: 'weekly' }
@@ -44,9 +44,9 @@ export const ROUTES = [
     path: '/profiling/',
     load: page(() => import('./pages/Profiling.jsx')),
     seo: {
-      title: 'Survey Profiling & Quality Score | Turn2Opinion',
+      title: 'Survey Profiling & Quality Score Explained | Turn2Opinion',
       description:
-        'Complete your Turn2Opinion profile to match more surveys. Learn how profiling, quality scores, bot validation and multi-layer security checks protect honest members.',
+        'Complete your Turn2Opinion profile to match more paid surveys. See how profiling, quality scores, bot checks and multi-layer security protect honest members.',
       crumb: 'Profiling & Quality'
     },
     sitemap: { priority: '0.8', changefreq: 'monthly' }
@@ -57,7 +57,7 @@ export const ROUTES = [
     seo: {
       title: 'Survey Rewards – Earn & Redeem Your Way | Turn2Opinion',
       description:
-        'Turn survey points into rewards via PayPal, wire transfer, Amazon gift cards or UPI (India). Learn how earning, balance tracking and reward claims work at Turn2Opinion.',
+        'Turn survey points into PayPal, wire transfer, Amazon gift card or UPI rewards. See how earning, balance tracking and reward claims work at Turn2Opinion.',
       crumb: 'Rewards'
     },
     sitemap: { priority: '0.9', changefreq: 'monthly' }
@@ -92,9 +92,9 @@ export const ROUTES = [
     path: '/about/reviews/',
     load: page(() => import('./pages/Reviews.jsx')),
     seo: {
-      title: 'Member Ratings & Reviews | Turn2Opinion',
+      title: 'Member Ratings & Reviews of Paid Surveys | Turn2Opinion',
       description:
-        'Real Turn2Opinion ratings and reviews from consumers and business professionals in dozens of countries. See the average score, how members rate surveys, rewards, support and mobile, and read every review in full.',
+        'Real Turn2Opinion reviews from consumers and professionals worldwide. See our average score and how members rate surveys, rewards, support and the mobile site.',
       crumb: 'Our Ratings & Reviews',
       parent: { path: '/about/', name: 'About' },
       schema: ['aggregateRating']
@@ -109,7 +109,7 @@ export const ROUTES = [
     seo: {
       title: 'Scan & Connect – QR Codes & Social Channels | Turn2Opinion',
       description:
-        'Scan a QR code to open Turn2Opinion, our sister panels MyFrequentRewards and MyHealthOpinions, Frequent Research, or follow us on Instagram, Facebook, LinkedIn, YouTube and WhatsApp.',
+        'Scan a QR code to open Turn2Opinion, MyFrequentRewards, MyHealthOpinions or Frequent Research, or follow us on Instagram, Facebook, LinkedIn, YouTube and X.',
       crumb: 'Scan & Connect',
       parent: { path: '/about/', name: 'About' }
     },
@@ -161,12 +161,28 @@ export const ROUTES = [
     path: '/join/',
     load: page(() => import('./pages/Join.jsx')),
     seo: {
-      title: 'Join Free – Create Your Turn2Opinion Account',
+      title: 'Join Free – Create Your Paid Surveys Account | Turn2Opinion',
       description:
         'Create your free Turn2Opinion account in minutes. No fees, no investment – just verify your email and phone and start receiving paid survey invitations.',
       crumb: 'Join free'
     },
     sitemap: { priority: '0.8', changefreq: 'yearly' }
+  },
+  {
+    // Clean URL for the business-professional sign-up (replaces /join?category=professional).
+    // Same page as /join/ with the professional form preselected, so it points its canonical at
+    // /join/ and stays out of the index and the sitemap.
+    path: '/join/professional/',
+    load: page(() => import('./pages/Join.jsx')),
+    seo: {
+      title: 'Join Free as a Business Professional | Turn2Opinion',
+      description:
+        'Create your free Turn2Opinion professional account in minutes. No fees, no investment – verify your details and start receiving paid B2B survey invitations.',
+      crumb: 'Join free',
+      canonical: '/join/',
+      robots: 'noindex,follow'
+    },
+    sitemap: false
   },
   {
     path: '/login/',
@@ -205,7 +221,7 @@ export const ROUTES = [
     path: '/privacy/',
     load: page(() => import('./pages/Privacy.jsx')),
     seo: {
-      title: 'Privacy Policy | Turn2Opinion',
+      title: 'Privacy Policy – How We Protect Your Data | Turn2Opinion',
       description:
         'How Turn2Opinion and Frequent Research collect, use, protect and retain personal information, your choices, and parental rights for members under 18.',
       crumb: 'Privacy Policy'
@@ -216,7 +232,7 @@ export const ROUTES = [
     path: '/gdpr/',
     load: page(() => import('./pages/Gdpr.jsx')),
     seo: {
-      title: 'GDPR & Data Protection | Turn2Opinion',
+      title: 'GDPR & Data Protection Rights for Members | Turn2Opinion',
       description:
         'How Turn2Opinion runs GDPR-compliant market research: consent, purpose limitation, retention, your right to erasure and how to contact us about your data.',
       crumb: 'GDPR'
@@ -227,7 +243,7 @@ export const ROUTES = [
     path: '/cookies/',
     load: page(() => import('./pages/Cookies.jsx')),
     seo: {
-      title: 'Cookie Policy | Turn2Opinion',
+      title: 'Cookie Policy – Cookies We Use and Why | Turn2Opinion',
       description:
         'The essential, performance, social and unclassified cookies Turn2Opinion uses, what each does, how long it lasts, and how to change your cookie preferences.',
       crumb: 'Cookie Policy'
@@ -238,7 +254,7 @@ export const ROUTES = [
     path: '/terms/',
     load: page(() => import('./pages/Terms.jsx')),
     seo: {
-      title: 'Terms & Conditions | Turn2Opinion',
+      title: 'Terms & Conditions for Survey Members | Turn2Opinion',
       description:
         'Turn2Opinion terms of use and general consent: what data we collect, why we collect it, and what you agree to when you join and take part in research.',
       crumb: 'Terms & Conditions'
@@ -249,8 +265,9 @@ export const ROUTES = [
     path: '/sitemap/',
     load: page(() => import('./pages/HtmlSitemap.jsx')),
     seo: {
-      title: 'Sitemap | Turn2Opinion',
-      description: 'Every page on Turn2Opinion in one place: surveys, rewards, profiling, blogs, help and legal pages.',
+      title: 'Sitemap – All Pages, Guides & Blogs | Turn2Opinion',
+      description:
+        'Browse every Turn2Opinion page in one place: paid surveys, rewards, profiling, FAQs, blog guides on earning money online, policies and contact details.',
       crumb: 'Sitemap'
     },
     sitemap: { priority: '0.2', changefreq: 'monthly' }

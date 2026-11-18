@@ -258,7 +258,7 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href={waLink()} target="_blank" rel="noopener noreferrer">
+                <a href={`https://wa.me/${SITE.whatsapp}`} target="_blank" rel="noopener noreferrer">
                   <Icon name="whatsapp" size={16} /> WhatsApp {SITE.whatsappDisplay}
                 </a>
               </li>

@@ -1,14 +1,27 @@
 import { asset, ENV } from '../config/env.js';
+import { COUNTRIES } from '../data/countries.js';
 import { Link } from '../router/Router.jsx';
 import { useMounted } from '../hooks/useMounted.js';
+
+// English country names for flag alt text. Taken from our own country list rather than
+// Intl.DisplayNames, whose names differ between Node and browsers ("Hong Kong SAR China" vs
+// "Hong Kong") and would make the prerendered HTML disagree with the hydrated page.
+let REGION_NAMES = null;
+function regionName(code) {
+  if (!REGION_NAMES) {
+    REGION_NAMES = { EU: 'the European Union', UN: 'the United Nations' };
+    for (const c of COUNTRIES) REGION_NAMES[c.c] = c.n;
+  }
+  const k = code.toUpperCase();
+  return REGION_NAMES[k] || k;
+}
 
 /**
  * Country flag from /public/flags (flag-icons, MIT).
  *
- * `title` is the country (or place) the flag stands for and becomes its alt text — pass it
- * wherever the flag carries the meaning on its own, such as the stamp on a review card. Leave it
- * out where the name is already written next to the flag: alt="" then keeps a screen reader from
- * reading the same country twice, which is what empty alt text is for.
+ * Every flag carries alt text: `title` when given (the country or place it stands for), otherwise
+ * the English country name looked up from its code. Images without alt text count against the
+ * page in SEO audits and image search, so none are left empty.
  */
 export function Flag({ code, size = 20, className = '', title }) {
   if (!code) return null;
@@ -19,7 +32,7 @@ export function Flag({ code, size = 20, className = '', title }) {
       src={asset(`/flags/${c}.svg`)}
       width={Math.round(size * 1.333)}
       height={size}
-      alt={title ? `Flag of ${title}` : ''}
+      alt={`Flag of ${title || regionName(c)}`}
       loading="lazy"
       decoding="async"
     />

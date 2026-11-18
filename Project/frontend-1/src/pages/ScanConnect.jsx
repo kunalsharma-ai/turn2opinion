@@ -53,7 +53,7 @@ export default function ScanConnect() {
         crumbs={[{ label: 'About', to: '/about/' }, { label: 'Scan & Connect' }]}
         kicker="Scan & connect"
         title="Point your camera. Land where you meant to."
-        tagline="One group, four research communities, five social channels."
+        tagline="One group, four research communities, six social channels."
         lead="Every code below opens the real thing — our panels, our parent company and the places we post. No app, no typing, no hunting for the right account."
         art={<ScanArt />}
       />
