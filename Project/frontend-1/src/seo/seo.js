@@ -24,10 +24,44 @@ function organization() {
       addressCountry: SITE.address.country
     },
     parentOrganization: { '@type': 'Organization', name: SITE.legalName, url: SITE.parentUrl },
-    sameAs: SITE.social.map((s) => s.url),
+    sameAs: [...SITE.social.map((s) => s.url), ...(SITE.xHandle ? [`https://x.com/${SITE.xHandle}`] : [])],
     contactPoint: [
       { '@type': 'ContactPoint', contactType: 'customer support', email: SITE.email, telephone: SITE.phone, availableLanguage: ['English'] }
     ]
+  };
+}
+
+// The office as a local business, so search engines can tie the brand to a real, visitable place
+// (Local SEO). It points back to the Organization node rather than repeating it.
+function localBusiness() {
+  const h = SITE.openingHours;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    '@id': ENV.SITE_URL + '/#localbusiness',
+    name: SITE.name,
+    description: 'Paid online surveys and market research community for consumers and business professionals.',
+    url: ENV.SITE_URL + '/',
+    logo: abs(SITE.logo),
+    image: abs(SITE.ogImage),
+    email: SITE.email,
+    telephone: SITE.phone,
+    priceRange: 'Free',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: SITE.address.street,
+      addressLocality: SITE.address.locality,
+      addressRegion: 'Delhi',
+      postalCode: SITE.address.postalCode,
+      addressCountry: SITE.address.country
+    },
+    ...(SITE.geo ? { geo: { '@type': 'GeoCoordinates', latitude: SITE.geo.latitude, longitude: SITE.geo.longitude } } : {}),
+    ...(h
+      ? { openingHoursSpecification: [{ '@type': 'OpeningHoursSpecification', dayOfWeek: h.days, opens: h.opens, closes: h.closes }] }
+      : {}),
+    areaServed: 'Worldwide',
+    parentOrganization: { '@id': ENV.SITE_URL + '/#organization' },
+    sameAs: SITE.social.map((s) => s.url)
   };
 }
 
@@ -129,13 +163,14 @@ function article(path, seo) {
 
 /** Compute the full head description for a path. `data` is the route's loaded data (blog body etc.). */
 export function buildHead(path, seo, data) {
-  const canonical = abs(path);
+  const canonical = abs(seo.canonical || path);
   const robots = seo.robots || 'index,follow,max-image-preview:large';
   const image = abs(SITE.ogImage);
   const schema = [];
   const kinds = seo.schema || [];
   if (kinds.includes('website')) schema.push(website());
   if (kinds.includes('organization')) schema.push(organization());
+  if (kinds.includes('localBusiness')) schema.push(localBusiness());
   if (kinds.includes('article') && seo.post) schema.push(article(path, seo));
   if (kinds.includes('faq')) {
     const faqs = path === '/faq/' ? FAQ_GROUPS.flatMap((g) => g.items) : data && data.faqs;
@@ -173,6 +208,10 @@ export function headToHtml(h) {
     `<meta name="description" content="${esc(h.description)}" />`,
     `<meta name="robots" content="${esc(h.robots)}" />`,
     `<link rel="canonical" href="${esc(h.canonical)}" />`,
+    // The site is published in one language (English) at one URL per page; translations happen
+    // in the browser. Self-referencing hreflang plus x-default tells search engines exactly that.
+    `<link rel="alternate" hreflang="en" href="${esc(h.canonical)}" />`,
+    `<link rel="alternate" hreflang="x-default" href="${esc(h.canonical)}" />`,
     `<meta property="og:site_name" content="${esc(SITE.name)}" />`,
     `<meta property="og:locale" content="en_US" />`,
     `<meta property="og:type" content="${esc(h.ogType)}" />`,
@@ -181,15 +220,30 @@ export function headToHtml(h) {
     `<meta property="og:url" content="${esc(h.canonical)}" />`,
     `<meta property="og:image" content="${esc(h.image)}" />`,
     `<meta property="og:image:width" content="1200" />`,
+    `<meta property="og:image:type" content="${esc(SITE.ogImageType || 'image/png')}" />`,
+    `<meta property="og:image:alt" content="${esc(SITE.name + ' – paid online surveys and rewards')}" />`,
     `<meta property="og:image:height" content="630" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${esc(h.title)}" />`,
     `<meta name="twitter:description" content="${esc(h.description)}" />`,
-    `<meta name="twitter:image" content="${esc(h.image)}" />`
+    `<meta name="twitter:image" content="${esc(h.image)}" />`,
+    `<meta name="twitter:image:alt" content="${esc(SITE.name + ' – paid online surveys and rewards')}" />`
   ];
+  if (SITE.xHandle) {
+    tags.push(`<meta name="twitter:site" content="@${esc(SITE.xHandle)}" />`);
+    tags.push(`<meta name="twitter:creator" content="@${esc(SITE.xHandle)}" />`);
+  }
   if (h.published) tags.push(`<meta property="article:published_time" content="${esc(h.published)}" />`);
   if (ENV.GSC_VERIFICATION) tags.push(`<meta name="google-site-verification" content="${esc(ENV.GSC_VERIFICATION)}" />`);
   for (const s of h.schema) tags.push(`<script type="application/ld+json" data-seo="1">${jsonLd(s)}</script>`);
+  if (ENV.META_PIXEL_ID) {
+    // Meta Pixel base code with consent revoked by default; analytics.js grants it only after the
+    // visitor accepts marketing cookies, so no cookies are set and no events leave the page before.
+    tags.push(
+      `<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('consent','revoke');fbq('init','${ENV.META_PIXEL_ID}');fbq('track','PageView');</script>`,
+      `<noscript><img height="1" width="1" alt="" style="display:none" src="https://www.facebook.com/tr?id=${ENV.META_PIXEL_ID}&amp;ev=PageView&amp;noscript=1" /></noscript>`
+    );
+  }
   return tags.join('\n    ');
 }
 
@@ -222,6 +276,7 @@ export function applyHead(h) {
     document.head.appendChild(link);
   }
   link.setAttribute('href', h.canonical);
+  document.head.querySelectorAll('link[rel="alternate"][hreflang]').forEach((n) => n.setAttribute('href', h.canonical));
   document.head.querySelectorAll('script[data-seo="1"]').forEach((n) => n.remove());
   for (const s of h.schema) {
     const el = document.createElement('script');

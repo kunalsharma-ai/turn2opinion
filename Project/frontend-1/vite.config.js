@@ -27,7 +27,21 @@ export default defineConfig({
   ],
   build: {
     target: 'es2020',
-    cssCodeSplit: false,
+    // The stylesheet ships as the five bundles described in src/styles/index.css. Each one is its
+    // own build entry so it gets a hashed, minified, long-cacheable file; scripts/prerender.mjs
+    // reads the manifest and links them into every page in the right order.
+    cssCodeSplit: true,
+    manifest: true,
+    rollupOptions: {
+      input: {
+        index: 'index.html',
+        'css-core': 'src/styles/core.css',
+        'css-home': 'src/styles/home.css',
+        'css-pages': 'src/styles/pages.css',
+        'css-shell': 'src/styles/shell.css',
+        'css-late': 'src/styles/late.css'
+      }
+    },
     sourcemap: false,
     assetsInlineLimit: 0
   },

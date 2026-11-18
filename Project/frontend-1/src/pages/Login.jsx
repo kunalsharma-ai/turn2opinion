@@ -128,7 +128,7 @@ const goResume = () => {
   const uid = saveResumeData(incomplete);
   window.location.assign(`/join/?user=${uid}&resume=1`);
 };
-const isNew = new URLSearchParams(window.location.search).get('new') === '1';
+const isNew = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('new') === '1';
 if (unverified) {
   return (
     <ResendVerify email={email} title="Verify your email" message={msg}>

@@ -113,6 +113,10 @@ export default function ProfilesExplorer() {
   const [person, setPerson] = useState(0);
   const [ref, inView] = useInView({ threshold: 0.3 });
   const manual = useRef(0);
+  // The full list repeats ~200 job titles ("… Manager", "… Director"). Prerendered into the HTML
+  // it drowned out the page's real keywords (paid surveys, earn money online) and bloated the DOM,
+  // so it renders only when the visitor opens it.
+  const [listOpen, setListOpen] = useState(false);
 
   const go = () => {
     setIdx(reels.map((r) => pick(r.items.length)));
@@ -225,11 +229,11 @@ export default function ProfilesExplorer() {
         ))}
       </div>
 
-      <details className="slots-all">
+      <details className="slots-all" onToggle={(e) => setListOpen(e.currentTarget.open)}>
         <summary>
           <Icon name="layers" size={16} /> See every profile type we recruit
         </summary>
-        {mode === 'pro' ? (
+        {!listOpen ? null : mode === 'pro' ? (
           <div className="slots-all-cols">
             <div>
               <h3>Industries</h3>
