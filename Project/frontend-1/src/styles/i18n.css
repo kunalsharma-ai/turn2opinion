@@ -367,3 +367,239 @@ html:not([lang='en']) :is(.ph-tagline, .hero-tagline, .qa-bubble p) { text-align
   .header-cta .btn-primary { padding: 0 10px; font-size: 0.86rem; }
   .burger { width: 38px; }
 }
+
+/* ==========================================================================================
+   Footer name v4 — TURN2OPINION with an entrance transition (the Frequent Research wordmark
+   was removed on request, 18 Nov 2026). Transform/opacity/background-position only.
+   ========================================================================================== */
+.t2w {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  margin: 34px 0 10px;
+  padding: 26px 0 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+  perspective: 1100px;
+}
+.t2w-glow {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: 70%;
+  height: 70%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse, rgba(73, 182, 255, 0.28), rgba(123, 92, 255, 0.14) 45%, transparent 70%);
+  filter: blur(20px);
+  animation: t2wGlow 6s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes t2wGlow {
+  to {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 0.7;
+  }
+}
+.t2w-word {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  font: 800 clamp(34px, 10.2vw, 128px) / 0.95 'Manrope', 'Inter', system-ui, sans-serif;
+  letter-spacing: -0.04em;
+  transform-style: preserve-3d;
+}
+.t2w-l {
+  display: inline-block;
+  transform-style: preserve-3d;
+}
+.t2w-in {
+  display: inline-block;
+  /* one gradient laid across the whole word, each letter showing its own slice; it flows */
+  background: linear-gradient(90deg, #1f5bff, #49b6ff, #7b5cff, #ff5c7a, #ffb020, #12c29b, #1f5bff);
+  background-size: calc(var(--n) * 100%) 100%;
+  background-position: calc(var(--i) * 100% / (var(--n) - 1)) 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 10px 24px rgba(31, 91, 255, 0.35));
+}
+.js .t2w:not(.is-in) .t2w-l {
+  opacity: 0;
+  transform: translateY(0.5em) rotateX(-95deg) scale(0.8);
+}
+.t2w.is-in .t2w-l {
+  transition: opacity 0.6s var(--ease), transform 1s var(--spring);
+  transition-delay: calc(var(--i) * 70ms);
+}
+.t2w.is-in .t2w-in {
+  animation: t2wFlow 9s linear infinite, t2wWave 5s ease-in-out infinite;
+  animation-delay: 0s, calc(1.4s + var(--i) * 90ms);
+}
+@keyframes t2wFlow {
+  to {
+    background-position: calc(var(--i) * 100% / (var(--n) - 1) - var(--n) * 100%) 0;
+  }
+}
+@keyframes t2wWave {
+  0%,
+  30%,
+  100% {
+    transform: none;
+  }
+  12% {
+    transform: translateY(-0.12em) scale(1.06);
+  }
+}
+.t2w.is-in .t2w-l.is-two .t2w-in {
+  animation: t2wFlow 9s linear infinite, t2wCoin 5s var(--ease) infinite;
+  animation-delay: 0s, 1.4s;
+}
+@keyframes t2wCoin {
+  0%,
+  45% {
+    transform: rotateY(0);
+  }
+  70%,
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+.t2w-line {
+  position: relative;
+  width: min(62%, 760px);
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+.t2w-line i {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, #49b6ff, #ffb020, transparent);
+  transform: translateX(-100%);
+}
+.t2w.is-in .t2w-line i {
+  animation: t2wSweep 3.6s var(--ease) 1.2s infinite;
+}
+@keyframes t2wSweep {
+  to {
+    transform: translateX(100%);
+  }
+}
+.t2w-tag {
+  font: 600 clamp(13px, 1.5vw, 17px) / 1.3 var(--ui, 'Inter', sans-serif);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #b8c3ec;
+}
+.js .t2w:not(.is-in) .t2w-tag {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.t2w.is-in .t2w-tag {
+  transition: opacity 0.8s var(--ease) 1s, transform 0.8s var(--ease) 1s;
+}
+@media (max-width: 640px) {
+  .t2w-tag {
+    letter-spacing: 0.1em;
+    padding-inline: 12px;
+  }
+}
+
+/* ---------------- Header sound switch (Kunal, 18 Nov 2026) ---------------- */
+.snd-btn {
+  position: relative; flex: none; display: grid; place-items: center;
+  width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%;
+  color: #fff; background: #fff; cursor: pointer; isolation: isolate;
+  box-shadow: 0 8px 20px -12px rgba(14, 27, 77, 0.45);
+  transition: transform 0.25s var(--ease), box-shadow 0.3s;
+}
+.snd-btn::before {
+  content: ''; position: absolute; inset: -1px; z-index: -1; border-radius: inherit; padding: 1.5px;
+  background: conic-gradient(from 0deg, #ffb020, #ff5c7a, var(--lg2), var(--lg1), #ffb020);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.snd-btn:hover { transform: translateY(-1px) scale(1.04); }
+.snd-btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.snd-orb {
+  display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%;
+  background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.85), transparent 32%), conic-gradient(from 200deg, #ffb020, #ff5c7a, #7b5cff, #ffb020);
+  box-shadow: 0 6px 16px -6px #ff5c7a, inset 0 -4px 8px rgba(0, 0, 0, 0.25);
+  animation: sndPop 0.5s var(--spring);
+}
+.snd-btn.is-off .snd-orb { background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.7), transparent 32%), linear-gradient(135deg, #8a93b8, #56618c); box-shadow: inset 0 -4px 8px rgba(0, 0, 0, 0.25); }
+@keyframes sndPop { 0% { transform: scale(0.6) rotate(-30deg); } }
+.snd-btn.is-on .snd-w1 { animation: sndWave 1.4s ease-in-out infinite; }
+.snd-btn.is-on .snd-w2 { animation: sndWave 1.4s ease-in-out 0.25s infinite; }
+@keyframes sndWave { 50% { opacity: 0.25; } }
+.snd-eq {
+  position: absolute; right: -4px; bottom: -3px; display: flex; align-items: flex-end; gap: 1.5px;
+  height: 14px; padding: 2px 3px; border-radius: 5px; background: var(--ink);
+}
+.snd-eq i { width: 2px; height: 100%; border-radius: 1px; background: #7dffb0; transform-origin: bottom; animation: sndEq 0.8s ease-in-out infinite alternate; }
+.snd-eq i:nth-child(2) { animation-delay: -0.2s; } .snd-eq i:nth-child(3) { animation-delay: -0.4s; } .snd-eq i:nth-child(4) { animation-delay: -0.6s; }
+.snd-btn.is-off .snd-eq i { animation: none; transform: scaleY(0.2); background: #8a93b8; }
+@keyframes sndEq { from { transform: scaleY(0.25); } }
+html[data-theme='dark'] .snd-btn { background: rgba(255, 255, 255, 0.07); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); }
+@media (max-width: 420px) { .snd-btn { width: 38px; height: 38px; } .snd-orb { width: 31px; height: 31px; } .snd-orb svg { width: 15px; height: 15px; } }
+@media (prefers-reduced-motion: reduce) { .snd-orb, .snd-eq i, .snd-btn .snd-w1, .snd-btn .snd-w2 { animation: none !important; } }
+/* Phones: the header row has no room for a third orb, so the sound switch moves into the menu, next to the language button. */
+.snd-btn.is-menu { display: none; }
+.mobile-lang { gap: 12px; align-items: center; }
+@media (max-width: 560px) {
+  .brand-lang .snd-btn { display: none; }
+  .snd-btn.is-menu { display: grid; }
+}
+
+/* ---------------- Header light / dark switch (Kunal, 18 Nov 2026) ---------------- */
+.mode-btn {
+  position: relative; flex: none; display: grid; place-items: center;
+  width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%;
+  background: #fff; cursor: pointer; isolation: isolate;
+  box-shadow: 0 8px 20px -12px rgba(14, 27, 77, 0.45);
+  transition: transform 0.25s var(--ease);
+}
+.mode-btn::before {
+  content: ''; position: absolute; inset: -1px; z-index: -1; border-radius: inherit; padding: 1.5px;
+  background: conic-gradient(from 0deg, #ffd166, #ff9f1c, #5cc8ff, #1f5bff, #ffd166);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.mode-btn.is-dark::before { background: conic-gradient(from 0deg, #9b7bff, #5b3dff, #22b8ff, #c9bcff, #9b7bff); }
+.mode-btn:hover { transform: translateY(-1px) scale(1.04); }
+.mode-btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.mode-orb {
+  position: relative; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; overflow: hidden;
+  color: #fff;
+  background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.85), transparent 34%), linear-gradient(160deg, #ffd166, #ff9f1c 55%, #ff7a1c);
+  box-shadow: 0 6px 16px -6px #ff9f1c, inset 0 -4px 8px rgba(0, 0, 0, 0.2);
+  transition: background 0.6s, box-shadow 0.6s;
+}
+.mode-btn.is-dark .mode-orb {
+  background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.35), transparent 34%), linear-gradient(160deg, #24124f, #0b1036);
+  box-shadow: 0 6px 16px -6px #7b5cff, inset 0 -4px 8px rgba(0, 0, 0, 0.35);
+}
+.mode-sun, .mode-moon { grid-area: 1 / 1; transition: transform 0.6s cubic-bezier(0.5, 1.6, 0.4, 1), opacity 0.4s; }
+.mode-sun { animation: modeSpin 12s linear infinite; }
+.mode-moon { color: #ffe9a8; opacity: 0; transform: translateY(18px) rotate(-40deg); }
+.mode-btn.is-dark .mode-sun { opacity: 0; transform: translateY(-18px) rotate(90deg); }
+.mode-btn.is-dark .mode-moon { opacity: 1; transform: none; }
+@keyframes modeSpin { to { rotate: 360deg; } }
+.mode-tw { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #fff; opacity: 0; }
+.mode-tw:nth-of-type(1) { top: 8px; left: 9px; }
+.mode-tw:nth-of-type(2) { bottom: 9px; right: 8px; width: 2px; height: 2px; }
+.mode-btn.is-dark .mode-tw { animation: modeTw 1.8s ease-in-out infinite alternate; }
+.mode-btn.is-dark .mode-tw:nth-of-type(2) { animation-delay: -0.9s; }
+@keyframes modeTw { from { opacity: 0.1; } to { opacity: 1; } }
+html[data-mode='dark'] .mode-btn { background: rgba(255, 255, 255, 0.07); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); }
+@media (max-width: 420px) { .mode-btn { width: 38px; height: 38px; } .mode-orb { width: 31px; height: 31px; } }
+@media (prefers-reduced-motion: reduce) { .mode-sun, .mode-tw, .mode-moon { animation: none !important; transition: none !important; } }
+.mode-btn.is-menu { display: none; }
+@media (max-width: 560px) {
+  .brand-lang .mode-btn { display: none; }
+  .mode-btn.is-menu { display: grid; }
+}

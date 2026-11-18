@@ -17,6 +17,15 @@ const envPlugin = { name: 'asset-map', setup(b) {
     s = s.replace(/export function asset\(path\) \{/, "export function asset(path) {\n  const __m = (typeof globalThis !== 'undefined' && globalThis.__T2O_ASSETS) || {};\n  const __k = '/' + String(path).replace(/^\\.?\\//, '');\n  if (__m[__k]) return __m[__k];");
     return { contents: s, loader: 'js' };
   });
+  // esbuild has no import.meta.glob: expand each glob into a literal map of lazy imports.
+  b.onLoad({ filter: /src[\/\\]i18n[\/\\]engine\.js$/ }, (a) => {
+    const dir = dirname(a.path);
+    const s = readFileSync(a.path, 'utf8').replace(/import\.meta\.glob\('\.\/(\w+)\/\*\.(\w+)'\)/g, (_, sub, ext) => {
+      const files = readdirSync(join(dir, sub)).filter((f) => f.endsWith('.' + ext));
+      return '{' + files.map((f) => `'./${sub}/${f}': () => import('./${sub}/${f}')`).join(',') + '}';
+    });
+    return { contents: s, loader: 'js', resolveDir: dir };
+  });
 } };
 const r = await build({ entryPoints: [join(proj, 'src/entry-client.jsx')], bundle: true, write: false, outdir: '/tmp/x', format: 'esm', splitting: false, minify: true, jsx: 'automatic', target: 'es2020', loader: { '.js': 'jsx' }, external: ['/fonts/*'], plugins: [envPlugin],
   define: { 'import.meta.env': JSON.stringify(env), 'process.env.NODE_ENV': '"production"' }, logLevel: 'warning' });
@@ -43,6 +52,7 @@ const html = `<!doctype html>
 <title>Turn2Opinion – Website Preview</title>
 <link rel="icon" href="${icon}" />
 <!-- Self-contained PREVIEW build (demo mode, hash routing). Not for deployment: deploy dist/client from "npm run build". -->
+<script>try{if(JSON.parse(localStorage.getItem('t2o_mode'))==='dark')document.documentElement.setAttribute('data-mode','dark')}catch(e){}</script>
 <script>document.documentElement.classList.add('js');setTimeout(function(){if(!document.documentElement.classList.contains('js-ready'))document.documentElement.classList.remove('js')},5000);</script>
 <style>${safe(css)}</style>
 <script>window.__T2O_ASSETS=${safe(JSON.stringify(map))};</script>

@@ -11,12 +11,12 @@ import CredentialScanner from '../components/sections/CredentialScanner.jsx';
 import HomeHero from '../components/sections/HeroStage.jsx';
 import { ClaimJourney, InvitationChannels, RewardRoutes, RewardWallet } from '../components/sections/Rewards.jsx';
 import { PrivacyVault, SecurityHive, VerificationStack } from '../components/sections/Security.jsx';
-import Testimonials from '../components/sections/Testimonials.jsx';
+import MemberVoices from '../components/sections/MemberVoices.jsx';
 import BlogCard from '../components/BlogCard.jsx';
 import { BLOG_POSTS } from '../data/blog/index.js';
 import { FAQ_GROUPS } from '../data/faqs.js';
 
-const MARQUEE = ['Paid online surveys', 'Earn money online without investment', 'Online work from home', 'Paid surveys for cash', 'B2B surveys for professionals', 'PayPal · Wire · Gift cards · UPI in India', 'Free to join', 'Get paid to do surveys'];
+const MARQUEE = ['Paid online surveys', 'Earn money online without investment', 'Online work from home', 'Paid surveys for cash', 'B2B surveys for professionals', 'PayPal · Cash · Bank · Wire · Vouchers · Gift cards · UPI in India', 'Free to join', 'Get paid to do surveys'];
 
 export default function Home() {
   const ref = useReveal();
@@ -98,7 +98,7 @@ export default function Home() {
       {/* REWARDS */}
       <section className="section s-gold" aria-labelledby="rw-title">
         <div className="wrap">
-          <SectionHead kicker="Rewards" id="rw-title" title="Get paid the way that suits you" lead="PayPal, a bank transfer or an Amazon gift card – and UPI if you live in India. You choose when you cash out." />
+          <SectionHead kicker="Rewards" id="rw-title" title="Get paid the way that suits you" lead="Eight ways to get paid: PayPal, cash rewards, bank or wire transfer, shopping and grocery vouchers, digital gift cards – and UPI if you live in India. You choose when you cash out." />
           <RewardWallet />
           <div className="routes-block" data-reveal>
             <h3 className="sub-h">Every profile has a way to earn</h3>
@@ -127,17 +127,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TESTIMONIALS — the Opinion Atlas is a dark, cinematic stage, so the section carries the
-          night grade rather than the old pale sky one. */}
-      <section className="section s-night" aria-labelledby="t-title">
+      {/* MEMBER VOICES — the Rate & Reviews panels in compact form (consumer sky, professional
+          boardroom), rated in gems. */}
+      <section className="section s-night mvx-sec" aria-labelledby="t-title">
         <div className="wrap">
           <SectionHead
             id="t-title"
             kicker="Member voices"
             title="Hear it from members, wherever they answered from"
-            lead="Every review below is from a member we hold a record for — with their country, their role and the score they actually gave. Post yours and it lands here straight away."
+            lead="Every review below is from a member we hold a record for, with their country, their role and the gem they actually gave, from Pebble to Diamond. Post yours and it lands here straight away."
           />
-          <Testimonials />
+          <MemberVoices />
         </div>
       </section>
 
@@ -176,10 +176,10 @@ export default function Home() {
           />
           <div className="seo-intro-grid">
             <article data-reveal>
-              <h3>Paid surveys for cash and gift cards</h3>
+              <h3>Paid surveys for cash, vouchers and gift cards</h3>
               <p>
                 Every survey shows its reward and how long it takes before you start. Points add up in your account and you redeem them
-                through PayPal, a bank wire transfer, an Amazon gift card or, if you live in India, straight to your UPI ID. You pick the
+                through PayPal, cash rewards, a bank or wire transfer, shopping or grocery vouchers, a digital gift card or, if you live in India, straight to your UPI ID. You pick the
                 payout and the moment you cash out.
               </p>
             </article>

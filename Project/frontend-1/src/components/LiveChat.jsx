@@ -6,7 +6,8 @@ import { useEffect, useRef, useState } from 'react';
 import { ENV } from '../config/env.js';
 import { SITE, waLink } from '../config/site.js';
 import { hrefFor } from '../router/Router.jsx';
-import { pop, setSoundEnabled, soundEnabled } from '../utils/sound.js';
+import { playChatOpen, playChatReply, playChatSend, playSoundOn, setSoundEnabled, soundEnabled } from '../utils/sound.js';
+import { onSoundChange } from '../utils/soundPref.js';
 import { postJSON, failureMessage } from '../utils/api.js';
 import { session } from '../utils/storage.js';
 import { track } from '../utils/analytics.js';
@@ -161,10 +162,13 @@ export default function LiveChat({ open, onClose }) {
   const list = useRef(null);
   const input = useRef(null);
 
-  useEffect(() => setSound(soundEnabled()), []);
+  useEffect(() => {
+    setSound(soundEnabled());
+    return onSoundChange(setSound);
+  }, []);
   useEffect(() => {
     if (open) {
-      pop({ pitch: 1 });
+      playChatOpen();
       setTimeout(() => input.current && input.current.focus(), 350);
     }
     if (!open) return undefined;
@@ -183,7 +187,7 @@ export default function LiveChat({ open, onClose }) {
 
   const botSay = (m) => {
     setTyping(false);
-    pop({ pitch: 1.25, volume: 0.16 });
+    playChatReply();
     setMsgs((cur) => [...cur, { from: 'bot', ...m }]);
   };
 
@@ -197,6 +201,7 @@ export default function LiveChat({ open, onClose }) {
   };
 
   const ask = async (q, id) => {
+    playChatSend();
     setMsgs((m) => [...m, { from: 'me', text: q }]);
     setTyping(true);
     const started = Date.now();
@@ -247,7 +252,7 @@ export default function LiveChat({ open, onClose }) {
     const next = !sound;
     setSound(next);
     setSoundEnabled(next);
-    if (next) pop();
+    if (next) playSoundOn();
   };
 
   return (
@@ -264,7 +269,7 @@ export default function LiveChat({ open, onClose }) {
             Live Help <span className="chat-247">24/7</span>
           </h2>
           <p>
-            <span className="live-dot" /> Online now · replies in seconds
+            <span className="live-dot" /> Online now · instant replies
           </p>
         </div>
         <div className="chat-tools">
@@ -272,7 +277,7 @@ export default function LiveChat({ open, onClose }) {
             <Icon name={sound ? 'volume' : 'volumeOff'} size={18} />
           </button>
           <button type="button" className="chat-tool" onClick={onClose} aria-label="Close live help">
-            <Icon name="x" size={18} />
+            <Icon name="close" size={18} />
           </button>
         </div>
         <svg className="chat-wave" viewBox="0 0 400 30" preserveAspectRatio="none" aria-hidden="true">

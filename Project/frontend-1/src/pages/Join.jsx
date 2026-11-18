@@ -17,6 +17,8 @@ import { ageOn, CountryPicker, DateField, EMAIL_RE, Field, formatDate, FREE_MAIL
 import SocialAuth from '../components/SocialAuth.jsx';
 import FollowUs from '../components/FollowUs.jsx';
 import ResendVerify from '../components/ResendVerify.jsx';
+import { AuthAura, AuthVoice, saveAud } from '../components/AuthAura.jsx';
+import { playAudience } from '../utils/sound.js';
 
 const emailCheck = {
   validateDomain: async (v) => {
@@ -247,7 +249,7 @@ function MemberCard({ f, step }) {
         {[
           ['user', 'Account', 'Free, no investment'],
           ['bell', 'Matched surveys', 'Invites that fit you'],
-          ['gift', 'Rewards', 'PayPal, wire, gift cards · UPI in India']
+          ['gift', 'Rewards', 'PayPal, cash, bank, wire, vouchers, gift cards · UPI in India']
         ].map(([ic, t, d], i) => (
           <li key={t} className={i < step ? 'is-open' : i === step ? 'is-now' : ''} style={{ '--i': i }}>
             <span className="ul-ico">
@@ -266,6 +268,8 @@ function MemberCard({ f, step }) {
 
 export default function Join() {
   const [f, setF] = useState(initial);
+  // Remember the chosen side so Log in opens in the same colours next time.
+  useEffect(() => saveAud(f.type), [f.type]);
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [touched, setTouched] = useState({});
@@ -857,6 +861,7 @@ const submitSignup = async () => {
         <span />
         <span />
       </div>
+      <AuthAura aud={f.type === 'pro' ? 'pro' : 'consumer'} />
       <div className="wrap join-grid">
         <div className="join-side">
           <Breadcrumbs items={[{ label: 'Join free' }]} />
@@ -870,6 +875,7 @@ const submitSignup = async () => {
           </p>
           <p className="join-lead">No fees, no investment – just honest answers. Unlock each step below as you go.</p>
           <MemberCard f={f} step={step} />
+          <AuthVoice aud={f.type === 'pro' ? 'pro' : 'consumer'} />
         </div>
 
         <div className="join-card">
@@ -893,7 +899,10 @@ const submitSignup = async () => {
                     ['consumer', 'Consumer', 'users', 'Everyday opinions on products & life'],
                     ['pro', 'Business professional', 'briefcase', 'Also get B2B & workplace studies']
                   ].map(([v, l, ic, d]) => (
-                    <button type="button" role="radio" aria-checked={f.type === v} key={v} className={`type-opt to-${v} ${f.type === v ? 'is-on' : ''}`} onClick={() => set('type', v)}>
+                    <button type="button" role="radio" aria-checked={f.type === v} key={v} className={`type-opt to-${v} ${f.type === v ? 'is-on' : ''}`} onClick={() => {
+                      if (f.type !== v) playAudience(v);
+                      set('type', v);
+                    }}>
                       <span className="to-ico">
                         <Icon name={ic} size={22} />
                       </span>

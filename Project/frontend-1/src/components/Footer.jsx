@@ -1,7 +1,9 @@
+import { useEffect, useRef } from 'react';
 import { SITE, waLink } from '../config/site.js';
 import { Link, usePath } from '../router/Router.jsx';
 import { FrLogo, Logo, T2OMark } from './Brand.jsx';
 import Icon from './Icon.jsx';
+import ThemeToggle from './ThemeToggle.jsx';
 import { LanguageButton } from './Language.jsx';
 import QrHub from './sections/QrHub.jsx';
 
@@ -39,12 +41,12 @@ const COLS = [
   }
 ];
 
-// Faces of the rotating 3D reward cube (UPI is labelled India-only, matching src/data/payouts.js).
+// Faces of the rotating 3D reward cube: the eight reward options in pairs (UPI is India-only, see src/data/payouts.js).
 const CUBE = [
-  { face: 'front', icon: 'wallet', label: 'PayPal', c1: '#003087', c2: '#009CDE' },
-  { face: 'right', icon: 'transfer', label: 'Wire Transfer', c1: '#3A1C71', c2: '#7B5CFF' },
-  { face: 'back', icon: 'gift', label: 'Amazon Gift Card', c1: '#232F3E', c2: '#FF9900' },
-  { face: 'left', icon: 'phone', label: 'UPI · India', c1: '#0E7A4B', c2: '#12C29B' }
+  { face: 'front', icon: 'wallet', label: 'PayPal · Cash', c1: '#003087', c2: '#009CDE' },
+  { face: 'right', icon: 'bank', label: 'Bank · Wire', c1: '#0E7C66', c2: '#2F6BFF' },
+  { face: 'back', icon: 'cart', label: 'Shopping · Grocery vouchers', c1: '#E8590C', c2: '#FFB347' },
+  { face: 'left', icon: 'card', label: 'Gift cards · UPI India', c1: '#7048E8', c2: '#C084FC' }
 ];
 
 function RewardCube() {
@@ -175,6 +177,50 @@ export function BrandWordmark({ text, grade = 't2o', id = grade, size = 'lg' }) 
   );
 }
 
+/** v4 footer name (Kunal, 18 Nov 2026): TURN2OPINION alone, replacing the two SVG wordmarks.
+ *  Each letter is its own element so the name can make an entrance: when the footer scrolls into
+ *  view the letters flip up out of a 3D plane one after another, the colour grade flows through
+ *  them, the "2" spins like a coin, and a soft wave keeps running along the word afterwards.
+ *  Without JavaScript (or with reduced motion) the name is simply shown, fully coloured. */
+const T2O_LETTERS = 'TURN2OPINION'.split('');
+function T2OWordmark() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !('IntersectionObserver' in window)) {
+      el && el.classList.add('is-in');
+      return undefined;
+    }
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          el.classList.add('is-in');
+          io.disconnect();
+        }
+      },
+      { threshold: 0.35 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <div className="t2w notranslate" translate="no" ref={ref} aria-hidden="true">
+      <span className="t2w-glow" />
+      <span className="t2w-word">
+        {T2O_LETTERS.map((c, i) => (
+          <span key={i} className={`t2w-l${c === '2' ? ' is-two' : ''}`} style={{ '--i': i, '--n': T2O_LETTERS.length }}>
+            <span className="t2w-in">{c}</span>
+          </span>
+        ))}
+      </span>
+      <span className="t2w-line">
+        <i />
+      </span>
+      <span className="t2w-tag">{SITE.tagline}</span>
+    </div>
+  );
+}
+
 export default function Footer() {
   const year = new Date().getFullYear();
   const onScanPage = usePath().startsWith('/about/scan-connect');
@@ -186,8 +232,8 @@ export default function Footer() {
           <div className="fs-copy">
             <h2 id="footer-cta-title">Your opinion already has value. Start collecting it.</h2>
             <p>
-              Consumers and professionals earn rewards for honest answers – redeemed through PayPal, wire transfer and Amazon gift
-              cards worldwide, plus UPI for members in India.
+              Consumers and professionals earn rewards for honest answers – redeemed through PayPal, cash rewards, bank or wire transfer,
+              shopping and grocery vouchers and digital gift cards worldwide, plus UPI for members in India.
             </p>
             <div className="fs-actions">
               <Link to="/join/" className="btn btn-primary btn-shimmer">
@@ -305,8 +351,7 @@ export default function Footer() {
         </div>
 
         <div className="footer-wordmarks">
-          <BrandWordmark text="TURN2OPINION" grade="t2o" />
-          <BrandWordmark text="Frequent Research" grade="fr" size="sm" />
+          <T2OWordmark />
         </div>
 
         <div className="footer-bottom">
@@ -315,7 +360,10 @@ export default function Footer() {
             <span>A brand of</span> <span className="notranslate" translate="no">{SITE.legalName}</span>
           </p>
           <p>Rewards and payment methods vary by country. Survey availability depends on your profile.</p>
-          <LanguageButton compact />
+          <div className="footer-switches">
+            <ThemeToggle />
+            <LanguageButton compact />
+          </div>
         </div>
       </div>
     </footer>

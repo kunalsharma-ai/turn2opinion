@@ -20,6 +20,7 @@
 import { asset } from '../../config/env.js';
 import { SITE } from '../../config/site.js';
 import Icon from '../Icon.jsx';
+import SocialNetwork from './SocialNetwork.jsx';
 
 function FamilyCard({ p, i }) {
   return (
@@ -57,48 +58,6 @@ function FamilyCard({ p, i }) {
   );
 }
 
-function SocialCard({ s, i }) {
-  return (
-    <a
-      className={`qs qs-${s.id}`}
-      href={s.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{ '--t1': s.tint, '--t2': s.tint2, '--i': i }}
-      aria-label={`Turn2Opinion on ${s.label} (opens in a new tab)`}
-    >
-      <span className="qs-flip">
-        <span className="qs-face qs-front">
-          <span className="qs-ico" aria-hidden="true">
-            <Icon name={s.id} size={26} />
-          </span>
-          <span className="qs-name">{s.label}</span>
-          <span className="qs-handle notranslate" translate="no">
-            {s.handle}
-          </span>
-          <span className="qs-blurb">{s.blurb}</span>
-          <span className="qs-hint" aria-hidden="true">
-            <Icon name="qr" size={13} /> Hover or tap for the QR
-          </span>
-        </span>
-        <span className="qs-face qs-back" aria-hidden="true">
-          <span className="qs-frame">
-            <i className="c tl" />
-            <i className="c tr" />
-            <i className="c bl" />
-            <i className="c br" />
-            <i className="qs-scan" />
-          </span>
-          <img src={asset(s.qr)} alt={`QR code that opens Turn2Opinion on ${s.label}`} width="116" height="116" loading="lazy" decoding="async" />
-          <span className="qs-scanlabel">
-            <Icon name="scan" size={12} /> Scan to follow
-          </span>
-        </span>
-      </span>
-    </a>
-  );
-}
-
 // `variant="page"` is used on /about/scan-connect/, where the page hero already carries the H1 and
 // the intro; the hub then renders without its own header so nothing is said twice.
 export default function QrHub({ variant = 'footer' }) {
@@ -114,8 +73,8 @@ export default function QrHub({ variant = 'footer' }) {
         </p>
         <h2 id="qr-title">Point your camera. Land where you meant to.</h2>
         <p className="qr-lead">
-          One group, four research communities. Every code below opens the real thing — our panels, our parent company
-          and the places we post. No app, no typing, no hunting for the right account.
+          One group, five brands. Every code below opens the real thing: our panels, our parent company, Sampledge
+          and every channel we post on. No app, no typing, no hunting for the right account.
         </p>
       </header>
       )}
@@ -139,18 +98,12 @@ export default function QrHub({ variant = 'footer' }) {
         <span />
       </div>
 
-      {page && (
-        <h2 className="qr-page-h">
-          <Icon name="users" size={18} /> Follow Turn2Opinion
-        </h2>
-      )}
-      <div className="qr-social" role="list" aria-label="Social media">
-        {SITE.social.map((s, i) => (
-          <div role="listitem" key={s.id} className="qr-social-cell">
-            <SocialCard s={s} i={i} />
-          </div>
-        ))}
-      </div>
+      <h2 className="qr-page-h" id={page ? undefined : 'qr-net-h'}>
+        <Icon name="users" size={18} /> Follow every panel &amp; the company
+      </h2>
+      {/* v4: every brand's channels (Turn2Opinion, MyFrequentRewards, MyHealthOpinions, Frequent
+          Research, Sampledge) with their QR codes, replacing the Turn2Opinion-only row. */}
+      <SocialNetwork />
 
       <p className="qr-foot">
         <Icon name="shield" size={14} /> Every code points at an official Turn2Opinion or Frequent Research address. We

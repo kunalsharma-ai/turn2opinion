@@ -8,6 +8,7 @@
 // Input mode: five numbered pills under each meter (a radiogroup per facet; tap again to clear).
 // Read-only mode (`readOnly`, `values` may be decimals): the meter alone, with the average.
 import { FACETS, FACET_WORDS } from '../../data/reviewFacets.js';
+import { levelOf } from '../../data/reviewFacets.js';
 import Icon from '../Icon.jsx';
 
 function Meter({ type, v }) {
@@ -79,7 +80,7 @@ export default function FacetDials({ values, onChange, readOnly = false, idPrefi
                 <small>{f.hint}</small>
               </div>
               <span className="fd-val" aria-hidden={!readOnly}>
-                {readOnly ? (v ? v.toFixed(1) : '—') : n ? FACET_WORDS[n] : 'Skip'}
+                {readOnly ? (v ? levelOf(v).gem : '—') : n ? FACET_WORDS[n] : 'Skip'}
               </span>
             </div>
             {!readOnly && (
@@ -90,7 +91,7 @@ export default function FacetDials({ values, onChange, readOnly = false, idPrefi
                     type="button"
                     role="radio"
                     aria-checked={n === s}
-                    aria-label={`${s} out of 5, ${FACET_WORDS[s]}`}
+                    aria-label={`${levelOf(s).gem} gem, ${FACET_WORDS[s]}`}
                     className={`${s <= n ? 'is-lit' : ''} ${s === n ? 'is-on' : ''}`}
                     style={{ '--s': s }}
                     onClick={() => onChange(f.key, n === s ? 0 : s)}

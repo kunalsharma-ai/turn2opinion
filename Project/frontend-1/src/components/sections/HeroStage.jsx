@@ -11,6 +11,7 @@ import AuroraCanvas from '../AuroraCanvas.jsx';
 import { peopleAlt } from '../../data/illustrations.js';
 import { useI18n } from '../../i18n/I18nProvider.jsx';
 import { tr } from '../../i18n/engine.js';
+import { playAudience } from '../../utils/sound.js';
 import { api } from '../../utils/api.js';
 
 export const AUDIENCES = {
@@ -77,10 +78,20 @@ function RoleRibbon({ aud }) {
   );
 }
 
-export function AudienceSwitch({ value, onChange }) {
+export function AudienceSwitch({ value, onChange, timer, paused, ms, onHold }) {
   return (
-    <div className={`aud-switch is-${value}`} role="group" aria-label="I want to earn as">
+    <div
+      className={`aud-switch is-${value}${paused ? ' is-paused' : ''}`}
+      role="group"
+      aria-label="I want to earn as"
+      style={ms ? { '--aud-ms': `${ms}ms` } : undefined}
+      onMouseEnter={onHold && (() => onHold(true))}
+      onMouseLeave={onHold && (() => onHold(false))}
+      onFocus={onHold && (() => onHold(true))}
+      onBlur={onHold && (() => onHold(false))}
+    >
       <span className="aud-knob" aria-hidden="true" />
+      {timer && <span className="aud-timer" key={timer} aria-hidden="true" />}
       {Object.entries(AUDIENCES).map(([k, a]) => (
         <button key={k} type="button" aria-pressed={value === k} className={value === k ? 'is-on' : ''} onClick={() => onChange(k)}>
           <Icon name={k === 'consumer' ? 'bag' : 'briefcase'} size={16} /> {a.label}
@@ -93,19 +104,19 @@ export function AudienceSwitch({ value, onChange }) {
 // Personas shown in the hero "portal". Illustrations: Open Peeps (CC0), see public/images/people/LICENSE.txt.
 const PERSONAS = {
   consumer: [
-    { img: 'shopper', role: 'Shoppers', icon: 'bag', q: 'What made you pick that brand last time?', a: 'A friend recommended it', m: 'PayPal' },
-    { img: 'gamer', role: 'Gamers', icon: 'game', q: 'Console, PC or mobile – where do you play most?', a: 'Mostly mobile', m: 'Amazon Gift Card' },
-    { img: 'foodie', role: 'Foodies', icon: 'cup', q: 'Takeaway or cooking at home tonight?', a: 'Cooking, obviously', m: 'UPI' },
-    { img: 'traveller', role: 'Travellers', icon: 'plane', q: 'Window seat or aisle?', a: 'Window, every time', m: 'Wire Transfer' }
+    { img: 'shopper', role: 'Shoppers', icon: 'bag', q: 'What made you pick that brand last time?', a: 'A friend recommended it', m: 'Shopping Vouchers' },
+    { img: 'gamer', role: 'Gamers', icon: 'game', q: 'Console, PC or mobile – where do you play most?', a: 'Mostly mobile', m: 'Digital Gift Cards' },
+    { img: 'foodie', role: 'Foodies', icon: 'cup', q: 'Takeaway or cooking at home tonight?', a: 'Cooking, obviously', m: 'Grocery Vouchers' },
+    { img: 'traveller', role: 'Travellers', icon: 'plane', q: 'Window seat or aisle?', a: 'Window, every time', m: 'PayPal' }
   ],
   professional: [
     { img: 'business', role: 'IT & operations', icon: 'chip', q: 'Who signs off new software at your company?', a: 'My team decides', m: 'Wire Transfer' },
-    { img: 'finance', role: 'Finance leaders', icon: 'bank', q: 'Which payment tools does your business use?', a: 'Two banks, one fintech', m: 'PayPal' },
-    { img: 'tech-user', role: 'Engineers', icon: 'gear', q: 'How often do you trial new dev tools?', a: 'Every quarter', m: 'Amazon Gift Card' },
-    { img: 'pro-pointing', role: 'Marketers', icon: 'megaphone', q: 'Which channel brought your best leads this year?', a: 'Search and WhatsApp', m: 'UPI' }
+    { img: 'finance', role: 'Finance leaders', icon: 'bank', q: 'Which payment tools does your business use?', a: 'Two banks, one fintech', m: 'Bank Transfer' },
+    { img: 'tech-user', role: 'Engineers', icon: 'gear', q: 'How often do you trial new dev tools?', a: 'Every quarter', m: 'Digital Gift Cards' },
+    { img: 'pro-pointing', role: 'Marketers', icon: 'megaphone', q: 'Which channel brought your best leads this year?', a: 'Search and WhatsApp', m: 'UPI (India)' }
   ]
 };
-const METHOD_LABEL = { UPI: 'UPI (India)', PayPal: 'PayPal', 'Wire Transfer': 'wire transfer', 'Amazon Gift Card': 'Amazon gift card' };
+const METHOD_LABEL = { 'UPI (India)': 'UPI (India)', PayPal: 'PayPal', 'Wire Transfer': 'wire transfer', 'Digital Gift Cards': 'a digital gift card', 'Shopping Vouchers': 'a shopping voucher', 'Grocery Vouchers': 'a grocery voucher', 'Cash Rewards': 'cash rewards', 'Bank Transfer': 'bank transfer' };
 
 function TypeText({ text: source, onDone }) {
   const { lang } = useI18n();
@@ -264,14 +275,60 @@ export function RewardStage({ aud }) {
   );
 }
 
+// The hero flips between Consumers and Professionals on its own (Kunal, 18 Nov 2026). It pauses while the
+// visitor hovers or focuses the switch, while it is off screen or the tab is hidden, and for a while after
+// they pick a side themselves. Off for people who ask for reduced motion.
+const FLIP_MS = 7000;
+const HOLD_MS = 20000;
+
 export default function HomeHero() {
   const [aud, setAud] = useState('consumer');
+  const [tick, setTick] = useState(1);
+  const [paused, setPaused] = useState(false);
+  const [held, setHeld] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [auto, setAuto] = useState(false);
+  const sec = React.useRef(null);
   const { lang } = useI18n();
   const a = AUDIENCES[aud];
+  useEffect(() => {
+    setAuto(!prefersReducedMotion());
+    const el = sec.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return undefined;
+    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting), { threshold: 0.2 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const running = auto && !paused && !held && visible;
+  useEffect(() => {
+    if (!running) return undefined;
+    const t = setTimeout(() => {
+      if (document.hidden) return setTick((n) => n + 1);
+      setAud((x) => (x === 'consumer' ? 'professional' : 'consumer'));
+      setTick((n) => n + 1);
+    }, FLIP_MS);
+    return () => clearTimeout(t);
+  }, [running, tick]);
+  useEffect(() => {
+    if (!held) return undefined;
+    const t = setTimeout(() => {
+      setHeld(false);
+      setTick((n) => n + 1);
+    }, HOLD_MS);
+    return () => clearTimeout(t);
+  }, [held]);
+  const pick = (k) => {
+    if (k !== aud) playAudience(k);
+    setAud(k);
+    setHeld(true);
+  };
   // Same hero, animation and taglines in every language. English keeps the original white Turn2Opinion grading;
   // every other language adds a WebGL aurora in its own colour grade behind it (see .hero-aurora in i18n.css).
   return (
-    <section className={`hero hero-${aud} ${lang !== 'en' ? 'is-graded' : ''}`}>
+    <section
+      ref={sec}
+      className={`hero hero-${aud} ${lang !== 'en' ? 'is-graded' : ''}`}
+>
       {lang !== 'en' && (
         <div className="hero-aurora" aria-hidden="true">
           <AuroraCanvas />
@@ -288,7 +345,7 @@ export default function HomeHero() {
       </div>
       <div className="wrap hero-grid-layout">
         <div className="hero-copy">
-          <AudienceSwitch value={aud} onChange={setAud} />
+          <AudienceSwitch value={aud} onChange={pick} timer={auto && !held ? `${aud}-${tick}` : null} paused={!running} ms={FLIP_MS} onHold={setPaused} />
           <RoleRibbon aud={aud} />
           <p className="hero-motto" key={`m-${aud}`}>
             {a.motto.map((w, i) => (
@@ -304,11 +361,10 @@ export default function HomeHero() {
           <p className="hero-tagline" key={aud}>
             <WordSplit text={a.tagline} />
           </p>
-          <p className="hero-lead">
+          <p className="hero-lead" key={`l-${aud}`}>
             {a.lead} <Rotator words={a.who} /> {a.leadEnd}
           </p>
-          <div className="hero-actions">
-          
+          <div className="hero-actions" key={`a-${aud}`}>
             <a href={aud === 'professional' ? '/join/professional/' : '/join/'} className="btn btn-primary btn-lg btn-shimmer">
               {a.cta} <Icon name="arrow" size={18} />
             </a>
@@ -324,11 +380,11 @@ export default function HomeHero() {
               <Icon name="check" size={16} /> No investment
             </li>
             <li>
-              <Icon name="check" size={16} /> PayPal, wire, gift cards & UPI in India
+              <Icon name="check" size={16} /> PayPal, cash, bank, wire, vouchers, gift cards & UPI in India
             </li>
           </ul>
         </div>
-        <div className="hero-art">
+        <div className="hero-art" key={`art-${aud}`}>
           <RewardStage aud={aud} />
         </div>
       </div>

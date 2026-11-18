@@ -36,7 +36,7 @@ const DETAIL_RATINGS = [
   {
     label: "Rewards arrive as promised",
     icon: "coin",
-    color: "#F59E0B",
+    color: "#B45309",
     bg: "#FFFBEB",
     border: "#FDE68A",
   },
@@ -73,14 +73,11 @@ export function GemBadge({ rating, size = 34, compact = false }) {
       className={`gbadge lv-${L.key} ${compact ? "is-compact" : ""}`}
       style={{ "--g1": L.c1, "--g2": L.c2, "--g3": L.c3 }}
       role="img"
-      aria-label={`Rated ${rating} out of 5 — ${L.word}`}
+      aria-label={`Rated ${L.gem} gem — ${L.word}`}
     >
       <Gem level={rating} size={size} motion="float" />
       <span className="gb-txt" aria-hidden="true">
-        <b>
-          {rating}
-          <i>/5</i>
-        </b>
+        <b>{L.gem}</b>
         {!compact && <small>{L.word}</small>}
       </span>
     </span>
@@ -124,7 +121,7 @@ function Postmark({ rating }) {
         <text>
           <textPath href={`#${arc}`} startOffset="0">
             TURN2OPINION · MEMBER VOICE ·{" "}
-            {rating ? `${rating}/5 ${L.word.toUpperCase()}` : "ON RECORD"} ·
+            {rating ? `${L.gem.toUpperCase()} GEM · ${L.word.toUpperCase()}` : "ON RECORD"} ·
           </textPath>
         </text>
       </svg>
@@ -234,8 +231,11 @@ function DetailRatings({ detailrating, size = "md" }) {
             {valid ? (
               <span
                 className="vc-detailrating-value"
-                aria-label={`${item.label}: ${value} out of 5`}
+                aria-label={`${item.label}: ${levelOf(Number(value)).gem} gem`}
                 style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
                   flexShrink: 0,
                   fontSize: 12,
                   fontWeight: 800,
@@ -243,8 +243,7 @@ function DetailRatings({ detailrating, size = "md" }) {
                   whiteSpace: "nowrap",
                 }}
               >
-                {Number(value)}
-                <span style={{ opacity: 0.6, fontWeight: 500 }}>/5</span>
+                <Gem level={Number(value)} size={15} motion="still" /> {levelOf(Number(value)).gem}
               </span>
             ) : (
               <span
@@ -449,7 +448,6 @@ export default function VoiceCard({
       </article>
     );
   }
-  console.log(r);
   return (
     <article
       className={`vcard postcard sz-${size} lv-${L.key} ${

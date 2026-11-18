@@ -167,7 +167,7 @@ export function LanguagePicker() {
               <span className="lps-ic" aria-hidden="true"><i /><i /><i /></span>
               {sound ? 'Sound on' : 'Sound off'}
             </button>
-            <button type="button" className="lp-close" onClick={closePicker} aria-label="Close"><Icon name="x" size={20} /></button>
+            <button type="button" className="lp-close" onClick={closePicker} aria-label="Close"><Icon name="close" size={20} /></button>
           </div>
         </header>
         <label className="lp-search">
@@ -196,7 +196,7 @@ export function LanguagePicker() {
           />
           {q && (
             <button type="button" className="lp-clear" onClick={() => { setQ(''); search.current?.focus(); }} aria-label="Clear search">
-              <Icon name="x" size={16} />
+              <Icon name="close" size={16} />
             </button>
           )}
         </label>
@@ -251,7 +251,7 @@ export function TranslateStatus() {
     return (
       <div className="tx-pill is-info" role="status">
         Menus and key sections are translated. Some longer text is still in English.
-        <button type="button" onClick={() => setHideInfo(true)} aria-label="Dismiss"><Icon name="x" size={14} /></button>
+        <button type="button" onClick={() => setHideInfo(true)} aria-label="Dismiss"><Icon name="close" size={14} /></button>
       </div>
     );
   return null;

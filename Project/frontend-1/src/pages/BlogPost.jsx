@@ -132,7 +132,7 @@ export default function BlogPost({ params, data }) {
           <div className="post-cta">
             <div>
               <strong>Start earning with your opinion</strong>
-              <p>Free to join, no investment, rewards via PayPal, wire transfer, gift cards – or UPI in India.</p>
+              <p>Free to join, no investment, rewards via PayPal, cash, bank or wire transfer, vouchers and gift cards – or UPI in India.</p>
             </div>
             <Link to="/join/" className="btn btn-primary">
               Join Turn2Opinion free

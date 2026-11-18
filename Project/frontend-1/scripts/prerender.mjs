@@ -29,8 +29,11 @@ const cssHref = (name) => {
   const entry = manifest[`src/styles/${name}.css`];
   return entry ? '/' + entry.file : null;
 };
-const CSS = { core: cssHref('core'), home: cssHref('home'), pages: cssHref('pages'), shell: cssHref('shell'), late: cssHref('late') };
+const CSS = { core: cssHref('core'), home: cssHref('home'), pages: cssHref('pages'), shell: cssHref('shell'), late: cssHref('late'), dark: cssHref('dark') };
 if (!CSS.core) console.warn('[prerender] No CSS bundles in the Vite manifest: pages will be unstyled.');
+
+const MODE_HEAD = (href) =>
+  `<script>(function(){try{if(JSON.parse(localStorage.getItem('t2o_mode'))==='dark'){document.documentElement.setAttribute('data-mode','dark');document.write('<link rel="stylesheet" href="${href}" data-css="dark" />')}}catch(e){}})();</script>`;
 
 function cssTags(path) {
   const link = (key) => (CSS[key] ? `<link rel="stylesheet" href="${CSS[key]}" data-css="${key}" />` : '');
@@ -43,7 +46,9 @@ function cssTags(path) {
       `<noscript><link rel="stylesheet" href="${CSS.late}" /></noscript>`
     );
   }
-  if (CSS.pages) tags.push(`<script type="application/json" id="t2o-css">${JSON.stringify({ pages: CSS.pages })}</script>`);
+  // Dark mode (src/utils/mode.js): a saved dark choice is applied, and its stylesheet linked, before the first paint.
+  if (CSS.dark) tags.push(MODE_HEAD(CSS.dark));
+  if (CSS.pages || CSS.dark) tags.push(`<script type="application/json" id="t2o-css">${JSON.stringify({ pages: CSS.pages, dark: CSS.dark })}</script>`);
   return tags.filter(Boolean).join('\n    ');
 }
 

@@ -19,11 +19,11 @@
 //   * "Not now" costs a full interval; the × closes it for the session;
 //   * at most 3 sessions ever, at least 2 days apart.
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { session, store } from '../utils/storage.js';
+import { store, visit } from '../utils/storage.js';
 import { submitReview } from '../utils/reviews.js';
 import { track } from '../utils/analytics.js';
 import { failureMessage } from '../utils/api.js';
-import { playSuccess, playTick } from '../utils/sound.js';
+import { playGem, playSuccess, playTick } from '../utils/sound.js';
 import { audienceOf, HIGHLIGHTS, LEVELS, levelOf, STARTERS } from '../data/reviewFacets.js';
 import { loadGemConfig, refreshMe, useGemConfig, useMe } from '../utils/gems.js';
 import { COUNTRIES } from '../data/countries.js';
@@ -224,7 +224,7 @@ function OpinionStudio({ open, initialRating, onClose, onDone, user }) {
           <i />
         </span>
         <button type="button" className="gs-x" onClick={onClose} aria-label="Close">
-          <Icon name="x" size={18} />
+          <Icon name="close" size={18} />
         </button>
 
         <div className="gs-body" ref={body}>
@@ -244,7 +244,7 @@ function OpinionStudio({ open, initialRating, onClose, onDone, user }) {
               </p>
               <h2 id="studio-title">Thank you, {profile.name.split(' ')[0] || 'friend'}!</h2>
               <p className="gd-text">
-                Your {L.gem.toLowerCase()} — <strong>{rating}/5 · {L.word}</strong> — has landed in <strong>Member voices</strong>
+                Your {L.gem.toLowerCase()} — <strong>{L.gem} · {L.word}</strong> — has landed in <strong>Member voices</strong>
                 {countryName ? (
                   <>
                     {' '}
@@ -332,7 +332,7 @@ function OpinionStudio({ open, initialRating, onClose, onDone, user }) {
                   </h2>
                   <div className="gs-recap">
                     <Gem level={rating} size={30} motion="float" />
-                    <b>{rating}/5</b>
+                    <b>{L.gem}</b>
                     <span>{L.word}</span>
                     <span className="gsr-aud">
                       <Icon name={world.icon} size={13} /> {world.label}
@@ -458,19 +458,19 @@ function OpinionStudio({ open, initialRating, onClose, onDone, user }) {
 export default function ReviewWidget({ ready }) {
   const { user, loading } = useMe();
   const loggedIn = !!user && !loading;
-  console.log('REVIEW WIDGET', { ready, loggedIn, user });
   const audience = user && user.category === 'b2b' ? 'professional' : 'consumer';
   useGemConfig(); // gems endpoint se aaye to is widget (aur uske bachhe) dobara render ho
   const [modal, setModal] = useState(false);
   const [rating, setRating] = useState(0);
   const [prompt, setPrompt] = useState(false);
   const started = useRef(Date.now());
-  const shownThisSession = useRef(session.get(SESSION_SHOWN, 0));
+  const shownThisSession = useRef(visit.get(SESSION_SHOWN, 0));
 
   const openModal = useCallback((r = 0) => {
     setRating(r);
     setPrompt(false);
     setModal(true);
+    playGem();
     track('review_open', { rating: r });
   }, []);
 
@@ -479,12 +479,27 @@ export default function ReviewWidget({ ready }) {
     if (loggedIn) loadGemConfig(audience);
   }, [loggedIn, audience]);
 
+  // Members open the rating studio. Visitors who are not logged in get a small "log in first" card
+  // instead (Kunal, 18 Nov 2026: the Rate us button is visible to everyone but locked).
+  const [gate, setGate] = useState(false);
   useEffect(() => {
-    if (!loggedIn) return undefined;
-    const h = (e) => openModal((e && e.detail && e.detail.rating) || 0);
+    const h = (e) => {
+      if (loading) return;
+      if (loggedIn) openModal((e && e.detail && e.detail.rating) || 0);
+      else {
+        setGate(true);
+        playGem();
+      }
+    };
     window.addEventListener('t2o:open-review', h);
     return () => window.removeEventListener('t2o:open-review', h);
-  }, [openModal, loggedIn]);
+  }, [openModal, loggedIn, loading]);
+  useEffect(() => {
+    if (!gate) return undefined;
+    const esc = (e) => e.key === 'Escape' && setGate(false);
+    window.addEventListener('keydown', esc);
+    return () => window.removeEventListener('keydown', esc);
+  }, [gate]);
 
   // Tell the notification stream an ask is on screen (on phones only one of them may show).
   useEffect(() => {
@@ -525,7 +540,7 @@ export default function ReviewWidget({ ready }) {
       if (Date.now() - started.current < gate.afterMs || maxDepth < gate.depth) return;
 
       shownThisSession.current = n + 1;
-      session.set(SESSION_SHOWN, shownThisSession.current);
+      visit.set(SESSION_SHOWN, shownThisSession.current);
       setPrompt(true);
       store.set(KEY, { ...st, count: st.count + 1, last: Date.now() });
       if (shownThisSession.current >= GATES.length) clearInterval(iv);
@@ -546,29 +561,46 @@ export default function ReviewWidget({ ready }) {
 
   const dismissForever = () => {
     setPrompt(false);
-    session.set(SESSION_SHOWN, 9);
+    visit.set(SESSION_SHOWN, 9);
     shownThisSession.current = 9;
   };
 
   const askLevels = LEVELS; // gems.js isi array ko in-place update karta hai
   const closeModal = useCallback(() => setModal(false), []);
 
-  if (!loggedIn) return null; // logged-out user ko popup/modal kuch nahi
+  if (!loggedIn)
+    return gate ? (
+      <div className="rate-gate" role="dialog" aria-labelledby="rate-gate-t">
+        <button type="button" className="rg-x" onClick={() => setGate(false)} aria-label="Close">
+          <Icon name="close" size={14} />
+        </button>
+        <span className="rg-lock" aria-hidden="true">
+          <span className="rg-shackle" />
+          <span className="rg-body">
+            <Gem level={5} size={26} motion="float" />
+          </span>
+        </span>
+        <p className="rg-kicker">Members only</p>
+        <p id="rate-gate-t" className="rg-title">Log in to rate us</p>
+        <p className="rg-text">Every review on Turn2Opinion comes from a real member, so we ask you to log in first.</p>
+        <div className="rg-actions">
+          <Link to="/login/" className="btn btn-primary btn-sm" onClick={() => setGate(false)}>
+            Log in <Icon name="arrow" size={15} />
+          </Link>
+          <Link to="/join/" className="btn btn-ghost btn-sm" onClick={() => setGate(false)}>
+            Join free
+          </Link>
+        </div>
+      </div>
+    ) : null;
 
   return (
     <>
-      {/* <button type="button" className="rate-tab" onClick={() => openModal(0)} aria-label="Rate us — rate your experience">
-        <span className="rate-tab-gem" aria-hidden="true">
-          <Gem level={5} size={22} motion="float" />
-        </span>
-        <span className="rate-tab-text">Rate us</span>
-      </button> */}
-
       {prompt && (
         <div className="gask" role="dialog" aria-labelledby="ask-title">
           <span className="gask-aurora" aria-hidden="true" />
           <button type="button" className="gask-x" onClick={dismissForever} aria-label="Don't ask again this visit">
-            <Icon name="x" size={14} />
+            <Icon name="close" size={14} />
           </button>
           <p className="gask-kicker">
             <i className="gask-live" /> 20-second favour

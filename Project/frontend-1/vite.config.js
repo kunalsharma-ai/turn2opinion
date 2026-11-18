@@ -11,6 +11,12 @@ export default defineConfig({
       registerType: 'autoUpdate',
       workbox: {
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+        // Every route is prerendered into its own HTML file after this build runs, so the service
+        // worker must not answer page visits with the pre-prerender index.html shell: that served the
+        // home markup on /rewards/, /faq/ etc. and React then threw it away (hydration error, flash).
+        // Pages always come from the network; only hashed JS/CSS and fonts are precached.
+        navigateFallback: null,
+        globPatterns: ['**/*.{js,css,woff2}'],
         navigateFallbackDenylist: [
           /^\/member/,
           /^\/admin/,
@@ -39,7 +45,9 @@ export default defineConfig({
         'css-home': 'src/styles/home.css',
         'css-pages': 'src/styles/pages.css',
         'css-shell': 'src/styles/shell.css',
-        'css-late': 'src/styles/late.css'
+        'css-late': 'src/styles/late.css',
+        // Dark mode: only loaded for visitors who switch to it (src/utils/mode.js, prerender head script).
+        'css-dark': 'src/styles/dark.css'
       }
     },
     sourcemap: false,

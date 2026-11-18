@@ -3,11 +3,11 @@
 // What the visitor sees:
 //   * a stage with a lit pedestal; the gem for the chosen level floats above it, turning slowly,
 //     with a halo, light rays and rising sparks in that level's colour;
-//   * the number and the plain word right next to it ("4 / 5 · Great") so it is never a puzzle;
+//   * the gem's name and the plain word right next to it ("Sapphire · Great") so it is never a puzzle;
 //   * a rail of five gems underneath — tap one, or drag along the rail, or use the arrow keys.
 //
 // Accessibility: the rail is a real radiogroup (one tab stop, arrow keys move, Home/End jump);
-// each option is announced as "4 out of 5, Great — Sapphire".
+// each option is announced as "Sapphire gem, Great".
 import { useCallback, useRef } from 'react';
 import { LEVELS, levelOf } from '../../data/reviewFacets.js';
 import Gem from './Gem.jsx';
@@ -70,15 +70,12 @@ export default function GemForge({ value, onChange, idPrefix = 'gf' }) {
       </div>
 
       <p className="forge-read" aria-live="polite">
-        <span className="fr-num">
-          <b>{L.v}</b>
-          <small>/5</small>
+        <span className="fr-num fr-gemname">
+          <b>{L.gem}</b>
         </span>
         <span className="fr-words">
           <strong>{L.word}</strong>
-          <small>
-            {L.gem} · {L.note}
-          </small>
+          <small>{L.note}</small>
         </span>
       </p>
 
@@ -112,7 +109,7 @@ export default function GemForge({ value, onChange, idPrefix = 'gf' }) {
               data-v={lv.v}
               aria-checked={on}
               tabIndex={on ? 0 : -1}
-              aria-label={`${lv.v} out of 5, ${lv.word} — ${lv.gem}`}
+              aria-label={`${lv.gem} gem, ${lv.word}`}
               className={`fr-opt ${on ? 'is-on' : ''} ${lit ? 'is-lit' : ''}`}
               style={{ '--o1': lv.c1, '--o2': lv.c2, '--o3': lv.c3 }}
               onClick={() => onChange(lv.v)}

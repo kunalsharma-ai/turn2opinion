@@ -12,21 +12,41 @@ import SocialAuth from '../components/SocialAuth.jsx';
 import ResendVerify from '../components/ResendVerify.jsx';
 import { isProfileIncomplete, saveResumeData } from '../utils/profileGate.js';
 import FollowUs from '../components/FollowUs.jsx';
+import { AudSwitch, AuthAura, AuthVoice, readAud, saveAud } from '../components/AuthAura.jsx';
 
 /** Welcome portal: a member waves from a morphing portal while their rewards, surveys and security status orbit. */
-export function WelcomePortal() {
+const PORTAL = {
+  consumer: {
+    img: 'traveller',
+    hi: 'Welcome back! 👋',
+    chips: [
+      ['bell', 'New surveys', 'Matched to your profile', '#1F5BFF'],
+      ['gift', 'Reward ready', 'PayPal · Bank · Vouchers · Gift cards', '#22B8FF'],
+      ['shield', 'Account secure', 'Verified member', '#12C29B']
+    ]
+  },
+  pro: {
+    img: 'business',
+    hi: 'Your expert seat is ready',
+    chips: [
+      ['briefcase', 'B2B studies', 'Matched to your role', '#7B3FE4'],
+      ['gift', 'Premium rewards', 'Paid like the expert you are', '#F5B83D'],
+      ['shield', 'Private & secure', 'Your answers stay anonymous', '#12C29B']
+    ]
+  }
+};
+
+export function WelcomePortal({ aud = 'consumer' }) {
+  const P = PORTAL[aud] || PORTAL.consumer;
   return (
-    <div className="wportal" aria-hidden="true">
+    <div className={`wportal is-${aud}`} aria-hidden="true" key={aud}>
       <span className="wp-rays" />
       <div className="wp-blob">
-        <img src={asset('/images/people/traveller.svg')} alt="Illustration of a Turn2Opinion member signing in to take paid surveys" width="220" height="260" />
+        <img src={asset(`/images/people/${P.img}.svg`)} alt="" width="220" height="260" />
       </div>
-      <span className="wp-bubble">Welcome back! 👋</span>
-      {[
-        ['bell', 'New surveys', 'Matched to your profile', '#1F5BFF'],
-        ['gift', 'Reward ready', 'PayPal · Wire · Gift card', '#FFB020'],
-        ['shield', 'Account secure', 'Verified member', '#12C29B']
-      ].map(([ic, t, d, c], i) => (
+      <span className="wp-ring" />
+      <span className="wp-bubble">{P.hi}</span>
+      {P.chips.map(([ic, t, d, c], i) => (
         <span key={t} className={`wp-chip k${i}`} style={{ '--c': c }}>
           <span className="wp-ico">
             <Icon name={ic} size={16} />
@@ -57,6 +77,12 @@ export default function Login() {
   const [unverified, setUnverified] = useState(false);
   const [incomplete, setIncomplete] = useState(null);
   const onCaptcha = useCallback((t) => setCaptcha(t), []);
+  const [aud, setAudState] = useState('consumer');
+  useEffect(() => setAudState(readAud()), []);
+  const setAud = (v) => {
+    setAudState(v);
+    saveAud(v);
+  };
 
   useEffect(() => {
   const q = new URLSearchParams(window.location.search);
@@ -159,14 +185,15 @@ if (incomplete) {
     ['Contact & profile', false],
   ];
   return (
-    <section className="login">
+    <section className={`login aud-${aud}`}>
       <div className="login-bg" aria-hidden="true" />
+      <AuthAura aud={aud} />
       <div className="wrap login-grid">
         <div className="login-art">
           <Breadcrumbs items={[{ label: 'Login' }]} />
           <h1>You’re almost in{first ? `, ${first}` : ''}!</h1>
           <p className="login-tag">One last step and your account is ready – your surveys and rewards are waiting.</p>
-          <WelcomePortal />
+          <WelcomePortal aud={aud} />
         </div>
         <div className="login-card">
           <div className="login-card-glow" aria-hidden="true" />
@@ -225,14 +252,19 @@ if (incomplete) {
 }
 
   return (
-    <section className="login">
+    <section className={`login aud-${aud}`}>
       <div className="login-bg" aria-hidden="true" />
+      <AuthAura aud={aud} />
       <div className="wrap login-grid">
         <div className="login-art">
           <Breadcrumbs items={[{ label: 'Login' }]} />
-          <h1>Your rewards are waiting</h1>
-          <p className="login-tag">New surveys, your points and your next payout – all one login away.</p>
-          <WelcomePortal />
+          <AudSwitch value={aud} onChange={setAud} label="I log in as a" />
+          <h1>{aud === 'pro' ? 'Your expertise is in demand' : 'Your rewards are waiting'}</h1>
+          <p className="login-tag" key={aud}>
+            {aud === 'pro' ? 'New B2B studies, your points and your next payout – all one login away.' : 'New surveys, your points and your next payout – all one login away.'}
+          </p>
+          <WelcomePortal aud={aud} />
+          <AuthVoice aud={aud} />
         </div>
         <div className="login-card">
           <div className="login-card-glow" aria-hidden="true" />
@@ -298,7 +330,7 @@ if (incomplete) {
               <SocialAuth />
 
               <p className="join-alt">
-                New here? <Link to="/join/">Create a free account</Link>
+                New here? <Link to={aud === 'pro' ? '/join/professional/' : '/join/'}>Create a free account</Link>
               </p>
 
               <FollowUs />
