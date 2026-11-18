@@ -871,6 +871,223 @@ html.nav-open body {
   background: #d9ccff;
 }
 
+/* ---- Round 9: every inner-page hero gets its own world (Kunal: "each design shouldn't look same").
+   Until now orbit, grid, waves and prism were all navy with the same blue and violet glow and the same
+   glass tiles, so About, How it works, Paid surveys, Profiling, Rewards and Scan & Connect read as one
+   template. Each theme now has its own grade, glow colours, tile shape and particle colour. ---- */
+
+/* How it works · sunset road: plum to ember, round amber tokens */
+.page-hero.pht-orbit {
+  background: linear-gradient(170deg, #2a0b3d 0%, #5b1647 55%, #8a2a3c 100%);
+}
+.pht-orbit .ph-b1 {
+  background: #ff6a3d;
+  opacity: 0.45;
+}
+.pht-orbit .ph-b2 {
+  background: #ffb020;
+  opacity: 0.4;
+}
+.pht-orbit .ph-b3 {
+  background: #c2185b;
+}
+.pht-orbit .ph-token {
+  border-radius: 50%;
+  color: #ffd59a;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 196, 120, 0.4), rgba(255, 106, 61, 0.12));
+  border-color: rgba(255, 196, 120, 0.45);
+}
+.pht-orbit .ph-dot {
+  background: #ffb36b;
+  box-shadow: 0 0 10px #ff7a3d;
+}
+.pht-orbit .ph-wave .w1 {
+  stroke: rgba(255, 179, 107, 0.6);
+}
+.pht-orbit .ph-wave .w2 {
+  stroke: rgba(255, 106, 160, 0.4);
+}
+
+/* Paid surveys · deep lagoon: teal grade, cyan grid, diamond tokens */
+.page-hero.pht-grid {
+  background: linear-gradient(160deg, #02303a 0%, #064a52 55%, #0b3b5c 100%);
+}
+.page-hero.pht-grid::before {
+  background-image: linear-gradient(rgba(94, 234, 212, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(94, 234, 212, 0.12) 1px, transparent 1px);
+}
+.pht-grid .ph-b1 {
+  background: #14b8a6;
+  opacity: 0.5;
+}
+.pht-grid .ph-b2 {
+  background: #22d3ee;
+  opacity: 0.4;
+}
+.pht-grid .ph-b3 {
+  background: #a3e635;
+  opacity: 0.35;
+}
+.pht-grid .ph-token {
+  border-radius: 10px;
+  color: #99f6e4;
+  background: linear-gradient(145deg, rgba(94, 234, 212, 0.28), rgba(6, 74, 82, 0.2));
+  border-color: rgba(94, 234, 212, 0.45);
+  animation-name: tokenDiamond;
+}
+.pht-grid .ph-token .icon {
+  transform: rotate(-45deg);
+}
+@keyframes tokenDiamond {
+  0%,
+  100% {
+    transform: translateY(0) rotate(45deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(45deg) scale(1.08);
+  }
+}
+.pht-grid .ph-dot {
+  background: #5eead4;
+  box-shadow: 0 0 8px #2dd4bf;
+}
+.pht-grid .ph-wave .w1 {
+  stroke: rgba(94, 234, 212, 0.55);
+}
+.pht-grid .ph-wave .w2 {
+  stroke: rgba(163, 230, 53, 0.4);
+}
+
+/* Profiling (and Privacy) · aurora: violet to magenta ribbons, pill tokens */
+.page-hero.pht-prism {
+  background: linear-gradient(165deg, #160a33 0%, #2e0d4f 50%, #4a0f4f 100%);
+}
+.pht-prism .ph-b1 {
+  background: #a21caf;
+  opacity: 0.55;
+}
+.pht-prism .ph-b2 {
+  background: #7c3aed;
+}
+.pht-prism .ph-b3 {
+  background: #22d3ee;
+  opacity: 0.4;
+}
+.pht-prism .ph-token {
+  width: 58px;
+  border-radius: 999px;
+  color: #f5d0fe;
+  background: linear-gradient(120deg, rgba(232, 121, 249, 0.3), rgba(124, 58, 237, 0.18));
+  border-color: rgba(240, 171, 252, 0.45);
+}
+.pht-prism .ph-dot {
+  background: #f0abfc;
+  box-shadow: 0 0 8px #e879f9;
+}
+.pht-prism .ph-wave .w1 {
+  stroke: rgba(240, 171, 252, 0.55);
+}
+.pht-prism .ph-wave .w2 {
+  stroke: rgba(103, 232, 249, 0.4);
+}
+
+/* Rewards · treasury: emerald grade with a gold floor glow, coin tokens */
+.page-hero.pht-waves {
+  background: linear-gradient(165deg, #03251a 0%, #064e3b 55%, #0a3d2e 100%);
+}
+.page-hero.pht-waves::after {
+  background: radial-gradient(60% 120px at 50% 120px, rgba(251, 191, 36, 0.5), transparent 70%);
+}
+.pht-waves .ph-b1 {
+  background: #10b981;
+  opacity: 0.45;
+}
+.pht-waves .ph-b2 {
+  background: #fbbf24;
+  opacity: 0.35;
+}
+.pht-waves .ph-b3 {
+  background: #059669;
+}
+.pht-waves .ph-token {
+  border-radius: 50%;
+  color: #78350f;
+  background: radial-gradient(circle at 35% 30%, #fff3c4, #fbbf24 60%, #d97706);
+  border: 2px solid #fde68a;
+  opacity: 0.95;
+  animation-name: tokenCoin;
+}
+@keyframes tokenCoin {
+  0%,
+  100% {
+    transform: translateY(0) rotateY(0);
+  }
+  50% {
+    transform: translateY(-14px) rotateY(180deg);
+  }
+}
+.pht-waves .ph-dot {
+  background: #fde68a;
+  box-shadow: 0 0 10px #fbbf24;
+}
+.pht-waves .ph-wave .w1 {
+  stroke: rgba(253, 230, 138, 0.6);
+}
+.pht-waves .ph-wave .w2 {
+  stroke: rgba(52, 211, 153, 0.45);
+}
+
+/* Scan & Connect · neon: ink black, pink and cyan scan light, outlined tokens */
+.page-hero.pht-neon {
+  background: radial-gradient(800px 400px at 85% 20%, rgba(236, 72, 153, 0.22), transparent 70%), radial-gradient(700px 380px at 0% 100%, rgba(34, 211, 238, 0.18), transparent 70%), #07070f;
+}
+.page-hero.pht-neon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 4px);
+}
+.pht-neon .ph-b1 {
+  background: #ec4899;
+  opacity: 0.4;
+}
+.pht-neon .ph-b2 {
+  background: #22d3ee;
+  opacity: 0.35;
+}
+.pht-neon .ph-b3 {
+  background: #8b5cf6;
+  opacity: 0.35;
+}
+.pht-neon .ph-token {
+  color: #67e8f9;
+  background: rgba(7, 7, 15, 0.6);
+  border: 1.5px solid #22d3ee;
+  box-shadow: 0 0 16px -2px rgba(34, 211, 238, 0.7), inset 0 0 10px rgba(34, 211, 238, 0.25);
+}
+.pht-neon .ph-token:nth-child(odd) {
+  color: #f9a8d4;
+  border-color: #ec4899;
+  box-shadow: 0 0 16px -2px rgba(236, 72, 153, 0.7), inset 0 0 10px rgba(236, 72, 153, 0.25);
+}
+.pht-neon .ph-beam {
+  background: linear-gradient(90deg, transparent, rgba(236, 72, 153, 0.35), transparent);
+}
+.pht-neon .ph-dot {
+  background: #22d3ee;
+  box-shadow: 0 0 8px #22d3ee;
+}
+.pht-neon .ph-dot:nth-child(3n) {
+  background: #ec4899;
+  box-shadow: 0 0 8px #ec4899;
+}
+.pht-neon .ph-wave .w1 {
+  stroke: rgba(236, 72, 153, 0.6);
+}
+.pht-neon .ph-wave .w2 {
+  stroke: rgba(34, 211, 238, 0.5);
+}
+
 /* ================= CTA band ================= */
 .cta-band {
   padding: clamp(56px, 7vw, 90px) 0;
@@ -935,6 +1152,160 @@ html.nav-open body {
 @keyframes coinBob {
   50% {
     transform: translateY(-14px) rotateY(180deg);
+  }
+}
+
+/* Round 9: each page closes with its own CTA (matching its hero) instead of one shared navy band. */
+.cta-lagoon .cta-inner {
+  background: radial-gradient(500px 300px at 90% 10%, rgba(94, 234, 212, 0.45), transparent 60%), linear-gradient(135deg, #02303a, #0b5563 60%, #0b3b5c);
+}
+.cta-lagoon .cta-coins span {
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.8), rgba(94, 234, 212, 0.25) 60%, transparent 70%);
+  border: 1.5px solid rgba(204, 251, 241, 0.7);
+  box-shadow: none;
+  top: auto;
+  bottom: -50px;
+  animation: ctaBubble 7s linear infinite;
+  animation-delay: calc(var(--i) * -1.15s);
+}
+@keyframes ctaBubble {
+  from {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  to {
+    transform: translateY(-340px) scale(1);
+    opacity: 0;
+  }
+}
+.cta-aurora .cta-inner {
+  background: radial-gradient(500px 280px at 15% 0%, rgba(232, 121, 249, 0.45), transparent 60%), radial-gradient(500px 300px at 100% 100%, rgba(34, 211, 238, 0.3), transparent 60%), linear-gradient(135deg, #1e0b3a, #3b0f5c);
+}
+.cta-aurora .cta-coins span {
+  width: 120px;
+  height: 18px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(240, 171, 252, 0.8), transparent);
+  box-shadow: none;
+  transform: rotate(-24deg);
+  animation: ctaRibbon 6s ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * -1s);
+}
+.cta-aurora .cta-coins span:nth-child(even) {
+  width: 80px;
+  height: 10px;
+  background: linear-gradient(90deg, transparent, rgba(103, 232, 249, 0.8), transparent);
+}
+@keyframes ctaRibbon {
+  to {
+    transform: rotate(-24deg) translateX(-60px);
+    opacity: 0.3;
+  }
+}
+.cta-treasury .cta-inner {
+  background: radial-gradient(520px 300px at 85% 10%, rgba(251, 191, 36, 0.5), transparent 60%), linear-gradient(135deg, #03251a, #065f46 60%, #0a3d2e);
+  box-shadow: inset 0 0 0 2px rgba(253, 230, 138, 0.35);
+}
+.cta-neon .cta-inner {
+  background: radial-gradient(500px 260px at 90% 0%, rgba(236, 72, 153, 0.35), transparent 60%), radial-gradient(500px 260px at 0% 100%, rgba(34, 211, 238, 0.3), transparent 60%), #07070f;
+  box-shadow: inset 0 0 0 1.5px rgba(34, 211, 238, 0.5), 0 0 40px -10px rgba(236, 72, 153, 0.5);
+}
+.cta-neon .cta-coins span {
+  border-radius: 10px;
+  background: none;
+  border: 1.5px solid #22d3ee;
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.7);
+  animation: ctaNeon 4s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.7s);
+}
+.cta-neon .cta-coins span:nth-child(even) {
+  border-color: #ec4899;
+  box-shadow: 0 0 12px rgba(236, 72, 153, 0.7);
+}
+@keyframes ctaNeon {
+  50% {
+    transform: rotate(45deg) scale(0.8);
+    opacity: 0.3;
+  }
+}
+.cta-stars .cta-inner {
+  background: radial-gradient(1.5px 1.5px at 20% 30%, #fff, transparent), radial-gradient(1px 1px at 60% 70%, #fff, transparent), radial-gradient(1.5px 1.5px at 75% 25%, #fff, transparent),
+    radial-gradient(1px 1px at 35% 80%, #fff, transparent), radial-gradient(600px 300px at 80% 0%, rgba(99, 102, 241, 0.5), transparent 60%), linear-gradient(160deg, #050a24, #111a52);
+}
+.cta-stars .cta-coins span {
+  width: 18px;
+  height: 18px;
+  border-radius: 0;
+  background: #fde68a;
+  box-shadow: 0 0 14px #fde68a;
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+  animation: ctaTwinkle 3s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.5s);
+}
+@keyframes ctaTwinkle {
+  50% {
+    transform: scale(0.4) rotate(45deg);
+    opacity: 0.25;
+  }
+}
+.cta-chat .cta-inner {
+  background: radial-gradient(500px 300px at 90% 10%, rgba(255, 213, 122, 0.45), transparent 60%), linear-gradient(135deg, #1f3fb8, #3b5bdb 50%, #5f3dc4);
+}
+.cta-chat .cta-coins span {
+  width: 54px;
+  height: 36px;
+  border-radius: 14px 14px 14px 4px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.4);
+  animation: ctaChat 6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -1s);
+}
+.cta-chat .cta-coins span:nth-child(even) {
+  width: 40px;
+  height: 28px;
+  border-radius: 14px 14px 4px 14px;
+  background: #ffd57a;
+}
+@keyframes ctaChat {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-12px) scale(1.06);
+  }
+}
+.cta-paper .cta-inner {
+  color: var(--ink);
+  background: radial-gradient(500px 300px at 90% 0%, rgba(255, 213, 122, 0.55), transparent 60%), radial-gradient(500px 300px at 0% 100%, rgba(201, 216, 255, 0.8), transparent 60%), #fffaf0;
+  box-shadow: inset 0 0 0 1px rgba(14, 27, 77, 0.08), 0 30px 60px -40px rgba(14, 27, 77, 0.45);
+}
+.cta-paper .cta-copy h2 {
+  color: var(--ink);
+}
+.cta-paper .cta-copy p {
+  color: var(--muted);
+}
+.cta-paper .btn-glass {
+  color: var(--ink);
+  background: #fff;
+  border-color: rgba(14, 27, 77, 0.18);
+}
+.cta-paper .cta-coins span {
+  width: 34px;
+  height: 44px;
+  border-radius: 4px;
+  background: linear-gradient(#fff, #fff) padding-box, repeating-linear-gradient(0deg, #c9d8ff 0 1px, transparent 1px 7px);
+  box-shadow: 0 10px 20px -10px rgba(14, 27, 77, 0.4);
+  animation: ctaPage 7s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -1.1s);
+}
+@keyframes ctaPage {
+  50% {
+    transform: translateY(-12px) rotate(8deg);
   }
 }
 

@@ -155,7 +155,7 @@ export default function BlogPost({ params, data }) {
           </div>
         </section>
       )}
-      <CtaBand />
+      <CtaBand variant="paper" />
     </div>
   );
 }

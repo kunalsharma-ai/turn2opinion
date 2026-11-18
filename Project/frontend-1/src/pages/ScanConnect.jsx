@@ -49,7 +49,7 @@ export default function ScanConnect() {
   return (
     <div ref={ref}>
       <PageHero
-        theme="prism"
+        theme="neon"
         crumbs={[{ label: 'About', to: '/about/' }, { label: 'Scan & Connect' }]}
         kicker="Scan & connect"
         title="Point your camera. Land where you meant to."
@@ -93,7 +93,7 @@ export default function ScanConnect() {
           </p>
         </div>
       </section>
-      <CtaBand />
+      <CtaBand variant="neon" />
     </div>
   );
 }

@@ -33,6 +33,7 @@ const THEME_TOKENS = {
   grid: ['bag', 'chip', 'coin', 'star', 'phone', 'briefcase'],
   prism: ['shield', 'lock', 'finger', 'id', 'check', 'eye'],
   waves: ['gift', 'wallet', 'coin', 'transfer', 'trophy', 'sparkles'],
+  neon: ['phone', 'link', 'globe', 'chat', 'bolt', 'star'],
   night: ['users', 'globe', 'chat', 'heart', 'briefcase', 'star'],
   paper: ['chat', 'search', 'pen', 'bolt', 'star', 'sparkles']
 };

@@ -14,6 +14,7 @@
 // Shared layers: a deep base, three drifting colour fields, a starfield and a sweeping glass sheen.
 // The whole cover is decorative (aria-hidden) and every animation stops under reduced motion.
 import { useEffect, useId, useRef, useState } from 'react';
+import { SCENES } from './blogScenes.jsx';
 
 function rng(seedStr = '') {
   let h = 1779033703 ^ seedStr.length;
@@ -240,6 +241,23 @@ const PIECES = { orbit: Orbit, chorus: Chorus, dusk: Dusk, skyline: Skyline, neb
 /** The cover itself. `seed` makes it unique, `hue` grades it, `kind` (a blog category) picks its world. */
 export default function BlogArt({ seed = '', hue = 220, kind = 'Earn online', className = '', stars = true }) {
   const id = 'ba' + useId().replace(/[^a-zA-Z0-9]/g, '');
+  // Round 9: a post with its own one-off scene (blogScenes.jsx) uses it instead of its category world.
+  const Scene = SCENES[seed];
+  if (Scene) {
+    return (
+      <svg className={`ba ba-scene ${className}`} viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id={`${id}-sheen`} x1="0" x2="1">
+            <stop offset="0" stopColor="#fff" stopOpacity="0" />
+            <stop offset=".5" stopColor="#fff" stopOpacity=".2" />
+            <stop offset="1" stopColor="#fff" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <Scene id={`${id}_`} />
+        <rect className="ba-sheen" x="-160" y="-40" width="120" height="320" fill={`url(#${id}-sheen)`} transform="rotate(18)" />
+      </svg>
+    );
+  }
   const r = rng(seed + kind);
   const world = KIND[kind] || 'orbit';
   const Piece = PIECES[world];
@@ -372,6 +390,22 @@ export function LazyBlogArt(props) {
     io.observe(el);
     return () => io.disconnect();
   }, []);
-  if (on) return <BlogArt {...props} />;
+  // Once drawn, a cover pauses its animations whenever it is off screen (SVG animations run on the
+  // main thread, so a long list of covers would otherwise keep animating out of sight).
+  const box = useRef(null);
+  const [live, setLive] = useState(true);
+  useEffect(() => {
+    const el = box.current;
+    if (!on || !el || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(([e]) => setLive(e.isIntersecting), { rootMargin: '80px 0px' });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [on]);
+  if (on)
+    return (
+      <span ref={box} className={`ba-box ${live ? '' : 'is-off'}`}>
+        <BlogArt {...props} />
+      </span>
+    );
   return <span ref={ref} className="ba-ph" style={{ '--h': props.hue || 220 }} aria-hidden="true" />;
 }
