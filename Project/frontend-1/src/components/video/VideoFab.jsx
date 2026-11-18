@@ -15,7 +15,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { usePath } from '../../router/Router.jsx';
 import { videoFor, YT_CHANNEL } from '../../data/videos.js';
-import { session } from '../../utils/storage.js';
+import { visit } from '../../utils/storage.js';
 import VideoShowcase, { YtMark } from './VideoShowcase.jsx';
 
 function Theatre({ v, onClose }) {
@@ -68,13 +68,13 @@ function Theatre({ v, onClose }) {
 const SEEN = 't2o_vid_seen';
 const NUDGED = 't2o_vid_nudged';
 const list = (k) => {
-  const l = session.get(k, []);
+  const l = visit.get(k, []);
   return Array.isArray(l) ? l : [];
 };
 const has = (k, path) => list(k).includes(path);
 const mark = (k, path) => {
   const l = list(k);
-  if (!l.includes(path)) session.set(k, [...l, path].slice(-60));
+  if (!l.includes(path)) visit.set(k, [...l, path].slice(-60));
 };
 const markSeen = (path) => mark(SEEN, path);
 
@@ -131,9 +131,10 @@ export default function VideoFab() {
   // Badge + bubble: once per page per session.
   useEffect(() => {
     setPhase(null);
-    const already = !v || has(SEEN, path);
+    const already = !v || has(SEEN, path) || visit.get('t2o_vid_off');
     setSeen(already);
-    if (already || has(NUDGED, path)) return undefined;
+    // Closing the message with X turns it off on every page until the visitor reloads.
+    if (already || has(NUDGED, path) || visit.get('t2o_vid_off')) return undefined;
     const t = [];
     const later = (fn, ms) => t.push(setTimeout(fn, ms));
     later(() => setPhase('typing'), 3500);
@@ -154,6 +155,7 @@ export default function VideoFab() {
     setPhase('out');
     setTimeout(() => setPhase(null), 450);
     markSeen(path);
+    visit.set('t2o_vid_off', true);
     setSeen(true);
   }, [path]);
   const watch = useCallback(() => {

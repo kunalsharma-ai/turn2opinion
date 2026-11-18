@@ -5,7 +5,7 @@ import { SITE, waLink } from '../config/site.js';
 import { ENV } from '../config/env.js';
 import { getConsent, initAnalytics, saveConsent } from '../utils/analytics.js';
 import { getJSON } from '../utils/api.js';
-import { session } from '../utils/storage.js';
+import { visit } from '../utils/storage.js';
 import { SPOTLIGHTS } from '../data/activity.js';
 import { METHOD_META, methodsFor, normalizeMethod } from '../data/payouts.js';
 import { ALL_COUNTRIES } from '../data/profiles.js';
@@ -101,7 +101,7 @@ function ActivityToasts({ blocked }) {
   const [item, setItem] = useState(null);
   const [leaving, setLeaving] = useState(false);
   const feed = useRef(null);
-  const shown = useRef(session.get('t2o_toasts_shown', 0));
+  const shown = useRef(visit.get('t2o_toasts_shown', 0));
   const order = useRef([]);
 
   useEffect(() => {
@@ -124,6 +124,7 @@ function ActivityToasts({ blocked }) {
     let timer;
     let hideTimer;
     const next = () => {
+      if (visit.get('t2o_toasts_off')) return;
       if (document.hidden || shown.current >= 8) {
         timer = setTimeout(next, 20000);
         return;
@@ -135,7 +136,7 @@ function ActivityToasts({ blocked }) {
       setItem({ ...pick, key: Date.now() });
       window.dispatchEvent(new Event('t2o:ticket'));
       shown.current += 1;
-      session.set('t2o_toasts_shown', shown.current);
+      visit.set('t2o_toasts_shown', shown.current);
       hideTimer = setTimeout(() => setLeaving(true), 7800);
       timer = setTimeout(next, 22000 + Math.random() * 14000);
     };
@@ -233,7 +234,15 @@ function ActivityToasts({ blocked }) {
           </>
         )}
       </div>
-      <button type="button" className="rd-x" aria-label="Dismiss" onClick={() => setLeaving(true)}>
+      <button
+        type="button"
+        className="rd-x"
+        aria-label="Stop showing these notifications"
+        onClick={() => {
+          setLeaving(true);
+          visit.set('t2o_toasts_off', true);
+        }}
+      >
         <Icon name="close" size={13} />
       </button>
       <span className="rd-confetti" aria-hidden="true">

@@ -9,10 +9,10 @@
 // Rules that keep it from becoming annoying:
 //   * nothing appears for the first 30 seconds of a visit (never on arrival);
 //   * one card at a time, 7 s on screen, 26–40 s apart (randomised so it never feels mechanical);
-//   * at most 5 per session, tracked in sessionStorage;
+//   * at most 5 per visit (in memory, so a reload starts afresh);
 //   * paused while the tab is hidden, while a modal or the live chat is open, and on the
 //     ratings page itself (where the same reviews are already on screen);
-//   * a dismissed card stops the whole stream for that session;
+//   * a dismissed card stops the whole stream until the visitor reloads the page;
 //   * a quiet two-note chime, rate-limited and muted by the site's sound switch.
 //
 // Reviews a visitor posts themselves are never shown back to them as a notification.
@@ -21,7 +21,7 @@ import { fetchApprovedReviews, getMyReviews, onReview, seedTestimonials } from '
 import { playToast } from '../utils/sound.js';
 import { levelOf } from '../data/reviewFacets.js';
 import { COUNTRIES } from '../data/countries.js';
-import { session } from '../utils/storage.js';
+import { visit } from '../utils/storage.js';
 import { usePath, Link } from '../router/Router.jsx';
 import { Flag } from './Brand.jsx';
 import Icon from './Icon.jsx';
@@ -37,7 +37,7 @@ export default function ReviewToasts({ blocked }) {
   const [stopped, setStopped] = useState(false);
   const pool = useRef(null);
   const order = useRef([]);
-  const count = useRef(session.get(SHOWN, 0));
+  const count = useRef(visit.get(SHOWN, 0));
   const path = usePath();
   const onReviewsPage = path.startsWith('/about/reviews');
 
@@ -93,7 +93,7 @@ export default function ReviewToasts({ blocked }) {
       setItem({ ...pick, key: Date.now() });
       playToast();
       count.current += 1;
-      session.set(SHOWN, count.current);
+      visit.set(SHOWN, count.current);
       hideTimer = setTimeout(() => setLeaving(true), 7000);
       timer = setTimeout(next, 26000 + Math.random() * 14000);
     };
@@ -129,7 +129,7 @@ export default function ReviewToasts({ blocked }) {
         onClick={() => {
           setLeaving(true);
           setStopped(true);
-          session.set(SHOWN, MAX);
+          visit.set(SHOWN, MAX);
         }}
       >
         <Icon name="close" size={13} />

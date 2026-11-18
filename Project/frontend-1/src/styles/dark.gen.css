@@ -1059,10 +1059,6 @@
     color: #d9deef;
     background-color: #362a0d
 }
-:where(html[data-mode='dark']) .mag-tag {
-    color: #d9deef;
-    background-color: rgba(11, 17, 40, 0.92)
-}
 :where(html[data-mode='dark']) .legal-doc {
     background-color: #0b1128
 }

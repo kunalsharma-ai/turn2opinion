@@ -19,7 +19,7 @@
 //   * "Not now" costs a full interval; the × closes it for the session;
 //   * at most 3 sessions ever, at least 2 days apart.
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { session, store } from '../utils/storage.js';
+import { store, visit } from '../utils/storage.js';
 import { submitReview } from '../utils/reviews.js';
 import { track } from '../utils/analytics.js';
 import { failureMessage } from '../utils/api.js';
@@ -464,7 +464,7 @@ export default function ReviewWidget({ ready }) {
   const [rating, setRating] = useState(0);
   const [prompt, setPrompt] = useState(false);
   const started = useRef(Date.now());
-  const shownThisSession = useRef(session.get(SESSION_SHOWN, 0));
+  const shownThisSession = useRef(visit.get(SESSION_SHOWN, 0));
 
   const openModal = useCallback((r = 0) => {
     setRating(r);
@@ -540,7 +540,7 @@ export default function ReviewWidget({ ready }) {
       if (Date.now() - started.current < gate.afterMs || maxDepth < gate.depth) return;
 
       shownThisSession.current = n + 1;
-      session.set(SESSION_SHOWN, shownThisSession.current);
+      visit.set(SESSION_SHOWN, shownThisSession.current);
       setPrompt(true);
       store.set(KEY, { ...st, count: st.count + 1, last: Date.now() });
       if (shownThisSession.current >= GATES.length) clearInterval(iv);
@@ -561,7 +561,7 @@ export default function ReviewWidget({ ready }) {
 
   const dismissForever = () => {
     setPrompt(false);
-    session.set(SESSION_SHOWN, 9);
+    visit.set(SESSION_SHOWN, 9);
     shownThisSession.current = 9;
   };
 

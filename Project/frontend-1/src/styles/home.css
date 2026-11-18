@@ -2938,177 +2938,212 @@
   height: 46px;
   border-radius: 14px;
 }
-/* illustrated blog scenes (src/components/BlogScenes.jsx) */
-.bs-scene * {
-  transform-box: fill-box;
+/* Blog cover art (src/components/BlogArt.jsx, round 8): coded, animated, text-free. Only transform
+   and opacity move, and covers that are off screen skip rendering. */
+.blog-cover {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 240px;
+  background: #0b1440;
 }
-.bs-rise {
-  animation: bsRise 3.2s ease-in-out infinite;
-  animation-delay: var(--d, 0s);
+/* Only the animated pieces get a centred origin: applying it to every element would also move the
+   origin of the plain SVG transform attributes that place the scene, and scatter it off the cover. */
+.ba [class*='ba-'] {
+  transform-box: fill-box;
   transform-origin: center;
 }
-@keyframes bsRise {
+.ba-drift {
+  animation: baDrift 14s ease-in-out infinite alternate;
+}
+.ba-drift.d1 {
+  animation-duration: 18s;
+  animation-direction: alternate-reverse;
+}
+.ba-drift.d2 {
+  animation-duration: 22s;
+}
+@keyframes baDrift {
+  to {
+    transform: translate(40px, -24px) scale(1.18);
+  }
+}
+.ba-tw {
+  animation: baTw 3.2s ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baTw {
+  50% {
+    opacity: 0.15;
+  }
+}
+.ba-spin {
+  animation: baSpin var(--t, 20s) linear infinite;
+}
+.ba-spin.rev {
+  animation-direction: reverse;
+}
+@keyframes baSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.ba-bob {
+  animation: baBob var(--t, 5s) ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baBob {
+  50% {
+    transform: translateY(-9px);
+  }
+}
+.ba-flip {
+  animation: baFlip 5s ease-in-out infinite;
+}
+@keyframes baFlip {
+  50% {
+    transform: scaleX(-1);
+  }
+}
+.ba-pulse {
+  animation: baPulse 3s ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baPulse {
+  50% {
+    transform: scale(1.18);
+    opacity: 0.55;
+  }
+}
+.ba-dash {
+  animation: baDash 2.4s linear infinite;
+}
+@keyframes baDash {
+  to {
+    stroke-dashoffset: -48;
+  }
+}
+.ba-wave {
+  transform-box: view-box;
+  animation: baWave var(--t, 18s) linear infinite;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baWave {
+  to {
+    transform: translateX(-400px);
+  }
+}
+.ba-grow {
+  transform-origin: bottom;
+  animation: baGrow 3.6s cubic-bezier(0.3, 1.4, 0.5, 1) infinite;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baGrow {
   0%,
   100% {
-    transform: translateY(0) scaleX(1);
+    transform: scaleY(0.35);
   }
-  50% {
-    transform: translateY(-12px) scaleX(0.4);
-  }
-}
-.bs-float {
-  animation: bsFloat 5s ease-in-out infinite;
-  animation-delay: var(--d, 0s);
-}
-@keyframes bsFloat {
-  50% {
-    transform: translateY(-7px);
-  }
-}
-.bs-grow {
-  transform-origin: bottom;
-  animation: bsGrow 3.6s var(--ease) infinite;
-  animation-delay: var(--d, 0s);
-}
-@keyframes bsGrow {
-  0% {
-    transform: scaleY(0.2);
-  }
-  40%,
-  100% {
+  45%,
+  70% {
     transform: scaleY(1);
   }
 }
-.bs-spin-slow {
-  transform-box: view-box;
-  animation: spin 18s linear infinite;
-}
-.bs-check {
-  stroke-dasharray: 40;
-  stroke-dashoffset: 40;
-  animation: bsCheck 3.6s ease infinite;
+.ba-steam {
+  animation: baSteam 3s ease-out infinite;
   animation-delay: var(--d, 0s);
 }
-@keyframes bsCheck {
-  0%,
-  10% {
-    stroke-dashoffset: 40;
-  }
-  35%,
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
-.bs-twinkle {
-  transform-box: view-box;
-  animation: bsTwinkle 2.4s ease-in-out infinite;
-  animation-delay: var(--d, 0s);
-}
-@keyframes bsTwinkle {
-  50% {
-    transform: scale(0.5) rotate(45deg);
-    opacity: 0.5;
-  }
-}
-.bs-pulse {
-  transform-box: view-box;
-  animation: bsPulse 3s ease-in-out infinite;
-}
-@keyframes bsPulse {
-  50% {
-    transform: scale(1.15);
-    opacity: 0.85;
-  }
-}
-.bs-glow {
-  animation: bsGlow 3s ease-in-out infinite;
-}
-@keyframes bsGlow {
-  50% {
-    fill: #ffd36b;
-  }
-}
-.bs-steam {
-  animation: bsSteam 2.4s ease-in-out infinite;
-  animation-delay: var(--d, 0s);
-  opacity: 0;
-}
-@keyframes bsSteam {
-  30% {
-    opacity: 0.8;
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-14px);
-  }
-}
-.bs-sway {
-  transform-box: view-box;
-  animation: bsSway 4s ease-in-out infinite;
-}
-@keyframes bsSway {
-  50% {
-    transform: rotate(6deg);
-  }
-}
-.bs-blink {
-  animation: bsBlink 3s ease-in-out infinite;
-  animation-delay: var(--d, 0s);
-}
-@keyframes bsBlink {
-  50% {
-    opacity: 0.35;
-  }
-}
-.bs-draw {
-  stroke-dasharray: 320;
-  stroke-dashoffset: 320;
-  animation: bsDraw 4s var(--ease) infinite;
-}
-@keyframes bsDraw {
-  60%,
-  100% {
-    stroke-dashoffset: 0;
-  }
-}
-.bs-fan {
-  transform-box: view-box;
-  transform: rotate(var(--r));
-  animation: bsFan 4s var(--ease) infinite;
-  animation-delay: var(--d, 0s);
-}
-@keyframes bsFan {
-  50% {
-    transform: rotate(calc(var(--r) * 1.8)) translateY(-4px);
-  }
-}
-.bs-lid {
-  transform-origin: 50% 100%;
-  animation: bsLid 3s var(--spring) infinite;
-}
-@keyframes bsLid {
-  0%,
-  50%,
-  100% {
-    transform: none;
-  }
-  65% {
-    transform: translateY(-14px) rotate(-8deg);
-  }
-}
-.bs-ring {
-  transform-box: view-box;
-  animation: bsRing 2.4s ease-out infinite;
-  animation-delay: var(--d, 0s);
-}
-@keyframes bsRing {
+@keyframes baSteam {
   from {
-    transform: scale(0.9);
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  40% {
     opacity: 0.8;
   }
   to {
-    transform: scale(1.5);
+    transform: translateY(-14px);
     opacity: 0;
+  }
+}
+.ba-beam {
+  transform-box: view-box;
+  animation: baBeam 7s ease-in-out infinite alternate;
+}
+@keyframes baBeam {
+  from {
+    transform: rotate(-24deg);
+  }
+  to {
+    transform: rotate(24deg);
+  }
+}
+.ba-fall {
+  animation: baFall var(--t, 6s) linear infinite;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baFall {
+  to {
+    transform: translateY(270px) rotate(540deg);
+  }
+}
+.ba-lid {
+  animation: baLid 4s ease-in-out infinite;
+}
+@keyframes baLid {
+  0%,
+  60%,
+  100% {
+    transform: none;
+  }
+  75% {
+    transform: translateY(-12px) rotate(-6deg);
+  }
+}
+.ba-draw {
+  stroke-dasharray: 100;
+  animation: baDraw 3.4s ease-in-out infinite;
+}
+@keyframes baDraw {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  35%,
+  85% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -100;
+  }
+}
+.ba-scan {
+  transform-box: view-box;
+  animation: baScan 4.5s ease-in-out infinite;
+}
+@keyframes baScan {
+  from {
+    transform: translateY(-10px);
+  }
+  to {
+    transform: translateY(250px);
+  }
+}
+.ba-sheen {
+  transform-box: view-box;
+  animation: baSheen 7s ease-in-out infinite;
+}
+@keyframes baSheen {
+  0%,
+  55% {
+    transform: rotate(18deg) translateX(0);
+  }
+  100% {
+    transform: rotate(18deg) translateX(720px);
+  }
+}
+.blog-card-link:hover .ba-sheen {
+  animation-duration: 2.2s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ba * {
+    animation: none !important;
   }
 }
 .blog-card-body {

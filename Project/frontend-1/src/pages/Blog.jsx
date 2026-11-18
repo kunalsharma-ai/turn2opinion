@@ -3,33 +3,36 @@ import { BLOG_CATEGORIES, BLOG_POSTS } from '../data/blog/index.js';
 import { useReveal } from '../hooks/useMounted.js';
 import { CtaBand, PageHero } from '../components/Common.jsx';
 import BlogCard from '../components/BlogCard.jsx';
-import BlogScene from '../components/BlogScenes.jsx';
+import BlogArt from '../components/BlogArt.jsx';
 import Icon from '../components/Icon.jsx';
 
-const STACK = [
-  ['Paid surveys', 250],
-  ['Rewards & payouts', 30],
-  ['Work from home', 160],
-  ['Professionals', 200]
+// Hero, round 8: a 3D carousel of live covers turning in space over a glowing floor, with sparks
+// rising around it. Each panel is one of the six cover worlds, so the hero previews the blog itself.
+const RING = [
+  ['Earn online', 220, 'hero-orbit'],
+  ['Paid surveys', 262, 'hero-chorus'],
+  ['Work from home', 18, 'hero-dusk'],
+  ['Professionals', 280, 'hero-skyline'],
+  ['Rewards & payouts', 330, 'hero-nebula'],
+  ['Safety & privacy', 170, 'hero-vault']
 ];
 
-/** Hero: a 3D fan of illustrated magazine covers that shuffles continuously. */
 function HeroArt() {
   return (
-    <div className="mag-stack" aria-hidden="true">
-      {STACK.map(([cat, h], i) => (
-        <div key={cat} className="mag" style={{ '--i': i, '--h': h }}>
-          <svg viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice">
-            <rect width="400" height="240" fill={`hsl(${h} 80% 52%)`} />
-            <circle cx="340" cy="30" r="90" fill="#fff" opacity=".14" />
-            <BlogScene category={cat} />
-          </svg>
-          <span className="mag-tag">{cat}</span>
-        </div>
+    <div className="bh-stage" aria-hidden="true">
+      <span className="bh-floor" />
+      <span className="bh-orb o1" />
+      <span className="bh-orb o2" />
+      <div className="bh-ring" style={{ '--n': RING.length }}>
+        {RING.map(([kind, hue, seed], i) => (
+          <div key={seed} className="bh-panel" style={{ '--i': i }}>
+            <BlogArt seed={seed} hue={hue} kind={kind} stars={false} />
+          </div>
+        ))}
+      </div>
+      {Array.from({ length: 12 }).map((_, k) => (
+        <i key={k} className="bh-spark" style={{ '--k': k }} />
       ))}
-      <span className="mag-pen">
-        <Icon name="pen" size={22} />
-      </span>
     </div>
   );
 }
@@ -51,7 +54,11 @@ export default function Blog() {
         tone="light"
         crumbs={[{ label: 'Blogs' }]}
         kicker="The Turn2Opinion blog"
-        title="Earn money online – the honest way"
+        title={
+          <>
+            Earn money online <span className="bh-grad">the honest way</span>
+          </>
+        }
         tagline="Smarter ways to earn, minus the hype."
         lead="Guides on paid surveys, online earning without investment, work from home and getting your rewards paid. No hype, no get-rich-quick promises."
         art={<HeroArt />}
@@ -89,9 +96,7 @@ export default function Blog() {
                   {c === 'All' ? (
                     <Icon name="layers" size={22} />
                   ) : (
-                    <svg viewBox="40 20 320 200" preserveAspectRatio="xMidYMid slice">
-                      <BlogScene category={c} />
-                    </svg>
+                    <BlogArt seed={`tile-${c}`} hue={[220, 262, 18, 280, 330, 170][i - 1] || 220} kind={c} stars={false} />
                   )}
                 </span>
                 <span className="topic-name">{c}</span>

@@ -41,3 +41,17 @@ export const session = {
     }
   }
 };
+
+// This visit only (Kunal, 18 Nov 2026): what a visitor closes with X stays closed while they move
+// between pages, and comes back after a refresh or a new visit. A module-level map does exactly
+// that: it survives client-side navigation and is gone on reload. sessionStorage would survive
+// the reload, which is not what was asked for.
+const VISIT = new Map();
+export const visit = {
+  get(key, fallback = null) {
+    return VISIT.has(key) ? VISIT.get(key) : fallback;
+  },
+  set(key, value) {
+    VISIT.set(key, value);
+  }
+};
