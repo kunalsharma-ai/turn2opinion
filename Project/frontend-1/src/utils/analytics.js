@@ -75,6 +75,11 @@ export function track(event, params = {}) {
   dl().push({ event, ...params });
 }
 
+let firstView = true;
 export function trackPageView(path, title) {
   track('page_view', { page_path: path, page_title: title });
+  // The pixel base code in the page head already counts the first page; count each in-app
+  // navigation after it (held back by fbq until marketing consent is granted).
+  if (firstView) firstView = false;
+  else if (typeof window.fbq === 'function') window.fbq('track', 'PageView');
 }

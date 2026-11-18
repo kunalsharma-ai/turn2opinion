@@ -240,8 +240,9 @@ export function headToHtml(h) {
     // Meta Pixel base code with consent revoked by default; analytics.js grants it only after the
     // visitor accepts marketing cookies, so no cookies are set and no events leave the page before.
     tags.push(
-      `<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('consent','revoke');fbq('init','${ENV.META_PIXEL_ID}');fbq('track','PageView');</script>`,
-      `<noscript><img height="1" width="1" alt="" style="display:none" src="https://www.facebook.com/tr?id=${ENV.META_PIXEL_ID}&amp;ev=PageView&amp;noscript=1" /></noscript>`
+      // The <noscript> image from Meta's snippet is left out on purpose: without JavaScript a
+      // visitor can never accept cookies, so that image would track them without consent.
+      `<!-- Meta Pixel Code --><script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('consent','revoke');fbq('init','${ENV.META_PIXEL_ID}');fbq('track','PageView');</script><!-- End Meta Pixel Code -->`
     );
   }
   return tags.join('\n    ');

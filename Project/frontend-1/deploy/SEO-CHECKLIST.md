@@ -15,7 +15,7 @@ Based on the SEOptimer audit of turn2opinion.com (18 Nov 2026, overall B-).
 | Friendly links | Hero button goes to `/join/` or `/join/professional/` instead of `/join?category=…`; footer WhatsApp link has no query string. |
 | Local Business schema | `ProfessionalService` (a LocalBusiness type) JSON-LD on the home page. |
 | Open Graph image | Pointed at `/og-image.png` (1200×630). The old path did not exist, so share previews had no picture. |
-| Facebook Pixel | Supported via `VITE_META_PIXEL_ID`; loads in consent mode (nothing tracked until marketing cookies are accepted). |
+| Facebook Pixel | Pixel 1009909728169388 on every page, in consent mode: it records nothing until the visitor accepts marketing cookies, then counts every page view, including in-app navigations. Override with `VITE_META_PIXEL_ID` (`none` turns it off). |
 | X profile | @TurnToOpinion linked: `twitter:site`/`twitter:creator` on every page, Organization `sameAs`, header/footer icons and a QR card in Scan & Connect. |
 | GEO / llms.txt | `llms.txt` is now generated from the route table and describes the whole site (the old one described only the profile builder). |
 | Render-blocking / font preload | Fonts preload the `.woff2` files the CSS actually uses (the `.woff` preload made browsers download each font twice). |
@@ -28,7 +28,7 @@ Based on the SEOptimer audit of turn2opinion.com (18 Nov 2026, overall B-).
 2. **Apply `deploy/nginx.conf`** (or copy its redirect and cache blocks into your OpenResty gateway). This fixes "Avoid multiple page redirects" (1.65 s on mobile) and "Browser caching".
 3. **Add a DMARC record** in GoDaddy DNS (ns13/ns14.domaincontrol.com): TXT host `_dmarc`, value `v=DMARC1; p=none; rua=mailto:support@turn2opinion.com; fo=1`. After a few weeks of clean reports, move to `p=quarantine`.
 4. ~~Create an X (Twitter) account~~ Done: @TurnToOpinion is linked in this PR.
-5. **Facebook Pixel:** create a pixel in Meta Events Manager and set `VITE_META_PIXEL_ID` in the build environment.
+5. ~~Facebook Pixel~~ Done: pixel 1009909728169388 is installed in this PR.
 6. **Google Business Profile:** claim/verify the New Delhi office, then copy its opening hours and map pin into `openingHours` / `geo` in `src/config/site.js` so the schema matches.
 7. **Backlinks (Links grade F):** most current backlinks are from low-quality auto-generated "SEO report" sites. Earn real ones: list on survey-site review/comparison sites (SurveyPolice etc.), get Frequent Research, MyFrequentRewards and MyHealthOpinions to link to turn2opinion.com, submit guest posts on personal-finance/side-income blogs, PR for survey findings, and disavow the spam domains in Google Search Console if they grow.
 8. **YouTube:** post the how-to and payout videos regularly and link the channel from newsletters/emails to grow subscribers (currently 5).
