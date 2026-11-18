@@ -6,6 +6,39 @@ import { Link } from '../../router/Router.jsx';
 import { useInView, prefersReducedMotion } from '../../hooks/useMounted.js';
 import { SURVEYS, SURVEY_NOTE } from '../../data/surveys.js';
 import Icon from '../Icon.jsx';
+import { playCoin, playSwitch, playVend, setSoundEnabled, soundEnabled } from '../../utils/sound.js';
+
+/** Speaker switch for the machine's sounds (shares the site-wide sound setting). */
+function SoundSwitch() {
+  const [on, setOn] = useState(true);
+  useEffect(() => setOn(soundEnabled()), []);
+  const flip = () => {
+    const next = !on;
+    setSoundEnabled(next);
+    setOn(next);
+    if (next) playCoin();
+  };
+  return (
+    <button type="button" className={`vm-snd${on ? ' is-on' : ''}`} onClick={flip} aria-pressed={on} aria-label={on ? 'Machine sounds on. Turn off' : 'Machine sounds off. Turn on'} title={on ? 'Sound on' : 'Sound off'}>
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+        <path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" />
+        {on ? (
+          <g fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M15.5 9.2a4 4 0 0 1 0 5.6" />
+            <path d="M18 6.8a7.4 7.4 0 0 1 0 10.4" />
+          </g>
+        ) : (
+          <path d="M16 9.5l5 5m0-5l-5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        )}
+      </svg>
+      <span className="vm-snd__eq" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+      </span>
+    </button>
+  );
+}
 
 const code = (i) => String(i + 1).padStart(2, '0');
 
@@ -29,6 +62,7 @@ export default function SurveyMachine() {
   }, [sel, held, inView, list.length]);
 
   const vend = (i) => {
+    playVend(i);
     setHeld(true);
     setSel(i);
     setDrop((d) => d + 1);
@@ -38,6 +72,7 @@ export default function SurveyMachine() {
     }
   };
   const switchAud = (a) => {
+    if (a !== aud) playSwitch(a === 'professional');
     setAud(a);
     setSel(0);
     setDrop((d) => d + 1);
@@ -69,6 +104,7 @@ export default function SurveyMachine() {
             </button>
           ))}
         </div>
+        <SoundSwitch />
       </div>
 
       <div className="vm-body">
@@ -101,7 +137,7 @@ export default function SurveyMachine() {
         </div>
 
         <aside className="vm-panel" aria-live="polite">
-          <div className="vm-lcd">
+          <button type="button" className="vm-lcd" onClick={() => vend((sel + 1 + Math.floor(Math.random() * 3)) % list.length)} aria-label="Pick a survey for me">
             <span className="lcd-code">{code(sel % list.length)}</span>
             <span className="lcd-price">${s.reward.toFixed(2)}</span>
             <span className="lcd-run">
@@ -109,7 +145,7 @@ export default function SurveyMachine() {
                 {s.cat} · {s.mins} min · {s.title}
               </i>
             </span>
-          </div>
+          </button>
           <div className="vm-coins" aria-hidden="true" key={`c-${drop}`}>
             <span className="vm-slotline" />
             <i className="vm-coin">$</i>
@@ -138,7 +174,7 @@ export default function SurveyMachine() {
               </span>
             </div>
           </div>
-          <Link to="/join/" className="vm-cta">
+          <Link to="/join/" className="vm-cta" onClick={() => playCoin()}>
             Start earning – join free <Icon name="arrow" size={16} />
           </Link>
         </aside>

@@ -5227,3 +5227,105 @@
   gap: 12px 28px;
   margin-top: 26px;
 }
+
+/* Survey machine: sound switch + the LCD as a "pick for me" button (Kunal, 18 Nov 2026) */
+.vm-switch {
+  margin-left: auto;
+}
+.vm-snd {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin-top: 6px;
+  border: 0;
+  border-radius: 50%;
+  color: #8a93b8;
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: color 0.3s, background 0.3s, transform 0.3s var(--spring);
+}
+.vm-snd.is-on {
+  color: var(--deep);
+  background: radial-gradient(circle at 35% 30%, #fff, var(--b3));
+  box-shadow: 0 6px 18px -6px var(--b3);
+}
+.vm-snd:hover {
+  transform: scale(1.08) rotate(-6deg);
+}
+.vm-snd:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+.vm-snd__eq {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  display: none;
+  align-items: flex-end;
+  gap: 1.5px;
+  height: 13px;
+  padding: 2px 3px;
+  border-radius: 5px;
+  background: var(--deep);
+}
+.vm-snd.is-on .vm-snd__eq {
+  display: flex;
+}
+.vm-snd__eq i {
+  width: 2px;
+  height: 100%;
+  border-radius: 1px;
+  background: #7dffb0;
+  transform-origin: bottom;
+  animation: vfabEq 0.8s ease-in-out infinite alternate;
+}
+.vm-snd__eq i:nth-child(2) {
+  animation-delay: -0.25s;
+}
+.vm-snd__eq i:nth-child(3) {
+  animation-delay: -0.5s;
+}
+@keyframes vfabEq {
+  from {
+    transform: scaleY(0.25);
+  }
+}
+button.vm-lcd {
+  width: 100%;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  transition: box-shadow 0.3s, transform 0.3s var(--spring);
+}
+button.vm-lcd:hover {
+  box-shadow: inset 0 0 0 2px #2f6e4c, inset 0 0 26px rgba(125, 255, 176, 0.32), 0 0 0 3px rgba(125, 255, 176, 0.18);
+}
+button.vm-lcd:active {
+  transform: scale(0.98);
+}
+button.vm-lcd:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+.vm-slot:active {
+  transform: translateY(2px) scale(0.97);
+}
+@media (prefers-reduced-motion: reduce) {
+  .vm-snd__eq i {
+    animation: none;
+  }
+}
+@media (max-width: 640px) {
+  /* Phones: the speaker sits in the sign's top-right corner instead of wrapping onto its own row. */
+  .vm-snd {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    width: 36px;
+    height: 36px;
+    margin: 0;
+  }
+}

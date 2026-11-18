@@ -138,6 +138,94 @@ export function pop({ pitch = 1, volume = 0.22 } = {}) {
   voice(t + 0.03, 880 * pitch, { dur: 0.2, vol: Math.min(0.14, volume * 0.6), type: 'sine' });
 }
 
+/* ============================== Survey machine ============================== */
+// Arcade/vending sounds for the "Paid survey machine" on the home page. Click-only: the machine's
+// own auto-demo never makes a sound.
+
+let noiseBuf = null;
+/** A filtered noise burst: clicks, thunks and the motor's rattle. */
+function noise(t, dur, { vol = 0.12, freq = 1800, q = 1, type = 'bandpass' } = {}) {
+  const c = ctx;
+  if (!noiseBuf) {
+    noiseBuf = c.createBuffer(1, Math.floor(c.sampleRate * 1.2), c.sampleRate);
+    const d = noiseBuf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  }
+  const src = c.createBufferSource();
+  src.buffer = noiseBuf;
+  const f = c.createBiquadFilter();
+  f.type = type;
+  f.frequency.setValueAtTime(freq, t);
+  f.Q.value = q;
+  const g = c.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(vol, t + 0.004);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  src.connect(f).connect(g).connect(master);
+  src.start(t);
+  src.stop(t + dur + 0.02);
+}
+
+/** A pitch sweep (glide) on one oscillator. */
+function sweep(t, from, to, { dur = 0.3, vol = 0.1, type = 'sine' } = {}) {
+  const c = ctx;
+  const osc = c.createOscillator();
+  const g = c.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(from, t);
+  osc.frequency.exponentialRampToValueAtTime(to, t + dur);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(vol, t + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  osc.connect(g).connect(master);
+  osc.start(t);
+  osc.stop(t + dur + 0.02);
+}
+
+/**
+ * VEND — pressing a slot: keypad beep, the coil motor whirring, the card thunking into the
+ * tray and a bright "cha-ching" of coins. About 1.3 s. `step` (0–17) nudges the keypad pitch so
+ * every slot sounds a little different.
+ */
+export function playVend(step = 0) {
+  if (quiet() || !ensure() || !gate(160)) return;
+  const t = ctx.currentTime + 0.01;
+  // keypad beep (two quick square blips, like an LCD keypad)
+  const k = 880 * Math.pow(2, (step % 8) / 12);
+  voice(t, k, { dur: 0.07, vol: 0.05, type: 'square', attack: 0.002 });
+  voice(t + 0.08, k * 1.5, { dur: 0.08, vol: 0.045, type: 'square', attack: 0.002 });
+  // coil motor: a buzzy low tone with a rattle on top
+  sweep(t + 0.18, 70, 110, { dur: 0.5, vol: 0.06, type: 'sawtooth' });
+  for (let i = 0; i < 7; i++) noise(t + 0.2 + i * 0.065, 0.05, { vol: 0.05, freq: 900 + i * 60, q: 4 });
+  // the card drops into the tray
+  sweep(t + 0.72, 180, 55, { dur: 0.22, vol: 0.18, type: 'sine' });
+  noise(t + 0.72, 0.12, { vol: 0.12, freq: 380, q: 0.8, type: 'lowpass' });
+  // cha-ching: coins and a bell
+  [1567.98, 2093.0, 2637.02].forEach((f, i) => bell(t + 0.9 + i * 0.06, f, { vol: 0.06, dur: 0.5 }));
+  noise(t + 0.9, 0.25, { vol: 0.035, freq: 7000, q: 1.5, type: 'highpass' });
+  bell(t + 1.02, 1318.51, { vol: 0.07, dur: 0.9 });
+}
+
+/** SWITCH — the Consumers / Professionals lever: a mechanical clunk and a rising (or falling) blip. */
+export function playSwitch(up = true) {
+  if (quiet() || !ensure() || !gate(140)) return;
+  const t = ctx.currentTime + 0.01;
+  noise(t, 0.05, { vol: 0.1, freq: 2400, q: 2 });
+  sweep(t, 140, 70, { dur: 0.12, vol: 0.12, type: 'sine' });
+  sweep(t + 0.06, up ? 520 : 780, up ? 780 : 520, { dur: 0.16, vol: 0.06, type: 'triangle' });
+  voice(t + 0.2, up ? 1046.5 : 783.99, { dur: 0.22, vol: 0.05, type: 'sine' });
+}
+
+/** COIN — dropping a coin in the slot (the "Start earning" button and the coin slot). */
+export function playCoin() {
+  if (quiet() || !ensure() || !gate(160)) return;
+  const t = ctx.currentTime + 0.01;
+  // a coin rolling down the chute: three quick metallic ticks
+  [0, 0.07, 0.12].forEach((d, i) => noise(t + d, 0.04, { vol: 0.06 - i * 0.012, freq: 5200, q: 6 }));
+  bell(t + 0.16, 1975.53, { vol: 0.08, dur: 0.5 });
+  bell(t + 0.24, 2637.02, { vol: 0.07, dur: 0.8 });
+}
+
 /* ============================== Arming ============================== */
 
 /**
