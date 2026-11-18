@@ -1,0 +1,2229 @@
+/* =========================================================================================
+   PAGE VIDEOS — the floating "Watch" button, the theatre, and one showcase template per page.
+   -----------------------------------------------------------------------------------------
+   Every template sets the same handful of tokens, then adds its own device frame and poster
+   scene. The tokens keep one brand (layout, spacing, the YouTube-red play core); the scenes,
+   colour grades and accent typefaces keep every page different.
+
+     --v1 / --v2   accent pair (gradient text, glows, chips)
+     --vbg         section background
+     --vink        heading colour      --vtext  body colour
+     --vfont       accent typeface for the <em> half of the heading
+     --vscreen     the screen behind the poster scene
+
+   Accent typefaces are system stacks only (no extra font downloads).
+   All animation is transform/opacity; perf.css switches it off for prefers-reduced-motion and
+   AnimationGate pauses it off screen.
+   ========================================================================================= */
+.vs {
+  --v1: var(--blue);
+  --v2: var(--sky);
+  --vbg: #070d2b;
+  --vink: #fff;
+  --vtext: #c9d3f5;
+  --vfont: var(--display);
+  --vscreen: #050816;
+  --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+  --mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+  --condensed: 'Bahnschrift', 'Arial Narrow', 'Roboto Condensed', 'Helvetica Neue', Impact, sans-serif;
+  --hand: 'Segoe Print', 'Bradley Hand', 'Comic Neue', 'Chalkboard SE', cursive;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(56px, 8vw, 104px) 0;
+  background: var(--vbg);
+  color: var(--vtext);
+  content-visibility: auto;
+  contain-intrinsic-size: auto 640px;
+}
+.vs-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.vs-glow {
+  position: absolute;
+  width: 46vw;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.38;
+  background: radial-gradient(circle, var(--v1), transparent 65%);
+  top: -18%;
+  left: -12%;
+  animation: vsFloat 14s ease-in-out infinite alternate;
+}
+.vs-glow.g2 {
+  background: radial-gradient(circle, var(--v2), transparent 65%);
+  top: auto;
+  left: auto;
+  bottom: -24%;
+  right: -10%;
+  animation-delay: -7s;
+}
+@keyframes vsFloat {
+  to {
+    transform: translate(6%, 8%) scale(1.12);
+  }
+}
+.vs-word {
+  position: absolute;
+  right: -2%;
+  bottom: -0.18em;
+  font: 900 clamp(70px, 14vw, 210px) / 1 var(--vfont);
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--v2) 30%, transparent);
+  opacity: 0.6;
+}
+.vs-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: center;
+}
+.vs-eye {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px 7px 9px;
+  border-radius: 999px;
+  font: 700 12px/1 var(--ui);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--vink);
+  background: color-mix(in srgb, var(--v1) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--v1) 45%, transparent);
+}
+.vs-h {
+  margin: 18px 0 14px;
+  font: 800 clamp(30px, 4.2vw, 54px) / 1.04 var(--display);
+  letter-spacing: -0.03em;
+  color: var(--vink);
+}
+.vs-h em {
+  display: block;
+  font-family: var(--vfont);
+  font-style: normal;
+  background: linear-gradient(100deg, var(--v1), var(--v2) 60%, var(--v1));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: vsShine 6s linear infinite;
+}
+@keyframes vsShine {
+  to {
+    background-position: -200% 0;
+  }
+}
+.vs-lede {
+  margin: 0 0 22px;
+  max-width: 46ch;
+  font-size: 17px;
+  line-height: 1.6;
+}
+.vs-pts {
+  list-style: none;
+  margin: 0 0 26px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.vs-pts li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px 8px 8px;
+  border-radius: 999px;
+  font-size: 14px;
+  color: var(--vink);
+  background: color-mix(in srgb, var(--vink) 7%, transparent);
+  border: 1px solid color-mix(in srgb, var(--vink) 14%, transparent);
+}
+.vs-pts b {
+  padding: 4px 9px;
+  border-radius: 999px;
+  font: 800 11px/1 var(--ui);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--vbg);
+  background: linear-gradient(120deg, var(--v1), var(--v2));
+}
+.vs-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.vs-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 48px;
+  padding: 0 22px;
+  border-radius: 999px;
+  font: 700 15px/1 var(--ui);
+  text-decoration: none;
+  transition: transform 0.25s var(--spring), box-shadow 0.25s;
+}
+.vs-btn:hover {
+  transform: translateY(-2px);
+}
+.vs-btn--main {
+  color: var(--vbg);
+  background: linear-gradient(120deg, var(--v1), var(--v2));
+  box-shadow: 0 14px 30px -14px var(--v1);
+}
+.vs-btn--main:hover {
+  color: var(--vbg);
+}
+.vs-btn--yt {
+  color: var(--vink);
+  border: 1.5px solid color-mix(in srgb, var(--vink) 30%, transparent);
+}
+.vs-btn--yt:hover {
+  color: #fff;
+  background: #ff0000;
+  border-color: #ff0000;
+}
+
+/* ---------------- device + screen (shared) ---------------- */
+.vs-device {
+  position: relative;
+}
+.vs-screen {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--vscreen);
+  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.vs-screen iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.vs-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.vs-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  width: 92px;
+  height: 92px;
+  margin: -46px 0 0 -46px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  color: #fff;
+}
+.vs-play__core {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  padding-left: 4px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ff5a4a, #e00000 60%, #a30000);
+  box-shadow: 0 16px 36px -10px rgba(255, 0, 0, 0.75), inset 0 -4px 10px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s var(--spring);
+}
+.vs-play__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  animation: vsPing 2.2s var(--ease) infinite;
+}
+@keyframes vsPing {
+  from {
+    transform: scale(0.8);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+.vs-play:hover .vs-play__core,
+.vs-play:focus-visible .vs-play__core {
+  transform: scale(1.1);
+}
+.vs-badge {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 8px;
+  border-radius: 999px;
+  font: 700 12px/1 var(--ui);
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+}
+
+@media (max-width: 860px) {
+  .vs-grid {
+    grid-template-columns: 1fr;
+  }
+  .vs-device {
+    order: -1;
+  }
+  .vs-play {
+    width: 72px;
+    height: 72px;
+    margin: -36px 0 0 -36px;
+  }
+  .vs-play__core {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+/* =========================================================================================
+   TEMPLATES
+   ========================================================================================= */
+
+/* 1. PREMIERE (home) — cinema marquee, velvet curtains, sweeping spotlights, 3-2-1 leader. */
+.vs--premiere {
+  --v1: #ffb020;
+  --v2: #ff5c7a;
+  --vbg: radial-gradient(120% 90% at 50% 0%, #3b0a2a 0%, #14051a 55%, #07030c 100%);
+  --vfont: var(--serif);
+  --vscreen: #12040f;
+}
+.vs--premiere .vs-h em {
+  font-style: italic;
+  font-weight: 700;
+}
+.vs--premiere .vs-device {
+  padding: 18px;
+  border-radius: 26px;
+  background: linear-gradient(160deg, #5a1230, #2a0716);
+  box-shadow: 0 0 0 2px #ffb02055, 0 40px 90px -40px #ff5c7a;
+}
+.sc-curtain {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 26%;
+  background: repeating-linear-gradient(90deg, #8d1238 0 14px, #6b0c2a 14px 26px);
+  box-shadow: inset -14px 0 30px rgba(0, 0, 0, 0.5);
+  animation: scCurtain 7s var(--ease) infinite alternate;
+}
+.sc-curtain.l {
+  left: 0;
+  transform-origin: left;
+}
+.sc-curtain.r {
+  right: 0;
+  transform-origin: right;
+  box-shadow: inset 14px 0 30px rgba(0, 0, 0, 0.5);
+}
+@keyframes scCurtain {
+  0%,
+  20% {
+    transform: scaleX(1.9);
+  }
+  100% {
+    transform: scaleX(0.55);
+  }
+}
+.sc-beam {
+  position: absolute;
+  bottom: -10%;
+  width: 34%;
+  height: 130%;
+  background: linear-gradient(to top, rgba(255, 220, 140, 0.45), transparent 80%);
+  clip-path: polygon(45% 100%, 55% 100%, 100% 0, 0 0);
+  mix-blend-mode: screen;
+  transform-origin: 50% 100%;
+  animation: scSweep 6s ease-in-out infinite alternate;
+}
+.sc-beam.b1 {
+  left: 12%;
+}
+.sc-beam.b2 {
+  right: 12%;
+  animation-delay: -3s;
+  animation-direction: alternate-reverse;
+}
+@keyframes scSweep {
+  from {
+    transform: rotate(-22deg);
+  }
+  to {
+    transform: rotate(22deg);
+  }
+}
+.sc-bulbs {
+  position: absolute;
+  left: 3%;
+  right: 3%;
+  display: flex;
+  justify-content: space-between;
+}
+.sc-bulbs.t {
+  top: 8px;
+}
+.sc-bulbs.b {
+  bottom: 8px;
+}
+.sc-bulbs i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ffd36b;
+  box-shadow: 0 0 10px #ffb020;
+  animation: scBulb 1.2s steps(2) infinite;
+  animation-delay: calc(var(--i) * -0.1s);
+}
+@keyframes scBulb {
+  50% {
+    opacity: 0.25;
+  }
+}
+.sc-count {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 46%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  opacity: 0.55;
+}
+.sc-count svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: #ffe3a3;
+  stroke-width: 1.2;
+}
+.sc-count .sweep {
+  stroke-width: 6;
+  stroke: rgba(255, 176, 32, 0.35);
+  stroke-dasharray: 100;
+  animation: scLeader 3s linear infinite;
+  transform: rotate(-90deg);
+  transform-origin: center;
+}
+@keyframes scLeader {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.sc-count b {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font: 700 clamp(40px, 7vw, 80px) / 1 var(--serif);
+  color: #ffe3a3;
+}
+.sc-count em {
+  grid-area: 1 / 1;
+  font-style: normal;
+  opacity: 0;
+  animation: scDigit 9s steps(1) infinite;
+}
+.sc-count em:nth-child(2) {
+  animation-delay: 3s;
+}
+.sc-count em:nth-child(3) {
+  animation-delay: 6s;
+}
+@keyframes scDigit {
+  0% {
+    opacity: 1;
+  }
+  33.3% {
+    opacity: 0;
+  }
+}
+
+/* 2. BLUEPRINT (how it works) — drafting paper, the journey drawn as a plan. */
+.vs--blueprint {
+  --v1: #7fe3ff;
+  --v2: #ffffff;
+  --vbg: #0b3a8c;
+  --vink: #fff;
+  --vtext: #d6e7ff;
+  --vfont: var(--mono);
+  --vscreen: #0d4aa8;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.vs--blueprint .vs-h em {
+  font-size: 0.78em;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+.vs--blueprint .vs-screen {
+  border-radius: 4px;
+  outline: 1.5px dashed rgba(255, 255, 255, 0.5);
+  outline-offset: 10px;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+.vs--blueprint .vs-pts b {
+  font-family: var(--mono);
+}
+.sc-plan {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: #fff;
+}
+.sc-plan .draw {
+  stroke-width: 2.5;
+  stroke-dasharray: 600;
+  animation: scDraw 6s var(--ease) infinite;
+}
+@keyframes scDraw {
+  0% {
+    stroke-dashoffset: 600;
+  }
+  60%,
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+.sc-plan .node circle {
+  fill: #0d4aa8;
+  stroke-width: 2;
+}
+.sc-plan .node {
+  animation: scNode 6s infinite;
+  animation-delay: calc(var(--i) * 0.9s);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes scNode {
+  0%,
+  8% {
+    opacity: 0.2;
+  }
+  14%,
+  100% {
+    opacity: 1;
+  }
+}
+.sc-plan text {
+  fill: #fff;
+  stroke: none;
+  font: 700 10px var(--mono);
+  text-anchor: middle;
+}
+.sc-plan .dim {
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+  opacity: 0.6;
+}
+.sc-plan .dimt {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+.sc-compass {
+  position: absolute;
+  right: 6%;
+  top: 9%;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+}
+.sc-compass i {
+  position: absolute;
+  left: 50%;
+  top: 8%;
+  bottom: 8%;
+  width: 2px;
+  background: linear-gradient(#7fe3ff 50%, #fff 50%);
+  animation: scSpin 8s linear infinite;
+}
+@keyframes scSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 3. ARCADE (paid surveys) — neon cabinet, pixel score, falling coins, scanlines. */
+.vs--arcade {
+  --v1: #ff2bd6;
+  --v2: #25f4ff;
+  --vbg: #0a0018;
+  --vfont: var(--mono);
+  --vscreen: #050010;
+}
+.vs--arcade .vs-h em {
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-shadow: none;
+  filter: drop-shadow(0 0 14px rgba(255, 43, 214, 0.5));
+}
+.vs--arcade .vs-device {
+  padding: 26px 22px 44px;
+  border-radius: 26px 26px 12px 12px;
+  background: linear-gradient(180deg, #2b0a52, #12002a);
+  box-shadow: 0 0 0 2px #ff2bd6, 0 0 40px -6px #ff2bd6, 0 0 90px -30px #25f4ff;
+}
+.vs--arcade .vs-device::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  width: 64px;
+  height: 14px;
+  margin-left: -32px;
+  border-radius: 4px;
+  background: repeating-linear-gradient(90deg, #25f4ff 0 4px, transparent 4px 10px);
+  opacity: 0.7;
+}
+.vs--arcade .vs-screen {
+  border-radius: 10px;
+}
+.sc-score {
+  position: absolute;
+  top: 8%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font: 700 clamp(11px, 1.4vw, 15px) / 1 var(--mono);
+  letter-spacing: 0.2em;
+  color: #25f4ff;
+}
+.sc-score b {
+  color: #fff;
+}
+.sc-invaders {
+  position: absolute;
+  top: 22%;
+  left: 18%;
+  right: 18%;
+  display: flex;
+  justify-content: space-between;
+  animation: scMarch 2.4s steps(4) infinite alternate;
+}
+.sc-invaders i {
+  width: 22px;
+  height: 16px;
+  background: #ff2bd6;
+  clip-path: polygon(0 40%, 20% 40%, 20% 0, 40% 0, 40% 20%, 60% 20%, 60% 0, 80% 0, 80% 40%, 100% 40%, 100% 80%, 80% 80%, 80% 100%, 60% 100%, 60% 80%, 40% 80%, 40% 100%, 20% 100%, 20% 80%, 0 80%);
+  animation: scBulb 0.8s steps(2) infinite;
+  animation-delay: calc(var(--i) * -0.15s);
+}
+@keyframes scMarch {
+  to {
+    transform: translateX(14px) translateY(6px);
+  }
+}
+.sc-coins i {
+  position: absolute;
+  top: -10%;
+  left: calc(14% + var(--i) * 17%);
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font: 900 11px/1 var(--mono);
+  font-style: normal;
+  color: #3b2600;
+  background: #ffd23f;
+  box-shadow: 0 0 10px #ffd23f;
+  animation: scFall 3.2s linear infinite;
+  animation-delay: calc(var(--i) * -0.7s);
+}
+@keyframes scFall {
+  to {
+    transform: translateY(1200%) rotate(360deg);
+  }
+}
+.sc-ship {
+  position: absolute;
+  left: 50%;
+  bottom: 12%;
+  width: 34px;
+  height: 18px;
+  margin-left: -17px;
+  background: #25f4ff;
+  clip-path: polygon(40% 0, 60% 0, 60% 35%, 100% 60%, 100% 100%, 0 100%, 0 60%, 40% 35%);
+  animation: scDrift 3s ease-in-out infinite alternate;
+}
+@keyframes scDrift {
+  from {
+    transform: translateX(-120px);
+  }
+  to {
+    transform: translateX(120px);
+  }
+}
+.sc-insert {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 28%;
+  text-align: center;
+  font: 700 12px/1 var(--mono);
+  letter-spacing: 0.3em;
+  color: #fff;
+  animation: scBulb 1s steps(2) infinite;
+}
+.sc-scan {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 3px);
+  pointer-events: none;
+}
+
+/* 4. LAB (profiling) — radar sweep, HUD readouts, match score. */
+.vs--lab {
+  --v1: #12f7a0;
+  --v2: #49b6ff;
+  --vbg: radial-gradient(90% 90% at 80% 50%, #04332a 0%, #021612 60%, #010b09 100%);
+  --vfont: var(--mono);
+  --vscreen: #01110d;
+}
+.vs--lab .vs-screen {
+  border-radius: 50% / 18%;
+  box-shadow: 0 0 0 1px #12f7a055, 0 0 60px -20px #12f7a0;
+}
+.sc-radar {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 62%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+.sc-radar .ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(18, 247, 160, 0.35);
+}
+.sc-radar .r2 {
+  inset: 18%;
+}
+.sc-radar .r3 {
+  inset: 36%;
+}
+.sc-radar .sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(18, 247, 160, 0.55), transparent 22%);
+  animation: scSpin 3.6s linear infinite;
+}
+.sc-radar .blip {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #12f7a0;
+  box-shadow: 0 0 12px #12f7a0;
+  left: calc(20% + var(--i) * 13%);
+  top: calc(70% - var(--i) * 11%);
+  animation: scBlip 3.6s infinite;
+  animation-delay: calc(var(--i) * 0.7s);
+}
+@keyframes scBlip {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  10% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+}
+.sc-hud {
+  position: absolute;
+  font: 700 10px/1.2 var(--mono);
+  letter-spacing: 0.14em;
+  color: #9ffbd6;
+}
+.sc-hud.l {
+  left: 5%;
+  top: 14%;
+  display: grid;
+  gap: 9px;
+}
+.sc-hud.l i {
+  font-style: normal;
+  display: grid;
+  gap: 4px;
+}
+.sc-hud.l s {
+  display: block;
+  width: 86px;
+  height: 4px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #12f7a0, #49b6ff) 0 0 / 0% 100% no-repeat, rgba(255, 255, 255, 0.12);
+  animation: scFill 4s var(--ease) infinite;
+  animation-delay: calc(var(--i) * 0.4s);
+}
+@keyframes scFill {
+  60%,
+  100% {
+    background-size: 100% 100%, auto;
+  }
+}
+.sc-hud.r {
+  right: 6%;
+  bottom: 14%;
+  text-align: right;
+}
+.sc-hud.r b {
+  display: block;
+  font-size: clamp(22px, 3vw, 34px);
+  color: #fff;
+}
+
+/* 5. VAULT (rewards) — a rotating vault door and a rain of gold. */
+.vs--vault {
+  --v1: #ffcf4a;
+  --v2: #ff8a00;
+  --vbg: linear-gradient(160deg, #1d1405 0%, #0d0a04 60%, #191005 100%);
+  --vink: #fff5da;
+  --vtext: #e9d9b2;
+  --vfont: var(--serif);
+  --vscreen: radial-gradient(circle at 50% 50%, #3a2a0a, #120c02);
+}
+.vs--vault .vs-h em {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.vs--vault .vs-screen {
+  border-radius: 22px;
+  box-shadow: 0 0 0 6px #2a1d06, 0 0 0 8px #ffcf4a66, 0 40px 90px -40px #ff8a00;
+}
+.sc-door {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 54%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+}
+.sc-door .ring {
+  position: absolute;
+  border-radius: 50%;
+}
+.sc-door .o {
+  inset: 0;
+  background: repeating-conic-gradient(#c79a2a 0 6deg, #8a6514 6deg 12deg);
+  -webkit-mask: radial-gradient(circle, transparent 60%, #000 61%);
+  mask: radial-gradient(circle, transparent 60%, #000 61%);
+  animation: scSpin 24s linear infinite;
+}
+.sc-door .m {
+  inset: 14%;
+  background: radial-gradient(circle at 35% 30%, #ffe59a, #c18b14 60%, #6b4a07);
+  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.5);
+}
+.sc-door .c {
+  inset: 40%;
+  background: #2a1d06;
+  box-shadow: 0 0 0 4px #ffcf4a;
+}
+.sc-door .spokes {
+  position: absolute;
+  inset: 14%;
+  animation: scSpin 9s cubic-bezier(0.6, 0, 0.3, 1) infinite;
+}
+.sc-door .spokes s {
+  position: absolute;
+  left: 50%;
+  top: 6%;
+  width: 6px;
+  height: 44%;
+  margin-left: -3px;
+  border-radius: 6px;
+  background: #fff1c4;
+  transform-origin: 50% 100%;
+  transform: rotate(calc(var(--i) * 60deg));
+}
+.sc-rain i {
+  position: absolute;
+  top: -12%;
+  left: calc(6% + var(--i) * 11%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff3b0, #ffcf4a 50%, #b07a0a);
+  animation: scFall 3.8s linear infinite;
+  animation-delay: calc(var(--i) * -0.45s);
+}
+
+/* 6. CHAT (FAQ) — a phone with the questions typing in. */
+.vs--chat {
+  --v1: #7b5cff;
+  --v2: #ff7ab6;
+  --vbg: linear-gradient(135deg, #f6f1ff 0%, #ffeef7 100%);
+  --vink: #1d1150;
+  --vtext: #4a4373;
+  --vfont: 'ui-rounded', 'SF Pro Rounded', 'Nunito', var(--display);
+  --vscreen: #faf8ff;
+}
+.vs--chat .vs-word {
+  -webkit-text-stroke-color: rgba(123, 92, 255, 0.18);
+}
+.vs--chat .vs-screen {
+  border-radius: 28px;
+  box-shadow: 0 0 0 10px #1d1150, 0 40px 80px -30px rgba(123, 92, 255, 0.6);
+}
+.vs--chat .vs-btn--yt {
+  color: var(--vink);
+}
+.sc-thread {
+  position: absolute;
+  inset: 8% 10%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+.sc-thread i {
+  max-width: 64%;
+  padding: 10px 14px;
+  border-radius: 18px;
+  font: 600 clamp(11px, 1.3vw, 14px) / 1.3 var(--ui);
+  font-style: normal;
+  opacity: 0;
+  animation: scPop 8s var(--spring) infinite;
+  animation-delay: calc(var(--i) * 1.2s);
+}
+.sc-thread .q {
+  align-self: flex-end;
+  color: #fff;
+  background: linear-gradient(120deg, #7b5cff, #a77bff);
+  border-bottom-right-radius: 4px;
+}
+.sc-thread .a {
+  align-self: flex-start;
+  color: #1d1150;
+  background: #ece6ff;
+  border-bottom-left-radius: 4px;
+}
+@keyframes scPop {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.9);
+  }
+  6%,
+  85% {
+    opacity: 1;
+    transform: none;
+  }
+  95%,
+  100% {
+    opacity: 0;
+  }
+}
+.sc-thread .typing {
+  display: flex;
+  gap: 5px;
+}
+.sc-thread .typing s {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #7b5cff;
+  animation: scDot 1s infinite;
+}
+.sc-thread .typing s:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.sc-thread .typing s:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes scDot {
+  50% {
+    transform: translateY(-5px);
+    opacity: 0.4;
+  }
+}
+
+/* 7. DOCUMENTARY (about) — film strip, REC light, timecode, viewfinder. */
+.vs--documentary {
+  --v1: #ff6a3d;
+  --v2: #ffd27a;
+  --vbg: #11100e;
+  --vink: #fbf3e4;
+  --vtext: #cfc4ad;
+  --vfont: var(--serif);
+  --vscreen: radial-gradient(circle at 50% 45%, #4a3a26, #15110b 75%);
+}
+.vs--documentary .vs-h em {
+  font-style: italic;
+}
+.vs--documentary .vs-screen {
+  border-radius: 6px;
+  filter: sepia(0.15);
+}
+.sc-strip {
+  position: absolute;
+  left: 0;
+  width: 200%;
+  height: 9%;
+  display: flex;
+  gap: 2%;
+  padding: 1% 0;
+  background: #000;
+  animation: scSlide 6s linear infinite;
+}
+.sc-strip.t {
+  top: 0;
+}
+.sc-strip.b {
+  bottom: 0;
+  animation-direction: reverse;
+}
+.sc-strip i {
+  flex: 0 0 2.2%;
+  border-radius: 2px;
+  background: #e9dcc3;
+}
+@keyframes scSlide {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.sc-rec {
+  position: absolute;
+  top: 15%;
+  left: 6%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 700 12px var(--mono);
+  color: #fff;
+}
+.sc-rec i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff3b30;
+  animation: scBulb 1.2s steps(2) infinite;
+}
+.sc-tc {
+  position: absolute;
+  top: 15%;
+  right: 6%;
+  font: 700 12px var(--mono);
+  color: #ffd27a;
+}
+.sc-frame {
+  position: absolute;
+  inset: 24% 18%;
+}
+.sc-frame .c,
+.qp-frame .c {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+.sc-frame .tl {
+  left: 0;
+  top: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+.sc-frame .tr {
+  right: 0;
+  top: 0;
+  border-left: 0;
+  border-bottom: 0;
+}
+.sc-frame .bl {
+  left: 0;
+  bottom: 0;
+  border-right: 0;
+  border-top: 0;
+}
+.sc-frame .br {
+  right: 0;
+  bottom: 0;
+  border-left: 0;
+  border-top: 0;
+}
+.sc-frame {
+  animation: scFocus 4s ease-in-out infinite alternate;
+}
+@keyframes scFocus {
+  to {
+    transform: scale(0.9);
+  }
+}
+
+/* 8. AWARDS (reviews) — spotlight, laurels, stars lighting one by one, confetti. */
+.vs--awards {
+  --v1: #ffd34d;
+  --v2: #ff9ad5;
+  --vbg: radial-gradient(80% 100% at 70% 0%, #3a1f6b 0%, #170a33 55%, #0b0520 100%);
+  --vfont: var(--serif);
+  --vscreen: radial-gradient(circle at 50% 30%, #3b2a75, #120a2a 70%);
+}
+.vs--awards .vs-h em {
+  font-style: italic;
+}
+.vs--awards .vs-screen {
+  border-radius: 999px / 140px;
+}
+.sc-spot {
+  position: absolute;
+  left: 50%;
+  top: -20%;
+  width: 70%;
+  height: 140%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at 50% 85%, rgba(255, 228, 140, 0.5), transparent 55%);
+  clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%);
+}
+.sc-laurel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 46%;
+  transform: translate(-50%, -54%);
+  fill: #ffd34d;
+  opacity: 0.85;
+}
+.sc-stars {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 18%;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+.sc-stars i {
+  font-style: normal;
+  font-size: clamp(18px, 2.4vw, 28px);
+  color: #ffd34d;
+  opacity: 0.25;
+  animation: scStar 5s infinite;
+  animation-delay: calc(var(--i) * 0.35s);
+}
+@keyframes scStar {
+  10%,
+  80% {
+    opacity: 1;
+    transform: scale(1.15);
+    text-shadow: 0 0 14px #ffd34d;
+  }
+}
+.sc-confetti i {
+  position: absolute;
+  top: -8%;
+  left: calc((var(--i) * 7.3%) + 2%);
+  width: 7px;
+  height: 12px;
+  background: hsl(calc(var(--i) * 47), 90%, 65%);
+  animation: scFall 4.4s linear infinite;
+  animation-delay: calc(var(--i) * -0.33s);
+}
+
+/* 9. BROADCAST (scan & connect) — test card, ON AIR sign, signal rings. */
+.vs--broadcast {
+  --v1: #ff3b5c;
+  --v2: #ffd23f;
+  --vbg: #0e0e12;
+  --vfont: var(--condensed);
+  --vscreen: #111;
+}
+.vs--broadcast .vs-h em {
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  font-weight: 800;
+}
+.vs--broadcast .vs-device {
+  padding: 16px;
+  border-radius: 34px;
+  background: linear-gradient(145deg, #2b2b33, #121216);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.1), 0 40px 80px -40px #000;
+}
+.vs--broadcast .vs-screen {
+  border-radius: 26px / 36px;
+}
+.sc-bars {
+  position: absolute;
+  inset: 0 0 26%;
+  display: flex;
+  opacity: 0.85;
+}
+.sc-bars i {
+  flex: 1;
+  background: hsl(calc(var(--i) * 52), 85%, 55%);
+}
+.sc-bars i:nth-child(1) {
+  background: #d9d9d9;
+}
+.sc-onair {
+  position: absolute;
+  left: 50%;
+  bottom: 8%;
+  transform: translateX(-50%);
+  padding: 6px 16px;
+  border-radius: 8px;
+  font: 800 14px/1 var(--condensed);
+  letter-spacing: 0.3em;
+  color: #fff;
+  background: #ff3b5c;
+  box-shadow: 0 0 24px #ff3b5c;
+  animation: scBulb 1.6s steps(2) infinite;
+}
+.sc-waves {
+  position: absolute;
+  right: 8%;
+  top: 12%;
+  width: 60px;
+  height: 60px;
+}
+.sc-waves i {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  animation: vsPing 2.4s var(--ease) infinite;
+  animation-delay: calc(var(--i) * 0.8s);
+}
+.sc-ch {
+  position: absolute;
+  left: 6%;
+  top: 10%;
+  font: 800 18px var(--mono);
+  color: #7cff6b;
+  text-shadow: 0 0 8px #7cff6b;
+}
+
+/* 10. MAGAZINE (blog) — an editorial cover with masthead, cover lines and a barcode. */
+.vs--magazine {
+  --v1: #e8423f;
+  --v2: #1a1a1a;
+  --vbg: #f4efe6;
+  --vink: #141414;
+  --vtext: #4a4540;
+  --vfont: var(--serif);
+  --vscreen: linear-gradient(160deg, #ffe0cf, #ffc0a8 60%, #f79b80);
+}
+.vs--magazine .vs-h em {
+  font-style: italic;
+  font-weight: 700;
+  background: none;
+  color: #e8423f;
+  animation: none;
+}
+.vs--magazine .vs-word {
+  -webkit-text-stroke-color: rgba(20, 20, 20, 0.08);
+}
+.vs--magazine .vs-btn--main {
+  color: #fff;
+  background: #141414;
+  box-shadow: 6px 6px 0 #e8423f;
+}
+.vs--magazine .vs-btn--yt {
+  color: var(--vink);
+}
+.vs--magazine .vs-pts b {
+  color: #fff;
+}
+.vs--magazine .vs-screen {
+  border-radius: 2px;
+  box-shadow: 14px 14px 0 #141414;
+}
+.sc-cover {
+  position: absolute;
+  inset: 0;
+  padding: 5% 6%;
+  font-style: normal;
+}
+.sc-cover i {
+  font-style: normal;
+  display: block;
+}
+.sc-cover .mast {
+  display: block;
+  font: 900 clamp(46px, 8vw, 96px) / 0.85 var(--serif);
+  letter-spacing: -0.04em;
+  color: #e8423f;
+}
+.sc-cover .issue {
+  font: 700 10px var(--mono);
+  letter-spacing: 0.2em;
+  color: #141414;
+  margin: 6px 0 16px;
+}
+.sc-cover .line {
+  font: 800 clamp(16px, 2.3vw, 28px) / 1.05 var(--display);
+  color: #141414;
+  animation: scSlideIn 7s var(--ease) infinite;
+}
+.sc-cover .l2 {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 600;
+  animation-delay: 0.3s;
+}
+@keyframes scSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  10%,
+  90% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.sc-cover .tag {
+  position: absolute;
+  right: 6%;
+  top: 14%;
+  width: 84px;
+  height: 84px;
+  display: grid !important;
+  place-items: center;
+  text-align: center;
+  border-radius: 50%;
+  font: 800 11px/1.1 var(--display);
+  color: #fff;
+  background: #141414;
+  transform: rotate(12deg);
+  animation: scWobble 3s ease-in-out infinite alternate;
+}
+@keyframes scWobble {
+  to {
+    transform: rotate(-8deg) scale(1.06);
+  }
+}
+.sc-cover .code {
+  position: absolute;
+  right: 6%;
+  bottom: 7%;
+  display: flex;
+  gap: 2px;
+  height: 30px;
+  padding: 4px;
+  background: #fff;
+}
+.sc-cover .code s {
+  width: calc(var(--w) * 1px);
+  background: #141414;
+}
+
+/* 11. READER (blog posts) — a notebook page with the key lines highlighted. */
+.vs--reader {
+  --v1: #f5a524;
+  --v2: #2f6bff;
+  --vbg: #fffaf0;
+  --vink: #1d2340;
+  --vtext: #555b78;
+  --vfont: var(--hand);
+  --vscreen: #fff;
+}
+.vs--reader .vs-word {
+  -webkit-text-stroke-color: rgba(29, 35, 64, 0.07);
+}
+.vs--reader .vs-btn--yt {
+  color: var(--vink);
+}
+.vs--reader .vs-screen {
+  border-radius: 6px 18px 18px 6px;
+  box-shadow: -10px 0 0 #2f6bff, 0 30px 60px -30px rgba(29, 35, 64, 0.5);
+  background: repeating-linear-gradient(#fff 0 27px, #dfe7ff 27px 28px);
+}
+.sc-page {
+  position: absolute;
+  inset: 12% 10% 10% 14%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.sc-page i {
+  height: 10px;
+  width: var(--w);
+  border-radius: 6px;
+  background: #c7cee6;
+}
+.sc-page .hl {
+  background: linear-gradient(90deg, #ffd166 0 100%) 0 0 / 0% 100% no-repeat, #c7cee6;
+  animation: scFill 5s var(--ease) infinite;
+  animation-delay: calc(var(--i) * 0.3s);
+}
+.sc-page .ribbon {
+  position: absolute;
+  right: 6%;
+  top: -14%;
+  width: 22px;
+  height: 70px;
+  background: #e8423f;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+  animation: scDangle 3s ease-in-out infinite alternate;
+  transform-origin: top;
+}
+@keyframes scDangle {
+  to {
+    transform: rotate(6deg);
+  }
+}
+
+/* 12. POSTCARD (contact) — airmail border, stamp, postmark, a plane flying through. */
+.vs--postcard {
+  --v1: #e63946;
+  --v2: #1d4ed8;
+  --vbg: #eaf2ff;
+  --vink: #102a62;
+  --vtext: #44557c;
+  --vfont: var(--hand);
+  --vscreen: #fffdf7;
+}
+.vs--postcard .vs-word {
+  -webkit-text-stroke-color: rgba(16, 42, 98, 0.08);
+}
+.vs--postcard .vs-btn--yt {
+  color: var(--vink);
+}
+.vs--postcard .vs-device {
+  transform: rotate(-2deg);
+}
+.vs--postcard .vs-screen {
+  border-radius: 6px;
+  border: 10px solid transparent;
+  background: linear-gradient(#fffdf7, #fffdf7) padding-box, repeating-linear-gradient(45deg, #e63946 0 14px, #fff 14px 22px, #1d4ed8 22px 36px, #fff 36px 44px) border-box;
+}
+.sc-stamp {
+  position: absolute;
+  right: 6%;
+  top: 9%;
+  width: 82px;
+  height: 98px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 4px;
+  color: #fff;
+  background: radial-gradient(circle at 30% 30%, #ff7a59, #e63946);
+  -webkit-mask: radial-gradient(circle 4px at 4px 4px, transparent 98%, #000) -4px -4px / 12px 12px;
+  mask: radial-gradient(circle 4px at 4px 4px, transparent 98%, #000) -4px -4px / 12px 12px;
+}
+.sc-stamp small {
+  font: 700 8px var(--mono);
+  letter-spacing: 0.1em;
+}
+.sc-postmark {
+  position: absolute;
+  right: 18%;
+  top: 30%;
+  width: 46%;
+  fill: none;
+  stroke: rgba(16, 42, 98, 0.55);
+  stroke-width: 2;
+  transform: rotate(-8deg);
+}
+.sc-postmark text {
+  fill: rgba(16, 42, 98, 0.65);
+  stroke: none;
+  font: 800 9px var(--mono);
+  text-anchor: middle;
+}
+.sc-plane {
+  position: absolute;
+  left: -10%;
+  bottom: 20%;
+  color: #1d4ed8;
+  animation: scFly 7s linear infinite;
+}
+@keyframes scFly {
+  to {
+    transform: translate(1400%, -260%) rotate(-8deg);
+  }
+}
+.sc-air {
+  position: absolute;
+  left: 8%;
+  bottom: 16%;
+  width: 46%;
+  height: 50%;
+  background: repeating-linear-gradient(transparent 0 26px, rgba(16, 42, 98, 0.25) 26px 27px);
+}
+
+/* 13. BOARDING (join) — a split-flap departure board and a boarding pass. */
+.vs--boarding {
+  --v1: #ffcc00;
+  --v2: #00d1ff;
+  --vbg: #0b1020;
+  --vfont: var(--condensed);
+  --vscreen: #12172a;
+}
+.vs--boarding .vs-h em {
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.vs--boarding .vs-device {
+  padding: 14px 14px 14px 64px;
+  border-radius: 20px;
+  background: #f4f1e8;
+  box-shadow: 0 40px 80px -40px #000;
+  -webkit-mask: radial-gradient(circle 14px at 50px 0, transparent 98%, #000) top / 100% 51% no-repeat, radial-gradient(circle 14px at 50px 100%, transparent 98%, #000) bottom / 100% 51% no-repeat;
+  mask: radial-gradient(circle 14px at 50px 0, transparent 98%, #000) top / 100% 51% no-repeat, radial-gradient(circle 14px at 50px 100%, transparent 98%, #000) bottom / 100% 51% no-repeat;
+}
+.vs--boarding .vs-device::before {
+  content: 'BOARDING PASS · T2O';
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+  font: 800 12px/1 var(--mono);
+  letter-spacing: 0.3em;
+  color: #0b1020;
+}
+.vs--boarding .vs-screen {
+  border-radius: 10px;
+}
+.sc-board {
+  position: absolute;
+  inset: 14% 8% 40%;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 10px 18px;
+  justify-content: center;
+  align-content: center;
+}
+.sc-board i {
+  display: flex;
+  gap: 3px;
+}
+.sc-board s {
+  display: grid;
+  place-items: center;
+  width: clamp(16px, 2.2vw, 24px);
+  height: clamp(22px, 3vw, 32px);
+  border-radius: 3px;
+  font: 800 clamp(12px, 1.6vw, 18px) / 1 var(--mono);
+  text-decoration: none;
+  color: #ffcc00;
+  background: linear-gradient(#1d2440 50%, #161c33 50%);
+  animation: scFlap 5s var(--ease) infinite;
+  animation-delay: calc(var(--i) * 0.2s + var(--k) * 0.06s);
+}
+@keyframes scFlap {
+  0% {
+    transform: rotateX(90deg);
+  }
+  8%,
+  100% {
+    transform: none;
+  }
+}
+.sc-route {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: 16%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font: 800 16px var(--mono);
+  color: #fff;
+}
+.sc-route i {
+  position: relative;
+  flex: 1;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #00d1ff 0 8px, transparent 8px 14px);
+  color: #00d1ff;
+}
+.sc-route i svg {
+  position: absolute;
+  top: -10px;
+  left: 0;
+  animation: scGlide 4s var(--ease) infinite;
+}
+@keyframes scGlide {
+  to {
+    left: calc(100% - 20px);
+  }
+}
+
+/* 14. KEYHOLE (log in / passwords) — a combination dial and a glowing keyhole. */
+.vs--keyhole {
+  --v1: #00e0b8;
+  --v2: #6c8bff;
+  --vbg: linear-gradient(160deg, #06131c, #0b1c2b 60%, #050b12);
+  --vfont: var(--mono);
+  --vscreen: radial-gradient(circle, #10293a, #050d14 70%);
+}
+.vs--keyhole .vs-screen {
+  border-radius: 24px;
+  box-shadow: inset 0 0 0 2px #00e0b855, 0 40px 80px -40px #00e0b8;
+}
+.sc-dial {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 42%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 3px solid #00e0b8;
+  box-shadow: 0 0 30px -6px #00e0b8;
+  animation: scDialTurn 6s var(--ease) infinite;
+}
+@keyframes scDialTurn {
+  0% {
+    transform: translate(-50%, -50%) rotate(0);
+  }
+  30% {
+    transform: translate(-50%, -50%) rotate(120deg);
+  }
+  60% {
+    transform: translate(-50%, -50%) rotate(-60deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(0);
+  }
+}
+.sc-dial i {
+  position: absolute;
+  left: 50%;
+  top: 4%;
+  width: 2px;
+  height: 10%;
+  background: #9ffbe7;
+  transform-origin: 50% 460%;
+  transform: rotate(calc(var(--i) * 30deg));
+}
+.sc-dial b {
+  position: absolute;
+  inset: 34%;
+  border-radius: 50%;
+  background: #0b1c2b;
+}
+.sc-key {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 14px;
+  height: 30px;
+  transform: translate(-50%, -40%);
+  background: #00e0b8;
+  clip-path: polygon(50% 0, 100% 30%, 70% 45%, 75% 100%, 25% 100%, 30% 45%, 0 30%);
+  filter: drop-shadow(0 0 8px #00e0b8);
+}
+.sc-code {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12%;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.sc-code i {
+  font-style: normal;
+  font-size: 26px;
+  color: #6c8bff;
+  opacity: 0.2;
+  animation: scStar 4s infinite;
+  animation-delay: calc(var(--i) * 0.25s);
+}
+
+/* 15. SHIELD (privacy) */
+.vs--shield {
+  --v1: #4f8cff;
+  --v2: #b6f0ff;
+  --vbg: linear-gradient(180deg, #eef4ff, #dfeaff);
+  --vink: #0e1b4d;
+  --vtext: #47557f;
+  --vfont: var(--serif);
+  --vscreen: radial-gradient(circle at 50% 40%, #1d3b8f, #0a1745 70%);
+}
+.vs--shield .vs-h em {
+  font-style: italic;
+}
+.vs--shield .vs-word {
+  -webkit-text-stroke-color: rgba(14, 27, 77, 0.08);
+}
+.vs--shield .vs-btn--yt {
+  color: var(--vink);
+}
+.vs--shield .vs-pts b {
+  color: #fff;
+}
+.sc-shield {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 26%;
+  aspect-ratio: 0.85;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(160deg, #4f8cff, #1f5bff);
+  clip-path: path('M50 0 L100 18 V55 C100 82 75 100 50 112 C25 100 0 82 0 55 V18 Z');
+  animation: scBreathe 3s ease-in-out infinite alternate;
+}
+.sc-shield {
+  clip-path: polygon(50% 0, 100% 16%, 100% 52%, 84% 80%, 50% 100%, 16% 80%, 0 52%, 0 16%);
+}
+@keyframes scBreathe {
+  to {
+    transform: translate(-50%, -50%) scale(1.08);
+    filter: drop-shadow(0 0 20px #b6f0ff);
+  }
+}
+.sc-orbit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 56%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  animation: scSpin 12s linear infinite;
+}
+.sc-orbit i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px;
+  border-radius: 50%;
+  background: #b6f0ff;
+  box-shadow: 0 0 10px #b6f0ff;
+  transform: rotate(calc(var(--i) * 45deg)) translateY(-130%) translateY(-50px);
+}
+
+/* 16. STARS (GDPR) — a circle of stars turning around the word. */
+.vs--stars {
+  --v1: #ffd500;
+  --v2: #5aa0ff;
+  --vbg: #001b5e;
+  --vfont: var(--condensed);
+  --vscreen: radial-gradient(circle, #0a3399, #001241 70%);
+}
+.sc-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 50%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+}
+.sc-ring i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px;
+  font-style: normal;
+  text-align: center;
+  line-height: 20px;
+  color: #ffd500;
+  transform: rotate(calc(var(--i) * 30deg)) translateY(-300%) rotate(calc(var(--i) * -30deg));
+  animation: scStar 6s infinite;
+  animation-delay: calc(var(--i) * 0.25s);
+}
+.sc-ring {
+  animation: scSpin 30s linear infinite;
+}
+.sc-ring b {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font: 800 clamp(18px, 2.4vw, 28px) var(--condensed);
+  letter-spacing: 0.2em;
+  color: #fff;
+  animation: scSpin 30s linear infinite reverse;
+}
+
+/* 17. JAR (cookies) — a glass jar, bouncing cookies, crumbs. */
+.vs--jar {
+  --v1: #c8742c;
+  --v2: #ffb36b;
+  --vbg: #fff4e6;
+  --vink: #3d2410;
+  --vtext: #6d5440;
+  --vfont: 'ui-rounded', 'SF Pro Rounded', 'Nunito', var(--display);
+  --vscreen: linear-gradient(180deg, #ffe7c7, #f7cf9b);
+}
+.vs--jar .vs-word {
+  -webkit-text-stroke-color: rgba(61, 36, 16, 0.08);
+}
+.vs--jar .vs-btn--yt {
+  color: var(--vink);
+}
+.vs--jar .vs-screen {
+  border-radius: 30px;
+}
+.sc-jar {
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  width: 30%;
+  height: 70%;
+  transform: translateX(-50%);
+  border-radius: 24px 24px 34px 34px;
+  background: rgba(255, 255, 255, 0.45);
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  box-shadow: inset 10px 0 20px rgba(255, 255, 255, 0.6);
+}
+.sc-jar .lid {
+  position: absolute;
+  left: -6%;
+  right: -6%;
+  top: -14px;
+  height: 18px;
+  border-radius: 8px;
+  background: #c8742c;
+  animation: scLid 3s var(--spring) infinite;
+}
+@keyframes scLid {
+  0%,
+  60%,
+  100% {
+    transform: none;
+  }
+  70% {
+    transform: translateY(-14px) rotate(-8deg);
+  }
+}
+.sc-jar .ck {
+  position: absolute;
+  left: calc(10% + (var(--i) % 2) * 40%);
+  bottom: calc(8% + var(--i) * 18%);
+  width: 46%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #5a3210 6%, transparent 7%), radial-gradient(circle at 65% 55%, #5a3210 6%, transparent 7%), radial-gradient(circle at 40% 70%, #5a3210 5%, transparent 6%), radial-gradient(circle at 40% 35%, #e8a95c, #c8742c);
+  animation: scBounce 2s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.2s);
+}
+@keyframes scBounce {
+  50% {
+    transform: translateY(-8px) rotate(14deg);
+  }
+}
+.sc-crumbs i {
+  position: absolute;
+  bottom: 8%;
+  left: calc(20% + var(--i) * 8%);
+  width: 6px;
+  height: 6px;
+  border-radius: 2px;
+  background: #c8742c;
+  animation: scBounce 1.6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.15s);
+}
+
+/* 18. SCROLL (terms) — parchment unrolling, a quill writing. */
+.vs--scroll {
+  --v1: #9b4d1f;
+  --v2: #d79a4a;
+  --vbg: #f7efdd;
+  --vink: #3a2414;
+  --vtext: #6a5236;
+  --vfont: var(--serif);
+  --vscreen: #2d1b0e;
+}
+.vs--scroll .vs-h em {
+  font-style: italic;
+}
+.vs--scroll .vs-word {
+  -webkit-text-stroke-color: rgba(58, 36, 20, 0.08);
+}
+.vs--scroll .vs-btn--yt {
+  color: var(--vink);
+}
+.vs--scroll .vs-pts b {
+  color: #fff;
+}
+.sc-parch {
+  position: absolute;
+  left: 50%;
+  top: 8%;
+  bottom: 8%;
+  width: 46%;
+  transform: translateX(-50%);
+}
+.sc-parch .rod {
+  position: absolute;
+  left: -8%;
+  right: -8%;
+  height: 16px;
+  border-radius: 8px;
+  background: linear-gradient(#b8742f, #6b3f15);
+  z-index: 1;
+}
+.sc-parch .t {
+  top: 0;
+}
+.sc-parch .b {
+  bottom: 0;
+}
+.sc-parch .sheet {
+  position: absolute;
+  inset: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18% 12%;
+  background: linear-gradient(90deg, #e9d3a5, #f7e8c6 20%, #f7e8c6 80%, #e9d3a5);
+  transform-origin: top;
+  animation: scUnroll 6s var(--ease) infinite;
+}
+@keyframes scUnroll {
+  0% {
+    transform: scaleY(0.05);
+  }
+  25%,
+  100% {
+    transform: none;
+  }
+}
+.sc-parch .sheet s {
+  height: 4px;
+  border-radius: 4px;
+  background: rgba(58, 36, 20, 0.45);
+  width: calc(100% - var(--i) * 9%);
+}
+.sc-parch .quill {
+  position: absolute;
+  right: -12%;
+  top: 40%;
+  width: 14px;
+  height: 70px;
+  border-radius: 60% 60% 10% 10%;
+  background: linear-gradient(#fff, #d8d2c4);
+  transform: rotate(28deg);
+  animation: scWrite 1.4s ease-in-out infinite alternate;
+  z-index: 2;
+}
+@keyframes scWrite {
+  to {
+    transform: rotate(18deg) translate(-14px, 10px);
+  }
+}
+
+/* 19. ATLAS (sitemap / 404) — a map, a dotted route, a dropping pin. */
+.vs--atlas {
+  --v1: #12c29b;
+  --v2: #ffb020;
+  --vbg: #0c2a2a;
+  --vfont: var(--serif);
+  --vscreen: #e9f1e4;
+}
+.vs--atlas .vs-h em {
+  font-style: italic;
+}
+.vs--atlas .vs-screen {
+  background-image: linear-gradient(rgba(12, 42, 42, 0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(12, 42, 42, 0.08) 1px, transparent 1px), radial-gradient(circle at 30% 60%, #cfe3c4 0 18%, transparent 19%), radial-gradient(circle at 75% 35%, #cfe3c4 0 14%, transparent 15%);
+  background-size: 30px 30px, 30px 30px, auto, auto;
+}
+.sc-map {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.sc-map .route {
+  fill: none;
+  stroke: #0c2a2a;
+  stroke-width: 3;
+  stroke-dasharray: 2 10;
+  stroke-linecap: round;
+  animation: roadDashV 3s linear infinite;
+}
+@keyframes roadDashV {
+  to {
+    stroke-dashoffset: -48;
+  }
+}
+.sc-map circle {
+  fill: #12c29b;
+}
+.sc-pin {
+  position: absolute;
+  left: 84%;
+  top: 14%;
+  color: #e63946;
+  animation: scDrop 2.4s var(--spring) infinite;
+}
+@keyframes scDrop {
+  0% {
+    transform: translateY(-40px);
+    opacity: 0;
+  }
+  30%,
+  100% {
+    transform: none;
+    opacity: 1;
+  }
+}
+.sc-rose {
+  position: absolute;
+  left: 6%;
+  top: 8%;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font: 800 14px var(--serif);
+  color: #0c2a2a;
+  border: 2px solid #0c2a2a;
+}
+
+/* =========================================================================================
+   FLOATING "WATCH" BUTTON
+   ========================================================================================= */
+.vfab {
+  position: fixed;
+  right: max(14px, env(safe-area-inset-right));
+  bottom: calc(max(18px, env(safe-area-inset-bottom)) + 158px);
+  z-index: 118;
+  width: 68px;
+  height: 68px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  animation: vfabIn 0.7s var(--spring) both;
+}
+@keyframes vfabIn {
+  from {
+    transform: scale(0) rotate(-90deg);
+  }
+}
+.vfab__core {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff, #ffe9e9);
+  box-shadow: 0 10px 24px -8px rgba(255, 0, 0, 0.7), 0 0 0 3px #ff0000;
+  transition: transform 0.35s var(--spring);
+}
+.vfab__spin {
+  position: absolute;
+  inset: -6px;
+  z-index: 1;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #ff0000, #ff7a00, #ff2bd6, #7b5cff, #ff0000);
+  -webkit-mask: radial-gradient(circle, transparent 54%, #000 55%);
+  mask: radial-gradient(circle, transparent 54%, #000 55%);
+  animation: scSpin 9s linear infinite;
+}
+.vfab__spin svg {
+  width: 100%;
+  height: 100%;
+}
+.vfab__spin text {
+  font: 800 10.5px var(--ui);
+  letter-spacing: 1px;
+  fill: #fff;
+}
+.vfab__wave {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid #ff0000;
+  animation: vsPing 2.6s var(--ease) infinite;
+}
+.vfab__wave--2 {
+  animation-delay: 1.3s;
+}
+.vfab__eq {
+  position: absolute;
+  right: -2px;
+  top: -2px;
+  z-index: 3;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 18px;
+  padding: 3px 4px;
+  border-radius: 6px;
+  background: #0e1b4d;
+}
+.vfab__eq i {
+  width: 3px;
+  height: 100%;
+  border-radius: 2px;
+  background: #ff4d4d;
+  transform-origin: bottom;
+  animation: vfabEq 0.9s ease-in-out infinite alternate;
+}
+.vfab__eq i:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.vfab__eq i:nth-child(3) {
+  animation-delay: -0.6s;
+}
+@keyframes vfabEq {
+  from {
+    transform: scaleY(0.25);
+  }
+}
+.vfab__tip {
+  position: absolute;
+  right: calc(100% + 12px);
+  top: 50%;
+  display: grid;
+  gap: 3px;
+  min-width: 190px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  text-align: left;
+  font: 700 13px/1.25 var(--ui);
+  color: #fff;
+  background: linear-gradient(120deg, #0e1b4d, #3b0a2a);
+  box-shadow: 0 16px 30px -14px rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  transform: translate(10px, -50%);
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.35s var(--spring);
+}
+.vfab__tip small {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ff8a8a;
+}
+.vfab:hover .vfab__tip,
+.vfab:focus-visible .vfab__tip {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+.vfab:hover .vfab__core,
+.vfab:focus-visible .vfab__core {
+  transform: scale(1.12) rotate(-6deg);
+}
+.vfab:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 6px;
+}
+@media (max-width: 640px) {
+  .vfab {
+    width: 56px;
+    height: 56px;
+    bottom: calc(max(18px, env(safe-area-inset-bottom)) + 150px);
+  }
+  .vfab__core {
+    width: 38px;
+    height: 38px;
+  }
+  .vfab__tip {
+    display: none;
+  }
+}
+
+/* =========================================================================================
+   THEATRE (the floating button's dialog)
+   ========================================================================================= */
+.vt-lock,
+.vt-lock body {
+  overflow: hidden;
+}
+.vt {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(3, 5, 18, 0.78);
+  backdrop-filter: blur(8px);
+  animation: vtIn 0.35s var(--ease);
+}
+@keyframes vtIn {
+  from {
+    opacity: 0;
+  }
+}
+.vt-box {
+  position: relative;
+  width: min(1180px, 100%);
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  border-radius: 28px;
+  box-shadow: 0 60px 120px -40px rgba(0, 0, 0, 0.8);
+  animation: vtPop 0.55s var(--spring);
+}
+@keyframes vtPop {
+  from {
+    transform: translateY(30px) scale(0.94);
+    opacity: 0;
+  }
+}
+.vs--modal {
+  padding: clamp(40px, 5vw, 64px) clamp(8px, 2vw, 20px);
+  content-visibility: visible;
+}
+.vt-x {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  z-index: 5;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  font: 400 28px/1 var(--ui);
+  color: #fff;
+  background: rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+  transition: transform 0.3s var(--spring), background 0.2s;
+}
+.vt-x:hover {
+  background: #ff0000;
+  transform: rotate(90deg);
+}

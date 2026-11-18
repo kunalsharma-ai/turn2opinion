@@ -1,3 +1,5 @@
+/* About v4 + the social network hub (About, Scan & Connect). */
+@import './about.css';
 /* ================= Hero art pieces (one per page) ================= */
 .road {
   width: min(100%, 340px);

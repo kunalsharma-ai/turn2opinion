@@ -12,6 +12,8 @@ import AnimationGate from './components/AnimationGate.jsx';
 import { I18nProvider } from './i18n/I18nProvider.jsx';
 import { useI18n } from './i18n/I18nProvider.jsx';
 import MemberGuard from './components/MemberGuard.jsx';
+import VideoShowcase from './components/video/VideoShowcase.jsx';
+import { videoFor } from './data/videos.js';
 
 const LanguagePicker = lazy(() => import('./components/LanguagePicker.jsx').then((m) => ({ default: m.LanguagePicker })));
 const TranslateStatus = lazy(() => import('./components/LanguagePicker.jsx').then((m) => ({ default: m.TranslateStatus })));
@@ -100,7 +102,11 @@ function Shell() {
       <SocialRedirect />
       <Header />
       {!ready && <div className="route-progress" role="progressbar" aria-label="Loading page" />}
-      <main id="main" tabIndex={-1}>{content}</main>
+      <main id="main" tabIndex={-1}>
+        {content}
+        {/* Every page closes with its own video showcase, in its own template (data/videos.js). */}
+        {ready && !path.startsWith('/member/') && <VideoShowcase key={path} v={videoFor(path)} />}
+      </main>
       <Footer />
       {mounted && (
         <>

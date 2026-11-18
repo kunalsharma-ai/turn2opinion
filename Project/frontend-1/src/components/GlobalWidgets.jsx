@@ -14,6 +14,7 @@ import { PREVIEW_EVENTS } from '../data/activity-preview.js';
 import { Flag, T2OMark } from './Brand.jsx';
 import Icon from './Icon.jsx';
 import LiveChat from './LiveChat.jsx';
+import VideoFab from './video/VideoFab.jsx';
 import ReviewWidget from './ReviewWidget.jsx';
 import ReviewToasts from './ReviewToasts.jsx';
 import { Link } from '../router/Router.jsx';
@@ -425,6 +426,7 @@ export default function GlobalWidgets() {
     <>
       <Cursor />
       <ScrollProgress />
+      <VideoFab />
       <FloatingActions chatOpen={chatOpen} onChat={() => setChatOpen((o) => !o)} />
       <LiveChat open={chatOpen} onClose={() => setChatOpen(false)} />
       <ReviewWidget ready={consentDone} />
