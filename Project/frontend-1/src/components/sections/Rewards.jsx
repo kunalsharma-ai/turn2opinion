@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useInView, prefersReducedMotion } from '../../hooks/useMounted.js';
 import { Flag } from '../Brand.jsx';
 import Icon from '../Icon.jsx';
+import RewardObject from './RewardObjects.jsx';
 import { METHOD_META, methodsFor, REWARDS, REWARD_KINDS } from '../../data/payouts.js';
 
 // The eight reward options (shared with MyFrequentRewards): data/payouts.js.
@@ -80,9 +81,9 @@ export function RewardWallet() {
           </span>
         </div>
       </div>
-      <div className="dealer-table" key={deal}>
+      <div className="rx-table" key={deal}>
         {cards.map((m, i) => (
-          <RewardCard key={m.id} m={m} i={i} n={cards.length} />
+          <RewardObject key={m.id} m={m} i={i} n={cards.length} />
         ))}
       </div>
     </div>
