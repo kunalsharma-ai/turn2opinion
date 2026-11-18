@@ -208,3 +208,27 @@ html[data-mode='dark'] .hero-professional .aud-switch button.is-on {
 html[data-mode='dark'] .hero-professional .aud-switch button.is-on .icon {
   color: inherit;
 }
+
+/* Rate & Reviews consumer panel at night: deep ocean sky, the sun becomes a moon (round 7). */
+html[data-mode='dark'] .rvx-con {
+  background: linear-gradient(180deg, #04153d 0%, #0a2f8c 55%, #0b1f5c 100%);
+}
+html[data-mode='dark'] .rvx-con h2 {
+  color: #fff;
+}
+html[data-mode='dark'] .rvx-con h2 span {
+  background-image: linear-gradient(100deg, #7fe3ff, #22b8ff 60%, #34d399);
+}
+html[data-mode='dark'] .rvx-con .rvx-psub {
+  color: #b7cdf5;
+}
+html[data-mode='dark'] .rc-sun {
+  background: radial-gradient(circle at 38% 38%, #ffffff, #dfe8ff 45%, #b9c8f5 70%, transparent 72%);
+  box-shadow: 0 0 80px 24px rgba(185, 200, 245, 0.35);
+}
+html[data-mode='dark'] .rc-cloud {
+  opacity: 0.12;
+}
+html[data-mode='dark'] .rc-line::before {
+  border-bottom-color: #c9a47a;
+}

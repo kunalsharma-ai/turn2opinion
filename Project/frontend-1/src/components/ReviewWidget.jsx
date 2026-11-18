@@ -458,7 +458,6 @@ function OpinionStudio({ open, initialRating, onClose, onDone, user }) {
 export default function ReviewWidget({ ready }) {
   const { user, loading } = useMe();
   const loggedIn = !!user && !loading;
-  console.log('REVIEW WIDGET', { ready, loggedIn, user });
   const audience = user && user.category === 'b2b' ? 'professional' : 'consumer';
   useGemConfig(); // gems endpoint se aaye to is widget (aur uske bachhe) dobara render ho
   const [modal, setModal] = useState(false);
@@ -480,12 +479,27 @@ export default function ReviewWidget({ ready }) {
     if (loggedIn) loadGemConfig(audience);
   }, [loggedIn, audience]);
 
+  // Members open the rating studio. Visitors who are not logged in get a small "log in first" card
+  // instead (Kunal, 18 Nov 2026: the Rate us button is visible to everyone but locked).
+  const [gate, setGate] = useState(false);
   useEffect(() => {
-    if (!loggedIn) return undefined;
-    const h = (e) => openModal((e && e.detail && e.detail.rating) || 0);
+    const h = (e) => {
+      if (loading) return;
+      if (loggedIn) openModal((e && e.detail && e.detail.rating) || 0);
+      else {
+        setGate(true);
+        playGem();
+      }
+    };
     window.addEventListener('t2o:open-review', h);
     return () => window.removeEventListener('t2o:open-review', h);
-  }, [openModal, loggedIn]);
+  }, [openModal, loggedIn, loading]);
+  useEffect(() => {
+    if (!gate) return undefined;
+    const esc = (e) => e.key === 'Escape' && setGate(false);
+    window.addEventListener('keydown', esc);
+    return () => window.removeEventListener('keydown', esc);
+  }, [gate]);
 
   // Tell the notification stream an ask is on screen (on phones only one of them may show).
   useEffect(() => {
@@ -554,24 +568,34 @@ export default function ReviewWidget({ ready }) {
   const askLevels = LEVELS; // gems.js isi array ko in-place update karta hai
   const closeModal = useCallback(() => setModal(false), []);
 
-  if (!loggedIn) return null; // logged-out user ko popup/modal kuch nahi
+  if (!loggedIn)
+    return gate ? (
+      <div className="rate-gate" role="dialog" aria-labelledby="rate-gate-t">
+        <button type="button" className="rg-x" onClick={() => setGate(false)} aria-label="Close">
+          <Icon name="close" size={14} />
+        </button>
+        <span className="rg-lock" aria-hidden="true">
+          <span className="rg-shackle" />
+          <span className="rg-body">
+            <Gem level={5} size={26} motion="float" />
+          </span>
+        </span>
+        <p className="rg-kicker">Members only</p>
+        <p id="rate-gate-t" className="rg-title">Log in to rate us</p>
+        <p className="rg-text">Every review on Turn2Opinion comes from a real member, so we ask you to log in first.</p>
+        <div className="rg-actions">
+          <Link to="/login/" className="btn btn-primary btn-sm" onClick={() => setGate(false)}>
+            Log in <Icon name="arrow" size={15} />
+          </Link>
+          <Link to="/join/" className="btn btn-ghost btn-sm" onClick={() => setGate(false)}>
+            Join free
+          </Link>
+        </div>
+      </div>
+    ) : null;
 
   return (
     <>
-      {/* Members only: an animated diamond in the right-hand button column, above WhatsApp and live help. */}
-      <button type="button" className="rate-gem" onClick={() => openModal(0)} aria-label="Rate us: rate your experience">
-        <span className="rate-gem-glow" aria-hidden="true" />
-        <span className="rate-gem-shape" aria-hidden="true">
-          <span className="rate-gem-face">
-            <Gem level={5} size={30} motion="float" />
-          </span>
-        </span>
-        <span className="rate-gem-spark s1" aria-hidden="true" />
-        <span className="rate-gem-spark s2" aria-hidden="true" />
-        <span className="rate-gem-spark s3" aria-hidden="true" />
-        <span className="rate-gem-tip" aria-hidden="true">Rate us</span>
-      </button>
-
       {prompt && (
         <div className="gask" role="dialog" aria-labelledby="ask-title">
           <span className="gask-aurora" aria-hidden="true" />

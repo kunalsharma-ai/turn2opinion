@@ -1695,6 +1695,9 @@
     color: #dfe5f4;
     background-color: #133d4d
 }
+:where(html[data-mode='dark']) .rs-star {
+    background-color: #0b1128
+}
 :where(html[data-mode='dark']) #t2o {
     color: #d9deef
 }

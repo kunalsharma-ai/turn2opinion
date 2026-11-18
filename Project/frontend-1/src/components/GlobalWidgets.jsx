@@ -20,6 +20,8 @@ import ReviewToasts from './ReviewToasts.jsx';
 import { Link } from '../router/Router.jsx';
 import { prefersReducedMotion } from '../hooks/useMounted.js';
 import { armArrivalSound, playReward } from '../utils/sound.js';
+import { useMe } from '../utils/gems.js';
+import Gem from './rating/Gem.jsx';
 import ModeAmbience from './ModeAmbience.jsx';
 
 /* Cursor halo removed (Kunal, 18 Nov 2026): the ring that followed the mouse looked like a loading spinner. */
@@ -338,18 +340,44 @@ function CookieConsent({ onDone }) {
 }
 
 /* ---------------- Floating actions ---------------- */
+// Three matching round buttons in one column (Kunal, 18 Nov 2026): Rate us, WhatsApp, live help.
+// Rate us shows for everyone; for visitors who are not logged in it carries a lock and asks them to
+// log in first (ReviewWidget shows that prompt). A light wave runs down the three in turn.
 function FloatingActions({ chatOpen, onChat }) {
+  const { user, loading } = useMe();
+  const member = !!user && !loading;
   return (
-    <div className={`fab-stack ${chatOpen ? 'chat-is-open' : ''}`}>
+    <div className={`fab-stack fab-trio ${chatOpen ? 'chat-is-open' : ''}`}>
+      <span className="fab-rail" aria-hidden="true" />
+      <button
+        type="button"
+        className={`fab fab-rate ${member ? '' : 'is-locked'}`}
+        onClick={() => window.dispatchEvent(new CustomEvent('t2o:open-review', { detail: {} }))}
+        aria-label={member ? 'Rate us: rate your experience' : 'Rate us (members only): log in first'}
+      >
+        <span className="fab-ring" aria-hidden="true" />
+        <span className="fab-face" aria-hidden="true">
+          <Gem level={5} size={28} motion="float" />
+        </span>
+        {!member && (
+          <span className="fab-lock" aria-hidden="true">
+            <Icon name="lock" size={11} strokeWidth={2.6} />
+          </span>
+        )}
+        <span className="fab-tip">{member ? 'Rate us' : 'Rate us · log in first'}</span>
+      </button>
       <a className="fab fab-wa" href={waLink()} target="_blank" rel="noopener noreferrer" aria-label={`Chat with us on WhatsApp ${SITE.whatsappDisplay}`}>
-        <span className="fab-pulse" aria-hidden="true" />
-        <Icon name="whatsapp" size={28} />
+        <span className="fab-ring" aria-hidden="true" />
+        <span className="fab-face" aria-hidden="true">
+          <Icon name="whatsapp" size={28} />
+        </span>
         <span className="fab-tip">WhatsApp us</span>
       </a>
       <button type="button" className="fab fab-chat" onClick={onChat} aria-expanded={chatOpen} aria-controls="live-chat" aria-label={chatOpen ? 'Close live help' : 'Live help 24/7 — open live chat'}>
-        <span className="fab-chat-ring" aria-hidden="true" />
-        <span className="fab-chat-blob" aria-hidden="true" />
-        <span className="fab-chat-icon">{chatOpen ? <Icon name="close" size={24} /> : <T2OMark size={42} />}</span>
+        <span className="fab-ring" aria-hidden="true" />
+        <span className="fab-face fab-chat-icon" aria-hidden="true">
+          {chatOpen ? <Icon name="close" size={24} /> : <T2OMark size={38} />}
+        </span>
         {!chatOpen && <span className="fab-chat-badge" aria-hidden="true">1</span>}
         {!chatOpen && (
           <span className="fab-chat-label" aria-hidden="true">
