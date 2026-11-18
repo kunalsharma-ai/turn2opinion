@@ -16,7 +16,7 @@ export default function SoundButton({ className = '' }) {
     setSoundPref(next);
     setOn(next);
     setBump((n) => n + 1);
-    if (next) import('../utils/sound.js').then((m) => m.playNotify()).catch(() => {});
+    if (next) import('../utils/sound.js').then((m) => m.playSoundOn()).catch(() => {});
   };
   return (
     <button

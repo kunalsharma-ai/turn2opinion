@@ -19,7 +19,8 @@ import ReviewWidget from './ReviewWidget.jsx';
 import ReviewToasts from './ReviewToasts.jsx';
 import { Link } from '../router/Router.jsx';
 import { prefersReducedMotion } from '../hooks/useMounted.js';
-import { armArrivalSound, playNotify } from '../utils/sound.js';
+import { armArrivalSound, playReward } from '../utils/sound.js';
+import ModeAmbience from './ModeAmbience.jsx';
 
 /* Cursor halo removed (Kunal, 18 Nov 2026): the ring that followed the mouse looked like a loading spinner. */
 
@@ -379,15 +380,16 @@ export default function GlobalWidgets() {
   // arms the chime and fires it on their first tap, click, key press or scroll — see utils/sound.js.
   useEffect(() => armArrivalSound(), []);
 
-  // The reward-ticket notification gets the same pop as the review notifications.
+  // The reward pop-up has its own cash-register ka-ching (review toasts use a softer kalimba).
   useEffect(() => {
-    const h = () => playNotify({ up: false });
+    const h = () => playReward();
     window.addEventListener('t2o:ticket', h);
     return () => window.removeEventListener('t2o:ticket', h);
   }, []);
 
   return (
     <>
+      <ModeAmbience />
       <ScrollProgress />
       <VideoFab />
       <FloatingActions chatOpen={chatOpen} onChat={() => setChatOpen((o) => !o)} />

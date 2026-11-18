@@ -18,7 +18,7 @@
 // Reviews a visitor posts themselves are never shown back to them as a notification.
 import { useEffect, useRef, useState } from 'react';
 import { fetchApprovedReviews, getMyReviews, onReview, seedTestimonials } from '../utils/reviews.js';
-import { playNotify } from '../utils/sound.js';
+import { playToast } from '../utils/sound.js';
 import { levelOf } from '../data/reviewFacets.js';
 import { COUNTRIES } from '../data/countries.js';
 import { session } from '../utils/storage.js';
@@ -66,7 +66,7 @@ export default function ReviewToasts({ blocked }) {
       if (!r.text || !r.name) return;
       setLeaving(false);
       setItem({ ...r, fresh: true, key: Date.now() });
-      playNotify({ up: true });
+      playToast();
       const t = setTimeout(() => setLeaving(true), 8200);
       return () => clearTimeout(t);
     });
@@ -91,7 +91,7 @@ export default function ReviewToasts({ blocked }) {
       const pick = src[order.current.pop()];
       setLeaving(false);
       setItem({ ...pick, key: Date.now() });
-      playNotify({ up: true });
+      playToast();
       count.current += 1;
       session.set(SHOWN, count.current);
       hideTimer = setTimeout(() => setLeaving(true), 7000);

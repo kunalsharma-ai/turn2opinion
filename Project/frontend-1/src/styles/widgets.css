@@ -2569,3 +2569,205 @@ html[data-mode='dark'] .chat-input-wrap input {
     display: none;
   }
 }
+
+/* =========================================================================================
+   MODE AMBIENCE (Kunal, 18 Nov 2026): light = sunlight, rays and golden motes;
+   dark = star field, aurora and shooting stars. Purely decorative, above content and below the
+   header, never catches a click, and kept faint so text stays readable.
+   ========================================================================================= */
+.amb {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+.amb-day,
+.amb-night {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+html:not([data-mode='dark']) .amb-day,
+html[data-mode='dark'] .amb-night {
+  opacity: 1;
+}
+html:not([data-mode='dark']) .amb-night,
+html[data-mode='dark'] .amb-day {
+  visibility: hidden;
+  transition: opacity 0.9s ease, visibility 0s 0.9s;
+}
+html:not([data-mode='dark']) .amb-night *,
+html[data-mode='dark'] .amb-day * {
+  animation-play-state: paused;
+}
+
+/* ---------- light: sunlight ---------- */
+.amb-sun {
+  position: absolute;
+  right: -160px;
+  top: -160px;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 214, 120, 0.32), rgba(255, 190, 90, 0.12) 40%, transparent 68%);
+  animation: ambPulse 9s ease-in-out infinite;
+}
+.amb-rays {
+  position: absolute;
+  right: -420px;
+  top: -420px;
+  width: 1040px;
+  height: 1040px;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 210, 120, 0.09) 0 4deg, transparent 4deg 14deg);
+  -webkit-mask: radial-gradient(circle, #000 12%, transparent 52%);
+  mask: radial-gradient(circle, #000 12%, transparent 52%);
+  animation: spin 120s linear infinite;
+}
+.amb-mote {
+  position: absolute;
+  left: calc(mod(var(--k) * 23 + 7, 100) * 1%);
+  bottom: -20px;
+  width: calc(4px + mod(var(--k), 3) * 2px);
+  height: calc(4px + mod(var(--k), 3) * 2px);
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff3c4, #ffc23d 60%, transparent 72%);
+  box-shadow: 0 0 10px 2px rgba(255, 194, 61, 0.35);
+  opacity: 0;
+  animation: ambMote calc(16s + mod(var(--k), 4) * 3s) linear infinite;
+  animation-delay: calc(var(--k) * -2.3s);
+}
+@keyframes ambMote {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  12% {
+    opacity: 0.55;
+  }
+  85% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(60px, -105vh);
+  }
+}
+@keyframes ambPulse {
+  50% {
+    transform: scale(1.12);
+    opacity: 0.8;
+  }
+}
+
+/* ---------- dark: night sky ---------- */
+.amb-aurora {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: -120px;
+  height: 300px;
+  background: linear-gradient(90deg, transparent, rgba(34, 230, 180, 0.16), rgba(123, 92, 255, 0.18), rgba(34, 184, 255, 0.14), transparent);
+  filter: blur(40px);
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  animation: ambAurora 18s ease-in-out infinite alternate;
+}
+@keyframes ambAurora {
+  0% {
+    transform: translateX(-6%) skewX(-10deg) scaleY(0.8);
+  }
+  100% {
+    transform: translateX(6%) skewX(10deg) scaleY(1.15);
+  }
+}
+.amb-moon {
+  position: absolute;
+  left: -120px;
+  bottom: -160px;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(160, 180, 255, 0.14), transparent 65%);
+}
+.amb-star {
+  position: absolute;
+  left: calc(mod(var(--k) * 41 + 3, 100) * 1%);
+  top: calc(mod(var(--k) * 67 + 9, 100) * 1%);
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 6px 1px rgba(190, 210, 255, 0.8);
+  opacity: 0.15;
+  mix-blend-mode: screen;
+  animation: ambTwinkle calc(2.6s + mod(var(--k), 5) * 0.7s) ease-in-out infinite;
+  animation-delay: calc(var(--k) * -0.37s);
+}
+.amb-star:nth-child(4n) {
+  width: 3px;
+  height: 3px;
+  background: #ffe7a8;
+}
+@keyframes ambTwinkle {
+  50% {
+    opacity: 0.85;
+    transform: scale(1.6);
+  }
+}
+.amb-shoot {
+  position: absolute;
+  top: 12%;
+  left: 70%;
+  width: 140px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.9), transparent);
+  box-shadow: 0 0 8px rgba(190, 210, 255, 0.8);
+  opacity: 0;
+  transform: rotate(-35deg);
+  animation: ambShoot 11s ease-in infinite;
+}
+.amb-shoot.s2 {
+  top: 34%;
+  left: 40%;
+  animation-delay: 6.5s;
+  animation-duration: 14s;
+}
+@keyframes ambShoot {
+  0%,
+  88% {
+    opacity: 0;
+    transform: rotate(-35deg) translateX(0);
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(-35deg) translateX(-420px);
+  }
+}
+@media (max-width: 640px) {
+  .amb-star:nth-child(n + 18),
+  .amb-mote:nth-child(n + 8),
+  .amb-rays {
+    display: none;
+  }
+  .amb-sun {
+    width: 320px;
+    height: 320px;
+    right: -120px;
+    top: -120px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .amb {
+    display: none;
+  }
+}
+html.low-power .amb {
+  display: none;
+}

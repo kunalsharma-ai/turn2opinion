@@ -200,3 +200,11 @@ html[data-mode='dark'] .burger {
 html[data-mode='dark'] .burger span {
   background: #fff;
 }
+
+/* Gold "Professionals" pill keeps dark text in dark mode (round 6). */
+html[data-mode='dark'] .hero-professional .aud-switch button.is-on {
+  color: #2a1500;
+}
+html[data-mode='dark'] .hero-professional .aud-switch button.is-on .icon {
+  color: inherit;
+}

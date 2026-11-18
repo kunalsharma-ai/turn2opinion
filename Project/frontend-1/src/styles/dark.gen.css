@@ -1685,6 +1685,16 @@
 :where(html[data-mode='dark']) .tl-switch i {
     background-color: #0b1128
 }
+:where(html[data-mode='dark']) .login .login-card-glow {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .login .login-card a {
+    color: color-mix(in srgb, var(--a1) 75%, #d9deef)
+}
+:where(html[data-mode='dark']) .join.theme-consumer .unlocks li.is-now .ul-ico {
+    color: #dfe5f4;
+    background-color: #133d4d
+}
 :where(html[data-mode='dark']) #t2o {
     color: #d9deef
 }

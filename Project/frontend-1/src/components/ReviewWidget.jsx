@@ -23,7 +23,7 @@ import { session, store } from '../utils/storage.js';
 import { submitReview } from '../utils/reviews.js';
 import { track } from '../utils/analytics.js';
 import { failureMessage } from '../utils/api.js';
-import { playSuccess, playTick } from '../utils/sound.js';
+import { playGem, playSuccess, playTick } from '../utils/sound.js';
 import { audienceOf, HIGHLIGHTS, LEVELS, levelOf, STARTERS } from '../data/reviewFacets.js';
 import { loadGemConfig, refreshMe, useGemConfig, useMe } from '../utils/gems.js';
 import { COUNTRIES } from '../data/countries.js';
@@ -471,6 +471,7 @@ export default function ReviewWidget({ ready }) {
     setRating(r);
     setPrompt(false);
     setModal(true);
+    playGem();
     track('review_open', { rating: r });
   }, []);
 

@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ENV } from '../config/env.js';
 import { SITE, waLink } from '../config/site.js';
 import { hrefFor } from '../router/Router.jsx';
-import { pop, setSoundEnabled, soundEnabled } from '../utils/sound.js';
+import { playChatOpen, playChatReply, playChatSend, playSoundOn, setSoundEnabled, soundEnabled } from '../utils/sound.js';
 import { onSoundChange } from '../utils/soundPref.js';
 import { postJSON, failureMessage } from '../utils/api.js';
 import { session } from '../utils/storage.js';
@@ -168,7 +168,7 @@ export default function LiveChat({ open, onClose }) {
   }, []);
   useEffect(() => {
     if (open) {
-      pop({ pitch: 1 });
+      playChatOpen();
       setTimeout(() => input.current && input.current.focus(), 350);
     }
     if (!open) return undefined;
@@ -187,7 +187,7 @@ export default function LiveChat({ open, onClose }) {
 
   const botSay = (m) => {
     setTyping(false);
-    pop({ pitch: 1.25, volume: 0.16 });
+    playChatReply();
     setMsgs((cur) => [...cur, { from: 'bot', ...m }]);
   };
 
@@ -201,6 +201,7 @@ export default function LiveChat({ open, onClose }) {
   };
 
   const ask = async (q, id) => {
+    playChatSend();
     setMsgs((m) => [...m, { from: 'me', text: q }]);
     setTyping(true);
     const started = Date.now();
@@ -251,7 +252,7 @@ export default function LiveChat({ open, onClose }) {
     const next = !sound;
     setSound(next);
     setSoundEnabled(next);
-    if (next) pop();
+    if (next) playSoundOn();
   };
 
   return (

@@ -11,6 +11,7 @@ import AuroraCanvas from '../AuroraCanvas.jsx';
 import { peopleAlt } from '../../data/illustrations.js';
 import { useI18n } from '../../i18n/I18nProvider.jsx';
 import { tr } from '../../i18n/engine.js';
+import { playAudience } from '../../utils/sound.js';
 import { api } from '../../utils/api.js';
 
 export const AUDIENCES = {
@@ -317,6 +318,7 @@ export default function HomeHero() {
     return () => clearTimeout(t);
   }, [held]);
   const pick = (k) => {
+    if (k !== aud) playAudience(k);
     setAud(k);
     setHeld(true);
   };

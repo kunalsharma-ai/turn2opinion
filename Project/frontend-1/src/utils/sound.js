@@ -263,6 +263,122 @@ export function playMode(to = 'dark') {
   }
 }
 
+/* ============================== Distinct voices (round 6) ==============================
+ * Kunal, 18 Nov 2026: every sound on the site should be clearly different and fit what it belongs
+ * to. Each context below has its own instrument, so nobody hears the same chime twice for two
+ * different things:
+ *   chat open  -> a water-drop "bloop"           chat reply -> soft wooden marimba ding-dong
+ *   chat send  -> an airy upward swoosh          review toast -> paper flick + kalimba pluck
+ *   reward pop-up -> cash-register ka-ching      sound on -> a rising power-up
+ *   consumer side -> bright ocean ripple         professional side -> warm gold chime
+ *   language -> a harp glissando                 Rate us gem -> crystal shimmer
+ */
+
+/** Wooden mallet: a short triangle with a quick bright overtone. */
+function mallet(t, freq, { vol = 0.12, dur = 0.45 } = {}) {
+  voice(t, freq, { dur, vol, type: 'triangle', attack: 0.003 });
+  voice(t, freq * 4, { dur: 0.06, vol: vol * 0.35, type: 'sine', attack: 0.002 });
+}
+/** Kalimba: a sine with a detuned, fast-decaying partial. */
+function kalimba(t, freq, { vol = 0.1, dur = 0.7 } = {}) {
+  voice(t, freq, { dur, vol, type: 'sine', attack: 0.002 });
+  voice(t, freq * 5.4, { dur: 0.09, vol: vol * 0.25, type: 'sine', attack: 0.002 });
+}
+/** Airy filtered-noise sweep. */
+function swoosh(t, from, to, { dur = 0.35, vol = 0.06, q = 1.4 } = {}) {
+  const c = ctx;
+  if (!noiseBuf) noise(t, 0.01, { vol: 0.0001 });
+  const src = c.createBufferSource();
+  src.buffer = noiseBuf;
+  const f = c.createBiquadFilter();
+  f.type = 'bandpass';
+  f.Q.value = q;
+  f.frequency.setValueAtTime(from, t);
+  f.frequency.exponentialRampToValueAtTime(to, t + dur);
+  const g = c.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(vol, t + dur * 0.3);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  src.connect(f).connect(g).connect(master);
+  src.start(t);
+  src.stop(t + dur + 0.02);
+}
+
+/** CHAT OPEN — a round water-drop "bloop". */
+export function playChatOpen() {
+  if (quiet() || !ensure() || !gate(200)) return;
+  const t = ctx.currentTime + 0.01;
+  sweep(t, 260, 820, { dur: 0.13, vol: 0.12, type: 'sine' });
+  sweep(t + 0.1, 600, 1200, { dur: 0.1, vol: 0.05, type: 'sine' });
+}
+/** CHAT SEND — the visitor's message flies off: an upward swoosh with a small tick. */
+export function playChatSend() {
+  if (quiet() || !ensure() || !gate(120)) return;
+  const t = ctx.currentTime + 0.005;
+  swoosh(t, 700, 4200, { dur: 0.26, vol: 0.05 });
+  voice(t + 0.2, 1567.98, { dur: 0.08, vol: 0.04, type: 'sine', attack: 0.002 });
+}
+/** CHAT REPLY — the assistant answers: a soft wooden ding-dong (E5 then C5). */
+export function playChatReply() {
+  if (quiet() || !ensure() || !gate(160)) return;
+  const t = ctx.currentTime + 0.01;
+  mallet(t, 659.25, { vol: 0.11 });
+  mallet(t + 0.12, 523.25, { vol: 0.09, dur: 0.6 });
+}
+/** REVIEW TOAST — a member review slides in: a paper flick and two kalimba notes. */
+export function playToast() {
+  if (quiet() || !ensure() || !gate(900)) return;
+  const t = ctx.currentTime + 0.01;
+  noise(t, 0.06, { vol: 0.035, freq: 3800, q: 0.9, type: 'highpass' });
+  kalimba(t + 0.05, 783.99, { vol: 0.09 });
+  kalimba(t + 0.16, 1174.66, { vol: 0.07, dur: 0.9 });
+}
+/** REWARD POP-UP — someone just got paid: a cash-register ka-ching with coin glitter. */
+export function playReward() {
+  if (quiet() || !ensure() || !gate(900)) return;
+  const t = ctx.currentTime + 0.01;
+  noise(t, 0.08, { vol: 0.09, freq: 1200, q: 3 }); // drawer catch
+  sweep(t + 0.02, 220, 90, { dur: 0.12, vol: 0.08, type: 'sine' }); // drawer thunk
+  bell(t + 0.12, 2093.0, { vol: 0.07, dur: 0.6 }); // ka-
+  bell(t + 0.2, 2793.83, { vol: 0.08, dur: 1.0 }); // -ching
+  for (let i = 0; i < 5; i++) noise(t + 0.24 + i * 0.045, 0.03, { vol: 0.03, freq: 6000 + i * 500, q: 8 });
+}
+/** SOUND ON — the header speaker wakes up: a quick three-step power-up. */
+export function playSoundOn() {
+  if (quiet() || !ensure()) return;
+  const t = ctx.currentTime + 0.01;
+  [392.0, 587.33, 783.99].forEach((f, i) => voice(t + i * 0.06, f, { dur: 0.22, vol: 0.07, type: 'triangle' }));
+  bell(t + 0.2, 1567.98, { vol: 0.05, dur: 0.6 });
+}
+/** AUDIENCE — Consumer is a bright ocean ripple; Professional a warm, low gold chime. */
+export function playAudience(aud = 'consumer') {
+  if (quiet() || !ensure() || !gate(200)) return;
+  const t = ctx.currentTime + 0.01;
+  if (aud === 'pro' || aud === 'professional') {
+    voice(t, 196.0, { dur: 1.1, vol: 0.07, type: 'triangle' });
+    bell(t + 0.02, 392.0, { vol: 0.08, dur: 1.4 });
+    bell(t + 0.1, 587.33, { vol: 0.07, dur: 1.3 });
+    bell(t + 0.22, 1174.66, { vol: 0.04, dur: 1.2 });
+  } else {
+    [880, 1046.5, 1318.51].forEach((f, i) => sweep(t + i * 0.06, f * 0.8, f, { dur: 0.18, vol: 0.06, type: 'sine' }));
+    swoosh(t, 2400, 900, { dur: 0.3, vol: 0.025 });
+  }
+}
+/** LANGUAGE — the page turns into another language: a quick harp glissando. */
+export function playLanguage() {
+  if (quiet() || !ensure() || !gate(400)) return;
+  const t = ctx.currentTime + 0.01;
+  [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5, 1174.66].forEach((f, i) => kalimba(t + i * 0.035, f, { vol: 0.05, dur: 0.6 }));
+  swoosh(t, 1200, 5000, { dur: 0.3, vol: 0.02 });
+}
+/** RATE US gem — a crystal shimmer as the diamond opens. */
+export function playGem() {
+  if (quiet() || !ensure() || !gate(300)) return;
+  const t = ctx.currentTime + 0.01;
+  [1318.51, 1760.0, 2217.46, 2637.02].forEach((f, i) => voice(t + i * 0.05, f, { dur: 0.7, vol: 0.04, type: 'sine', detune: i * 4 }));
+  noise(t, 0.4, { vol: 0.02, freq: 9000, q: 1, type: 'highpass' });
+}
+
 /* ============================== Arming ============================== */
 
 /**
