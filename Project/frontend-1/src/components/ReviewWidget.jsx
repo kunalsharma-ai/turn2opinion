@@ -557,12 +557,13 @@ export default function ReviewWidget({ ready }) {
 
   return (
     <>
-      {/* <button type="button" className="rate-tab" onClick={() => openModal(0)} aria-label="Rate us — rate your experience">
+      {/* Members only: the Rate us tab on the right edge (logged-out visitors see nothing, as before). */}
+      <button type="button" className="rate-tab" onClick={() => openModal(0)} aria-label="Rate us — rate your experience">
         <span className="rate-tab-gem" aria-hidden="true">
           <Gem level={5} size={22} motion="float" />
         </span>
         <span className="rate-tab-text">Rate us</span>
-      </button> */}
+      </button>
 
       {prompt && (
         <div className="gask" role="dialog" aria-labelledby="ask-title">
