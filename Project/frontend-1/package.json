@@ -2,7 +2,7 @@
   "name": "turn2opinion-website",
   "private": true,
   "version": "2.0.0",
-  "description": "Turn2Opinion \u2013 paid online surveys for consumers and business professionals. React + Vite, prerendered per route for SEO.",
+  "description": "Turn2Opinion – paid online surveys for consumers and business professionals. React + Vite, prerendered per route for SEO.",
   "type": "module",
   "engines": {
     "node": ">=20.19"
@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.0.0",
+    "postcss": "^8.5.33",
     "vite": "^7.1.0"
   }
 }
