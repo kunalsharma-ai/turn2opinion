@@ -1716,3 +1716,20 @@ html:has(a:hover, button:hover, [role='button']:hover, label:hover, summary:hove
     font-size: 16px;
   }
 }
+
+/* ===== Reward ticket: centred (Kunal, 18 Nov 2026) =====
+   Centred horizontally at the bottom of the page. left/right 0 + auto margins centre the fixed
+   box without touching `transform`, which the enter/leave animations own. On phones the bottom
+   corners hold the WhatsApp and live-help buttons, so the ticket sits centred under the header. */
+.rticket {
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+}
+@media (max-width: 600px) {
+  .rticket {
+    top: calc(var(--header-h) + 10px);
+    bottom: auto;
+    width: min(320px, calc(100vw - 32px));
+  }
+}
