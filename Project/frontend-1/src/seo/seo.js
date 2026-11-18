@@ -24,7 +24,7 @@ function organization() {
       addressCountry: SITE.address.country
     },
     parentOrganization: { '@type': 'Organization', name: SITE.legalName, url: SITE.parentUrl },
-    sameAs: [...SITE.social.map((s) => s.url), ...(SITE.xHandle ? [`https://x.com/${SITE.xHandle}`] : [])],
+    sameAs: [...new Set([...SITE.social.map((s) => s.url), ...(SITE.xHandle ? [`https://x.com/${SITE.xHandle}`] : [])])],
     contactPoint: [
       { '@type': 'ContactPoint', contactType: 'customer support', email: SITE.email, telephone: SITE.phone, availableLanguage: ['English'] }
     ]

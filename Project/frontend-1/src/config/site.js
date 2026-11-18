@@ -26,7 +26,7 @@ export const SITE = {
   // X (Twitter) handle without the @. Leave empty until the profile exists: once it is filled in,
   // twitter:site / twitter:creator are emitted on every page and the profile joins Organization
   // sameAs. Also add it to `social` below so it shows in the footer and the Scan & Connect hub.
-  xHandle: '',
+  xHandle: 'TurnToOpinion',
   // Optional extras for the LocalBusiness schema on the home page. Fill them in from your Google
   // Business Profile so the two match exactly, e.g.
   //   openingHours: { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:30', closes: '18:30' },
@@ -41,6 +41,7 @@ export const SITE = {
     { id: 'facebook', label: 'Facebook', handle: 'tryturn2opinion', url: 'https://www.facebook.com/tryturn2opinion', qr: '/images/qr/facebook-qr.svg', tint: '#1877F2', tint2: '#49B6FF', blurb: 'Community posts and survey announcements' },
     { id: 'linkedin', label: 'LinkedIn', handle: 'Turn2Opinion', url: 'https://www.linkedin.com/company/turn2opinionpanel/home/', qr: '/images/qr/linkedin-qr.svg', tint: '#0A66C2', tint2: '#12C29B', blurb: 'B2B research and professional panels' },
     { id: 'youtube', label: 'YouTube', handle: '@Turn2Opinion', url: 'https://www.youtube.com/@Turn2Opinion', qr: '/images/qr/youtube-qr.svg', tint: '#FF0000', tint2: '#FF8A3D', blurb: 'How-to videos and payout walkthroughs' },
+    { id: 'x', label: 'X', handle: '@TurnToOpinion', url: 'https://x.com/TurnToOpinion', qr: '/images/qr/x-qr.svg', tint: '#14171A', tint2: '#657786', blurb: 'Survey news, payout updates and quick tips' },
     { id: 'whatsapp', label: 'WhatsApp', handle: '+91 81782 00573', url: 'https://wa.me/918178200573', qr: '/images/qr/whatsapp-qr.svg', tint: '#25D366', tint2: '#0E7A4B', blurb: 'Message our support team directly' }
   ],
 

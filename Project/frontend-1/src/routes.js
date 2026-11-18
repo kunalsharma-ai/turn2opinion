@@ -109,7 +109,7 @@ export const ROUTES = [
     seo: {
       title: 'Scan & Connect – QR Codes & Social Channels | Turn2Opinion',
       description:
-        'Scan a QR code to open Turn2Opinion, MyFrequentRewards, MyHealthOpinions or Frequent Research, or follow us on Instagram, Facebook, LinkedIn and YouTube.',
+        'Scan a QR code to open Turn2Opinion, MyFrequentRewards, MyHealthOpinions or Frequent Research, or follow us on Instagram, Facebook, LinkedIn, YouTube and X.',
       crumb: 'Scan & Connect',
       parent: { path: '/about/', name: 'About' }
     },

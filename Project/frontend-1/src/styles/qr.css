@@ -280,7 +280,7 @@
 /* ---------------------------- social rail ---------------------------- */
 .qr-social {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(186px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 13px;
   perspective: 1200px;
 }
