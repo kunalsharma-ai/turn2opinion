@@ -30,7 +30,7 @@ const files = readdirSync(dir)
   });
 
 // Objects designed as physical paper (member review postcards and ID cards) keep their printed colours.
-const KEEP_LIGHT = /\.(pc-(addr|air|aud|date|foot|grid|kicker|left|mark|place|quote|right|stamp)|pcs-|pcm-|ps-|vc-|gbadge|gb-txt|vcard|voice-card)/;
+const KEEP_LIGHT = /\.(pc-(addr|air|aud|date|foot|grid|kicker|left|mark|place|quote|right|stamp)|pcs-|pcm-|ps-|vc-|gbadge|gb-txt|vcard|voice-card|pcard-best|pcard-kind|pcard-tag)/;
 const HTML_CLASSES = ['js', 'js-ready', 'has-cursor', 'lp-open', 'modal-open', 'vt-lock', 'ask-open', 'nav-open'];
 
 /* ---------------- colour maths ---------------- */

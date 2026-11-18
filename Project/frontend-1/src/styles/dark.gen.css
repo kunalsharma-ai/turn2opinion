@@ -569,10 +569,6 @@
 :where(html[data-mode='dark']) .dealer-sum b {
     color: #d9deef
 }
-:where(html[data-mode='dark']) .pcard-tag {
-    color: #caecdd;
-    background-color: #0b1128
-}
 :where(html[data-mode='dark']) .tr-road {
     background-image: repeating-linear-gradient(90deg, #181e34 0 12px, transparent 12px 20px)
 }
@@ -872,9 +868,6 @@
 }
 :where(html[data-mode='dark']) .dealer-split span {
     background: linear-gradient(90deg, var(--c), color-mix(in srgb, var(--c) 60%, #0b1128))
-}
-:where(html[data-mode='dark']) .pcard-best {
-    background-color: #0b1128
 }
 :where(html[data-mode='dark']) .pc-paypal .pcard-scene i {
     background-image: radial-gradient(circle at 35% 35%, #0b1128, #123248)
