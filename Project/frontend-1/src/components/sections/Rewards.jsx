@@ -4,59 +4,85 @@ import { useEffect, useState } from 'react';
 import { useInView, prefersReducedMotion } from '../../hooks/useMounted.js';
 import { Flag } from '../Brand.jsx';
 import Icon from '../Icon.jsx';
-import { METHOD_META, methodsFor } from '../../data/payouts.js';
+import { METHOD_META, methodsFor, REWARDS, REWARD_KINDS } from '../../data/payouts.js';
 
-export const METHODS = [
-  { id: 'upi', name: 'UPI', text: 'Instant transfer to any UPI app linked to your Indian bank account.', arrive: 'Straight to your UPI ID', icon: 'phone', grad: 'linear-gradient(135deg,#0E7A4B,#12C29B)', indiaOnly: true },
-  { id: 'paypal', name: 'PayPal', text: 'Lands in your PayPal balance – spend it or move it to your bank.', arrive: 'To your PayPal email', icon: 'wallet', grad: 'linear-gradient(135deg,#003087,#009CDE)' },
-  { id: 'wire', name: 'Wire Transfer', text: 'Paid directly into your bank account.', arrive: 'To your bank account', icon: 'transfer', grad: 'linear-gradient(135deg,#3A1C71,#7B5CFF)' },
-  { id: 'amazon', name: 'Amazon Gift Card', text: 'A gift card code you can spend on millions of products.', arrive: 'Code sent by email', icon: 'gift', grad: 'linear-gradient(135deg,#232F3E,#FF9900)' }
-];
+// The eight reward options (shared with MyFrequentRewards): data/payouts.js.
+export const METHODS = REWARDS;
 
-/** Country switch deals the payout cards that apply there: four for India (with UPI), three everywhere else. */
+/** One reward card. Each option has its own little animated scene (cash notes, a spinning globe, a rolling cart...). */
+function RewardCard({ m, i, n }) {
+  return (
+    <article className={`pcard pc-${m.id} pc-${m.kind}`} style={{ '--i': i, '--n': n, '--c1': m.c1, '--c2': m.c2 }}>
+      <div className="pcard-in">
+        <span className="pcard-scene" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+          <i />
+        </span>
+        <span className="pcard-top">
+          <span className="pcard-icon">
+            <Icon name={m.icon} size={24} />
+          </span>
+          <span className="pcard-kind">{m.kind === 'money' ? 'To your account' : 'Voucher'}</span>
+        </span>
+        {m.only && (
+          <span className="pcard-tag">
+            <Flag code="IN" size={12} /> India only
+          </span>
+        )}
+        <h3>{m.name}</h3>
+        <p>{m.line}</p>
+        <span className="pcard-foot">
+          <span className="pcard-arrive">
+            <Icon name="send" size={13} /> {m.arrive}
+          </span>
+          <span className="pcard-best">{m.best}</span>
+        </span>
+        <span className="pcard-shine" aria-hidden="true" />
+      </div>
+    </article>
+  );
+}
+
+/** Country switch deals the reward cards that apply there: eight in India (with UPI), seven everywhere else. */
 export function RewardWallet() {
   const [where, setWhere] = useState('IN');
   const [deal, setDeal] = useState(0);
-  const cards = METHODS.filter((m) => where === 'IN' || !m.indiaOnly);
+  const cards = REWARDS.filter((m) => where === 'IN' || !m.only);
+  const money = cards.filter((m) => m.kind === 'money');
+  const vouchers = cards.filter((m) => m.kind === 'voucher');
   const pickWhere = (w) => {
     setWhere(w);
     setDeal((d) => d + 1);
   };
   return (
     <div className="dealer">
-      <div className="dealer-switch" role="group" aria-label="Where do you live?">
-        <span className={`ds-thumb ${where === 'IN' ? '' : 'is-world'}`} aria-hidden="true" />
-        <button type="button" aria-pressed={where === 'IN'} onClick={() => pickWhere('IN')}>
-          <Flag code="IN" size={16} /> I live in India
-        </button>
-        <button type="button" aria-pressed={where !== 'IN'} onClick={() => pickWhere('WORLD')}>
-          <Icon name="globe" size={16} /> Anywhere else
-        </button>
+      <div className="dealer-bar">
+        <div className="dealer-switch" role="group" aria-label="Where do you live?">
+          <span className={`ds-thumb ${where === 'IN' ? '' : 'is-world'}`} aria-hidden="true" />
+          <button type="button" aria-pressed={where === 'IN'} onClick={() => pickWhere('IN')}>
+            <Flag code="IN" size={16} /> I live in India
+          </button>
+          <button type="button" aria-pressed={where !== 'IN'} onClick={() => pickWhere('WORLD')}>
+            <Icon name="globe" size={16} /> Anywhere else
+          </button>
+        </div>
+        <p className="dealer-sum" aria-live="polite">
+          <b>{cards.length}</b> ways to get paid {where === 'IN' ? 'in India, including UPI' : 'in every other country we serve'}
+        </p>
+        <div className="dealer-split" aria-hidden="true">
+          <span style={{ '--c': REWARD_KINDS.money.c, flexGrow: money.length }}>
+            <b>{money.length}</b> {REWARD_KINDS.money.label}
+          </span>
+          <span style={{ '--c': REWARD_KINDS.voucher.c, flexGrow: vouchers.length }}>
+            <b>{vouchers.length}</b> {REWARD_KINDS.voucher.label}
+          </span>
+        </div>
       </div>
-      <p className="dealer-sum" aria-live="polite">
-        <b>{cards.length}</b> ways to get paid {where === 'IN' ? 'in India – including UPI' : 'in every other country we serve'}
-      </p>
       <div className="dealer-table" key={deal}>
         {cards.map((m, i) => (
-          <article key={m.id} className="pcard" style={{ '--i': i, '--g': m.grad, '--n': cards.length }}>
-            <div className="pcard-in">
-              <span className="pcard-chip" aria-hidden="true" />
-              <span className="pcard-icon">
-                <Icon name={m.icon} size={26} />
-              </span>
-              {m.indiaOnly && (
-                <span className="pcard-tag">
-                  <Flag code="IN" size={12} /> India only
-                </span>
-              )}
-              <h3>{m.name}</h3>
-              <p>{m.text}</p>
-              <span className="pcard-arrive">
-                <Icon name="send" size={13} /> {m.arrive}
-              </span>
-              <span className="pcard-shine" aria-hidden="true" />
-            </div>
-          </article>
+          <RewardCard key={m.id} m={m} i={i} n={cards.length} />
         ))}
       </div>
     </div>
@@ -71,9 +97,9 @@ const ROUTES = [
   { who: 'Marketing director', country: 'US', icon: 'megaphone', tone: '#7B5CFF' },
   { who: 'Retiree', country: 'CA', icon: 'clock', tone: '#FFB020' }
 ];
-const TERMINALS = ['UPI', 'PayPal', 'Wire Transfer', 'Amazon Gift Card'];
+const TERMINALS = REWARDS.map((r) => r.name);
 const SY = (i) => 50 + i * 64; // station y (viewBox 1000 x 420)
-const TY = (i) => 70 + i * 96; // terminal y
+const TY = (i) => 28 + i * 52; // terminal y (eight terminals)
 
 /** "Every profile has a way to earn": a metro map from member profiles to the payout methods open in their country. */
 export function RewardRoutes() {
@@ -129,14 +155,14 @@ export function RewardRoutes() {
           const live = methodsFor(r.country).includes(m);
           return (
             <span key={m} className={`mt-term ${live ? 'is-live' : 'is-off'}`} style={{ top: `${(TY(t) / 420) * 100}%`, '--mc': METHOD_META[m].color }}>
-              <Icon name={METHOD_META[m].icon} size={16} /> {m}
-              {m === 'UPI' && <small>India only</small>}
+              <Icon name={METHOD_META[m].icon} size={16} /> {METHOD_META[m].short}
+              {m === 'UPI (India)' && <small>India only</small>}
             </span>
           );
         })}
       </div>
       <p className="metro-cap" aria-live="polite">
-        <Flag code={r.country} size={16} /> <strong>{r.who}</strong> can cash out via {methodsFor(r.country).join(', ')}
+        <Flag code={r.country} size={16} /> <strong>{r.who}</strong> can cash out via {methodsFor(r.country).length} options: {methodsFor(r.country).join(', ')}
       </p>
     </div>
   );
@@ -146,7 +172,7 @@ const JOURNEY = [
   { t: 'Earn rewards', d: 'Complete eligible surveys and studies.', icon: 'chat' },
   { t: 'Check your balance', d: 'Watch points grow in your dashboard.', icon: 'dashboard' },
   { t: 'Reach the threshold', d: 'Hit the redemption minimum for your country.', icon: 'target' },
-  { t: 'Submit a claim', d: 'Pick PayPal, wire or a gift card – or UPI in India.', icon: 'send' },
+  { t: 'Submit a claim', d: 'Pick PayPal, cash, bank or wire, a voucher or a gift card, or UPI in India.', icon: 'send' },
   { t: 'Receive your reward', d: 'Verified claims are paid in batches.', icon: 'gift' }
 ];
 

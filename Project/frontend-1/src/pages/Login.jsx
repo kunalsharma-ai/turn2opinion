@@ -24,7 +24,7 @@ export function WelcomePortal() {
       <span className="wp-bubble">Welcome back! 👋</span>
       {[
         ['bell', 'New surveys', 'Matched to your profile', '#1F5BFF'],
-        ['gift', 'Reward ready', 'PayPal · Wire · Gift card', '#FFB020'],
+        ['gift', 'Reward ready', 'PayPal · Bank · Vouchers · Gift cards', '#FFB020'],
         ['shield', 'Account secure', 'Verified member', '#12C29B']
       ].map(([ic, t, d, c], i) => (
         <span key={t} className={`wp-chip k${i}`} style={{ '--c': c }}>

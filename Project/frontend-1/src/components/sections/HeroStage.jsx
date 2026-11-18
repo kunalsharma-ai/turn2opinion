@@ -93,19 +93,19 @@ export function AudienceSwitch({ value, onChange }) {
 // Personas shown in the hero "portal". Illustrations: Open Peeps (CC0), see public/images/people/LICENSE.txt.
 const PERSONAS = {
   consumer: [
-    { img: 'shopper', role: 'Shoppers', icon: 'bag', q: 'What made you pick that brand last time?', a: 'A friend recommended it', m: 'PayPal' },
-    { img: 'gamer', role: 'Gamers', icon: 'game', q: 'Console, PC or mobile – where do you play most?', a: 'Mostly mobile', m: 'Amazon Gift Card' },
-    { img: 'foodie', role: 'Foodies', icon: 'cup', q: 'Takeaway or cooking at home tonight?', a: 'Cooking, obviously', m: 'UPI' },
-    { img: 'traveller', role: 'Travellers', icon: 'plane', q: 'Window seat or aisle?', a: 'Window, every time', m: 'Wire Transfer' }
+    { img: 'shopper', role: 'Shoppers', icon: 'bag', q: 'What made you pick that brand last time?', a: 'A friend recommended it', m: 'Shopping Vouchers' },
+    { img: 'gamer', role: 'Gamers', icon: 'game', q: 'Console, PC or mobile – where do you play most?', a: 'Mostly mobile', m: 'Digital Gift Cards' },
+    { img: 'foodie', role: 'Foodies', icon: 'cup', q: 'Takeaway or cooking at home tonight?', a: 'Cooking, obviously', m: 'Grocery Vouchers' },
+    { img: 'traveller', role: 'Travellers', icon: 'plane', q: 'Window seat or aisle?', a: 'Window, every time', m: 'PayPal' }
   ],
   professional: [
     { img: 'business', role: 'IT & operations', icon: 'chip', q: 'Who signs off new software at your company?', a: 'My team decides', m: 'Wire Transfer' },
-    { img: 'finance', role: 'Finance leaders', icon: 'bank', q: 'Which payment tools does your business use?', a: 'Two banks, one fintech', m: 'PayPal' },
-    { img: 'tech-user', role: 'Engineers', icon: 'gear', q: 'How often do you trial new dev tools?', a: 'Every quarter', m: 'Amazon Gift Card' },
-    { img: 'pro-pointing', role: 'Marketers', icon: 'megaphone', q: 'Which channel brought your best leads this year?', a: 'Search and WhatsApp', m: 'UPI' }
+    { img: 'finance', role: 'Finance leaders', icon: 'bank', q: 'Which payment tools does your business use?', a: 'Two banks, one fintech', m: 'Bank Transfer' },
+    { img: 'tech-user', role: 'Engineers', icon: 'gear', q: 'How often do you trial new dev tools?', a: 'Every quarter', m: 'Digital Gift Cards' },
+    { img: 'pro-pointing', role: 'Marketers', icon: 'megaphone', q: 'Which channel brought your best leads this year?', a: 'Search and WhatsApp', m: 'UPI (India)' }
   ]
 };
-const METHOD_LABEL = { UPI: 'UPI (India)', PayPal: 'PayPal', 'Wire Transfer': 'wire transfer', 'Amazon Gift Card': 'Amazon gift card' };
+const METHOD_LABEL = { 'UPI (India)': 'UPI (India)', PayPal: 'PayPal', 'Wire Transfer': 'wire transfer', 'Digital Gift Cards': 'a digital gift card', 'Shopping Vouchers': 'a shopping voucher', 'Grocery Vouchers': 'a grocery voucher', 'Cash Rewards': 'cash rewards', 'Bank Transfer': 'bank transfer' };
 
 function TypeText({ text: source, onDone }) {
   const { lang } = useI18n();
@@ -324,7 +324,7 @@ export default function HomeHero() {
               <Icon name="check" size={16} /> No investment
             </li>
             <li>
-              <Icon name="check" size={16} /> PayPal, wire, gift cards & UPI in India
+              <Icon name="check" size={16} /> PayPal, cash, bank, wire, vouchers, gift cards & UPI in India
             </li>
           </ul>
         </div>

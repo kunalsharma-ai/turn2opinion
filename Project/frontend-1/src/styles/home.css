@@ -5329,3 +5329,350 @@ button.vm-lcd:focus-visible {
     margin: 0;
   }
 }
+
+/* ================= Reward wallet v2: eight options from the group (MyFrequentRewards) ================= */
+.dealer-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 22px;
+}
+.dealer-bar .dealer-sum {
+  margin: 0 !important;
+}
+.dealer-split {
+  display: flex;
+  gap: 6px;
+  flex: 1 1 100%;
+  font: 700 0.8rem/1 var(--ui);
+}
+.dealer-split span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 9px 12px;
+  border-radius: 12px;
+  color: #fff;
+  background: linear-gradient(90deg, var(--c), color-mix(in srgb, var(--c) 60%, #fff));
+  box-shadow: 0 10px 20px -14px var(--c);
+  transition: flex-grow 0.6s var(--spring);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.dealer-split b {
+  font: 800 1.05rem/1 var(--display);
+}
+.dealer-table {
+  --cols: 4;
+}
+.dealer-table:has(.pcard:nth-child(7):last-child) .pcard:nth-child(7) {
+  grid-column: span 1;
+}
+.pcard-in {
+  min-height: 236px;
+  background: linear-gradient(140deg, var(--c1), var(--c2));
+  isolation: isolate;
+}
+.pcard-in::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(120% 80% at 100% 0%, rgba(255, 255, 255, 0.28), transparent 55%), radial-gradient(80% 60% at 0% 100%, rgba(0, 0, 0, 0.28), transparent 70%);
+}
+.pcard-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.pcard-icon {
+  position: static;
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35), 0 10px 20px -10px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  animation: pcBob 3.2s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.4s);
+}
+@keyframes pcBob {
+  50% {
+    transform: translateY(-4px) rotate(-6deg);
+  }
+}
+.pcard-kind {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font: 700 0.68rem/1 var(--ui);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(0, 0, 0, 0.22);
+}
+.pcard h3 {
+  margin: 10px 0 0;
+  font-size: 1.22rem;
+}
+.pcard p {
+  font-size: 0.88rem;
+}
+.pcard-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 10px;
+}
+.pcard-arrive {
+  margin: 0;
+  padding: 0;
+}
+.pcard-best {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font: 800 0.7rem/1.3 var(--ui);
+  color: var(--c1);
+  background: #fff;
+}
+.pcard-in:hover {
+  transform: translateY(-8px) rotateX(6deg) rotateY(-6deg);
+}
+/* Per-option scenes: four little sprites drawn by CSS, each option moves differently. */
+.pcard-scene {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  z-index: -1;
+  width: 120px;
+  height: 120px;
+  opacity: 0.55;
+}
+.pcard-scene i {
+  position: absolute;
+  display: block;
+}
+/* PayPal: coins rising out of a wallet */
+.pc-paypal .pcard-scene i {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff, #9fd8ff);
+  bottom: 10px;
+  left: calc(16px + var(--k, 0) * 22px);
+  animation: pcRise 2.8s ease-in infinite;
+}
+/* Cash: notes fanning */
+.pc-cash .pcard-scene i {
+  width: 60px;
+  height: 32px;
+  border-radius: 6px;
+  right: 14px;
+  bottom: 18px;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.9) 0 4px, rgba(255, 255, 255, 0.6) 4px 8px);
+  box-shadow: inset 0 0 0 2px #fff;
+  transform-origin: 100% 100%;
+  animation: pcFan 3s ease-in-out infinite;
+}
+/* Bank: pillars */
+.pc-bank .pcard-scene i {
+  width: 12px;
+  height: 46px;
+  bottom: 14px;
+  border-radius: 3px 3px 0 0;
+  background: #fff;
+  left: calc(22px + var(--k, 0) * 22px);
+  transform-origin: bottom;
+  animation: pcPillar 2.4s ease-in-out infinite;
+}
+/* Wire: spinning globe rings */
+.pc-wire .pcard-scene i {
+  inset: 14px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  animation: pcGlobe 4s linear infinite;
+}
+/* UPI: lightning pulses */
+.pc-upi .pcard-scene i {
+  inset: 26px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  animation: pcPulse 2s ease-out infinite;
+}
+/* Shopping: tags swinging */
+.pc-shopping .pcard-scene i {
+  width: 26px;
+  height: 36px;
+  bottom: 30px;
+  left: calc(10px + var(--k, 0) * 26px);
+  border-radius: 4px 4px 8px 8px;
+  background: #fff;
+  clip-path: polygon(50% 0, 100% 22%, 100% 100%, 0 100%, 0 22%);
+  transform-origin: 50% -10px;
+  animation: pcSwing 2.2s ease-in-out infinite;
+}
+/* Grocery: produce bouncing into a basket */
+.pc-grocery .pcard-scene i {
+  width: 22px;
+  height: 22px;
+  bottom: 16px;
+  left: calc(12px + var(--k, 0) * 24px);
+  border-radius: 50% 50% 46% 46%;
+  background: #fff;
+  animation: pcBounce 1.8s cubic-bezier(0.3, 0, 0.4, 1) infinite;
+}
+/* Gift cards: stacked cards flipping */
+.pc-giftcards .pcard-scene i {
+  width: 66px;
+  height: 42px;
+  right: 14px;
+  bottom: 20px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #fff, rgba(255, 255, 255, 0.5));
+  animation: pcFlip 3.4s ease-in-out infinite;
+}
+.pcard-scene i:nth-child(1) {
+  --k: 0;
+  animation-delay: 0s;
+}
+.pcard-scene i:nth-child(2) {
+  --k: 1;
+  animation-delay: -0.6s;
+}
+.pcard-scene i:nth-child(3) {
+  --k: 2;
+  animation-delay: -1.2s;
+}
+.pcard-scene i:nth-child(4) {
+  --k: 3;
+  animation-delay: -1.8s;
+}
+.pc-wire .pcard-scene i:nth-child(2) {
+  animation-duration: 6s;
+  inset: 14px 34px;
+}
+.pc-wire .pcard-scene i:nth-child(3) {
+  inset: 46px 14px;
+  border-radius: 50%;
+  animation: none;
+}
+.pc-wire .pcard-scene i:nth-child(4),
+.pc-cash .pcard-scene i:nth-child(4),
+.pc-bank .pcard-scene i:nth-child(4),
+.pc-shopping .pcard-scene i:nth-child(4),
+.pc-grocery .pcard-scene i:nth-child(4) {
+  display: none;
+}
+@keyframes pcRise {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-80px) scale(1);
+    opacity: 0;
+  }
+}
+@keyframes pcFan {
+  0%,
+  100% {
+    transform: rotate(calc(var(--k) * -12deg));
+  }
+  50% {
+    transform: rotate(calc(var(--k) * -22deg - 4deg));
+  }
+}
+@keyframes pcPillar {
+  50% {
+    transform: scaleY(0.7);
+  }
+}
+@keyframes pcGlobe {
+  to {
+    transform: rotateY(360deg);
+  }
+}
+@keyframes pcPulse {
+  0% {
+    transform: scale(0.4);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+@keyframes pcSwing {
+  0%,
+  100% {
+    transform: rotate(12deg);
+  }
+  50% {
+    transform: rotate(-12deg);
+  }
+}
+@keyframes pcBounce {
+  0%,
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+  15% {
+    transform: translateY(0) scale(1.2, 0.8);
+  }
+  50% {
+    transform: translateY(-40px) scale(0.95, 1.05);
+  }
+}
+@keyframes pcFlip {
+  0%,
+  100% {
+    transform: rotate(calc(var(--k) * 8deg - 8deg)) translateY(calc(var(--k) * -6px));
+  }
+  50% {
+    transform: rotate(calc(var(--k) * -8deg + 4deg)) translateY(calc(var(--k) * -10px)) rotateY(25deg);
+  }
+}
+@media (max-width: 900px) {
+  .dealer-table {
+    --cols: 2;
+  }
+}
+@media (max-width: 520px) {
+  .dealer-table {
+    --cols: 1;
+  }
+  .dealer-split span {
+    font-size: 0.7rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pcard-scene i,
+  .pcard-icon {
+    animation: none !important;
+  }
+}
+/* Metro: eight terminals are tighter */
+.mt-term {
+  padding: 6px 11px;
+  font-size: 0.8rem;
+}
+.dealer-table .pcard {
+  display: grid;
+}
+.dealer-table .pcard-in {
+  height: 100%;
+}
+.dealer-table .pcard p {
+  hyphens: none;
+  -webkit-hyphens: none;
+}
+.dealer-table .pcard-scene {
+  opacity: 0.32;
+  width: 96px;
+  height: 96px;
+}

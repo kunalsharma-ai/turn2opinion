@@ -40,12 +40,12 @@ const COLS = [
   }
 ];
 
-// Faces of the rotating 3D reward cube (UPI is labelled India-only, matching src/data/payouts.js).
+// Faces of the rotating 3D reward cube: the eight reward options in pairs (UPI is India-only, see src/data/payouts.js).
 const CUBE = [
-  { face: 'front', icon: 'wallet', label: 'PayPal', c1: '#003087', c2: '#009CDE' },
-  { face: 'right', icon: 'transfer', label: 'Wire Transfer', c1: '#3A1C71', c2: '#7B5CFF' },
-  { face: 'back', icon: 'gift', label: 'Amazon Gift Card', c1: '#232F3E', c2: '#FF9900' },
-  { face: 'left', icon: 'phone', label: 'UPI · India', c1: '#0E7A4B', c2: '#12C29B' }
+  { face: 'front', icon: 'wallet', label: 'PayPal · Cash', c1: '#003087', c2: '#009CDE' },
+  { face: 'right', icon: 'bank', label: 'Bank · Wire', c1: '#0E7C66', c2: '#2F6BFF' },
+  { face: 'back', icon: 'cart', label: 'Shopping · Grocery vouchers', c1: '#E8590C', c2: '#FFB347' },
+  { face: 'left', icon: 'card', label: 'Gift cards · UPI India', c1: '#7048E8', c2: '#C084FC' }
 ];
 
 function RewardCube() {
@@ -231,8 +231,8 @@ export default function Footer() {
           <div className="fs-copy">
             <h2 id="footer-cta-title">Your opinion already has value. Start collecting it.</h2>
             <p>
-              Consumers and professionals earn rewards for honest answers – redeemed through PayPal, wire transfer and Amazon gift
-              cards worldwide, plus UPI for members in India.
+              Consumers and professionals earn rewards for honest answers – redeemed through PayPal, cash rewards, bank or wire transfer,
+              shopping and grocery vouchers and digital gift cards worldwide, plus UPI for members in India.
             </p>
             <div className="fs-actions">
               <Link to="/join/" className="btn btn-primary btn-shimmer">

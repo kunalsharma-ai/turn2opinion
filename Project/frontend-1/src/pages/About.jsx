@@ -60,7 +60,7 @@ function OpinionGlobe() {
         ))}
       </span>
       <span className="ag-orbit o2">
-        {['PayPal', 'Wire', 'Gift card', 'UPI'].map((t, i) => (
+        {['PayPal', 'Cash', 'Bank', 'Wire', 'UPI', 'Shopping', 'Grocery', 'Gift cards'].map((t, i) => (
           <b key={t} style={{ '--i': i, '--n': 4 }}>
             <Icon name="coin" size={12} /> {t}
           </b>
@@ -90,7 +90,7 @@ const JOURNEY = [
   ['target', 'Matched to you', 'Your profile decides which invitations you get.', '#12C29B'],
   ['chat', 'You answer', 'Honest opinions, on mobile or desktop.', '#49B6FF'],
   ['pulse', 'Insight lands', 'Answers are combined, never sold one by one.', '#7B5CFF'],
-  ['gift', 'You get rewarded', 'PayPal, wire, gift card or UPI in India.', '#1F5BFF']
+  ['gift', 'You get rewarded', 'PayPal, cash, bank, wire, vouchers, gift cards or UPI in India.', '#1F5BFF']
 ];
 function Journey() {
   return (
@@ -257,9 +257,13 @@ function Numbers() {
             <div className="abn-wheel">
               {[
                 ['PayPal', 'wallet', '#003087'],
-                ['Wire', 'transfer', '#5A36D6'],
-                ['Gift card', 'gift', '#C76E00'],
-                ['UPI · India', 'phone', '#0E7A4B']
+                ['Cash', 'cash', '#0F9D58'],
+                ['Bank', 'bank', '#0E7C66'],
+                ['Wire', 'globe', '#2F6BFF'],
+                ['UPI · India', 'upi', '#5B2EA6'],
+                ['Shopping', 'cart', '#E8590C'],
+                ['Grocery', 'basket', '#C77700'],
+                ['Gift cards', 'card', '#7048E8']
               ].map(([t, ic, c], i) => (
                 <span key={t} style={{ '--c': c, '--i': i }}>
                   <Icon name={ic} size={18} />
@@ -438,7 +442,7 @@ const VALUES = [
   ['shield', 'Quality, no shortcuts', 'Strict checks protect honest members and the clients who rely on them.', '#12C29B'],
   ['globe', 'Open to everyone', 'Consumers and professionals in every region and walk of life.', '#FFB020'],
   ['headset', 'Help that answers', 'Live help 24/7, WhatsApp and email with real follow-through.', '#7B5CFF'],
-  ['gift', 'Rewards your way', 'PayPal, wire transfer or gift cards, plus UPI in India.', '#1F5BFF']
+  ['gift', 'Rewards your way', 'PayPal, cash, bank or wire transfer, vouchers or gift cards, plus UPI in India.', '#1F5BFF']
 ];
 function ValuesHive() {
   return (

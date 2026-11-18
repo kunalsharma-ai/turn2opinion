@@ -266,7 +266,7 @@ main .prose li,
 :is(.sh-center, .center-link, .empty, .pipeline-steps, .route-card, .journey-steps, .vn-avg, .cert-sat, .fc-caption,
   .social-back, .fs-face, .gauge, .funnel, .bridge, .cert-wall, .sent, .stepper, .join-actions, .join-alt, .join-done,
   .nf, .chat-secure, .rate-prompt, .review-done, .hs-unlock, .phone-screen, .c-core, .firmo-step, .date-foot, .dc-main,
-  .hp, .wheel-seg, .app-line, .app-cta, .footer-bottom, .rt-body, .hs-screen, .vn-gauge, .dio-text, .topic-tile,
+  .hp, .wheel-seg, .app-line, .app-cta, .footer-bottom, .rd-body, .hs-screen, .vn-gauge, .dio-text, .topic-tile,
   .fs-points, .mobile-extra) p {
   text-align: inherit;
   text-align-last: auto;

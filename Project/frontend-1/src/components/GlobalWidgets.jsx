@@ -7,7 +7,7 @@ import { getConsent, initAnalytics, saveConsent } from '../utils/analytics.js';
 import { getJSON } from '../utils/api.js';
 import { session } from '../utils/storage.js';
 import { SPOTLIGHTS } from '../data/activity.js';
-import { METHOD_META, methodsFor } from '../data/payouts.js';
+import { METHOD_META, methodsFor, normalizeMethod } from '../data/payouts.js';
 import { ALL_COUNTRIES } from '../data/profiles.js';
 import { COUNTRIES } from '../data/countries.js';
 import { PREVIEW_EVENTS } from '../data/activity-preview.js';
@@ -134,7 +134,8 @@ export function cleanEvent(e) {
   if (!e || typeof e !== 'object') return null;
   const country = String(e.country || '').toUpperCase();
   if (!/^[A-Z]{2}$/.test(country)) return null;
-  const method = methodsFor(country).includes(e.method) ? e.method : null;
+  const m = normalizeMethod(e.method);
+  const method = methodsFor(country).includes(m) ? m : null;
   return {
     real: true,
     name: shortName(e.name),
@@ -210,77 +211,101 @@ function ActivityToasts({ blocked }) {
         .slice(0, 2)
         .toUpperCase()
     : '';
-  const hue = ((item.name || item.role || 'x').charCodeAt(0) * 47) % 360;
+  // The ticket takes the colours of the reward it announces (PayPal blue, grocery amber, gift-card violet...).
+  const meta = (item.real && item.method && METHOD_META[item.method]) || { icon: item.icon || 'sparkles', color: '#1f5bff', c2: '#7b5cff' };
+  const shownMethods = methods.slice(0, 4);
   return (
-    <div className={`rticket ${item.real ? 'is-real' : 'is-spot'} ${leaving ? 'is-leaving' : ''}`} key={item.key} role="status" aria-live="polite" style={{ '--th': hue }}>
-      <span className="rt-bar" aria-hidden="true" />
-      <div className="rt-avatar" aria-hidden="true">
-        <svg className="rt-timer" viewBox="0 0 64 64">
+    <div
+      className={`rdrop ${item.real ? 'is-real' : 'is-spot'} ${leaving ? 'is-leaving' : ''}`}
+      key={item.key}
+      role="status"
+      aria-live="polite"
+      style={{ '--m1': meta.color, '--m2': meta.c2 || meta.color }}
+    >
+      <span className="rd-border" aria-hidden="true" />
+      <span className="rd-aurora" aria-hidden="true" />
+      <div className="rd-token" aria-hidden="true">
+        <svg className="rd-timer" viewBox="0 0 64 64">
           <circle cx="32" cy="32" r="29" pathLength="100" />
         </svg>
-        <span className="rt-face">{item.real ? initials : <Icon name={item.icon || 'sparkles'} size={22} />}</span>
-        <span className="rt-badge">
-          <Icon name={item.audience === 'professional' ? 'briefcase' : item.real ? 'user' : 'bell'} size={11} />
+        <span className="rd-coin">
+          <span className="rd-coin__f">
+            <Icon name={meta.icon} size={24} />
+          </span>
+          <span className="rd-coin__b">{item.real ? initials : <Icon name="bell" size={20} />}</span>
         </span>
+        {item.real && (
+          <span className="rd-who-av" aria-hidden="true">
+            {initials}
+          </span>
+        )}
       </div>
-      <div className="rt-body">
+      <div className="rd-body">
         {item.real ? (
           <>
-            <p className="rt-who">
-              <strong>{item.name || 'A member'}</strong>
-              {item.role && <span> · {item.role}</span>}
+            <p className="rd-kicker">
+              <span className="rd-live">
+                <i /> Reward paid
+              </span>
+              {item.when && <span className="rd-when">{item.when}</span>}
             </p>
-            <p className="rt-what">
-              {item.amount && item.currency ? (
-                <CountUp className="rt-amount" to={item.amount} currency={item.currency} />
-              ) : (
-                <b className="rt-amount">Reward paid</b>
-              )}
+            <p className="rd-line">
+              <strong>{item.name || 'A member'}</strong> earned{' '}
+              {item.amount && item.currency ? <CountUp className="rd-amount" to={item.amount} currency={item.currency} /> : <b className="rd-amount">a reward</b>}
+            </p>
+            <p className="rd-meta">
               {item.method && (
-                <>
-                  {' '}
-                  via{' '}
-                  <span className="rt-method" style={{ '--mc': METHOD_META[item.method].color }}>
-                    <Icon name={METHOD_META[item.method].icon} size={13} /> {item.method}
-                  </span>
-                </>
+                <span className="rd-method">
+                  <Icon name={meta.icon} size={12} /> {item.method}
+                </span>
               )}
+              <span className="rd-place">
+                <Flag code={item.country} size={12} /> {place}
+              </span>
             </p>
-            <p className="rt-where">
-              <Flag code={item.country} size={13} /> {place}
-              {item.when && <span> · {item.when}</span>}
-            </p>
-            {item.preview && <span className="rt-preview">Preview data</span>}
+            {(item.role || item.preview) && (
+              <p className="rd-role">
+                {item.role && (
+                  <span>
+                    <Icon name={item.audience === 'professional' ? 'briefcase' : 'user'} size={11} /> {item.role}
+                    {item.audience && ` · ${item.audience === 'professional' ? 'Professional' : 'Consumer'}`}
+                  </span>
+                )}
+                {item.preview && <span className="rd-preview">Preview data</span>}
+              </p>
+            )}
           </>
         ) : (
           <>
-            <p className="rt-who">
-              <span className="rt-live">
+            <p className="rd-kicker">
+              <span className="rd-live">
                 <i /> Now inviting
               </span>
             </p>
-            <p className="rt-what">
+            <p className="rd-line">
               <strong>{item.role}</strong> in <Flag code={item.country} size={13} /> {countryName(item.country)}
             </p>
-            <p className="rt-where">{item.topic}</p>
-            <div className="rt-methods">
-              {methods.map((m, i) => (
-                <span key={m} className="rt-method sm" style={{ '--mc': METHOD_META[m].color, '--d': `${0.5 + i * 0.1}s` }}>
-                  <Icon name={METHOD_META[m].icon} size={11} /> {m}
+            {item.topic && <p className="rd-topic">{item.topic}</p>}
+            <p className="rd-meta rd-pills">
+              {shownMethods.map((m, i) => (
+                <span key={m} className="rd-method sm" style={{ '--m1': METHOD_META[m].color, '--m2': METHOD_META[m].c2, '--d': `${0.45 + i * 0.08}s` }}>
+                  <Icon name={METHOD_META[m].icon} size={11} /> {METHOD_META[m].short}
                 </span>
               ))}
-            </div>
+              {methods.length > shownMethods.length && <span className="rd-more">+{methods.length - shownMethods.length} more</span>}
+            </p>
           </>
         )}
       </div>
-      <button type="button" className="activity-close" aria-label="Dismiss" onClick={() => setLeaving(true)}>
-        <Icon name="x" size={14} />
+      <button type="button" className="rd-x" aria-label="Dismiss" onClick={() => setLeaving(true)}>
+        <Icon name="x" size={13} />
       </button>
-      <span className="rt-sparks" aria-hidden="true">
-        {Array.from({ length: 6 }).map((_, i) => (
+      <span className="rd-confetti" aria-hidden="true">
+        {Array.from({ length: 14 }).map((_, i) => (
           <i key={i} style={{ '--k': i }} />
         ))}
       </span>
+      <span className="rd-progress" aria-hidden="true" />
     </div>
   );
 }

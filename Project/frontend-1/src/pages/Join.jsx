@@ -247,7 +247,7 @@ function MemberCard({ f, step }) {
         {[
           ['user', 'Account', 'Free, no investment'],
           ['bell', 'Matched surveys', 'Invites that fit you'],
-          ['gift', 'Rewards', 'PayPal, wire, gift cards · UPI in India']
+          ['gift', 'Rewards', 'PayPal, cash, bank, wire, vouchers, gift cards · UPI in India']
         ].map(([ic, t, d], i) => (
           <li key={t} className={i < step ? 'is-open' : i === step ? 'is-now' : ''} style={{ '--i': i }}>
             <span className="ul-ico">
