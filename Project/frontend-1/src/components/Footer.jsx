@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { SITE, waLink } from '../config/site.js';
 import { Link, usePath } from '../router/Router.jsx';
 import { FrLogo, Logo, T2OMark } from './Brand.jsx';
@@ -175,6 +176,50 @@ export function BrandWordmark({ text, grade = 't2o', id = grade, size = 'lg' }) 
   );
 }
 
+/** v4 footer name (Kunal, 18 Nov 2026): TURN2OPINION alone, replacing the two SVG wordmarks.
+ *  Each letter is its own element so the name can make an entrance: when the footer scrolls into
+ *  view the letters flip up out of a 3D plane one after another, the colour grade flows through
+ *  them, the "2" spins like a coin, and a soft wave keeps running along the word afterwards.
+ *  Without JavaScript (or with reduced motion) the name is simply shown, fully coloured. */
+const T2O_LETTERS = 'TURN2OPINION'.split('');
+function T2OWordmark() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !('IntersectionObserver' in window)) {
+      el && el.classList.add('is-in');
+      return undefined;
+    }
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          el.classList.add('is-in');
+          io.disconnect();
+        }
+      },
+      { threshold: 0.35 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <div className="t2w notranslate" translate="no" ref={ref} aria-hidden="true">
+      <span className="t2w-glow" />
+      <span className="t2w-word">
+        {T2O_LETTERS.map((c, i) => (
+          <span key={i} className={`t2w-l${c === '2' ? ' is-two' : ''}`} style={{ '--i': i, '--n': T2O_LETTERS.length }}>
+            <span className="t2w-in">{c}</span>
+          </span>
+        ))}
+      </span>
+      <span className="t2w-line">
+        <i />
+      </span>
+      <span className="t2w-tag">{SITE.tagline}</span>
+    </div>
+  );
+}
+
 export default function Footer() {
   const year = new Date().getFullYear();
   const onScanPage = usePath().startsWith('/about/scan-connect');
@@ -305,8 +350,7 @@ export default function Footer() {
         </div>
 
         <div className="footer-wordmarks">
-          <BrandWordmark text="TURN2OPINION" grade="t2o" />
-          <BrandWordmark text="Frequent Research" grade="fr" size="sm" />
+          <T2OWordmark />
         </div>
 
         <div className="footer-bottom">
