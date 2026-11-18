@@ -111,7 +111,7 @@ export default function Blog() {
           {!list.length && <p className="empty">No blogs match “{q}”. Try “surveys”, “UPI” or “work from home”.</p>}
         </div>
       </section>
-      <CtaBand title="Ready to put the tips into practice?" />
+      <CtaBand title="Ready to put the tips into practice?" variant="paper" />
     </div>
   );
 }

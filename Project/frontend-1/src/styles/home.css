@@ -3156,6 +3156,544 @@
 .blog-card-link:hover .ba-sheen {
   animation-duration: 2.2s;
 }
+/* ---- Round 9: one-off scene motions (src/components/blogScenes.jsx) ---- */
+.ba-box {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.ba-box > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.ba-box.is-off * {
+  animation-play-state: paused !important;
+}
+/* pieces that pivot on a point given in scene coordinates */
+.ba .ba-sway,
+.ba .ba-kite,
+.ba .ba-fan,
+.ba .ba-tassel,
+.ba .ba-rock,
+.ba .ba-tilt,
+.ba .ba-hand,
+.ba .ba-plane,
+.ba .ba-turn {
+  transform-box: view-box;
+}
+.ba-sway {
+  animation: baSway 4.5s ease-in-out infinite alternate;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baSway {
+  from {
+    transform: rotate(-5deg);
+  }
+  to {
+    transform: rotate(5deg);
+  }
+}
+.ba-wavy {
+  transform-origin: left center !important;
+  animation: baWavy 1.4s ease-in-out infinite alternate;
+}
+@keyframes baWavy {
+  to {
+    transform: scaleX(0.82) skewY(6deg);
+  }
+}
+.ba-needle {
+  animation: baNeedle 6s cubic-bezier(0.5, 1.6, 0.5, 1) infinite;
+}
+@keyframes baNeedle {
+  0%,
+  100% {
+    transform: rotate(-20deg);
+  }
+  35% {
+    transform: rotate(28deg);
+  }
+  65% {
+    transform: rotate(8deg);
+  }
+}
+.ba-hop {
+  animation: baHop 5s ease-in-out infinite;
+}
+@keyframes baHop {
+  0%,
+  8% {
+    transform: translate(0, 0);
+  }
+  14% {
+    transform: translate(27px, -40px);
+  }
+  20%,
+  28% {
+    transform: translate(54px, -28px);
+  }
+  34% {
+    transform: translate(81px, -62px);
+  }
+  40%,
+  48% {
+    transform: translate(108px, -50px);
+  }
+  54% {
+    transform: translate(135px, -86px);
+  }
+  60%,
+  68% {
+    transform: translate(162px, -76px);
+  }
+  74% {
+    transform: translate(189px, -112px);
+  }
+  80%,
+  92% {
+    transform: translate(216px, -100px);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(216px, -100px);
+    opacity: 0;
+  }
+}
+.ba-tilt {
+  transform-origin: 200px 70px !important;
+  animation: baTilt 5s ease-in-out infinite alternate;
+}
+@keyframes baTilt {
+  from {
+    transform: rotate(-6deg);
+  }
+  to {
+    transform: rotate(6deg);
+  }
+}
+.ba-glow {
+  animation: baGlow 2.4s ease-in-out infinite alternate;
+}
+@keyframes baGlow {
+  from {
+    opacity: 0.55;
+  }
+}
+.ba-rise {
+  animation: baRise var(--t, 5s) ease-out infinite;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baRise {
+  from {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-170px);
+    opacity: 0;
+  }
+}
+.ba-rise.tall {
+  animation-name: baRiseTall;
+}
+@keyframes baRiseTall {
+  from {
+    transform: translateY(40px) scale(0.6);
+    opacity: 0;
+  }
+  25% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-110px) scale(1);
+    opacity: 0;
+  }
+}
+.ba-jit {
+  animation: baJit 1.2s ease-in-out infinite alternate;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baJit {
+  to {
+    transform: translate(3px, -4px);
+  }
+}
+.ba-flick {
+  transform-origin: center bottom !important;
+  animation: baFlick 0.5s ease-in-out infinite alternate;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baFlick {
+  to {
+    transform: scale(0.85, 1.2);
+  }
+}
+.ba-cloud {
+  animation: baCloud var(--t, 24s) ease-in-out infinite alternate;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baCloud {
+  to {
+    transform: translateX(70px);
+  }
+}
+.ba-dangle {
+  animation: baDangle 3.6s ease-in-out infinite alternate;
+}
+@keyframes baDangle {
+  to {
+    transform: translateY(16px);
+  }
+}
+.ba-swim {
+  animation: baSwim 7s ease-in-out infinite;
+}
+@keyframes baSwim {
+  from {
+    transform: translateX(140px);
+  }
+  45% {
+    transform: translateX(-10px) translateY(-6px);
+  }
+  to {
+    transform: translateX(-340px);
+  }
+}
+.ba-blink {
+  animation: baBlink 1.6s steps(2, jump-none) infinite;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baBlink {
+  50% {
+    opacity: 0.2;
+  }
+}
+.ba-kite {
+  animation: baKite 3.4s ease-in-out infinite alternate;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baKite {
+  from {
+    transform: rotate(-9deg) translateY(4px);
+  }
+  to {
+    transform: rotate(9deg) translateY(-8px);
+  }
+}
+.ba-fizz {
+  animation: baFizz 2.2s ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baFizz {
+  0%,
+  100% {
+    transform: scale(0) rotate(0);
+    opacity: 0;
+  }
+  40% {
+    transform: scale(1.1) rotate(45deg);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(0.6) rotate(90deg);
+    opacity: 0.4;
+  }
+}
+.ba-glide {
+  animation: baGlide 6s ease-in-out infinite alternate;
+}
+@keyframes baGlide {
+  to {
+    transform: translateX(160px);
+  }
+}
+.ba-glide.alt {
+  animation-name: baGlideAlt;
+}
+@keyframes baGlideAlt {
+  from {
+    transform: translate(0, -40px);
+  }
+  to {
+    transform: translate(-110px, 70px);
+  }
+}
+.ba-day {
+  animation: baDay 7s ease-out infinite both;
+  animation-delay: var(--d, 0s);
+}
+.ba-day.slow {
+  animation-duration: 5s;
+}
+@keyframes baDay {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  6% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  10%,
+  86% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.ba-ring {
+  stroke-dasharray: 100;
+  animation: baRing 7s ease-in-out infinite;
+}
+@keyframes baRing {
+  from {
+    stroke-dashoffset: 100;
+  }
+  80%,
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.ba-packet {
+  animation: baPacket 4s linear infinite;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baPacket {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(310px);
+  }
+}
+.ba-ecg {
+  stroke-dasharray: 26 74;
+  animation: baEcg 2.4s linear infinite;
+}
+@keyframes baEcg {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.ba-beat {
+  animation: baBeat 1.2s ease-in-out infinite;
+}
+@keyframes baBeat {
+  0%,
+  40%,
+  100% {
+    transform: scale(1);
+  }
+  15% {
+    transform: scale(1.14);
+  }
+  28% {
+    transform: scale(1.06);
+  }
+}
+.ba-snap {
+  animation: baSnap 4s cubic-bezier(0.3, 1.5, 0.5, 1) infinite;
+}
+@keyframes baSnap {
+  0%,
+  15% {
+    transform: translate(46px, 36px) rotate(18deg);
+  }
+  45%,
+  85% {
+    transform: none;
+  }
+  100% {
+    transform: translate(46px, 36px) rotate(18deg);
+  }
+}
+.ba-drip {
+  animation: baDrip 3.2s ease-in infinite;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baDrip {
+  from {
+    transform: translateY(-40px);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(26px);
+    opacity: 0;
+  }
+}
+.ba-fillup {
+  transform-origin: center bottom !important;
+  animation: baFillup 5s ease-in-out infinite;
+}
+@keyframes baFillup {
+  0% {
+    transform: scaleY(0.15);
+  }
+  70%,
+  90% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(0.15);
+  }
+}
+.ba-fan {
+  animation: baFan 4s cubic-bezier(0.4, 1.3, 0.5, 1) infinite alternate;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baFan {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(var(--r, 0deg));
+  }
+}
+.ba-tassel {
+  animation: baSway 1.8s ease-in-out infinite alternate;
+}
+.ba-rock {
+  animation: baRock 3s ease-in-out infinite alternate;
+}
+@keyframes baRock {
+  from {
+    transform: rotate(-4deg);
+  }
+  to {
+    transform: rotate(4deg);
+  }
+}
+.ba-hand {
+  transform-origin: 210px 78px !important;
+  animation: baSpin var(--t, 60s) linear infinite;
+}
+.ba-convey {
+  animation: baConvey 4s linear infinite;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baConvey {
+  0% {
+    transform: translateX(-30px);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(110px);
+    opacity: 0;
+  }
+}
+.ba-convey.out {
+  animation-name: baConveyOut;
+}
+@keyframes baConveyOut {
+  0% {
+    transform: translateX(-50px);
+    opacity: 0;
+  }
+  25%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(90px);
+    opacity: 0;
+  }
+}
+.ba-turn {
+  animation: baTurn 12s linear infinite;
+}
+@keyframes baTurn {
+  to {
+    transform: translateX(-160px);
+  }
+}
+.ba-plane {
+  transform-origin: 200px 124px !important;
+  animation: baSpin 9s linear infinite;
+}
+.ba-sunrise {
+  animation: baSunrise 7s ease-in-out infinite alternate;
+}
+@keyframes baSunrise {
+  from {
+    transform: translateY(40px);
+  }
+  to {
+    transform: translateY(-14px);
+  }
+}
+.ba-pop {
+  animation: baPop 6s ease-out infinite both;
+  animation-delay: var(--d, 0s);
+}
+@keyframes baPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  10% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  16%,
+  86% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+}
+.ba-fall.soft {
+  animation-name: baFallSoft;
+}
+@keyframes baFallSoft {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(140px);
+    opacity: 0;
+  }
+}
+.ba-fall.leaf {
+  animation-name: baLeaf;
+}
+@keyframes baLeaf {
+  from {
+    transform: translate(0, 0) rotate(0);
+  }
+  50% {
+    transform: translate(30px, 130px) rotate(200deg);
+  }
+  to {
+    transform: translate(-10px, 260px) rotate(420deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ba * {
     animation: none !important;

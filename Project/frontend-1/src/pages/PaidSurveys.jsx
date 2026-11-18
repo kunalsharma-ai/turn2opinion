@@ -237,7 +237,7 @@ export default function PaidSurveys() {
         </div>
       </section>
 
-      <CtaBand title="Start sharing your opinion today." />
+      <CtaBand title="Start sharing your opinion today." variant="lagoon" />
     </div>
   );
 }

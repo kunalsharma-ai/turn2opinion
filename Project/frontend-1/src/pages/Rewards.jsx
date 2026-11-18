@@ -121,7 +121,7 @@ export default function Rewards() {
           <ChatFaq items={faqs} />
         </div>
       </section>
-      <CtaBand title="Your first reward starts with one survey." />
+      <CtaBand title="Your first reward starts with one survey." variant="treasury" />
     </div>
   );
 }

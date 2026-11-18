@@ -154,7 +154,7 @@ export default function Faq() {
           </div>
         </div>
       </section>
-      <CtaBand />
+      <CtaBand variant="chat" />
     </div>
   );
 }

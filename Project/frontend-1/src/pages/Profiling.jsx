@@ -258,7 +258,7 @@ export default function Profiling() {
           </ul>
         </div>
       </section>
-      <CtaBand title="Quality members earn more. Join the community." />
+      <CtaBand title="Quality members earn more. Join the community." variant="aurora" />
     </div>
   );
 }
