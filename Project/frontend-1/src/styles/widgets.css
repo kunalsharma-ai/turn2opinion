@@ -1729,3 +1729,212 @@ html:has(a:hover, button:hover, [role='button']:hover, label:hover, summary:hove
 .rdrop.is-leaving {
   pointer-events: none;
 }
+
+/* =========================================================================================
+   Footer light / dark switch (ThemeToggle.jsx)
+   ========================================================================================= */
+.footer-switches {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-inline-start: auto;
+}
+.footer-bottom .footer-switches .lang-btn {
+  margin-inline-start: 0;
+}
+.tt-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.tt-label {
+  font: 700 0.78rem/1 var(--ui);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #b8c3ec;
+}
+.tt-sky {
+  position: relative;
+  width: 132px;
+  height: 52px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  overflow: hidden;
+  cursor: pointer;
+  background: linear-gradient(180deg, #5cc8ff, #a6e3ff);
+  box-shadow: inset 0 3px 8px rgba(0, 40, 90, 0.35), 0 0 0 3px rgba(255, 255, 255, 0.14), 0 14px 28px -14px rgba(92, 200, 255, 0.9);
+  transition: background 0.7s var(--ease), box-shadow 0.7s;
+}
+.tt-sky.is-dark {
+  background: linear-gradient(180deg, #0b1036, #24124f);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.55), 0 0 0 3px rgba(255, 255, 255, 0.14), 0 14px 28px -14px rgba(123, 92, 255, 0.9);
+}
+.tt-sky:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 4px;
+}
+.tt-knob {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  transition: transform 0.75s cubic-bezier(0.5, 1.6, 0.4, 1);
+}
+.tt-sky.is-dark .tt-knob {
+  transform: translateX(80px) rotate(360deg);
+}
+.tt-sun,
+.tt-moon {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transition: opacity 0.5s, transform 0.6s var(--spring);
+}
+.tt-sun {
+  background: radial-gradient(circle at 35% 30%, #fff8cf, #ffd23f 55%, #ff9f1a);
+  box-shadow: 0 0 0 6px rgba(255, 223, 90, 0.3), 0 0 22px 6px rgba(255, 200, 40, 0.75);
+  animation: ttSun 3s ease-in-out infinite;
+}
+@keyframes ttSun {
+  50% {
+    box-shadow: 0 0 0 10px rgba(255, 223, 90, 0.18), 0 0 30px 10px rgba(255, 200, 40, 0.6);
+  }
+}
+.tt-moon {
+  opacity: 0;
+  transform: scale(0.4);
+  background: radial-gradient(circle at 35% 30%, #ffffff, #dfe5ff 60%, #b6c0ea);
+  box-shadow: 0 0 18px 4px rgba(200, 210, 255, 0.55);
+}
+.tt-moon i {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(150, 160, 210, 0.55);
+}
+.tt-moon i:nth-child(1) {
+  width: 10px;
+  height: 10px;
+  left: 9px;
+  top: 10px;
+}
+.tt-moon i:nth-child(2) {
+  width: 6px;
+  height: 6px;
+  left: 24px;
+  top: 23px;
+}
+.tt-moon i:nth-child(3) {
+  width: 5px;
+  height: 5px;
+  left: 14px;
+  top: 27px;
+}
+.tt-sky.is-dark .tt-sun {
+  opacity: 0;
+  transform: scale(0.4);
+}
+.tt-sky.is-dark .tt-moon {
+  opacity: 1;
+  transform: none;
+}
+.tt-clouds i {
+  position: absolute;
+  height: 14px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 8px -6px 0 2px #fff, 18px 0 0 0 #fff;
+  transition: transform 0.7s var(--ease), opacity 0.5s;
+  animation: ttCloud 6s ease-in-out infinite alternate;
+}
+.tt-clouds i:nth-child(1) {
+  width: 26px;
+  left: 66px;
+  top: 12px;
+}
+.tt-clouds i:nth-child(2) {
+  width: 20px;
+  left: 86px;
+  top: 30px;
+  opacity: 0.85;
+  animation-delay: -3s;
+}
+@keyframes ttCloud {
+  to {
+    translate: -8px 0;
+  }
+}
+.tt-sky.is-dark .tt-clouds i {
+  opacity: 0;
+  transform: translateY(40px);
+}
+.tt-stars i {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #fff;
+  left: calc(10px + var(--k) * 8px);
+  top: calc(8px + mod(var(--k) * 13px, 34px));
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.5s calc(var(--k) * 40ms), transform 0.6s calc(var(--k) * 40ms) var(--spring);
+}
+.tt-sky.is-dark .tt-stars i {
+  opacity: 1;
+  transform: none;
+  animation: ttTwinkle 1.8s ease-in-out infinite;
+  animation-delay: calc(var(--k) * -0.37s);
+}
+@keyframes ttTwinkle {
+  50% {
+    opacity: 0.25;
+    scale: 0.6;
+  }
+}
+.tt-word {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  font: 800 0.72rem/1 var(--ui);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: opacity 0.4s, transform 0.5s var(--ease);
+}
+.tt-word--light {
+  right: 14px;
+  color: #064a7a;
+}
+.tt-word--dark {
+  left: 16px;
+  color: #dfe5ff;
+  opacity: 0;
+  transform: translateX(-10px);
+}
+.tt-sky.is-dark .tt-word--light {
+  opacity: 0;
+  transform: translateX(10px);
+}
+.tt-sky.is-dark .tt-word--dark {
+  opacity: 1;
+  transform: none;
+}
+.tt-sky.is-light .tt-word--light {
+  opacity: 0;
+}
+@media (max-width: 640px) {
+  .footer-switches {
+    width: 100%;
+    justify-content: space-between;
+    margin-inline-start: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tt-sky *,
+  .tt-sky {
+    animation: none !important;
+    transition: none !important;
+  }
+}

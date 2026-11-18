@@ -11,18 +11,17 @@
 //
 // Everything is rate-limited and respects a persisted mute switch, plus prefers-reduced-motion
 // (people who ask for less motion generally want less noise too).
-import { store } from './storage.js';
+import { soundEnabled, setSoundPref } from './soundPref.js';
 
-const KEY = 't2o_chat_sound';
+export { soundEnabled };
 const ARRIVAL_KEY = 't2o_arrival_played';
 let ctx = null;
 let master = null;
 let armed = false;
 let lastAt = 0;
 
-export const soundEnabled = () => store.get(KEY, true) !== false;
 export const setSoundEnabled = (on) => {
-  store.set(KEY, !!on);
+  setSoundPref(on);
   if (on) ensure();
 };
 
@@ -224,6 +223,44 @@ export function playCoin() {
   [0, 0.07, 0.12].forEach((d, i) => noise(t + d, 0.04, { vol: 0.06 - i * 0.012, freq: 5200, q: 6 }));
   bell(t + 0.16, 1975.53, { vol: 0.08, dur: 0.5 });
   bell(t + 0.24, 2637.02, { vol: 0.07, dur: 0.8 });
+}
+
+/* ============================== Light / dark ============================== */
+/**
+ * MODE — the light/dark switch. To dark: a soft "whoosh" falling into a twinkling night chord
+ * (A minor add 9, high bells). To light: a bright rising sparkle that resolves into a major chord.
+ */
+export function playMode(to = 'dark') {
+  if (quiet() || !ensure() || !gate(300)) return;
+  const t = ctx.currentTime + 0.01;
+  if (to === 'dark') {
+    // whoosh: filtered noise sweeping down
+    const c = ctx;
+    if (!noiseBuf) noise(t, 0.01, { vol: 0.0001 });
+    const src = c.createBufferSource();
+    src.buffer = noiseBuf;
+    const f = c.createBiquadFilter();
+    f.type = 'bandpass';
+    f.Q.value = 1.2;
+    f.frequency.setValueAtTime(3200, t);
+    f.frequency.exponentialRampToValueAtTime(260, t + 0.6);
+    const g = c.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.09, t + 0.12);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.7);
+    src.connect(f).connect(g).connect(master);
+    src.start(t);
+    src.stop(t + 0.75);
+    sweep(t, 520, 130, { dur: 0.55, vol: 0.05, type: 'sine' });
+    // night chord, then twinkles
+    [220.0, 261.63, 329.63, 493.88].forEach((fr, i) => bell(t + 0.42 + i * 0.05, fr, { vol: 0.07, dur: 1.8 }));
+    [1760, 2349.32, 1975.53, 2637.02].forEach((fr, i) => bell(t + 0.6 + i * 0.13, fr, { vol: 0.035, dur: 0.6 }));
+  } else {
+    // sunrise: rising arpeggio + shimmer
+    sweep(t, 300, 900, { dur: 0.35, vol: 0.05, type: 'triangle' });
+    [523.25, 659.25, 783.99, 1046.5, 1318.51].forEach((fr, i) => bell(t + 0.08 + i * 0.07, fr, { vol: 0.08, dur: 1.2 }));
+    noise(t + 0.4, 0.4, { vol: 0.03, freq: 8000, q: 1, type: 'highpass' });
+  }
 }
 
 /* ============================== Arming ============================== */

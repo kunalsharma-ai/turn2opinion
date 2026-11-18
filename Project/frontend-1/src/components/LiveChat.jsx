@@ -7,6 +7,7 @@ import { ENV } from '../config/env.js';
 import { SITE, waLink } from '../config/site.js';
 import { hrefFor } from '../router/Router.jsx';
 import { pop, setSoundEnabled, soundEnabled } from '../utils/sound.js';
+import { onSoundChange } from '../utils/soundPref.js';
 import { postJSON, failureMessage } from '../utils/api.js';
 import { session } from '../utils/storage.js';
 import { track } from '../utils/analytics.js';
@@ -161,7 +162,10 @@ export default function LiveChat({ open, onClose }) {
   const list = useRef(null);
   const input = useRef(null);
 
-  useEffect(() => setSound(soundEnabled()), []);
+  useEffect(() => {
+    setSound(soundEnabled());
+    return onSoundChange(setSound);
+  }, []);
   useEffect(() => {
     if (open) {
       pop({ pitch: 1 });

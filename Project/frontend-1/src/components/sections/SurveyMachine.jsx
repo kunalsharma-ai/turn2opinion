@@ -7,11 +7,15 @@ import { useInView, prefersReducedMotion } from '../../hooks/useMounted.js';
 import { SURVEYS, SURVEY_NOTE } from '../../data/surveys.js';
 import Icon from '../Icon.jsx';
 import { playCoin, playSwitch, playVend, setSoundEnabled, soundEnabled } from '../../utils/sound.js';
+import { onSoundChange } from '../../utils/soundPref.js';
 
 /** Speaker switch for the machine's sounds (shares the site-wide sound setting). */
 function SoundSwitch() {
   const [on, setOn] = useState(true);
-  useEffect(() => setOn(soundEnabled()), []);
+  useEffect(() => {
+    setOn(soundEnabled());
+    return onSoundChange(setOn);
+  }, []);
   const flip = () => {
     const next = !on;
     setSoundEnabled(next);

@@ -2,21 +2,22 @@
   "name": "turn2opinion-website",
   "private": true,
   "version": "2.0.0",
-  "description": "Turn2Opinion – paid online surveys for consumers and business professionals. React + Vite, prerendered per route for SEO.",
+  "description": "Turn2Opinion \u2013 paid online surveys for consumers and business professionals. React + Vite, prerendered per route for SEO.",
   "type": "module",
   "engines": {
     "node": ">=20.19"
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run build:client && npm run build:server && npm run prerender",
+    "build": "npm run gen:dark && npm run build:client && npm run build:server && npm run prerender",
     "build:client": "vite build --outDir dist/client",
     "build:server": "vite build --ssr src/entry-server.jsx --outDir dist/server",
     "prerender": "node scripts/prerender.mjs",
     "preview": "node scripts/serve.mjs",
     "check:content": "node scripts/check-content.mjs",
     "seo:report": "node scripts/seo-report.mjs",
-    "preview:single": "node scripts/build-preview.mjs"
+    "preview:single": "npm run gen:dark && node scripts/build-preview.mjs",
+    "gen:dark": "node scripts/gen-dark.mjs"
   },
   "dependencies": {
     "libphonenumber-js": "^1.13.15",

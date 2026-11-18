@@ -52,6 +52,7 @@ const html = `<!doctype html>
 <title>Turn2Opinion – Website Preview</title>
 <link rel="icon" href="${icon}" />
 <!-- Self-contained PREVIEW build (demo mode, hash routing). Not for deployment: deploy dist/client from "npm run build". -->
+<script>try{if(JSON.parse(localStorage.getItem('t2o_mode'))==='dark')document.documentElement.setAttribute('data-mode','dark')}catch(e){}</script>
 <script>document.documentElement.classList.add('js');setTimeout(function(){if(!document.documentElement.classList.contains('js-ready'))document.documentElement.classList.remove('js')},5000);</script>
 <style>${safe(css)}</style>
 <script>window.__T2O_ASSETS=${safe(JSON.stringify(map))};</script>

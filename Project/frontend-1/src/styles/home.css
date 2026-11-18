@@ -5676,3 +5676,205 @@ button.vm-lcd:focus-visible {
   width: 96px;
   height: 96px;
 }
+
+/* =========================================================================================
+   HERO v7 palettes (Kunal, 18 Nov 2026)
+   Consumers: "ocean" blues that sit inside the Turn2Opinion palette (royal blue → sky → cyan).
+   Professionals: "midnight amethyst" (deep plum night, violet light, gold rewards).
+   The hero now flips between the two on its own every few seconds (HeroStage.jsx).
+   ========================================================================================= */
+.hero-consumer {
+  background: linear-gradient(180deg, #eaf3ff, #f4f9ff 60%, #fff 92%);
+}
+.hero-consumer::after {
+  background: radial-gradient(600px 400px at 85% 40%, rgba(34, 184, 255, 0.2), transparent 70%);
+}
+.hero-consumer .hero-blob.b1 {
+  background: #9cc3ff;
+}
+.hero-consumer .hero-blob.b2 {
+  background: #8ee7ff;
+}
+.hero-consumer .hero-blob.b3 {
+  background: #c9d4ff;
+}
+.hero-consumer .motto-word.w1 {
+  color: #1f5bff;
+}
+.hero-consumer .motto-word.w2 {
+  color: #0596d6;
+}
+.hero-consumer .motto-word.w3 {
+  background-image: linear-gradient(90deg, #ff9d00, #ffb020);
+}
+.hero-consumer .ht-line.l2 {
+  background-image: linear-gradient(100deg, var(--ink) 15%, #1f5bff 50%, #12b0ff 82%);
+}
+.hero-consumer .hero-tagline {
+  border-image: linear-gradient(#22b8ff, #1f5bff) 1;
+}
+.hero-consumer .aud-knob {
+  background: linear-gradient(120deg, #1f5bff, #22b8ff);
+  box-shadow: 0 6px 18px -6px rgba(31, 91, 255, 0.85);
+}
+.hero-consumer .portal {
+  --p1: #49b6ff;
+  --p2: #1f5bff;
+  --p3: #ffb020;
+}
+.hero-consumer .portal-blob {
+  background: radial-gradient(circle at 30% 25%, #d6ecff, #5fb8ff 45%, #1f5bff 88%);
+}
+.hero-consumer .btn-primary {
+  background: linear-gradient(120deg, #1f5bff, #2f86ff 55%, #22b8ff);
+  box-shadow: 0 16px 30px -14px rgba(31, 91, 255, 0.85);
+}
+.hero-consumer .role-track span {
+  color: #1544c9;
+  background: rgba(31, 91, 255, 0.08);
+  border-color: rgba(31, 91, 255, 0.2);
+}
+.hero-consumer .hero-bubble {
+  background: rgba(34, 184, 255, 0.12);
+  border-color: rgba(31, 91, 255, 0.2);
+}
+.hero-consumer .rotator-word {
+  background: linear-gradient(transparent 62%, rgba(34, 184, 255, 0.3) 62%);
+}
+
+/* Professionals: midnight amethyst */
+.hero::before {
+  background: radial-gradient(700px 500px at 80% 35%, rgba(168, 85, 247, 0.38), transparent 65%), radial-gradient(600px 500px at 5% 0%, rgba(99, 60, 255, 0.45), transparent 60%),
+    radial-gradient(500px 300px at 60% 100%, rgba(255, 176, 32, 0.16), transparent 70%), linear-gradient(165deg, #150a35, #2a0f5c 55%, #10062a);
+}
+.hero-professional::after {
+  background: radial-gradient(600px 400px at 85% 40%, rgba(196, 181, 253, 0.2), transparent 70%);
+}
+.hero-professional .hero-grid {
+  background-image: linear-gradient(rgba(196, 181, 253, 0.09) 1px, transparent 1px), linear-gradient(90deg, rgba(196, 181, 253, 0.09) 1px, transparent 1px);
+}
+.hero-professional .hero-blob.b1 {
+  background: #a855f7;
+}
+.hero-professional .hero-blob.b2 {
+  background: #6d28d9;
+}
+.hero-professional .ht-line.l2 {
+  background-image: linear-gradient(100deg, #fff 15%, #d8b4fe 50%, #ffd166 85%);
+}
+.hero-professional .hero-lead {
+  color: #cdc3ee;
+}
+.hero-professional .hero-proof .icon {
+  color: #1c0b45;
+  background: #ffd166;
+}
+.hero-professional .motto-word.w1 {
+  color: #d8b4fe;
+}
+.hero-professional .motto-word.w2 {
+  color: #f0abfc;
+}
+.hero-professional .hero-tagline {
+  border-image: linear-gradient(#ffd166, #a855f7) 1;
+}
+.hero-professional .aud-switch button.is-on {
+  color: #1c0b45;
+}
+.hero-professional .aud-switch.is-professional .aud-knob {
+  background: linear-gradient(120deg, #ffd166, #f5a524);
+  box-shadow: 0 6px 18px -6px rgba(255, 209, 102, 0.85);
+}
+.hero-professional .role-track span {
+  color: #f3e8ff;
+  background: rgba(196, 181, 253, 0.1);
+  border-color: rgba(196, 181, 253, 0.28);
+}
+.hero-professional .btn-primary {
+  color: #1c0b45;
+  background: linear-gradient(120deg, #ffd166, #ffb020 55%, #f59e0b);
+  box-shadow: 0 16px 30px -14px rgba(255, 176, 32, 0.8);
+}
+.hero-professional .rotator-word {
+  background: linear-gradient(transparent 62%, rgba(216, 180, 254, 0.35) 62%);
+}
+.hero-professional .hero-bubble {
+  background: rgba(216, 180, 254, 0.08);
+  border-color: rgba(216, 180, 254, 0.2);
+}
+.hero-professional .portal {
+  --p1: #a855f7;
+  --p2: #6d28d9;
+  --p3: #ffb020;
+}
+.hero-professional .portal-rings i {
+  border-color: rgba(216, 180, 254, 0.35);
+}
+.money-rain.is-rise .coin {
+  color: #3a1d00;
+  background: radial-gradient(circle at 35% 30%, #fff6d6, #ffd166 55%, #c88a0a);
+  box-shadow: 0 0 14px rgba(255, 209, 102, 0.6);
+}
+
+/* Auto-flip: the switch shows a countdown under the active side, and the whole stage cross-fades. */
+.aud-switch {
+  overflow: hidden;
+}
+.aud-timer {
+  position: absolute;
+  left: 18px;
+  bottom: 3px;
+  width: calc(50% - 36px);
+  height: 3px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.85);
+  transform-origin: left;
+  animation: audTimer var(--aud-ms, 7000ms) linear both;
+  z-index: 2;
+  pointer-events: none;
+}
+.aud-switch.is-professional .aud-timer {
+  left: calc(50% + 18px);
+  background: #1c0b45;
+  opacity: 0.6;
+}
+.aud-switch.is-paused .aud-timer {
+  animation-play-state: paused;
+}
+@keyframes audTimer {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.hero-copy > :is(.hero-motto, .hero-tagline, .hero-lead, .hero-actions),
+.hero-art {
+  animation: audSwap 0.7s var(--ease) both;
+}
+.hero-art {
+  animation-name: audSwapArt;
+}
+@keyframes audSwap {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(6px);
+  }
+}
+@keyframes audSwapArt {
+  from {
+    opacity: 0;
+    transform: perspective(900px) rotateY(-28deg) scale(0.92);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aud-timer {
+    display: none;
+  }
+  .hero-copy > *,
+  .hero-art {
+    animation: none !important;
+  }
+}

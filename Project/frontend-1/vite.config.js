@@ -39,7 +39,9 @@ export default defineConfig({
         'css-home': 'src/styles/home.css',
         'css-pages': 'src/styles/pages.css',
         'css-shell': 'src/styles/shell.css',
-        'css-late': 'src/styles/late.css'
+        'css-late': 'src/styles/late.css',
+        // Dark mode: only loaded for visitors who switch to it (src/utils/mode.js, prerender head script).
+        'css-dark': 'src/styles/dark.css'
       }
     },
     sourcemap: false,

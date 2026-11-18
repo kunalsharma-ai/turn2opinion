@@ -77,10 +77,20 @@ function RoleRibbon({ aud }) {
   );
 }
 
-export function AudienceSwitch({ value, onChange }) {
+export function AudienceSwitch({ value, onChange, timer, paused, ms, onHold }) {
   return (
-    <div className={`aud-switch is-${value}`} role="group" aria-label="I want to earn as">
+    <div
+      className={`aud-switch is-${value}${paused ? ' is-paused' : ''}`}
+      role="group"
+      aria-label="I want to earn as"
+      style={ms ? { '--aud-ms': `${ms}ms` } : undefined}
+      onMouseEnter={onHold && (() => onHold(true))}
+      onMouseLeave={onHold && (() => onHold(false))}
+      onFocus={onHold && (() => onHold(true))}
+      onBlur={onHold && (() => onHold(false))}
+    >
       <span className="aud-knob" aria-hidden="true" />
+      {timer && <span className="aud-timer" key={timer} aria-hidden="true" />}
       {Object.entries(AUDIENCES).map(([k, a]) => (
         <button key={k} type="button" aria-pressed={value === k} className={value === k ? 'is-on' : ''} onClick={() => onChange(k)}>
           <Icon name={k === 'consumer' ? 'bag' : 'briefcase'} size={16} /> {a.label}
@@ -264,14 +274,59 @@ export function RewardStage({ aud }) {
   );
 }
 
+// The hero flips between Consumers and Professionals on its own (Kunal, 18 Nov 2026). It pauses while the
+// visitor hovers or focuses the switch, while it is off screen or the tab is hidden, and for a while after
+// they pick a side themselves. Off for people who ask for reduced motion.
+const FLIP_MS = 7000;
+const HOLD_MS = 20000;
+
 export default function HomeHero() {
   const [aud, setAud] = useState('consumer');
+  const [tick, setTick] = useState(1);
+  const [paused, setPaused] = useState(false);
+  const [held, setHeld] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const [auto, setAuto] = useState(false);
+  const sec = React.useRef(null);
   const { lang } = useI18n();
   const a = AUDIENCES[aud];
+  useEffect(() => {
+    setAuto(!prefersReducedMotion());
+    const el = sec.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return undefined;
+    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting), { threshold: 0.2 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const running = auto && !paused && !held && visible;
+  useEffect(() => {
+    if (!running) return undefined;
+    const t = setTimeout(() => {
+      if (document.hidden) return setTick((n) => n + 1);
+      setAud((x) => (x === 'consumer' ? 'professional' : 'consumer'));
+      setTick((n) => n + 1);
+    }, FLIP_MS);
+    return () => clearTimeout(t);
+  }, [running, tick]);
+  useEffect(() => {
+    if (!held) return undefined;
+    const t = setTimeout(() => {
+      setHeld(false);
+      setTick((n) => n + 1);
+    }, HOLD_MS);
+    return () => clearTimeout(t);
+  }, [held]);
+  const pick = (k) => {
+    setAud(k);
+    setHeld(true);
+  };
   // Same hero, animation and taglines in every language. English keeps the original white Turn2Opinion grading;
   // every other language adds a WebGL aurora in its own colour grade behind it (see .hero-aurora in i18n.css).
   return (
-    <section className={`hero hero-${aud} ${lang !== 'en' ? 'is-graded' : ''}`}>
+    <section
+      ref={sec}
+      className={`hero hero-${aud} ${lang !== 'en' ? 'is-graded' : ''}`}
+>
       {lang !== 'en' && (
         <div className="hero-aurora" aria-hidden="true">
           <AuroraCanvas />
@@ -288,7 +343,7 @@ export default function HomeHero() {
       </div>
       <div className="wrap hero-grid-layout">
         <div className="hero-copy">
-          <AudienceSwitch value={aud} onChange={setAud} />
+          <AudienceSwitch value={aud} onChange={pick} timer={auto && !held ? `${aud}-${tick}` : null} paused={!running} ms={FLIP_MS} onHold={setPaused} />
           <RoleRibbon aud={aud} />
           <p className="hero-motto" key={`m-${aud}`}>
             {a.motto.map((w, i) => (
@@ -304,11 +359,10 @@ export default function HomeHero() {
           <p className="hero-tagline" key={aud}>
             <WordSplit text={a.tagline} />
           </p>
-          <p className="hero-lead">
+          <p className="hero-lead" key={`l-${aud}`}>
             {a.lead} <Rotator words={a.who} /> {a.leadEnd}
           </p>
-          <div className="hero-actions">
-          
+          <div className="hero-actions" key={`a-${aud}`}>
             <a href={aud === 'professional' ? '/join/professional/' : '/join/'} className="btn btn-primary btn-lg btn-shimmer">
               {a.cta} <Icon name="arrow" size={18} />
             </a>
@@ -328,7 +382,7 @@ export default function HomeHero() {
             </li>
           </ul>
         </div>
-        <div className="hero-art">
+        <div className="hero-art" key={`art-${aud}`}>
           <RewardStage aud={aud} />
         </div>
       </div>

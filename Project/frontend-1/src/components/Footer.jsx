@@ -3,6 +3,7 @@ import { SITE, waLink } from '../config/site.js';
 import { Link, usePath } from '../router/Router.jsx';
 import { FrLogo, Logo, T2OMark } from './Brand.jsx';
 import Icon from './Icon.jsx';
+import ThemeToggle from './ThemeToggle.jsx';
 import { LanguageButton } from './Language.jsx';
 import QrHub from './sections/QrHub.jsx';
 
@@ -359,7 +360,10 @@ export default function Footer() {
             <span>A brand of</span> <span className="notranslate" translate="no">{SITE.legalName}</span>
           </p>
           <p>Rewards and payment methods vary by country. Survey availability depends on your profile.</p>
-          <LanguageButton compact />
+          <div className="footer-switches">
+            <ThemeToggle />
+            <LanguageButton compact />
+          </div>
         </div>
       </div>
     </footer>
