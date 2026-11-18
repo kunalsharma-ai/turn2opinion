@@ -4,6 +4,7 @@ const P = {
   arrowLeft: <path d="M19 12H5M11 6l-6 6 6 6" />,
   check: <path d="M4 12.5l5 5L20 6.5" />,
   x: <path d="M6 6l12 12M18 6L6 18" />,
+  close: <path d="M6 6l12 12M18 6L6 18" />,
   menu: <path d="M4 7h16M4 12h16M4 17h10" />,
   chevron: <path d="M6 9l6 6 6-6" />,
   chevronRight: <path d="M9 6l6 6-6 6" />,

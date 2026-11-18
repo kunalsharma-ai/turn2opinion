@@ -132,7 +132,7 @@ export default function ReviewToasts({ blocked }) {
           session.set(SHOWN, MAX);
         }}
       >
-        <Icon name="x" size={13} />
+        <Icon name="close" size={13} />
       </button>
 
       <p className="gt-kicker">

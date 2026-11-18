@@ -1889,6 +1889,9 @@
 :where(html[data-mode='dark']) .tt-seg button {
     color: #cacfe2
 }
+:where(html[data-mode='dark']) .rate-gem-spark {
+    background-color: #0b1128
+}
 :where(html[data-mode='dark']) .rvg-ring {
     border: 1.5px dashed rgba(23, 33, 79, 0.4)
 }

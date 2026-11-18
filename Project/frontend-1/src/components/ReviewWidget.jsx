@@ -224,7 +224,7 @@ function OpinionStudio({ open, initialRating, onClose, onDone, user }) {
           <i />
         </span>
         <button type="button" className="gs-x" onClick={onClose} aria-label="Close">
-          <Icon name="x" size={18} />
+          <Icon name="close" size={18} />
         </button>
 
         <div className="gs-body" ref={body}>
@@ -557,19 +557,25 @@ export default function ReviewWidget({ ready }) {
 
   return (
     <>
-      {/* Members only: the Rate us tab on the right edge (logged-out visitors see nothing, as before). */}
-      <button type="button" className="rate-tab" onClick={() => openModal(0)} aria-label="Rate us — rate your experience">
-        <span className="rate-tab-gem" aria-hidden="true">
-          <Gem level={5} size={22} motion="float" />
+      {/* Members only: an animated diamond in the right-hand button column, above WhatsApp and live help. */}
+      <button type="button" className="rate-gem" onClick={() => openModal(0)} aria-label="Rate us: rate your experience">
+        <span className="rate-gem-glow" aria-hidden="true" />
+        <span className="rate-gem-shape" aria-hidden="true">
+          <span className="rate-gem-face">
+            <Gem level={5} size={30} motion="float" />
+          </span>
         </span>
-        <span className="rate-tab-text">Rate us</span>
+        <span className="rate-gem-spark s1" aria-hidden="true" />
+        <span className="rate-gem-spark s2" aria-hidden="true" />
+        <span className="rate-gem-spark s3" aria-hidden="true" />
+        <span className="rate-gem-tip" aria-hidden="true">Rate us</span>
       </button>
 
       {prompt && (
         <div className="gask" role="dialog" aria-labelledby="ask-title">
           <span className="gask-aurora" aria-hidden="true" />
           <button type="button" className="gask-x" onClick={dismissForever} aria-label="Don't ask again this visit">
-            <Icon name="x" size={14} />
+            <Icon name="close" size={14} />
           </button>
           <p className="gask-kicker">
             <i className="gask-live" /> 20-second favour

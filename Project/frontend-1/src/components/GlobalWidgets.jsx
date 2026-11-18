@@ -288,7 +288,7 @@ function ActivityToasts({ blocked }) {
         )}
       </div>
       <button type="button" className="rd-x" aria-label="Dismiss" onClick={() => setLeaving(true)}>
-        <Icon name="x" size={13} />
+        <Icon name="close" size={13} />
       </button>
       <span className="rd-confetti" aria-hidden="true">
         {Array.from({ length: 14 }).map((_, i) => (
@@ -405,7 +405,7 @@ function FloatingActions({ chatOpen, onChat }) {
       <button type="button" className="fab fab-chat" onClick={onChat} aria-expanded={chatOpen} aria-controls="live-chat" aria-label={chatOpen ? 'Close live help' : 'Live help 24/7 — open live chat'}>
         <span className="fab-chat-ring" aria-hidden="true" />
         <span className="fab-chat-blob" aria-hidden="true" />
-        <span className="fab-chat-icon">{chatOpen ? <Icon name="x" size={24} /> : <T2OMark size={42} />}</span>
+        <span className="fab-chat-icon">{chatOpen ? <Icon name="close" size={24} /> : <T2OMark size={42} />}</span>
         {!chatOpen && <span className="fab-chat-badge" aria-hidden="true">1</span>}
         {!chatOpen && (
           <span className="fab-chat-label" aria-hidden="true">
@@ -425,6 +425,12 @@ export default function GlobalWidgets() {
     window.addEventListener('t2o:open-chat', open);
     return () => window.removeEventListener('t2o:open-chat', open);
   }, []);
+
+  // Lets CSS tidy the other floating buttons while the live-help panel is open (phones).
+  useEffect(() => {
+    document.documentElement.classList.toggle('chat-open', chatOpen);
+    return () => document.documentElement.classList.remove('chat-open');
+  }, [chatOpen]);
 
   // The site's signature arrival sound. Browsers block audio until the visitor interacts, so this
   // arms the chime and fires it on their first tap, click, key press or scroll — see utils/sound.js.

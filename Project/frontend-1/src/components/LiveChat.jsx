@@ -268,7 +268,7 @@ export default function LiveChat({ open, onClose }) {
             Live Help <span className="chat-247">24/7</span>
           </h2>
           <p>
-            <span className="live-dot" /> Online now · replies in seconds
+            <span className="live-dot" /> Online now · instant replies
           </p>
         </div>
         <div className="chat-tools">
@@ -276,7 +276,7 @@ export default function LiveChat({ open, onClose }) {
             <Icon name={sound ? 'volume' : 'volumeOff'} size={18} />
           </button>
           <button type="button" className="chat-tool" onClick={onClose} aria-label="Close live help">
-            <Icon name="x" size={18} />
+            <Icon name="close" size={18} />
           </button>
         </div>
         <svg className="chat-wave" viewBox="0 0 400 30" preserveAspectRatio="none" aria-hidden="true">

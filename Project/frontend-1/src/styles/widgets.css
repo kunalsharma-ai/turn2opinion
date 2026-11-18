@@ -2222,3 +2222,396 @@ html[data-mode='dark'] .tt-seg button[aria-pressed='true'] {
     font-size: 0.8rem;
   }
 }
+
+/* =========================================================================================
+   Right-hand button column + live help panel, v2 (Kunal, 18 Nov 2026)
+   One centred column: Rate us diamond (members) > WhatsApp > live help. The live help panel opens
+   to the LEFT of that column on desktop, so it never covers the buttons or the header; on phones
+   it is a sheet under the header and the other floating buttons step aside.
+   ========================================================================================= */
+.fab-stack {
+  justify-items: center;
+}
+
+/* ---- Rate us diamond ---- */
+.rate-gem {
+  --gem-s: 46px;
+  position: fixed;
+  right: calc(max(16px, env(safe-area-inset-right)) + 33px - var(--gem-s) / 2);
+  bottom: calc(max(18px, env(safe-area-inset-bottom)) + 66px + 14px + 54px + 26px);
+  z-index: 119;
+  display: grid;
+  place-items: center;
+  width: var(--gem-s);
+  height: var(--gem-s);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  isolation: isolate;
+  animation: gemIn 0.8s cubic-bezier(0.2, 1.4, 0.4, 1) 0.3s both;
+}
+@keyframes gemIn {
+  from {
+    opacity: 0;
+    transform: scale(0.2) rotate(-180deg);
+  }
+}
+.rate-gem-glow {
+  position: absolute;
+  inset: -10px;
+  z-index: -2;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(123, 92, 255, 0.55), rgba(34, 211, 197, 0.25) 45%, transparent 70%);
+  filter: blur(6px);
+  animation: gemGlow 2.6s ease-in-out infinite alternate;
+}
+@keyframes gemGlow {
+  to {
+    transform: scale(1.25);
+    opacity: 0.6;
+  }
+}
+.rate-gem-shape {
+  --gem-ang: 0deg;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 12px;
+  padding: 2.5px;
+  rotate: 45deg;
+  background: conic-gradient(from var(--gem-ang), #ff4d8d, #ffd166, #22d3c5, #7b5cff, #ff4d8d);
+  box-shadow: 0 14px 28px -10px rgba(123, 92, 255, 0.85);
+  animation: gemSpin 4s linear infinite;
+  transition: transform 0.35s var(--spring);
+}
+@property --gem-ang {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes gemSpin {
+  to {
+    --gem-ang: 360deg;
+  }
+}
+.rate-gem-face {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  background: radial-gradient(circle at 30% 25%, #4b3a9e, #1a1446 70%);
+  overflow: hidden;
+}
+.rate-gem-face > * {
+  rotate: -45deg;
+}
+.rate-gem-face::after {
+  content: '';
+  position: absolute;
+  inset: 2.5px;
+  border-radius: 10px;
+  background: linear-gradient(115deg, transparent 35%, rgba(255, 255, 255, 0.55) 50%, transparent 65%);
+  background-size: 250% 100%;
+  animation: gemShine 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes gemShine {
+  0%,
+  55% {
+    background-position: 160% 0;
+  }
+  100% {
+    background-position: -60% 0;
+  }
+}
+.rate-gem:hover .rate-gem-shape,
+.rate-gem:focus-visible .rate-gem-shape {
+  transform: scale(1.12);
+}
+.rate-gem:focus-visible {
+  outline: none;
+}
+.rate-gem:focus-visible .rate-gem-shape {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+.rate-gem-spark {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  opacity: 0;
+  animation: gemSpark 2.4s ease-in-out infinite;
+}
+.rate-gem-spark.s1 {
+  top: -8px;
+  left: 2px;
+}
+.rate-gem-spark.s2 {
+  top: 6px;
+  right: -9px;
+  width: 8px;
+  height: 8px;
+  animation-delay: 0.8s;
+}
+.rate-gem-spark.s3 {
+  bottom: -7px;
+  left: -6px;
+  animation-delay: 1.6s;
+}
+@keyframes gemSpark {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.3) rotate(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(90deg);
+  }
+}
+.rate-gem-tip {
+  position: absolute;
+  right: calc(100% + 18px);
+  top: 50%;
+  translate: 0 -50%;
+  padding: 7px 13px;
+  border-radius: 999px 999px 4px 999px;
+  white-space: nowrap;
+  font: 800 0.8rem/1 var(--ui);
+  color: #fff;
+  background: linear-gradient(120deg, #ff4d8d, #7b5cff);
+  box-shadow: 0 10px 22px -10px rgba(123, 92, 255, 0.9);
+  animation: labelPeek 11s var(--ease) 2s infinite;
+  pointer-events: none;
+}
+.rate-gem:hover .rate-gem-tip,
+.rate-gem:focus-visible .rate-gem-tip {
+  animation: none;
+  opacity: 1;
+}
+/* The review ask now sits above the diamond. */
+.gask {
+  bottom: calc(max(18px, env(safe-area-inset-bottom)) + 230px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .rate-gem,
+  .rate-gem *,
+  .rate-gem-face::after {
+    animation: none !important;
+  }
+}
+
+/* ---- Live help panel ---- */
+.chat {
+  right: calc(max(16px, env(safe-area-inset-right)) + 66px + 20px);
+  bottom: max(18px, env(safe-area-inset-bottom));
+  width: min(392px, calc(100vw - 132px));
+  height: min(620px, calc(100vh - var(--header-h) - 40px));
+  height: min(620px, calc(100dvh - var(--header-h) - 40px));
+  min-height: 0;
+  border-radius: 26px;
+  clip-path: circle(0% at 100% 92%);
+}
+.chat.is-open {
+  clip-path: circle(150% at 100% 92%);
+}
+.chat-head {
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 14px 30px 16px;
+}
+.chat-avatar {
+  flex: none;
+}
+.chat-title {
+  flex: 1;
+  min-width: 0;
+}
+.chat-title h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.chat-title p {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.chat-title p .live-dot {
+  flex: none;
+}
+.chat-tools {
+  flex: none;
+}
+.chat-list {
+  min-height: 0;
+  padding: 10px 16px 12px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(31, 91, 255, 0.35) transparent;
+}
+.chat-list::-webkit-scrollbar {
+  width: 6px;
+}
+.chat-list::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background: rgba(31, 91, 255, 0.35);
+}
+.chat-list::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+}
+/* Quick questions: a tidy swipeable row (no auto-scrolling marquee, nothing cut in half). */
+.chat-chips {
+  flex: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 10px 12px;
+  mask-image: none;
+  -webkit-mask-image: none;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+}
+.chat-chips::-webkit-scrollbar {
+  display: none;
+}
+.chat-chips-track {
+  animation: none;
+  padding-right: 12px;
+}
+.chat-chips .chip {
+  scroll-snap-align: start;
+  white-space: nowrap;
+}
+.chat-chips .chip[aria-hidden='true'] {
+  display: none;
+}
+.chat-form {
+  flex: none;
+  align-items: center;
+  padding: 10px 12px 6px;
+}
+.chat-input-wrap {
+  height: 48px;
+}
+.chat-input-wrap input {
+  padding: 0;
+  height: 100%;
+}
+.chat-send {
+  width: 48px;
+  height: 48px;
+}
+.chat-secure {
+  flex: none;
+}
+/* Short laptop screens: give the conversation the room. */
+@media (max-height: 720px) and (min-width: 601px) {
+  .chat-hello h3 {
+    font-size: 1.2rem;
+  }
+  .chat-topic {
+    padding-block: 10px;
+  }
+}
+/* Phones: a sheet under the header; WhatsApp, Rate us and the video button step aside. */
+@media (max-width: 600px) {
+  .chat {
+    left: 8px;
+    right: 8px;
+    bottom: max(8px, env(safe-area-inset-bottom));
+    width: auto;
+    height: calc(100vh - var(--header-h) - 16px);
+    height: calc(100dvh - var(--header-h) - 16px);
+    border-radius: 24px;
+    clip-path: circle(0% at 88% 100%);
+  }
+  .chat.is-open {
+    clip-path: circle(150% at 88% 100%);
+  }
+  .chat-head {
+    padding: 14px 12px 28px 14px;
+  }
+  .chat-title p {
+    font-size: 0.8rem;
+  }
+  html.chat-open .fab-stack,
+  html.chat-open .rate-gem,
+  html.chat-open .vfab,
+  html.chat-open .vfab-msg {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .rate-gem {
+    --gem-s: 42px;
+  }
+}
+/* Topic cards: one even row height, icon and label side by side. */
+.chat-topics {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.chat-topic {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 8px 10px;
+  font-size: 0.84rem;
+}
+.chat-topic-icon {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+}
+.chat-topic > span:last-child,
+.chat-topic > :not(.chat-topic-icon) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Quick questions: the four most asked, wrapped onto two neat rows (nothing cut off). */
+.chat-chips {
+  overflow: hidden;
+  scroll-snap-type: none;
+}
+.chat-chips-track {
+  display: flex;
+  flex-wrap: wrap;
+  width: auto;
+  padding-right: 0;
+  gap: 6px;
+}
+.chat-chips .chip:nth-child(n + 5) {
+  display: none;
+}
+/* Dark mode: the wave under the header matches the dark panel; the field has no inner box. */
+html[data-mode='dark'] .chat-wave path {
+  fill: #0b122c;
+}
+html[data-mode='dark'] .chat-input-wrap input {
+  background: transparent;
+}
+@media (max-width: 600px) {
+  .chat-chips {
+    padding: 8px 10px;
+  }
+  .chat-chips .chip {
+    padding: 7px 12px;
+    font-size: 0.8rem;
+  }
+  .chat-chips .chip:nth-child(n + 3) {
+    display: none;
+  }
+}

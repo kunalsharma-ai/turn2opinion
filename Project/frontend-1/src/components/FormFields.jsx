@@ -23,7 +23,7 @@ export function Field({ id, label, error, hint, children, optional, className = 
       </div>
       {error ? (
         <p className="field-error" id={`${id}-err`} role="alert">
-          <Icon name="x" size={12} strokeWidth={2.6} /> {error}
+          <Icon name="close" size={12} strokeWidth={2.6} /> {error}
         </p>
       ) : hint ? (
         <p className="field-hint" id={`${id}-hint`}>
