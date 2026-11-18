@@ -2021,9 +2021,9 @@
    ========================================================================================= */
 .vfab {
   position: fixed;
-  /* Left-hand side (Kunal, 18 Nov 2026), above the reward-ticket toasts that use the bottom-left corner. */
+  /* Bottom-left corner (Kunal, 18 Nov 2026). The reward tickets are centred now, so the corner is free. */
   left: max(16px, env(safe-area-inset-left));
-  bottom: calc(max(18px, env(safe-area-inset-bottom)) + 136px);
+  bottom: max(18px, env(safe-area-inset-bottom));
   z-index: 118;
   width: 68px;
   height: 68px;
@@ -2156,7 +2156,7 @@
   .vfab {
     width: 56px;
     height: 56px;
-    bottom: calc(max(18px, env(safe-area-inset-bottom)) + 120px);
+    bottom: max(16px, env(safe-area-inset-bottom));
   }
   .vfab__core {
     width: 38px;
