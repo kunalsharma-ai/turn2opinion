@@ -2021,8 +2021,9 @@
    ========================================================================================= */
 .vfab {
   position: fixed;
-  right: max(14px, env(safe-area-inset-right));
-  bottom: calc(max(18px, env(safe-area-inset-bottom)) + 158px);
+  /* Left-hand side (Kunal, 18 Nov 2026), above the reward-ticket toasts that use the bottom-left corner. */
+  left: max(16px, env(safe-area-inset-left));
+  bottom: calc(max(18px, env(safe-area-inset-bottom)) + 136px);
   z-index: 118;
   width: 68px;
   height: 68px;
@@ -2083,7 +2084,7 @@
 }
 .vfab__eq {
   position: absolute;
-  right: -2px;
+  left: -2px;
   top: -2px;
   z-index: 3;
   display: flex;
@@ -2115,7 +2116,7 @@
 }
 .vfab__tip {
   position: absolute;
-  right: calc(100% + 12px);
+  left: calc(100% + 12px);
   top: 50%;
   display: grid;
   gap: 3px;
@@ -2128,7 +2129,7 @@
   background: linear-gradient(120deg, #0e1b4d, #3b0a2a);
   box-shadow: 0 16px 30px -14px rgba(0, 0, 0, 0.6);
   opacity: 0;
-  transform: translate(10px, -50%);
+  transform: translate(-10px, -50%);
   pointer-events: none;
   transition: opacity 0.25s, transform 0.35s var(--spring);
 }
@@ -2155,7 +2156,7 @@
   .vfab {
     width: 56px;
     height: 56px;
-    bottom: calc(max(18px, env(safe-area-inset-bottom)) + 150px);
+    bottom: calc(max(18px, env(safe-area-inset-bottom)) + 120px);
   }
   .vfab__core {
     width: 38px;
