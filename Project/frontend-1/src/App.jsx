@@ -90,7 +90,9 @@ function Shell() {
   let content;
   if (ready) {
     const Page = getPage(route);
-    const page = <Page key={path} params={params} data={getData(path)} />;
+    // The page and its video showcase are siblings in <main>, so their keys must differ (a shared key
+    // left the previous page on screen after clicking Home, 18 Nov 2026).
+    const page = <Page key={`page:${path}`} params={params} data={getData(path)} />;
     // member area ke pages: pehle check ho ki profile complete hai ya nahi
     content = path.startsWith('/member/') ? <MemberGuard>{page}</MemberGuard> : page;
     last.current = content;
@@ -105,7 +107,7 @@ function Shell() {
       <main id="main" tabIndex={-1}>
         {content}
         {/* Every page closes with its own video showcase, in its own template (data/videos.js). */}
-        {ready && !path.startsWith('/member/') && <VideoShowcase key={path} v={videoFor(path)} />}
+        {ready && !path.startsWith('/member/') && <VideoShowcase key={`video:${path}`} v={videoFor(path)} />}
       </main>
       <Footer />
       {mounted && (

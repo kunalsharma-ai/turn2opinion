@@ -6905,3 +6905,97 @@ button.vm-lcd:focus-visible {
   left: auto;
   right: 14px;
 }
+
+/* =========================================================================================
+   HERO ART v8 (Kunal, 18 Nov 2026): lift the illustration to the top of the hero and keep every
+   card off the person. The question sits in its own band above the portal, the answer chip sits
+   on the portal rim above the head, and the reward + wallet cards sit in a band underneath.
+   ========================================================================================= */
+.hero-grid-layout {
+  align-items: start;
+}
+.hero-art {
+  container-type: inline-size;
+  padding: 118px 0 92px;
+  margin-top: -40px;
+}
+.hero-art .portal {
+  width: min(100%, 500px);
+}
+.hero-art .po-dot {
+  transform: rotate(var(--a)) translateX(calc(min(100cqw, 500px) * 0.47)) rotate(calc(-1 * var(--a)));
+}
+.hero-art .portal-q {
+  left: 0;
+  top: -112px;
+  max-width: 76%;
+  z-index: 4;
+}
+.hero-art .portal-q::after {
+  content: '';
+  position: absolute;
+  left: 34px;
+  bottom: -9px;
+  width: 18px;
+  height: 18px;
+  background: inherit;
+  border-radius: 0 0 6px 0;
+  transform: rotate(45deg);
+  box-shadow: 6px 6px 14px -8px rgba(14, 27, 77, 0.35);
+}
+.hero-art .portal-ans {
+  top: 3%;
+  right: 0;
+  left: auto;
+  z-index: 4;
+  white-space: nowrap;
+}
+.hero-art .portal-reward,
+.hero-art .portal-wallet {
+  top: auto;
+  bottom: -88px;
+  z-index: 4;
+  max-width: 54%;
+}
+.hero-art .portal-reward {
+  left: 0;
+  right: auto;
+}
+.hero-art .portal-wallet {
+  right: 0;
+  left: auto;
+  max-width: 42%;
+  min-width: 0;
+}
+.hero-art .portal-reward small {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width: 1024px) {
+  .hero-art {
+    max-width: 520px;
+    margin: 8px auto 0;
+    width: 100%;
+  }
+}
+@media (max-width: 520px) {
+  .hero-art {
+    padding: 96px 0 84px;
+  }
+  .hero-art .portal-q {
+    top: -92px;
+    max-width: 92%;
+  }
+  .hero-art .portal-reward,
+  .hero-art .portal-wallet {
+    bottom: -80px;
+  }
+  .hero-art .portal-reward {
+    max-width: 58%;
+  }
+  .hero-art .portal-wallet {
+    max-width: 40%;
+  }
+}

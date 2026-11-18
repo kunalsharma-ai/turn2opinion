@@ -21,64 +21,7 @@ import { Link } from '../router/Router.jsx';
 import { prefersReducedMotion } from '../hooks/useMounted.js';
 import { armArrivalSound, playNotify } from '../utils/sound.js';
 
-/* ---------------- Cursor: brand halo ---------------- */
-// v3.1 — rewritten for performance.
-//
-// The previous cursor ran a full-viewport <canvas> particle system: every pointermove spawned
-// sparks and kept a requestAnimationFrame loop alive, and a document-level `mouseover` listener
-// called `closest()` on every hovered node then toggled a class on <html> (invalidating styles
-// for the whole page). On a 5,486-node page that was a constant, measurable tax on every mouse
-// movement — a direct cause of the "laggy" feel.
-//
-// This version keeps the look and costs almost nothing:
-//   * one small DOM element, moved with a single composited transform;
-//   * pointer position is written once per animation frame, not once per event;
-//   * the hover state uses CSS :hover through a pointer-events-none overlay instead of a
-//     document-wide mouseover listener, so there is zero JavaScript on hover;
-//   * clicks play a pure-CSS ripple — no canvas, no particles, no rAF loop.
-// Desktop only, never with reduced motion, and never on low-powered devices.
-function Cursor() {
-  const halo = useRef(null);
-  useEffect(() => {
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return undefined;
-    if (prefersReducedMotion() || document.documentElement.classList.contains('low-power')) return undefined;
-    const el = halo.current;
-    if (!el) return undefined;
-
-    let x = -100;
-    let y = -100;
-    let raf = 0;
-    // Coalesce every pointermove in a frame into one style write.
-    const paint = () => {
-      raf = 0;
-      el.style.transform = `translate3d(${x}px,${y}px,0)`;
-    };
-    const move = (e) => {
-      x = e.clientX;
-      y = e.clientY;
-      if (!raf) raf = requestAnimationFrame(paint);
-    };
-    const down = () => {
-      el.classList.remove('is-click');
-      void el.offsetWidth; // restart the CSS ripple
-      el.classList.add('is-click');
-    };
-    document.documentElement.classList.add('has-cursor');
-    window.addEventListener('pointermove', move, { passive: true });
-    window.addEventListener('pointerdown', down, { passive: true });
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener('pointermove', move);
-      window.removeEventListener('pointerdown', down);
-      document.documentElement.classList.remove('has-cursor');
-    };
-  }, []);
-  return (
-    <div ref={halo} className="cursor-halo" aria-hidden="true">
-      <span />
-    </div>
-  );
-}
+/* Cursor halo removed (Kunal, 18 Nov 2026): the ring that followed the mouse looked like a loading spinner. */
 
 /* ---------------- Scroll progress ---------------- */
 function ScrollProgress() {
@@ -445,7 +388,6 @@ export default function GlobalWidgets() {
 
   return (
     <>
-      <Cursor />
       <ScrollProgress />
       <VideoFab />
       <FloatingActions chatOpen={chatOpen} onChat={() => setChatOpen((o) => !o)} />
