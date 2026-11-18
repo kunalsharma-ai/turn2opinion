@@ -3,7 +3,7 @@ import { BLOG_CATEGORIES, BLOG_POSTS } from '../data/blog/index.js';
 import { useReveal } from '../hooks/useMounted.js';
 import { CtaBand, PageHero } from '../components/Common.jsx';
 import BlogCard from '../components/BlogCard.jsx';
-import BlogArt from '../components/BlogArt.jsx';
+import { LazyBlogArt as BlogArt } from '../components/BlogArt.jsx';
 import Icon from '../components/Icon.jsx';
 
 // Hero, round 8: a 3D carousel of live covers turning in space over a glowing floor, with sparks

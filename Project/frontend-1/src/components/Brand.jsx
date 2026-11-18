@@ -86,40 +86,49 @@ export function Logo({ size = 'md', to = '/', eager = false }) {
  */
 export function T2OMark({ size = 48, title, className = '', spin = true }) {
   const id = `t2o-${size}`;
+  // Three stacked layers rather than one SVG: the turning arrows and the breathing "2" are their own
+  // <svg> elements, so the browser animates them on the compositor. Animating shapes inside a single
+  // SVG runs on the main thread every frame, and this mark is on screen on every page (chat button).
   return (
-    <svg
-      viewBox="0 0 64 64"
-      width={size}
-      height={size}
+    <span
       className={`t2o-mark ${spin ? 'is-spinning' : ''} ${className}`}
+      style={{ width: size, height: size }}
       {...(title ? { role: 'img', 'aria-label': title } : { 'aria-hidden': true })}
     >
-      <defs>
-        <linearGradient id={`${id}-bg`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#ffffff" />
-          <stop offset="1" stopColor="#e7efff" />
-        </linearGradient>
-        <linearGradient id={`${id}-arc`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#7cc8ff" />
-          <stop offset=".55" stopColor="#1f5bff" />
-          <stop offset="1" stopColor="#0e1b4d" />
-        </linearGradient>
-        <linearGradient id={`${id}-two`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#3d7bff" />
-          <stop offset="1" stopColor="#0e1b4d" />
-        </linearGradient>
-      </defs>
-      <circle cx="32" cy="32" r="31" fill={`url(#${id}-bg)`} />
-      <g className="t2o-arrows">
+      <svg viewBox="0 0 64 64" width={size} height={size} aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id={`${id}-bg`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#ffffff" />
+            <stop offset="1" stopColor="#e7efff" />
+          </linearGradient>
+        </defs>
+        <circle cx="32" cy="32" r="31" fill={`url(#${id}-bg)`} />
+      </svg>
+      <svg className="t2o-arrows" viewBox="0 0 64 64" width={size} height={size} aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id={`${id}-arc`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#7cc8ff" />
+            <stop offset=".55" stopColor="#1f5bff" />
+            <stop offset="1" stopColor="#0e1b4d" />
+          </linearGradient>
+        </defs>
         <path d="M14 26 A19 19 0 0 1 44 15" fill="none" stroke={`url(#${id}-arc)`} strokeWidth="5" strokeLinecap="round" />
         <path d="M45.5 9.5 L47.5 18.5 L38.5 18" fill={`url(#${id}-arc)`} />
         <path d="M50 38 A19 19 0 0 1 20 49" fill="none" stroke={`url(#${id}-arc)`} strokeWidth="5" strokeLinecap="round" />
         <path d="M18.5 54.5 L16.5 45.5 L25.5 46" fill={`url(#${id}-arc)`} />
-      </g>
-      <text className="t2o-two" x="32" y="43" textAnchor="middle" fontFamily="Manrope, Arial, sans-serif" fontWeight="800" fontSize="32" fill={`url(#${id}-two)`}>
-        2
-      </text>
-    </svg>
+      </svg>
+      <svg className="t2o-two" viewBox="0 0 64 64" width={size} height={size} aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id={`${id}-two`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#3d7bff" />
+            <stop offset="1" stopColor="#0e1b4d" />
+          </linearGradient>
+        </defs>
+        <text x="32" y="43" textAnchor="middle" fontFamily="Manrope, Arial, sans-serif" fontWeight="800" fontSize="32" fill={`url(#${id}-two)`}>
+          2
+        </text>
+      </svg>
+    </span>
   );
 }
 

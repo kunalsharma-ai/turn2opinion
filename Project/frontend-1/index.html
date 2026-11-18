@@ -36,15 +36,33 @@
     />
 
     <script>
+      // Third-party tags (Google Tag Manager, Meta Pixel) wait until the visitor first scrolls, taps
+      // or types, or until 4 s after the page has loaded, whichever comes first. Their queues
+      // (dataLayer, fbq) start right away, so nothing is lost; the tags just stay off the first screen.
+      (function (w) {
+        var q = [], done = 0, ev = ["scroll", "pointerdown", "keydown", "touchstart"];
+        function run() {
+          if (done) return;
+          done = 1;
+          ev.forEach(function (e) { w.removeEventListener(e, run, { passive: true }); });
+          for (var i = 0; i < q.length; i++) q[i]();
+          q = [];
+        }
+        w.t2oLate = function (f) { done ? f() : q.push(f); };
+        ev.forEach(function (e) { w.addEventListener(e, run, { passive: true }); });
+        w.addEventListener("load", function () { setTimeout(run, 4000); });
+      })(window);
       (function (w, d, s, l, i) {
         w[l] = w[l] || [];
         w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
+        w.t2oLate(function () {
+          var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s),
+            dl = l != "dataLayer" ? "&l=" + l : "";
+          j.async = true;
+          j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+          f.parentNode.insertBefore(j, f);
+        });
       })(window, document, "script", "dataLayer", "GTM-MF5D955");
     </script>
     <!--app-head-->

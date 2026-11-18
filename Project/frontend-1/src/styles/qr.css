@@ -769,7 +769,8 @@
 }
 .snc-b small {
   font: 800 12px var(--ui);
-  color: var(--p1);
+  /* darkened brand colour so the small label passes 4.5:1 on white */
+  color: color-mix(in srgb, var(--p1) 72%, #000);
 }
 @media (max-width: 900px) {
   .sn {

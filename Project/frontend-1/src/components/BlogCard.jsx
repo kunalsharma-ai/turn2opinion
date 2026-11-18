@@ -1,6 +1,6 @@
 import { Link } from '../router/Router.jsx';
 import Icon from './Icon.jsx';
-import BlogArt from './BlogArt.jsx';
+import { LazyBlogArt as BlogArt } from './BlogArt.jsx';
 
 const fmt = (iso) => new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 export const formatPostDate = fmt;

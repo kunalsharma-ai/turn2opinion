@@ -33,7 +33,13 @@ main section.section,
 .site-footer .trust-stage,
 .site-footer .footer-wordmarks,
 .blog-mag,
-.qr-hub {
+.qr-hub,
+.rvx-panel,
+.ab-worlds,
+main section.vs,
+.footer-stage,
+.blog-grid,
+.topic-tiles {
   content-visibility: auto;
   contain-intrinsic-size: auto 760px;
 }

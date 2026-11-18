@@ -1,5 +1,9 @@
 /* About v4 + the social network hub (About, Scan & Connect). */
 @import './about.css';
+/* The QR hub is the footer's (late bundle), but on Scan & Connect it is the first screen, so the
+   inner pages carry it in their blocking bundle as well. */
+@import './qr.css';
+@import './scanconnect.css';
 /* ================= Hero art pieces (one per page) ================= */
 .road {
   width: min(100%, 340px);
@@ -721,7 +725,7 @@
   left: 0;
   top: 120px;
   background: var(--mint);
-  color: #fff;
+  color: var(--ink);
 }
 .legal-tag:nth-of-type(4) {
   right: 10px;
@@ -1056,7 +1060,8 @@
   text-align: center;
   padding: 12px;
   border-radius: 999px;
-  background: var(--c);
+  /* the card colour, darkened enough for white text to pass contrast */
+  background: color-mix(in srgb, var(--c) 55%, #0b1440);
   color: #fff;
   font-weight: 700;
 }
@@ -3085,17 +3090,26 @@ g:nth-child(4) .sb-pulse {
     radial-gradient(700px 400px at 100% 100%, rgba(255, 92, 122, 0.25), transparent 60%), var(--night);
   min-height: calc(100vh - var(--header-h));
 }
+/* The grid drifts on a transformed child, so the movement runs on the compositor
+   (animating background-position repainted the whole hero every frame). */
 .login-bg {
   position: absolute;
   inset: 0;
+  overflow: hidden;
+  mask-image: radial-gradient(ellipse at 30% 50%, #000, transparent 70%);
+}
+.login-bg::before {
+  content: '';
+  position: absolute;
+  inset: -50px 0 0 -50px;
   background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   background-size: 50px 50px;
-  mask-image: radial-gradient(ellipse at 30% 50%, #000, transparent 70%);
   animation: gridMove 20s linear infinite;
+  will-change: transform;
 }
 @keyframes gridMove {
   to {
-    background-position: 50px 50px;
+    transform: translate(50px, 50px);
   }
 }
 .login-grid {
@@ -3133,10 +3147,15 @@ g:nth-child(4) .sb-pulse {
   left: 0;
   right: 0;
   top: 0;
+  width: 200%;
   height: 5px;
   background: linear-gradient(90deg, var(--sky), var(--violet), var(--coral), var(--gold), var(--sky));
-  background-size: 200% 100%;
-  animation: gradientPan 4s linear infinite alternate;
+  animation: barSlide 4s linear infinite alternate;
+}
+@keyframes barSlide {
+  to {
+    transform: translateX(-50%);
+  }
 }
 .login-row {
   display: flex;
@@ -4843,7 +4862,7 @@ code {
   color: #fff;
   font-size: clamp(2rem, 4.4vw, 3.4rem);
   line-height: 1.08;
-  animation: riseIn 0.8s var(--ease) both;
+  animation: riseUp 0.8s var(--ease) both;
 }
 .hd-lead {
   max-width: 56ch;
@@ -6810,7 +6829,13 @@ code {
   color: color-mix(in srgb, var(--a1) 75%, #0e1b4d);
 }
 .login-tag {
-  animation: avIn 0.6s var(--spring) both;
+  animation: avRise 0.6s var(--spring) both;
+}
+/* transform-only twin of avIn for first-screen text, so it counts as painted at once */
+@keyframes avRise {
+  from {
+    transform: translateY(16px) scale(0.97);
+  }
 }
 .login.aud-consumer .login-tag {
   color: #8fe0ff;
@@ -6986,6 +7011,71 @@ code {
   gap: clamp(20px, 3vw, 48px);
   align-items: center;
 }
+/* Rate & Reviews hero flag marquee (first screen, so in this blocking bundle). */
+.gvh-flags {
+  position: relative;
+  margin-top: clamp(32px, 5vw, 60px);
+  padding: 12px 0;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.22);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  -webkit-mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.gvf-track {
+  display: flex;
+  gap: 10px;
+  width: max-content;
+  animation: gvMarquee 60s linear infinite;
+}
+.gvh-flags:hover .gvf-track {
+  animation-play-state: paused;
+}
+@keyframes gvMarquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.gvf-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px 5px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.gvf-flag .flag {
+  border-radius: 3px;
+}
+.gvf-flag small {
+  font-size: 0.8rem;
+  color: #dfe6ff;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gvf-track {
+    animation: none !important;
+  }
+}
+/* Rate & Reviews hero breadcrumbs (first screen, so in this blocking bundle). */
+.gvh-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 18px;
+  font-size: 0.8rem;
+  color: #9fb3ff;
+}
+.gvh-crumbs a {
+  color: #cfe0ff;
+  text-decoration: none;
+}
+.gvh-crumbs a:hover {
+  text-decoration: underline;
+}
 .rvx-copy .gvh-crumbs,
 .rvx-copy .gvh-crumbs a {
   color: #b9c2ef;
@@ -7007,9 +7097,16 @@ code {
   width: 9px;
   height: 9px;
   border-radius: 50%;
+  position: relative;
   background: #34d399;
-  box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.7);
-  animation: rvxLive 1.8s ease-out infinite;
+}
+.rvx-live::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: inherit;
+  animation: dotPing 1.8s ease-out infinite;
 }
 @keyframes rvxLive {
   to {
@@ -7034,7 +7131,8 @@ code {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: rvxLine 0.9s 0.15s var(--spring) both, rvxSheen 6s linear infinite;
+  /* the sheen sweeps twice after the line lands, then rests: a gradient on text can only move by repainting */
+  animation: rvxLine 0.9s 0.15s var(--spring) both, rvxSheen 6s linear 1s 2;
 }
 .rvx-title .l3 {
   animation-delay: 0.3s;
@@ -7064,7 +7162,15 @@ code {
   font-family: var(--display);
   font-size: clamp(1.1rem, 1.8vw, 1.4rem);
   font-weight: 700;
+  line-height: 1.3;
   color: #cfd6ff;
+}
+/* The rotating word changes length, so on narrow screens the line keeps room for two rows from
+   the start; otherwise a long word ("accountants") would push the page down as it rotates in. */
+@media (max-width: 760px) {
+  .rvx-heard {
+    min-height: 2.6em;
+  }
 }
 .rvx-rotor {
   display: inline-block;

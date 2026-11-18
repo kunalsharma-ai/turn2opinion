@@ -13,7 +13,7 @@
 //
 // Shared layers: a deep base, three drifting colour fields, a starfield and a sweeping glass sheen.
 // The whole cover is decorative (aria-hidden) and every animation stops under reduced motion.
-import { useId } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 function rng(seedStr = '') {
   let h = 1779033703 ^ seedStr.length;
@@ -333,8 +333,14 @@ export default function BlogArt({ seed = '', hue = 220, kind = 'Earn online', cl
       {blobs.map((b, k) => (
         <circle key={k} className={`ba-drift d${k}`} cx={b.x} cy={b.y} r={b.rr} fill={`url(#${id}-b${k})`} opacity={k === 2 ? 0.55 : 0.8} />
       ))}
-      {starList.map((s, k) => (
-        <circle key={k} className="ba-tw" style={{ '--d': `${s.d}s` }} cx={s.x} cy={s.y} r={s.s} fill="#fff" />
+      {/* Stars twinkle in two groups (two animations per cover rather than one per star: SVG
+          animations run on the main thread, so fewer of them keeps scrolling smooth). */}
+      {[0, 1].map((gk) => (
+        <g key={gk} className="ba-tw" style={{ '--d': `${-gk * 1.6}s` }}>
+          {starList.filter((_, k) => k % 2 === gk).map((s, k) => (
+            <circle key={k} cx={s.x} cy={s.y} r={s.s} fill="#fff" />
+          ))}
+        </g>
       ))}
       <g transform={flip ? 'translate(400 0) scale(-1 1)' : undefined}>
         <Piece id={id} r={r} c={c} />
@@ -343,4 +349,29 @@ export default function BlogArt({ seed = '', hue = 220, kind = 'Earn online', cl
       <rect width="400" height="240" fill={`url(#${id}-vig)`} />
     </svg>
   );
+}
+
+/** The same cover, drawn only in the browser and only once it comes near the screen. The prerendered
+ *  page carries a light colour wash instead of the full SVG, which keeps every page's HTML small
+ *  (the Blogs page alone would otherwise ship 30 covers of markup before anything else). */
+export function LazyBlogArt(props) {
+  const ref = useRef(null);
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !('IntersectionObserver' in window)) return setOn(true);
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          setOn(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: '300px 0px' }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  if (on) return <BlogArt {...props} />;
+  return <span ref={ref} className="ba-ph" style={{ '--h': props.hue || 220 }} aria-hidden="true" />;
 }

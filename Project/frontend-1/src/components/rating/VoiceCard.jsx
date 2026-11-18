@@ -43,14 +43,14 @@ const DETAIL_RATINGS = [
   {
     label: "Support when I need it",
     icon: "chat",
-    color: "#059669",
+    color: "#047857",
     bg: "#ECFDF5",
     border: "#A7F3D0",
   },
   {
     label: "Works on my phone",
     icon: "phone",
-    color: "#8B5CF6",
+    color: "#6D28D9",
     bg: "#F5F3FF",
     border: "#DDD6FE",
   },
