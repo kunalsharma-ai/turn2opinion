@@ -5878,3 +5878,12 @@ button.vm-lcd:focus-visible {
     animation: none !important;
   }
 }
+
+/* Contrast touch-ups: reward "best for" pills and the lit metro station label. */
+.pcard-best {
+  color: color-mix(in srgb, var(--c1) 72%, #000);
+}
+.mt-station.is-on .mt-who,
+.mt-term.is-live {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}

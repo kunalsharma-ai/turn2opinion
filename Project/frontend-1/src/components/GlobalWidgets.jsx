@@ -213,7 +213,7 @@ function ActivityToasts({ blocked }) {
     : '';
   // The ticket takes the colours of the reward it announces (PayPal blue, grocery amber, gift-card violet...).
   const meta = (item.real && item.method && METHOD_META[item.method]) || { icon: item.icon || 'sparkles', color: '#1f5bff', c2: '#7b5cff' };
-  const shownMethods = methods.slice(0, 4);
+  const shownMethods = methods.slice(0, 3);
   return (
     <div
       className={`rdrop ${item.real ? 'is-real' : 'is-spot'} ${leaving ? 'is-leaving' : ''}`}
@@ -248,6 +248,7 @@ function ActivityToasts({ blocked }) {
                 <i /> Reward paid
               </span>
               {item.when && <span className="rd-when">{item.when}</span>}
+              {item.preview && <span className="rd-preview">Preview</span>}
             </p>
             <p className="rd-line">
               <strong>{item.name || 'A member'}</strong> earned{' '}
@@ -263,17 +264,6 @@ function ActivityToasts({ blocked }) {
                 <Flag code={item.country} size={12} /> {place}
               </span>
             </p>
-            {(item.role || item.preview) && (
-              <p className="rd-role">
-                {item.role && (
-                  <span>
-                    <Icon name={item.audience === 'professional' ? 'briefcase' : 'user'} size={11} /> {item.role}
-                    {item.audience && ` · ${item.audience === 'professional' ? 'Professional' : 'Consumer'}`}
-                  </span>
-                )}
-                {item.preview && <span className="rd-preview">Preview data</span>}
-              </p>
-            )}
           </>
         ) : (
           <>

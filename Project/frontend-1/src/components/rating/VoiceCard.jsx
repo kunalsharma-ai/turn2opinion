@@ -36,7 +36,7 @@ const DETAIL_RATINGS = [
   {
     label: "Rewards arrive as promised",
     icon: "coin",
-    color: "#F59E0B",
+    color: "#B45309",
     bg: "#FFFBEB",
     border: "#FDE68A",
   },
@@ -244,7 +244,7 @@ function DetailRatings({ detailrating, size = "md" }) {
                 }}
               >
                 {Number(value)}
-                <span style={{ opacity: 0.6, fontWeight: 500 }}>/5</span>
+                <span style={{ color: "#64748B", fontWeight: 500 }}>/5</span>
               </span>
             ) : (
               <span

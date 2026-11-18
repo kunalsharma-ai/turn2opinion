@@ -18,6 +18,7 @@ import { SITE } from '../config/site.js';
 import { api } from '../utils/api.js';
 import { LanguageButton } from './Language.jsx';
 import SoundButton from './SoundButton.jsx';
+import ModeButton from './ModeButton.jsx';
 import { seedTestimonials, summarise } from '../utils/reviews.js';
 import Gem from './rating/Gem.jsx';
 
@@ -293,6 +294,7 @@ useEffect(()=>{
           <Logo eager />
           <LanguageButton />
           <SoundButton />
+          <ModeButton />
         </div>
         <nav className="main-nav" aria-label="Main" ref={navRef} onMouseLeave={() => movePill()}>
           <span className="nav-pill" aria-hidden="true" />
@@ -454,6 +456,7 @@ useEffect(()=>{
         <div className="mobile-lang">
           <LanguageButton compact />
           <SoundButton className="is-menu" />
+          <ModeButton className="is-menu" />
         </div>
         
         {/* <div className="mobile-cta">

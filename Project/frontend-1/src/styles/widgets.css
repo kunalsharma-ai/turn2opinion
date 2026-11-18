@@ -1938,3 +1938,287 @@ html:has(a:hover, button:hover, [role='button']:hover, label:hover, summary:hove
     transition: none !important;
   }
 }
+
+/* Compact reward drop: about 40% smaller footprint, same border, coin and confetti. */
+.rdrop {
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 10px;
+  width: min(330px, calc(100vw - 32px));
+  padding: 8px 32px 10px 8px;
+  border-radius: 16px;
+  box-shadow: 0 16px 34px -16px rgba(5, 8, 30, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06), 0 0 30px -12px var(--m1);
+}
+.rd-aurora {
+  border-radius: 14px;
+}
+.rd-token {
+  width: 42px;
+  height: 42px;
+}
+.rd-token::before {
+  inset: 5px;
+  filter: blur(9px);
+}
+.rd-coin {
+  width: 32px;
+  height: 32px;
+}
+.rd-coin__f svg {
+  width: 16px;
+  height: 16px;
+}
+.rd-coin__b {
+  font-size: 0.72rem;
+}
+.rd-body {
+  gap: 2px;
+}
+.rd-kicker {
+  font-size: 0.58rem;
+  gap: 6px;
+}
+.rd-live {
+  padding: 3px 6px 3px 5px;
+  gap: 4px;
+}
+.rd-live i {
+  width: 5px;
+  height: 5px;
+}
+.rd-line {
+  font-size: 0.8rem;
+}
+.rd-amount {
+  font-size: 0.98rem;
+}
+.rd-meta {
+  gap: 4px 6px;
+  font-size: 0.68rem;
+}
+.rd-method {
+  gap: 4px;
+  padding: 2px 7px;
+}
+.rd-method.sm {
+  padding: 2px 6px;
+  font-size: 0.62rem;
+}
+.rd-role > span:not(.rd-preview),
+.rd-topic {
+  display: none;
+}
+.rd-role {
+  font-size: 0.62rem;
+}
+.rd-more {
+  font-size: 0.62rem;
+}
+.rd-x {
+  top: 6px;
+  right: 6px;
+  width: 20px;
+  height: 20px;
+}
+.rd-x svg {
+  width: 11px;
+  height: 11px;
+}
+.rd-progress {
+  left: 14px;
+  right: 14px;
+  bottom: 3px;
+  height: 2px;
+}
+.rd-confetti {
+  left: 29px;
+  top: 29px;
+}
+.rd-confetti i {
+  width: 5px;
+  height: 8px;
+}
+.rd-confetti i:nth-child(3n + 2) {
+  width: 5px;
+  height: 5px;
+}
+@media (max-width: 600px) {
+  .rdrop {
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 9px;
+    width: min(300px, calc(100vw - 32px));
+    padding: 7px 30px 9px 7px;
+    border-radius: 15px;
+  }
+  .rd-token {
+    width: 38px;
+    height: 38px;
+  }
+  .rd-coin {
+    width: 30px;
+    height: 30px;
+  }
+  .rd-amount {
+    font-size: 0.92rem;
+  }
+  .rd-line {
+    font-size: 0.76rem;
+  }
+}
+.rd-meta {
+  flex-wrap: nowrap;
+}
+.rd-method {
+  flex: none;
+}
+.rd-place {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+}
+.rd-place img,
+.rd-place svg {
+  vertical-align: -2px;
+  margin-right: 3px;
+}
+.rd-kicker .rd-preview {
+  padding: 2px 5px;
+  border-radius: 5px;
+  letter-spacing: 0.06em;
+}
+.rd-pills {
+  flex-wrap: wrap;
+}
+.rd-kicker {
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.rd-x {
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+}
+@media (max-width: 600px) {
+  .rd-kicker {
+    font-size: 0.54rem;
+    gap: 5px;
+    letter-spacing: 0.08em;
+  }
+  .rd-x {
+    width: 26px;
+    height: 26px;
+    top: 5px;
+    right: 5px;
+  }
+}
+
+/* Theme card in the footer: a labelled Light / Dark choice next to the sky switch, easy to spot. */
+.footer-bottom .footer-switches {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.tt-wrap {
+  position: relative;
+  gap: 12px;
+  padding: 8px 10px 8px 16px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(31, 91, 255, 0.16), rgba(123, 92, 255, 0.16));
+  box-shadow: inset 0 0 0 1px rgba(120, 150, 255, 0.35), 0 12px 30px -16px rgba(31, 91, 255, 0.8);
+}
+.tt-title {
+  font: 800 0.72rem/1 var(--ui);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #1f5bff;
+}
+.tt-seg {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: inset 0 0 0 1px rgba(15, 30, 80, 0.12);
+}
+.tt-seg button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  font: 700 0.86rem/1 var(--ui);
+  color: #34406b;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+.tt-seg button[aria-pressed='true'] {
+  color: #fff;
+  background: linear-gradient(120deg, #ff9f1c, #ffcf3f);
+  box-shadow: 0 6px 14px -6px rgba(255, 159, 28, 0.9);
+}
+.tt-seg button:focus-visible {
+  outline: 2px solid #1f5bff;
+  outline-offset: 2px;
+}
+.tt-wrap.is-dark .tt-seg button[aria-pressed='true'] {
+  background: linear-gradient(120deg, #5b3dff, #9b7bff);
+  box-shadow: 0 6px 14px -6px rgba(123, 92, 255, 0.95);
+}
+.tt-sky.is-light .tt-word--light {
+  opacity: 1;
+}
+html[data-mode='dark'] .tt-wrap {
+  background: linear-gradient(135deg, rgba(91, 61, 255, 0.22), rgba(31, 91, 255, 0.16));
+  box-shadow: inset 0 0 0 1px rgba(155, 123, 255, 0.45), 0 12px 30px -16px rgba(123, 92, 255, 0.9);
+}
+html[data-mode='dark'] .tt-title {
+  color: #c9bcff;
+}
+html[data-mode='dark'] .tt-seg {
+  background: rgba(10, 14, 44, 0.8);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+html[data-mode='dark'] .tt-seg button {
+  color: #c4ccf2;
+}
+html[data-mode='dark'] .tt-seg button[aria-pressed='true'] {
+  color: #fff;
+}
+@media (max-width: 640px) {
+  .tt-wrap {
+    width: 100%;
+    justify-content: space-between;
+    padding: 8px 8px 8px 14px;
+  }
+  .tt-sky {
+    width: 104px;
+    height: 44px;
+  }
+  .tt-knob {
+    width: 34px;
+    height: 34px;
+  }
+  .tt-sky.is-dark .tt-knob {
+    transform: translateX(60px) rotate(360deg);
+  }
+  .tt-seg button {
+    padding: 0 10px;
+  }
+}
+@media (max-width: 640px) {
+  .tt-title {
+    display: none;
+  }
+  .tt-wrap {
+    padding: 6px;
+    gap: 8px;
+  }
+  .tt-seg button {
+    min-height: 32px;
+    padding: 0 10px;
+    font-size: 0.8rem;
+  }
+}

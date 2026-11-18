@@ -67,9 +67,13 @@ function Theatre({ v, onClose }) {
 // message already popped up once this session.
 const SEEN = 't2o_vid_seen';
 const NUDGED = 't2o_vid_nudged';
-const has = (k, path) => session.get(k, []).includes(path);
-const mark = (k, path) => {
+const list = (k) => {
   const l = session.get(k, []);
+  return Array.isArray(l) ? l : [];
+};
+const has = (k, path) => list(k).includes(path);
+const mark = (k, path) => {
+  const l = list(k);
   if (!l.includes(path)) session.set(k, [...l, path].slice(-60));
 };
 const markSeen = (path) => mark(SEEN, path);

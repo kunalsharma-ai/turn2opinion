@@ -554,3 +554,52 @@ html[data-theme='dark'] .snd-btn { background: rgba(255, 255, 255, 0.07); box-sh
   .brand-lang .snd-btn { display: none; }
   .snd-btn.is-menu { display: grid; }
 }
+
+/* ---------------- Header light / dark switch (Kunal, 18 Nov 2026) ---------------- */
+.mode-btn {
+  position: relative; flex: none; display: grid; place-items: center;
+  width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%;
+  background: #fff; cursor: pointer; isolation: isolate;
+  box-shadow: 0 8px 20px -12px rgba(14, 27, 77, 0.45);
+  transition: transform 0.25s var(--ease);
+}
+.mode-btn::before {
+  content: ''; position: absolute; inset: -1px; z-index: -1; border-radius: inherit; padding: 1.5px;
+  background: conic-gradient(from 0deg, #ffd166, #ff9f1c, #5cc8ff, #1f5bff, #ffd166);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.mode-btn.is-dark::before { background: conic-gradient(from 0deg, #9b7bff, #5b3dff, #22b8ff, #c9bcff, #9b7bff); }
+.mode-btn:hover { transform: translateY(-1px) scale(1.04); }
+.mode-btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+.mode-orb {
+  position: relative; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; overflow: hidden;
+  color: #fff;
+  background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.85), transparent 34%), linear-gradient(160deg, #ffd166, #ff9f1c 55%, #ff7a1c);
+  box-shadow: 0 6px 16px -6px #ff9f1c, inset 0 -4px 8px rgba(0, 0, 0, 0.2);
+  transition: background 0.6s, box-shadow 0.6s;
+}
+.mode-btn.is-dark .mode-orb {
+  background: radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.35), transparent 34%), linear-gradient(160deg, #24124f, #0b1036);
+  box-shadow: 0 6px 16px -6px #7b5cff, inset 0 -4px 8px rgba(0, 0, 0, 0.35);
+}
+.mode-sun, .mode-moon { grid-area: 1 / 1; transition: transform 0.6s cubic-bezier(0.5, 1.6, 0.4, 1), opacity 0.4s; }
+.mode-sun { animation: modeSpin 12s linear infinite; }
+.mode-moon { color: #ffe9a8; opacity: 0; transform: translateY(18px) rotate(-40deg); }
+.mode-btn.is-dark .mode-sun { opacity: 0; transform: translateY(-18px) rotate(90deg); }
+.mode-btn.is-dark .mode-moon { opacity: 1; transform: none; }
+@keyframes modeSpin { to { rotate: 360deg; } }
+.mode-tw { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: #fff; opacity: 0; }
+.mode-tw:nth-of-type(1) { top: 8px; left: 9px; }
+.mode-tw:nth-of-type(2) { bottom: 9px; right: 8px; width: 2px; height: 2px; }
+.mode-btn.is-dark .mode-tw { animation: modeTw 1.8s ease-in-out infinite alternate; }
+.mode-btn.is-dark .mode-tw:nth-of-type(2) { animation-delay: -0.9s; }
+@keyframes modeTw { from { opacity: 0.1; } to { opacity: 1; } }
+html[data-mode='dark'] .mode-btn { background: rgba(255, 255, 255, 0.07); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12); }
+@media (max-width: 420px) { .mode-btn { width: 38px; height: 38px; } .mode-orb { width: 31px; height: 31px; } }
+@media (prefers-reduced-motion: reduce) { .mode-sun, .mode-tw, .mode-moon { animation: none !important; transition: none !important; } }
+.mode-btn.is-menu { display: none; }
+@media (max-width: 560px) {
+  .brand-lang .mode-btn { display: none; }
+  .mode-btn.is-menu { display: grid; }
+}

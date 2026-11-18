@@ -97,7 +97,7 @@ export default function PaidSurveys() {
             {[
               ['megaphone', 'Who pays?', 'Brands, agencies, governments and institutions running research.', '#7B5CFF'],
               ['chat', 'What do you do?', 'Answer questions honestly – usually in a few minutes.', '#1F5BFF'],
-              ['gift', 'What do you get?', 'Points you redeem via PayPal, cash, bank or wire transfer, vouchers or gift cards – plus UPI in India.', '#FFB020']
+              ['gift', 'What do you get?', 'Points you redeem via PayPal, cash, bank or wire transfer, vouchers or gift cards – plus UPI in India.', '#C76A00']
             ].map(([ic, t, d, c], i) => (
               <div key={t} className="relay-st" style={{ '--c': c, '--i': i }}>
                 <span className="relay-ico">

@@ -169,3 +169,34 @@ html.mode-anim::view-transition-new(root) {
     display: none;
   }
 }
+
+/* Profiling quality list: rows were white cards with a mint ping; in the dark they glow instead. */
+html[data-mode='dark'] .qr-list li {
+  color: #e6ebff;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  animation-name: rowPingDark;
+}
+@keyframes rowPingDark {
+  0% {
+    background: rgba(14, 159, 110, 0.35);
+    transform: translateX(6px);
+  }
+  10%,
+  100% {
+    background: rgba(255, 255, 255, 0.06);
+    transform: none;
+  }
+}
+/* Ratings and gems that sat a touch too dim on the dark canvas. */
+html[data-mode='dark'] .gt-gem small {
+  color: #b9a8ff;
+}
+/* Menu button: light bars in the dark so the menu and close icons stay visible. */
+html[data-mode='dark'] .burger {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+html[data-mode='dark'] .burger span {
+  background: #fff;
+}
