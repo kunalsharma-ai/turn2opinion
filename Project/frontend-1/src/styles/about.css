@@ -141,16 +141,19 @@
 .ag-orbit {
   position: absolute;
   inset: 0;
-  animation: scSpinA 30s linear infinite;
+  --R: -215px;
 }
 .ag-orbit.o2 {
-  inset: 14%;
-  animation-duration: 22s;
-  animation-direction: reverse;
+  --R: -150px;
 }
-@keyframes scSpinA {
+/* Each chip runs its own orbit: the outer rotate moves it round the globe, the inner one cancels
+   it so the label stays upright. Same function list at both ends, so it interpolates cleanly. */
+@keyframes agOrbit {
+  from {
+    transform: translate(-50%, -50%) rotate(var(--a)) translateY(var(--R)) rotate(calc(var(--a) * -1));
+  }
   to {
-    transform: rotate(360deg);
+    transform: translate(-50%, -50%) rotate(calc(var(--a) + 360deg)) translateY(var(--R)) rotate(calc(var(--a) * -1 - 360deg));
   }
 }
 .ag-orbit b {
@@ -169,43 +172,25 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(4px);
   --a: calc(360deg / var(--n) * var(--i));
-  transform: translate(-50%, -50%) rotate(var(--a)) translateY(-215px) rotate(calc(var(--a) * -1));
-  animation: agCounter 30s linear infinite;
+  transform: translate(-50%, -50%) rotate(var(--a)) translateY(var(--R)) rotate(calc(var(--a) * -1));
+  animation: agOrbit 30s linear infinite;
 }
 .ag-orbit.o2 b {
   font-size: 11px;
   color: #241600;
   background: linear-gradient(120deg, #ffd36b, #ffb020);
-  transform: translate(-50%, -50%) rotate(var(--a)) translateY(-150px) rotate(calc(var(--a) * -1));
-  animation-name: agCounter2;
   animation-duration: 22s;
   animation-direction: reverse;
-}
-@keyframes agCounter {
-  from {
-    rotate: 0deg;
-  }
-  to {
-    rotate: -360deg;
-  }
-}
-@keyframes agCounter2 {
-  from {
-    rotate: 0deg;
-  }
-  to {
-    rotate: -360deg;
-  }
 }
 @media (max-width: 860px) {
   .ag {
     width: min(100%, 320px);
   }
-  .ag-orbit b {
-    transform: translate(-50%, -50%) rotate(var(--a)) translateY(-150px) rotate(calc(var(--a) * -1));
+  .ag-orbit {
+    --R: -150px;
   }
-  .ag-orbit.o2 b {
-    transform: translate(-50%, -50%) rotate(var(--a)) translateY(-104px) rotate(calc(var(--a) * -1));
+  .ag-orbit.o2 {
+    --R: -104px;
   }
   .ag-dot {
     transform: rotateY(calc(var(--i) * 36deg)) rotateX(calc((var(--i) * 23deg) - 60deg)) translateZ(110px);

@@ -822,3 +822,8 @@
     display: none;
   }
 }
+/* The footer resets link colours; keep the website pill readable inside it. */
+.sn a.sn-site,
+.sn a.sn-site:hover {
+  color: var(--b0);
+}
