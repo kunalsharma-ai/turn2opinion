@@ -21,6 +21,7 @@ import SoundButton from './SoundButton.jsx';
 import ModeButton from './ModeButton.jsx';
 import { seedTestimonials, summarise } from '../utils/reviews.js';
 import Gem from './rating/Gem.jsx';
+import { levelOf } from '../data/reviewFacets.js';
 
 export const ABOUT_MENU = [
   { to: '/about/', label: 'About Turn2Opinion', sub: 'Who we are, our certifications and reach', icon: 'building', tone: 'about' },
@@ -185,8 +186,10 @@ function AboutDropdown({ item, i, path, movePill }) {
               <small>{c.sub}</small>
             </span>
             {c.tone === 'reviews' && stats.avg > 0 ? (
-              <span className="drop-score" aria-label={`Average ${stats.avg.toFixed(1)} out of 5 from ${stats.count} reviews`}>
-                <b>{stats.avg.toFixed(1)}</b>
+              <span className="drop-score" aria-label={`Average gem ${levelOf(stats.avg).gem} from ${stats.count} reviews`}>
+                <b>
+                  <Gem level={Math.round(stats.avg)} size={18} motion="still" /> {levelOf(stats.avg).gem}
+                </b>
                 <small>{stats.count} reviews</small>
               </span>
             ) : (

@@ -2186,31 +2186,6 @@
 :where(html[data-mode='dark']) .pc-tags li {
     color: #e386a5
 }
-:where(html[data-mode='dark']) .mr-strip {
-    border: 1px solid rgba(23, 33, 79, 0.12)
-}
-:where(html[data-mode='dark']) .mr-filters button {
-    border: 1px solid rgba(23, 33, 79, 0.18)
-}
-:where(html[data-mode='dark']) .mr-nav button {
-    border: 1px solid rgba(23, 33, 79, 0.22)
-}
-:where(html[data-mode='dark']) .mr-board {
-    border: 1px solid rgba(23, 33, 79, 0.1)
-}
-:where(html[data-mode='dark']) .mb-cols {
-    color: #b7bed8
-}
-:where(html[data-mode='dark']) .mb-rows button {
-    border: 1px solid rgba(23, 33, 79, 0.06)
-}
-:where(html[data-mode='dark']) .mr-add {
-    border: 1px solid rgba(23, 33, 79, 0.14)
-}
-:where(html[data-mode='dark']) .mra-go {
-    background-color: #0b1128;
-    color: #d9deef
-}
 :where(html[data-mode='dark']) .gvh-kicker {
     border: 1px solid rgba(23, 33, 79, 0.16)
 }

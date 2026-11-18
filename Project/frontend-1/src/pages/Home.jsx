@@ -11,7 +11,7 @@ import CredentialScanner from '../components/sections/CredentialScanner.jsx';
 import HomeHero from '../components/sections/HeroStage.jsx';
 import { ClaimJourney, InvitationChannels, RewardRoutes, RewardWallet } from '../components/sections/Rewards.jsx';
 import { PrivacyVault, SecurityHive, VerificationStack } from '../components/sections/Security.jsx';
-import Testimonials from '../components/sections/Testimonials.jsx';
+import MemberVoices from '../components/sections/MemberVoices.jsx';
 import BlogCard from '../components/BlogCard.jsx';
 import { BLOG_POSTS } from '../data/blog/index.js';
 import { FAQ_GROUPS } from '../data/faqs.js';
@@ -127,17 +127,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TESTIMONIALS — the Opinion Atlas is a dark, cinematic stage, so the section carries the
-          night grade rather than the old pale sky one. */}
-      <section className="section s-night" aria-labelledby="t-title">
+      {/* MEMBER VOICES — the Rate & Reviews panels in compact form (consumer sky, professional
+          boardroom), rated in gems. */}
+      <section className="section s-night mvx-sec" aria-labelledby="t-title">
         <div className="wrap">
           <SectionHead
             id="t-title"
             kicker="Member voices"
             title="Hear it from members, wherever they answered from"
-            lead="Every review below is from a member we hold a record for — with their country, their role and the score they actually gave. Post yours and it lands here straight away."
+            lead="Every review below is from a member we hold a record for, with their country, their role and the gem they actually gave, from Pebble to Diamond. Post yours and it lands here straight away."
           />
-          <Testimonials />
+          <MemberVoices />
         </div>
       </section>
 

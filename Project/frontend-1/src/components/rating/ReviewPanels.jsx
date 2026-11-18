@@ -10,6 +10,7 @@ import Icon from '../Icon.jsx';
 import { Link } from '../../router/Router.jsx';
 import Gem from './Gem.jsx';
 import { countryName } from './VoiceCard.jsx';
+import GemScore from './GemScore.jsx';
 import { levelOf } from '../../data/reviewFacets.js';
 
 const isPro = (r) => r.audience === 'professional';
@@ -21,14 +22,9 @@ const firstSentence = (t = '', max = 90) => {
 const roleOf = (r) => (r.role && r.role !== 'Member' ? r.role : 'Member');
 const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// Ratings are gems, never stars (Kunal, 18 Nov 2026).
 function Stars({ n = 0, className = '' }) {
-  if (!n) return null;
-  return (
-    <span className={`rvx-stars ${className}`} aria-label={`${n} out of 5`}>
-      {'★'.repeat(n)}
-      <i aria-hidden="true">{'★'.repeat(5 - n)}</i>
-    </span>
-  );
+  return <GemScore rating={n} size={16} className={`rvx-stars ${className}`} />;
 }
 
 /** Counts up from 0 once it scrolls into view. Server and first render show the real number. */
@@ -147,8 +143,10 @@ export function ReviewsHero({ list, stats, countries, onRate }) {
           </div>
           <ul className="rvx-stats">
             <li>
-              <CountUp to={stats.avg || 0} decimals={1} />
-              <small>average out of 5</small>
+              <b className="rvx-gemstat">
+                <Gem level={top.v} size={26} motion="float" /> {top.gem}
+              </b>
+              <small>average gem</small>
             </li>
             <li>
               <CountUp to={stats.count} />
@@ -193,10 +191,8 @@ export function ReviewsHero({ list, stats, countries, onRate }) {
               <span className="rvx-halo" />
               <Gem level={top.v} size={128} motion="spin" />
               <p>
-                <b>{stats.avg ? stats.avg.toFixed(1) : '—'}</b>
-                <small>
-                  {top.word} · {top.gem}
-                </small>
+                <b>{top.gem}</b>
+                <small>{top.word} · average gem</small>
               </p>
             </div>
           </div>
@@ -230,14 +226,25 @@ const CON_TINTS = [
   ['#34d399', '#059669']
 ];
 
-export function ConsumerPanel({ list, stats, onReadAll }) {
+// `compact` is the home page's Member voices version: one washing line of four that turns over to
+// the next four on its own, and a lighter header (the section already has its own title).
+export function ConsumerPanel({ list, stats, onReadAll, compact = false, readAllLabel }) {
   const items = useMemo(() => list.filter((r) => !isPro(r) && r.text), [list]);
   const s = stats.byAudience.consumer;
   const L = levelOf(s.avg || 4);
+  const [page, setPage] = useState(0);
+  const pages = Math.max(1, Math.ceil(items.length / 4));
+  useEffect(() => {
+    if (!compact || reduced() || pages < 2) return undefined;
+    const t = setInterval(() => setPage((n) => (n + 1) % pages), 9000);
+    return () => clearInterval(t);
+  }, [compact, pages]);
   const rows = [];
-  for (let k = 0; k < items.length; k += 4) rows.push(items.slice(k, k + 4));
+  if (compact) rows.push(items.slice((page % pages) * 4, (page % pages) * 4 + 4));
+  else for (let k = 0; k < items.length; k += 4) rows.push(items.slice(k, k + 4));
+  const Tag = compact ? 'div' : 'section';
   return (
-    <section id="panel-consumer" className="rvx-panel rvx-con" aria-labelledby="rv-con-h">
+    <Tag id={compact ? undefined : 'panel-consumer'} className={`rvx-panel rvx-con ${compact ? 'is-compact' : ''}`} aria-labelledby={compact ? undefined : 'rv-con-h'}>
       <div className="rc-sky" aria-hidden="true">
         <i className="rc-sun" />
         <i className="rc-cloud c1" />
@@ -252,16 +259,22 @@ export function ConsumerPanel({ list, stats, onReadAll }) {
           <p className="rvx-pkicker">
             <Icon name="bag" size={15} /> Consumer panel
           </p>
-          <h2 id="rv-con-h">
-            Voices from the sofa, the bus <span>and the kitchen table</span>
-          </h2>
-          <p className="rvx-psub">Students, homemakers, shoppers and everyday members telling us how it really feels.</p>
+          {compact ? (
+            <p className="rvx-ptitle">
+              Voices from the sofa, the bus <span>and the kitchen table</span>
+            </p>
+          ) : (
+            <h2 id="rv-con-h">
+              Voices from the sofa, the bus <span>and the kitchen table</span>
+            </h2>
+          )}
+          {!compact && <p className="rvx-psub">Students, homemakers, shoppers and everyday members telling us how it really feels.</p>}
           <div className="rvx-pscore">
             <Gem level={L.v} size={58} motion="float" />
             <p>
-              <b>{s.avg ? s.avg.toFixed(1) : '—'}</b>
+              <b>{L.gem}</b>
               <span>
-                {L.word} · {s.count} scored {s.count === 1 ? 'review' : 'reviews'}
+                {L.word} · {s.count} {s.count === 1 ? 'gem' : 'gems'} given
               </span>
             </p>
           </div>
@@ -269,7 +282,7 @@ export function ConsumerPanel({ list, stats, onReadAll }) {
 
         <div className="rc-lines">
           {rows.map((row, ri) => (
-            <ul key={ri} className="rc-line" style={{ '--r': ri }}>
+            <ul key={compact ? `p${page}` : ri} className="rc-line" style={{ '--r': ri }}>
               {row.map((r, k) => {
                 const [t1, t2] = CON_TINTS[(ri * 4 + k) % CON_TINTS.length];
                 return (
@@ -298,8 +311,15 @@ export function ConsumerPanel({ list, stats, onReadAll }) {
           ))}
         </div>
         <p className="rvx-pmore">
+          {compact && pages > 1 && (
+            <span className="rc-pages" role="group" aria-label="More consumer reviews">
+              {Array.from({ length: pages }).map((_, k) => (
+                <button key={k} type="button" className={k === page % pages ? 'is-on' : ''} aria-label={`Show reviews ${k * 4 + 1} to ${Math.min(items.length, k * 4 + 4)}`} aria-pressed={k === page % pages} onClick={() => setPage(k)} />
+              ))}
+            </span>
+          )}
           <button type="button" className="rvx-pbtn" onClick={onReadAll}>
-            Filter consumer reviews on the wall <Icon name="arrow" size={16} />
+            {readAllLabel || 'Filter consumer reviews on the wall'} <Icon name="arrow" size={16} />
           </button>
         </p>
       </div>
@@ -307,7 +327,7 @@ export function ConsumerPanel({ list, stats, onReadAll }) {
         <path d="M0 60 C 240 120 480 0 720 60 S 1200 120 1440 60 V120 H0Z" />
         <path d="M0 80 C 260 30 520 120 780 70 S 1240 40 1440 90 V120 H0Z" />
       </svg>
-    </section>
+    </Tag>
   );
 }
 
@@ -321,7 +341,7 @@ const SECTORS = [
 ];
 const sectorOf = (r) => SECTORS.find((s) => s.re.test(` ${r.role || ''} `)) || SECTORS[1];
 
-export function ProPanel({ list, stats, onReadAll }) {
+export function ProPanel({ list, stats, onReadAll, compact = false, readAllLabel }) {
   const items = useMemo(() => list.filter((r) => isPro(r) && r.text), [list]);
   const s = stats.byAudience.professional;
   const L = levelOf(s.avg || 4);
@@ -340,9 +360,11 @@ export function ProPanel({ list, stats, onReadAll }) {
   }, [shown.length, sec]);
   const sp = shown[spot % Math.max(1, shown.length)];
   const spSec = sp ? sectorOf(sp) : SECTORS[0];
-  const grid = more ? shown : shown.slice(0, 6);
+  const cap = compact ? 4 : 6;
+  const grid = more ? shown : shown.slice(0, cap);
+  const Tag = compact ? 'div' : 'section';
   return (
-    <section id="panel-pro" className="rvx-panel rvx-pro" aria-labelledby="rv-pro-h">
+    <Tag id={compact ? undefined : 'panel-pro'} className={`rvx-panel rvx-pro ${compact ? 'is-compact' : ''}`} aria-labelledby={compact ? undefined : 'rv-pro-h'}>
       <div className="rp-bg" aria-hidden="true">
         <i className="rp-floor" />
         <i className="rp-glow g1" />
@@ -356,16 +378,22 @@ export function ProPanel({ list, stats, onReadAll }) {
           <p className="rvx-pkicker">
             <Icon name="briefcase" size={15} /> Business professional panel
           </p>
-          <h2 id="rv-pro-h">
+          {compact ? (
+            <p className="rvx-ptitle">
+              Notes from the desk, <span>between meetings</span>
+            </p>
+          ) : (
+            <h2 id="rv-pro-h">
             Notes from the desk, <span>between meetings</span>
           </h2>
-          <p className="rvx-psub">Managers, analysts, engineers and specialists on what our B2B studies are like, sector by sector.</p>
+          )}
+          {!compact && <p className="rvx-psub">Managers, analysts, engineers and specialists on what our B2B studies are like, sector by sector.</p>}
           <div className="rvx-pscore">
             <Gem level={L.v} size={58} motion="spin" />
             <p>
-              <b>{s.avg ? s.avg.toFixed(1) : '—'}</b>
+              <b>{L.gem}</b>
               <span>
-                {L.word} · {s.count} scored {s.count === 1 ? 'review' : 'reviews'}
+                {L.word} · {s.count} {s.count === 1 ? 'gem' : 'gems'} given
               </span>
             </p>
           </div>
@@ -438,16 +466,16 @@ export function ProPanel({ list, stats, onReadAll }) {
           </ul>
         </div>
         <p className="rvx-pmore">
-          {shown.length > 6 && (
+          {!compact && shown.length > cap && (
             <button type="button" className="rvx-pbtn is-ghost" onClick={() => setMore((m) => !m)}>
               {more ? 'Show fewer passes' : `Show all ${shown.length} passes`}
             </button>
           )}
           <button type="button" className="rvx-pbtn" onClick={onReadAll}>
-            Filter professional reviews on the wall <Icon name="arrow" size={16} />
+            {readAllLabel || 'Filter professional reviews on the wall'} <Icon name="arrow" size={16} />
           </button>
         </p>
       </div>
-    </section>
+    </Tag>
   );
 }

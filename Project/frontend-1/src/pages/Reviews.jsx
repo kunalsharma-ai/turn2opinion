@@ -105,7 +105,7 @@ export default function Reviews() {
           <ol className="gsc-row" data-reveal>
             {LEVELS.map((L, i) => (
               <li key={L.key} style={{ '--g1': L.c1, '--g2': L.c2, '--g3': L.c3, '--glow': L.glow, '--i': i }}>
-                <button type="button" onClick={() => openStudio(L.v)} aria-label={`Rate us ${L.v} out of 5 — ${L.word}`}>
+                <button type="button" onClick={() => openStudio(L.v)} aria-label={`Rate us ${L.gem}, ${L.word}`}>
                   <span className="gsc-plinth" aria-hidden="true" />
                   <Gem level={L.v} size={74} motion="float" />
                   <b className="gsc-n">{L.v}</b>

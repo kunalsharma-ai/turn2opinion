@@ -244,7 +244,7 @@ function OpinionStudio({ open, initialRating, onClose, onDone, user }) {
               </p>
               <h2 id="studio-title">Thank you, {profile.name.split(' ')[0] || 'friend'}!</h2>
               <p className="gd-text">
-                Your {L.gem.toLowerCase()} — <strong>{rating}/5 · {L.word}</strong> — has landed in <strong>Member voices</strong>
+                Your {L.gem.toLowerCase()} — <strong>{L.gem} · {L.word}</strong> — has landed in <strong>Member voices</strong>
                 {countryName ? (
                   <>
                     {' '}
@@ -332,7 +332,7 @@ function OpinionStudio({ open, initialRating, onClose, onDone, user }) {
                   </h2>
                   <div className="gs-recap">
                     <Gem level={rating} size={30} motion="float" />
-                    <b>{rating}/5</b>
+                    <b>{L.gem}</b>
                     <span>{L.word}</span>
                     <span className="gsr-aud">
                       <Icon name={world.icon} size={13} /> {world.label}

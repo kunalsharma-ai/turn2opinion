@@ -26,6 +26,7 @@ import Icon from '../components/Icon.jsx';
 import { Flag, FrLogo, T2OMark } from '../components/Brand.jsx';
 import { REGIONS, ALL_COUNTRIES } from '../data/profiles.js';
 import { SURVEYS } from '../data/surveys.js';
+import GemScore from '../components/rating/GemScore.jsx';
 import { TESTIMONIALS } from '../data/testimonials.js';
 
 /* ---------------- 1. Hero art: a 3D wire globe ---------------- */
@@ -374,7 +375,7 @@ function ProductWorlds() {
                 <footer>
                   <Flag code={t.country} size={16} /> <strong>{t.name}</strong>
                   <span>{t.role}</span>
-                  {t.rating ? <i aria-label={`${t.rating} out of 5`}>{'★'.repeat(t.rating)}</i> : null}
+                  {t.rating ? <GemScore rating={t.rating} size={15} /> : null}
                 </footer>
               </li>
             ))}
@@ -420,7 +421,7 @@ function ProductWorlds() {
                       {t.company ? ` · ${t.company}` : ''} <Flag code={t.country} size={13} />
                     </span>
                     <p>“{t.text}”</p>
-                    {t.rating ? <i aria-label={`${t.rating} out of 5`}>{'★'.repeat(t.rating)}</i> : null}
+                    {t.rating ? <GemScore rating={t.rating} size={15} /> : null}
                   </div>
                 </li>
               ))}

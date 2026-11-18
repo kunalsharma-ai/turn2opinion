@@ -6999,3 +6999,39 @@ button.vm-lcd:focus-visible {
     max-width: 40%;
   }
 }
+
+/* ---------- Gem score (Kunal, 18 Nov 2026): every rating on the site is a gem and its name
+   (Pebble, Quartz, Amber, Sapphire, Diamond), never stars or a "/5" number. The gem carries the
+   colour; the name takes the colour of whatever it sits in, so it stays readable light or dark. */
+.gscore {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  vertical-align: middle;
+  line-height: 1;
+  white-space: nowrap;
+  letter-spacing: normal;
+}
+.gscore b {
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+}
+.gscore small {
+  font-size: 0.72rem;
+  font-weight: 600;
+  opacity: 0.8;
+}
+.gscore .gem,
+.gscore svg {
+  flex: none;
+  filter: drop-shadow(0 2px 4px color-mix(in srgb, var(--g2, #5b8cff) 45%, transparent));
+}
+.rvx-stars {
+  margin-left: auto;
+}
+.rvx-gemstat {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}

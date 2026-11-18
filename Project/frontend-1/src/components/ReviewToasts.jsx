@@ -150,10 +150,7 @@ export default function ReviewToasts({ blocked }) {
       <div className="gt-main">
         <span className="gt-gem">
           <Gem level={item.rating || 4} size={46} motion="spin" />
-          <b>
-            {item.rating}
-            <i>/5</i>
-          </b>
+          <b>{L.gem}</b>
           <small>{L.word}</small>
         </span>
         <div className="gt-body">

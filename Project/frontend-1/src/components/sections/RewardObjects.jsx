@@ -6,6 +6,7 @@
 // (picked for topic; it does not claim that member used that payout method).
 import { Flag } from '../Brand.jsx';
 import Icon from '../Icon.jsx';
+import GemScore from '../rating/GemScore.jsx';
 import { TESTIMONIALS } from '../../data/testimonials.js';
 
 const VOICE = {
@@ -36,9 +37,7 @@ function Voice({ id }) {
         <Flag code={r.country} size={14} /> <b>{r.name}</b>
         {r.role && r.role !== 'Member' ? <span>{r.role}</span> : null}
         {r.rating ? (
-          <span className="rx-stars" aria-label={`${r.rating} out of 5`}>
-            {'★'.repeat(r.rating)}
-          </span>
+          <GemScore rating={r.rating} size={16} className="rx-stars" />
         ) : null}
       </figcaption>
     </figure>

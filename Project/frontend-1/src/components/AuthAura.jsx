@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import Icon from './Icon.jsx';
 import { Flag, T2OMark } from './Brand.jsx';
 import { TESTIMONIALS } from '../data/testimonials.js';
+import GemScore from './rating/GemScore.jsx';
 import { playAudience } from '../utils/sound.js';
 
 const KEY = 't2o_aud';
@@ -101,9 +102,7 @@ export function AuthVoice({ aud }) {
         <Flag code={r.country} size={16} /> <b>{r.name}</b>
         {r.role && r.role !== 'Member' ? <span>{r.role}</span> : null}
         {r.rating ? (
-          <span className="av-stars" aria-label={`${r.rating} out of 5`}>
-            {'★'.repeat(r.rating)}
-          </span>
+          <GemScore rating={r.rating} size={16} className="av-stars" />
         ) : null}
       </figcaption>
       <span className="av-dots" aria-hidden="true">
