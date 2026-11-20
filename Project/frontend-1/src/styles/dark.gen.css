@@ -915,6 +915,9 @@
 :where(html[data-mode='dark']) .gem-sparks i {
     background-color: #0b1128
 }
+:where(html[data-mode='dark']) .aud-switch button.is-on .aud-new {
+    background-color: #0b1128
+}
 :where(html[data-mode='dark']) .rw-track span {
     background-image: linear-gradient(90deg, #ffd68c, #ff5c7a)
 }
@@ -1704,6 +1707,14 @@
 :where(html[data-mode='dark']) .gvf-flag {
     border: 1px solid rgba(23, 33, 79, 0.1)
 }
+:where(html[data-mode='dark']) .minor-join-note {
+    color: #e5d8ed;
+    background-image: linear-gradient(120deg, #2e0b1b, #0c3025);
+    border: 2px dashed #7a1e4f
+}
+:where(html[data-mode='dark']) .minor-join-note a {
+    color: #ef80ac
+}
 :where(html[data-mode='dark']) #t2o {
     color: #d9deef
 }
@@ -2412,6 +2423,37 @@
 }
 :where(html[data-mode='dark']) .vfab-msg__body strong em {
     color: #ff7373
+}
+:where(html[data-mode='dark']) .vs--sunrise .vs-word {
+    -webkit-text-stroke-color: rgba(146, 178, 255, 0.1)
+}
+:where(html[data-mode='dark']) .sc-float em {
+    background-color: rgba(11, 17, 40, 0.85)
+}
+:where(html[data-mode='dark']) .sc-cloud {
+    background-color: rgba(11, 17, 40, 0.9)
+}
+:where(html[data-mode='dark']) .sc-stk {
+    background-color: #0b1128;
+    border: 3px solid #17214f
+}
+:where(html[data-mode='dark']) .sc-xp {
+    background-color: #190c31
+}
+:where(html[data-mode='dark']) .sc-xp b {
+    color: #e1d8ed
+}
+:where(html[data-mode='dark']) .vs--passport .vs-h em {
+    color: #eaa19b
+}
+:where(html[data-mode='dark']) .sc-pass .pg {
+    background-image: repeating-linear-gradient(180deg, #2e2611 0 15px, #342c1a 15px 16px)
+}
+:where(html[data-mode='dark']) .sc-pass .pg.l s:first-child {
+    background-color: #131c42
+}
+:where(html[data-mode='dark']) .sc-pass .stamp {
+    color: var(--sc, #eaa19b)
 }
 :where(html[data-mode='dark']) .lang-btn {
     color: #d9deef;

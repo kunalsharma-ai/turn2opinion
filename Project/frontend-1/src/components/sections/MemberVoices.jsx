@@ -115,7 +115,7 @@ export default function MemberVoices() {
           ))}
         </span>
         <span className="mvx-add-copy">
-          <strong>Add your gem to the wall</strong>
+          <strong>Add your gem to the reviews</strong>
           <small>Pick Pebble to Diamond and say why. Your review lands here the moment you post it.</small>
         </span>
         <span className="mvx-add-go" aria-hidden="true">

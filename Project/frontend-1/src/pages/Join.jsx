@@ -35,7 +35,8 @@ const emailCheck = {
   }
 };
 
-const category = { consumer: "b2c", pro: "b2b" };
+// Teens (13–17) sign up as b2c: the backend is unchanged and recognises under-18s by date of birth.
+const category = { consumer: "b2c", pro: "b2b", minor: "b2c" };
 const STEPS = ['About you', 'Secure your account', 'Contact & profile'];
 const STEP_ICONS = ['user', 'lock', 'phone'];
 const TYPE_KEY = 't2o_join_type';
@@ -155,6 +156,7 @@ function validate(step, f) {
     else if (age < 0 || new Date(f.dob) > new Date()) e.dob = 'Date of birth can’t be in the future.';
     else if (age < SITE.minAge) e.dob = `You must be at least ${SITE.minAge} years old to join.`;
     else if (age > 100) e.dob = 'Check the year – that makes you over 100.';
+    else if (f.type === 'minor' && age >= SITE.adultAge) e.dob = 'The teen panel is for ages 13 to 17. Pick Consumer or Business professional instead.';
     if (!f.gender) e.gender = 'Select your gender.';
   }
 
@@ -225,11 +227,11 @@ function MemberCard({ f, step }) {
   const c = COUNTRIES.find((x) => x.c === f.country);
   return (
     <div className="mcard-scene" onMouseMove={onMove} onMouseLeave={reset} aria-hidden="true">
-      <div className={`mcard ${f.type === 'pro' ? 'is-pro' : ''}`} ref={card}>
+      <div className={`mcard ${f.type === 'pro' ? 'is-pro' : f.type === 'minor' ? 'is-minor' : ''}`} ref={card}>
         <div className="mcard-holo" />
         <div className="mcard-top">
           <span className="mcard-brand">Turn2Opinion</span>
-          <span className="mcard-type">{f.type === 'pro' ? 'Professional' : 'Consumer'} member</span>
+          <span className="mcard-type">{f.type === 'pro' ? 'Professional' : f.type === 'minor' ? 'Teen panel' : 'Consumer'} member</span>
         </div>
         <div className="mcard-chip" />
         <p className="mcard-name">{name || 'Your name here'}</p>
@@ -239,7 +241,7 @@ function MemberCard({ f, step }) {
           <span>{f.dob ? `Born ${formatDate(f.dob)}` : 'Member since today'}</span>
         </div>
       </div>
-      <img className="mcard-peep" src={asset(`/images/people/${f.type === 'pro' ? 'business' : 'shopper'}.svg`)} alt={f.type === 'pro' ? 'Business professional taking paid surveys' : 'Consumer taking paid surveys'} width="160" height="190" key={f.type} />
+      <img className="mcard-peep" src={asset(`/images/people/${f.type === 'pro' ? 'business' : f.type === 'minor' ? 'gamer' : 'shopper'}.svg`)} alt={f.type === 'pro' ? 'Business professional taking paid surveys' : f.type === 'minor' ? 'Teen member of the Turn2Opinion teen panel' : 'Consumer taking paid surveys'} width="160" height="190" key={f.type} />
       {['₹', '$', '€', '£'].map((c, i) => (
         <span key={c} className={`mc-coin k${i}`}>
           {c}
@@ -330,12 +332,13 @@ useEffect(() => {
   const queries = Object.fromEntries(params.entries());
   // /join/professional/ is the clean URL; ?category= still works for old links.
   if (/\/join\/professional\/?$/.test(window.location.pathname)) queries.category = 'professional';
+  if (/\/join\/minor\/?$/.test(window.location.pathname)) queries.category = 'minor';
 
   if (!(queries.category)) return;
 
   setF(prev => ({
     ...prev,
-    type: queries?.category==="professional"?"pro":"consumer"
+    type: queries?.category==="professional"?"pro":queries?.category==="minor"?"minor":"consumer"
   }));
 },[])
 
@@ -855,13 +858,13 @@ const submitSignup = async () => {
     );
   }
   return (
-    <section className={`join theme-${f.type === 'pro' ? 'pro' : 'consumer'}`}>
+    <section className={`join theme-${f.type === 'pro' ? 'pro' : f.type === 'minor' ? 'minor' : 'consumer'}`}>
       <div className="join-bg" aria-hidden="true">
         <span />
         <span />
         <span />
       </div>
-      <AuthAura aud={f.type === 'pro' ? 'pro' : 'consumer'} />
+      <AuthAura aud={f.type === 'pro' || f.type === 'minor' ? f.type : 'consumer'} />
       <div className="wrap join-grid">
         <div className="join-side">
           <Breadcrumbs items={[{ label: 'Join free' }]} />
@@ -875,7 +878,7 @@ const submitSignup = async () => {
           </p>
           <p className="join-lead">No fees, no investment – just honest answers. Unlock each step below as you go.</p>
           <MemberCard f={f} step={step} />
-          <AuthVoice aud={f.type === 'pro' ? 'pro' : 'consumer'} />
+          <AuthVoice aud={f.type === 'pro' || f.type === 'minor' ? f.type : 'consumer'} />
         </div>
 
         <div className="join-card">
@@ -894,10 +897,11 @@ const submitSignup = async () => {
             {/* ================= STEP 0: ABOUT YOU ================= */}
             {step === 0 && (
               <>
-                <div className="type-toggle" role="radiogroup" aria-label="I am joining as">
+                <div className="type-toggle is-three" role="radiogroup" aria-label="I am joining as">
                   {[
                     ['consumer', 'Consumer', 'users', 'Everyday opinions on products & life'],
-                    ['pro', 'Business professional', 'briefcase', 'Also get B2B & workplace studies']
+                    ['pro', 'Business professional', 'briefcase', 'Also get B2B & workplace studies'],
+                    ['minor', 'Minor · 13–17', 'sparkles', 'Teen panel, with a parent’s permission']
                   ].map(([v, l, ic, d]) => (
                     <button type="button" role="radio" aria-checked={f.type === v} key={v} className={`type-opt to-${v} ${f.type === v ? 'is-on' : ''}`} onClick={() => {
                       if (f.type !== v) playAudience(v);
@@ -919,6 +923,17 @@ const submitSignup = async () => {
                     </button>
                   ))}
                 </div>
+                {f.type === 'minor' && (
+                  <p className="minor-join-note" key="mjn">
+                    <span className="mjn-keys" aria-hidden="true">
+                      <i>🔑</i>
+                      <i>🔑</i>
+                    </span>
+                    <span>
+                      <strong>Two keys switch your account on.</strong> After you sign up we email your parent or guardian. They say yes, you say yes in your own words, and only then do surveys start. <a href="/earn/minors/">How the teen panel works</a>
+                    </span>
+                  </p>
+                )}
                 <div className="form-grid two">
                   <div data-k="firstName">
                     <Field id="j-first" label="First name" error={errOf('firstName')} valid={okOf('firstName')}>

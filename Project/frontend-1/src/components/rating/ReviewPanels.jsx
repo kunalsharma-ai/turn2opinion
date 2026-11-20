@@ -326,9 +326,11 @@ export function ConsumerPanel({ list, stats, onReadAll, compact = false, readAll
               ))}
             </span>
           )}
-          <button type="button" className="rvx-pbtn" onClick={onReadAll}>
-            {readAllLabel || 'Filter consumer reviews on the wall'} <Icon name="arrow" size={16} />
-          </button>
+          {onReadAll && (
+            <button type="button" className="rvx-pbtn" onClick={onReadAll}>
+              {readAllLabel || 'Read every consumer review'} <Icon name="arrow" size={16} />
+            </button>
+          )}
         </p>
       </div>
       <svg className="rc-waves" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
@@ -479,9 +481,11 @@ export function ProPanel({ list, stats, onReadAll, compact = false, readAllLabel
               {more ? 'Show fewer passes' : `Show all ${shown.length} passes`}
             </button>
           )}
-          <button type="button" className="rvx-pbtn" onClick={onReadAll}>
-            {readAllLabel || 'Filter professional reviews on the wall'} <Icon name="arrow" size={16} />
-          </button>
+          {onReadAll && (
+            <button type="button" className="rvx-pbtn" onClick={onReadAll}>
+              {readAllLabel || 'Read every professional review'} <Icon name="arrow" size={16} />
+            </button>
+          )}
         </p>
       </div>
     </Tag>

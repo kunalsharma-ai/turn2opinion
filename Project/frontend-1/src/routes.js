@@ -40,6 +40,55 @@ export const ROUTES = [
     },
     sitemap: { priority: '0.9', changefreq: 'weekly' }
   },
+  // Round 10 (Kunal, 20 Nov 2026): the Earn menu, one page per audience plus the eligibility guide.
+  {
+    path: '/earn/consumers/',
+    load: page(() => import('./pages/EarnConsumers.jsx')),
+    seo: {
+      title: 'Paid Surveys for Consumers – Earn From Everyday Life | Turn2Opinion',
+      description:
+        'Shoppers, students, parents, gamers and travellers: turn the opinions you already have into PayPal, UPI, voucher and gift card rewards. Free to join.',
+      crumb: 'Consumers',
+      parent: { path: '/paid-surveys/', name: 'Earn' }
+    },
+    sitemap: { priority: '0.9', changefreq: 'monthly' }
+  },
+  {
+    path: '/earn/business-professionals/',
+    load: page(() => import('./pages/EarnProfessionals.jsx')),
+    seo: {
+      title: 'Paid B2B Surveys for Business Professionals | Turn2Opinion',
+      description:
+        'Managers, IT buyers, finance leads, engineers and founders: get paid for B2B surveys matched to your role, seniority and industry. Verified, private, free.',
+      crumb: 'Business Professionals',
+      parent: { path: '/paid-surveys/', name: 'Earn' }
+    },
+    sitemap: { priority: '0.9', changefreq: 'monthly' }
+  },
+  {
+    path: '/earn/minors/',
+    load: page(() => import('./pages/EarnMinors.jsx')),
+    seo: {
+      title: 'Teen Survey Panel for Ages 13–17 With Parent Permission | Turn2Opinion',
+      description:
+        'Our new teen panel lets 13 to 17 year olds share their views safely: a parent or guardian gives permission, the teen decides, and every study is age-checked.',
+      crumb: 'Minors (13–17)',
+      parent: { path: '/paid-surveys/', name: 'Earn' }
+    },
+    sitemap: { priority: '0.8', changefreq: 'monthly' }
+  },
+  {
+    path: '/earn/who-can-join/',
+    load: page(() => import('./pages/EarnWhoCanJoin.jsx')),
+    seo: {
+      title: 'Who Can Join Turn2Opinion? Age, Country & Role Guide',
+      description:
+        'Check if you can join Turn2Opinion: adults 18+, business professionals and teens aged 13–17 with parent permission, across 55 countries. One honest account each.',
+      crumb: 'Who can join',
+      parent: { path: '/paid-surveys/', name: 'Earn' }
+    },
+    sitemap: { priority: '0.8', changefreq: 'monthly' }
+  },
   {
     path: '/profiling/',
     load: page(() => import('./pages/Profiling.jsx')),
@@ -178,6 +227,20 @@ export const ROUTES = [
       title: 'Join Free as a Business Professional | Turn2Opinion',
       description:
         'Create your free Turn2Opinion professional account in minutes. No fees, no investment – verify your details and start receiving paid B2B survey invitations.',
+      crumb: 'Join free',
+      canonical: '/join/',
+      robots: 'noindex,follow'
+    },
+    sitemap: false
+  },
+  {
+    // Teen (13–17) sign-up: same page as /join/ with the Minor option preselected.
+    path: '/join/minor/',
+    load: page(() => import('./pages/Join.jsx')),
+    seo: {
+      title: 'Join the Teen Panel (13–17) | Turn2Opinion',
+      description:
+        'Teens aged 13 to 17 can join the Turn2Opinion teen panel. Sign up, then a parent or guardian gives permission before any survey starts.',
       crumb: 'Join free',
       canonical: '/join/',
       robots: 'noindex,follow'

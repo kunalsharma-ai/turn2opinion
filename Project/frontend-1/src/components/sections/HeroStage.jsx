@@ -1,4 +1,4 @@
-// Home hero: consumer / professional switch that re-tunes the tagline, the rotating audience word,
+// Home hero: consumer / professional / minor switch that re-tunes the tagline, the rotating audience word,
 // the persona orbit and the animated "survey → reward unlocked" phone. No fake amounts are shown.
 import React, { useEffect, useState } from 'react';
 import { Link } from '../../router/Router.jsx';
@@ -13,6 +13,7 @@ import { useI18n } from '../../i18n/I18nProvider.jsx';
 import { tr } from '../../i18n/engine.js';
 import { playAudience } from '../../utils/sound.js';
 import { api } from '../../utils/api.js';
+import TeenStage from './TeenStage.jsx';
 
 export const AUDIENCES = {
   consumer: {
@@ -42,7 +43,28 @@ export const AUDIENCES = {
     opts: ['I do', 'My team decides', 'Someone else'],
     badge: 'B2B study · matched to your role',
     ribbon: [['chip', 'IT managers'], ['pulse', 'Doctors'], ['bank', 'CFOs'], ['megaphone', 'Marketers'], ['gear', 'Engineers'], ['users', 'HR leaders'], ['briefcase', 'Founders'], ['truck', 'Buyers']]
+  },
+  // Round 10b (Kunal, 20 Nov 2026): the teen panel gets its own neon "soundstage" slide, rebuilt from scratch.
+  minor: {
+    label: 'Minors',
+    tag: 'New',
+    motto: ['Press play.', 'Say it loud.', 'Get heard.'],
+    title: ['Aged 13 to 17?', 'Turn Your Voice Up.'],
+    tagline: 'The games you play, the music on repeat, the trainers you want next – brands are making them for you. This is where you tell them what you really think.',
+    lead: 'The teen panel runs on two keys: a parent or guardian says yes first, then you do, and every study is age-checked. Made for',
+    leadEnd: 'and every teen with something to say.',
+    who: ['gamers', 'creators', 'sneakerheads', 'bookworms', 'athletes', 'coders', 'artists', 'music lovers'],
+    cta: 'Join the teen panel',
+    ribbon: [['game', 'Gamers'], ['pen', 'Creators'], ['ball', 'Athletes'], ['chip', 'Coders'], ['play', 'Streamers'], ['cap', 'Students'], ['volume', 'Music lovers'], ['sparkles', 'Artists']]
   }
+};
+const AUD_ICON = { consumer: 'bag', professional: 'briefcase', minor: 'sparkles' };
+const AUD_ORDER = ['consumer', 'professional', 'minor'];
+const JOIN_LINK = { consumer: '/join/', professional: '/join/professional/', minor: '/join/minor/' };
+const PROOF = {
+  consumer: ['Free forever', 'No investment', 'PayPal, cash, bank, wire, vouchers, gift cards & UPI in India'],
+  professional: ['Free forever', 'No investment', 'PayPal, cash, bank, wire, vouchers, gift cards & UPI in India'],
+  minor: ['Free, always', 'A parent says yes first', 'Skip anything, any time']
 };
 
 function Rotator({ words }) {
@@ -94,7 +116,8 @@ export function AudienceSwitch({ value, onChange, timer, paused, ms, onHold }) {
       {timer && <span className="aud-timer" key={timer} aria-hidden="true" />}
       {Object.entries(AUDIENCES).map(([k, a]) => (
         <button key={k} type="button" aria-pressed={value === k} className={value === k ? 'is-on' : ''} onClick={() => onChange(k)}>
-          <Icon name={k === 'consumer' ? 'bag' : 'briefcase'} size={16} /> {a.label}
+          <Icon name={AUD_ICON[k]} size={16} /> {a.label}
+          {a.tag && <em className="aud-new">{a.tag}</em>}
         </button>
       ))}
     </div>
@@ -168,13 +191,15 @@ export function RewardStage({ aud }) {
   const p = list[i % list.length];
   return (
     <div className={`portal aud-${aud}`} aria-hidden="true">
-      <span className={aud === 'consumer' ? 'money-rain' : 'money-rain is-rise'} key={`rain-${aud}`}>
-        {(aud === 'consumer' ? ['₹', '$', '€', '£', '¥', '$', '₹', '€', '£', '$'] : ['$', '€', '£', '$', '₹', '€', '$', '£', '€', '$']).map((c, k) => (
-          <i key={k} className={k % 3 === 0 ? 'note' : 'coin'} style={{ '--k': k }}>
-            {c}
-          </i>
-        ))}
-      </span>
+      {(
+        <span className={aud === 'consumer' ? 'money-rain' : 'money-rain is-rise'} key={`rain-${aud}`}>
+          {(aud === 'consumer' ? ['₹', '$', '€', '£', '¥', '$', '₹', '€', '£', '$'] : ['$', '€', '£', '$', '₹', '€', '$', '£', '€', '$']).map((c, k) => (
+            <i key={k} className={k % 3 === 0 ? 'note' : 'coin'} style={{ '--k': k }}>
+              {c}
+            </i>
+          ))}
+        </span>
+      )}
       <span className="portal-rings">
         <i />
         <i />
@@ -262,7 +287,7 @@ export function RewardStage({ aud }) {
           </span>
           <span>
             <b>Reward unlocked</b>
-            <small>Redeem via {METHOD_LABEL[p.m]}</small>
+            <small>{`Redeem via ${METHOD_LABEL[p.m]}`}</small>
           </span>
           <span className="pr-burst">
             {Array.from({ length: 8 }).map((_, k) => (
@@ -304,7 +329,7 @@ export default function HomeHero() {
     if (!running) return undefined;
     const t = setTimeout(() => {
       if (document.hidden) return setTick((n) => n + 1);
-      setAud((x) => (x === 'consumer' ? 'professional' : 'consumer'));
+      setAud((x) => AUD_ORDER[(AUD_ORDER.indexOf(x) + 1) % AUD_ORDER.length]);
       setTick((n) => n + 1);
     }, FLIP_MS);
     return () => clearTimeout(t);
@@ -355,8 +380,8 @@ export default function HomeHero() {
             ))}
           </p>
           <h1 className="hero-title">
-            <span className="ht-line l1">Paid Online Surveys.</span>
-            <span className="ht-line l2">Your Opinion Matters.</span>
+            <span className="ht-line l1" key={`t1-${aud}`}>{a.title ? a.title[0] : 'Paid Online Surveys.'}</span>
+            <span className="ht-line l2" key={`t2-${aud}`}>{a.title ? a.title[1] : 'Your Opinion Matters.'}</span>
           </h1>
           <p className="hero-tagline" key={aud}>
             <WordSplit text={a.tagline} />
@@ -365,27 +390,23 @@ export default function HomeHero() {
             {a.lead} <Rotator words={a.who} /> {a.leadEnd}
           </p>
           <div className="hero-actions" key={`a-${aud}`}>
-            <a href={aud === 'professional' ? '/join/professional/' : '/join/'} className="btn btn-primary btn-lg btn-shimmer">
+            <a href={JOIN_LINK[aud]} className="btn btn-primary btn-lg btn-shimmer">
               {a.cta} <Icon name="arrow" size={18} />
             </a>
-            <Link to="/how-it-works/" className="btn btn-ghost btn-lg">
-              <Icon name="play" size={18} /> How it works
+            <Link to={aud === 'minor' ? '/earn/minors/' : '/how-it-works/'} className="btn btn-ghost btn-lg">
+              <Icon name="play" size={18} /> {aud === 'minor' ? 'See how the two keys work' : 'How it works'}
             </Link>
           </div>
-          <ul className="hero-proof">
-            <li>
-              <Icon name="check" size={16} /> Free forever
-            </li>
-            <li>
-              <Icon name="check" size={16} /> No investment
-            </li>
-            <li>
-              <Icon name="check" size={16} /> PayPal, cash, bank, wire, vouchers, gift cards & UPI in India
-            </li>
+          <ul className="hero-proof" key={`p-${aud}`}>
+            {PROOF[aud].map((t) => (
+              <li key={t}>
+                <Icon name="check" size={16} /> {t}
+              </li>
+            ))}
           </ul>
         </div>
         <div className="hero-art" key={`art-${aud}`}>
-          <RewardStage aud={aud} />
+          {aud === 'minor' ? <TeenStage /> : <RewardStage aud={aud} />}
         </div>
       </div>
     </section>

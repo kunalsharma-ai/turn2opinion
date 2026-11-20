@@ -2725,3 +2725,460 @@
     animation: none !important;
   }
 }
+
+/* =========================================================================================
+   Earn pages: four templates of their own (sunrise · ticker · sticker · passport)
+   ========================================================================================= */
+
+/* 20. SUNRISE (Earn · Consumers) — sky gradient, rising sun, purchases floating up as points. */
+.vs--sunrise {
+  --v1: #2f6bff;
+  --v2: #ff9a3d;
+  --vbg: linear-gradient(180deg, #e7f0ff 0%, #fff1e2 70%, #ffe2c4 100%);
+  --vink: #13204a;
+  --vtext: #4a5680;
+  --vfont: var(--display);
+  --vscreen: linear-gradient(180deg, #5b8dff 0%, #a9c3ff 38%, #ffd3a8 72%, #ffb070 100%);
+}
+.vs--sunrise .vs-word {
+  -webkit-text-stroke-color: rgba(47, 107, 255, 0.1);
+}
+.vs--sunrise .vs-screen {
+  border-radius: 26px 26px 120px 26px;
+}
+.sc-sun {
+  position: absolute;
+  left: 50%;
+  bottom: 18%;
+  width: 22%;
+  aspect-ratio: 1;
+  margin-left: -11%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff6c9 0 30%, #ffc94a 60%, #ff9a3d 100%);
+  box-shadow: 0 0 60px 20px rgba(255, 190, 90, 0.55);
+  animation: sunRiseV 6s ease-in-out infinite;
+}
+.sc-sun i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 85%;
+  margin: 0 0 0 -2px;
+  border-radius: 4px;
+  background: linear-gradient(transparent 62%, rgba(255, 214, 120, 0.9) 63%, transparent);
+  transform: translateY(-50%) rotate(calc(var(--i) * 30deg)) scaleY(1.7);
+  animation: sunRayV 3s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.25s);
+}
+@keyframes sunRiseV {
+  0%,
+  100% {
+    transform: translateY(26%);
+  }
+  50% {
+    transform: translateY(-6%);
+  }
+}
+@keyframes sunRayV {
+  50% {
+    opacity: 0.35;
+  }
+}
+.sc-hills {
+  position: absolute;
+  inset: auto -5% -2% -5%;
+  height: 30%;
+  background: radial-gradient(60% 120% at 25% 100%, #3a63d8 60%, transparent 61%), radial-gradient(60% 110% at 80% 100%, #2a4cb8 60%, transparent 61%);
+}
+.sc-float {
+  position: absolute;
+  left: calc(8% + var(--i) * 15.5%);
+  bottom: 14%;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  animation: sunFloatV 4.2s ease-in infinite;
+  animation-delay: calc(var(--i) * 0.7s);
+  opacity: 0;
+}
+.sc-float em {
+  font-style: normal;
+  font-size: clamp(16px, 2.6vw, 28px);
+  display: grid;
+  place-items: center;
+  width: 1.8em;
+  height: 1.8em;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 6px 16px rgba(19, 32, 74, 0.2);
+}
+.sc-float b {
+  font: 800 10px/1 var(--display);
+  color: #13204a;
+  background: #ffd84a;
+  padding: 3px 6px;
+  border-radius: 99px;
+}
+@keyframes sunFloatV {
+  0% {
+    transform: translateY(20px) scale(0.6);
+    opacity: 0;
+  }
+  15%,
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-120px) scale(1);
+    opacity: 0;
+  }
+}
+.sc-cloud {
+  position: absolute;
+  top: calc(10% + var(--i) * 13%);
+  left: -20%;
+  width: 18%;
+  height: 9%;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 18px -8px 0 2px rgba(255, 255, 255, 0.9);
+  animation: sunCloudV 14s linear infinite;
+  animation-delay: calc(var(--i) * -4.6s);
+}
+@keyframes sunCloudV {
+  to {
+    transform: translateX(720%);
+  }
+}
+
+/* 21. TICKER (Earn · Business professionals) — midnight market board in gold. */
+.vs--ticker {
+  --v1: #f5c451;
+  --v2: #8f7bff;
+  --vbg: radial-gradient(100% 90% at 20% 0%, #2a1d5c 0%, #120b2e 55%, #08061a 100%);
+  --vink: #fff;
+  --vtext: #cfc8f2;
+  --vfont: var(--display);
+  --vscreen: linear-gradient(180deg, #17123a, #0b0820);
+}
+.vs--ticker .vs-h em {
+  color: #f5c451;
+}
+.vs--ticker .vs-screen {
+  border-radius: 14px;
+  background-image: linear-gradient(rgba(245, 196, 81, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(245, 196, 81, 0.07) 1px, transparent 1px);
+  background-size: 34px 34px;
+}
+.sc-bars {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 20%;
+  height: 58%;
+  display: flex;
+  align-items: flex-end;
+  gap: 4%;
+}
+.sc-bars i {
+  flex: 1;
+  height: var(--h);
+  border-radius: 6px 6px 0 0;
+  background: linear-gradient(180deg, #ffe08a, #c9902a);
+  box-shadow: 0 0 18px rgba(245, 196, 81, 0.35);
+  transform-origin: bottom;
+  animation: tickBarV 3.6s var(--spring) infinite;
+  animation-delay: calc(var(--i) * 0.14s);
+}
+@keyframes tickBarV {
+  0% {
+    transform: scaleY(0.08);
+  }
+  35%,
+  80% {
+    transform: none;
+  }
+  100% {
+    transform: scaleY(0.08);
+  }
+}
+.sc-trend {
+  position: absolute;
+  inset: 0 0 18% 0;
+  width: 100%;
+  height: 82%;
+}
+.sc-trend path {
+  fill: none;
+  stroke: #b8a9ff;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 100;
+  animation: tickDrawV 3.6s ease-out infinite;
+}
+@keyframes tickDrawV {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  45%,
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+.sc-tape {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 16%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background: #f5c451;
+  color: #120b2e;
+  font: 800 11px/1 var(--mono);
+  letter-spacing: 0.1em;
+}
+.sc-tape b {
+  display: flex;
+  gap: 28px;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: tickTapeV 12s linear infinite;
+}
+.sc-tape em {
+  font-style: normal;
+}
+@keyframes tickTapeV {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* 22. STICKER (Earn · Minors) — candy sticker album with an XP bar. */
+.vs--sticker {
+  --v1: #ff4fa0;
+  --v2: #19c9a7;
+  --vbg: linear-gradient(135deg, #fff0f8 0%, #f1fff9 55%, #fffbe0 100%);
+  --vink: #2b1250;
+  --vtext: #6a4f88;
+  --vfont: 'ui-rounded', 'SF Pro Rounded', 'Nunito', var(--display);
+  --vscreen: #fffdf6;
+}
+.vs--sticker .vs-word {
+  -webkit-text-stroke-color: rgba(255, 79, 160, 0.14);
+}
+.vs--sticker .vs-screen {
+  border-radius: 28px;
+  border: 4px dashed rgba(255, 79, 160, 0.35);
+  background-image: radial-gradient(rgba(43, 18, 80, 0.08) 1.5px, transparent 1.6px);
+  background-size: 18px 18px;
+}
+.sc-stk {
+  position: absolute;
+  left: calc(8% + (var(--i) % 4) * 23%);
+  top: calc(12% + (var(--i) / 4) * 0%);
+  font-size: clamp(22px, 3.6vw, 40px);
+  width: 1.7em;
+  height: 1.7em;
+  display: grid;
+  place-items: center;
+  border-radius: 30%;
+  background: #fff;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 3px var(--c, #ff4fa0), 0 8px 18px rgba(43, 18, 80, 0.18);
+  animation: stkSlapV 4s var(--spring) infinite;
+  animation-delay: calc(var(--i) * 0.35s);
+}
+.sc-stk:nth-child(n + 5) {
+  top: 44%;
+}
+.sc-stk:nth-child(3n + 1) {
+  --c: #19c9a7;
+}
+.sc-stk:nth-child(3n + 2) {
+  --c: #ffc93c;
+}
+.sc-stk:nth-child(odd) {
+  rotate: -8deg;
+}
+.sc-stk:nth-child(even) {
+  rotate: 7deg;
+}
+@keyframes stkSlapV {
+  0% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+  12% {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+  18%,
+  80% {
+    transform: none;
+    opacity: 1;
+  }
+  90%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+}
+.sc-xp {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: 10%;
+  height: 16px;
+  border-radius: 99px;
+  background: #efe6ff;
+  box-shadow: inset 0 0 0 2px #2b1250;
+  overflow: hidden;
+}
+.sc-xp i {
+  position: absolute;
+  inset: 0;
+  border-radius: 99px;
+  background: repeating-linear-gradient(-45deg, #ff4fa0 0 10px, #ff7cbb 10px 20px);
+  transform-origin: left;
+  animation: stkXpV 4s ease-in-out infinite;
+}
+.sc-xp b {
+  position: absolute;
+  z-index: 1;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font: 900 10px/1 var(--display);
+  color: #2b1250;
+}
+@keyframes stkXpV {
+  0% {
+    transform: scaleX(0.05);
+  }
+  85%,
+  100% {
+    transform: scaleX(1);
+  }
+}
+.sc-dot {
+  position: absolute;
+  left: calc(4% + var(--i) * 7%);
+  top: calc(80% - (var(--i) % 3) * 30%);
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: hsl(calc(var(--i) * 48) 90% 62%);
+  animation: stkDotV 3s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.2s);
+}
+@keyframes stkDotV {
+  50% {
+    transform: translateY(-14px) rotate(180deg);
+  }
+}
+
+/* 23. PASSPORT (Earn · Who can join) — open passport, three stamps thump down. */
+.vs--passport {
+  --v1: #0f7a6c;
+  --v2: #d6453a;
+  --vbg: linear-gradient(180deg, #f6efdf, #efe3c8);
+  --vink: #183230;
+  --vtext: #55625c;
+  --vfont: var(--serif);
+  --vscreen: #1b4d47;
+}
+.vs--passport .vs-h em {
+  font-style: italic;
+  color: #d6453a;
+}
+.vs--passport .vs-screen {
+  border-radius: 18px;
+  background-image: repeating-radial-gradient(circle at 50% 120%, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 14px);
+}
+.sc-pass {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 66%;
+  height: 74%;
+  transform: translate(-50%, -50%) rotate(-3deg);
+  display: flex;
+}
+.sc-pass .pg {
+  flex: 1;
+  background: repeating-linear-gradient(180deg, #fbf5e6 0 15px, #efe5cd 15px 16px);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.35);
+}
+.sc-pass .pg.l {
+  border-radius: 10px 2px 2px 10px;
+  display: grid;
+  align-content: center;
+  gap: 10px;
+  padding: 0 14%;
+}
+.sc-pass .pg.l s {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(24, 50, 48, 0.18);
+}
+.sc-pass .pg.l s:first-child {
+  width: 40%;
+  height: 34px;
+  border-radius: 6px;
+  background: #cfd9cf;
+}
+.sc-pass .pg.r {
+  border-radius: 2px 10px 10px 2px;
+  transform-origin: left;
+  animation: passOpenV 6s ease-in-out infinite;
+}
+@keyframes passOpenV {
+  0%,
+  100% {
+    transform: perspective(600px) rotateY(-70deg);
+  }
+  14%,
+  88% {
+    transform: none;
+  }
+}
+.sc-pass .stamp {
+  position: absolute;
+  left: calc(54% + (var(--i) % 2) * 16%);
+  top: calc(12% + var(--i) * 27%);
+  padding: 6px 10px;
+  border: 3px double var(--sc, #d6453a);
+  border-radius: 8px;
+  color: var(--sc, #d6453a);
+  font: 900 clamp(9px, 1.2vw, 13px) / 1 var(--mono);
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  rotate: calc(-12deg + var(--i) * 10deg);
+  opacity: 0;
+  animation: passStampV 6s cubic-bezier(0.2, 1.6, 0.4, 1) infinite;
+  animation-delay: calc(1s + var(--i) * 0.55s);
+}
+.sc-pass .stamp:nth-of-type(1) {
+  --sc: #0f7a6c;
+}
+.sc-pass .stamp:nth-of-type(2) {
+  --sc: #3b3f9e;
+}
+@keyframes passStampV {
+  0% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+  8%,
+  70% {
+    transform: none;
+    opacity: 0.92;
+  }
+  80%,
+  100% {
+    opacity: 0;
+  }
+}

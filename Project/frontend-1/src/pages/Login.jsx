@@ -33,6 +33,15 @@ const PORTAL = {
       ['gift', 'Premium rewards', 'Paid like the expert you are', '#F5B83D'],
       ['shield', 'Private & secure', 'Your answers stay anonymous', '#12C29B']
     ]
+  },
+  minor: {
+    img: 'gamer',
+    hi: 'Hey, you’re back! ✌️',
+    chips: [
+      ['sparkles', 'Channels to tune', '+100 points each', '#FF5FA2'],
+      ['shield', 'Age-checked studies', 'Skip anything, anytime', '#2DE2C0'],
+      ['users', 'Parent connected', 'Two keys, both turned', '#FFD84A']
+    ]
   }
 };
 
@@ -259,9 +268,13 @@ if (incomplete) {
         <div className="login-art">
           <Breadcrumbs items={[{ label: 'Login' }]} />
           <AudSwitch value={aud} onChange={setAud} label="I log in as a" />
-          <h1>{aud === 'pro' ? 'Your expertise is in demand' : 'Your rewards are waiting'}</h1>
+          <h1>{aud === 'pro' ? 'Your expertise is in demand' : aud === 'minor' ? 'Your say is saved' : 'Your rewards are waiting'}</h1>
           <p className="login-tag" key={aud}>
-            {aud === 'pro' ? 'New B2B studies, your points and your next payout – all one login away.' : 'New surveys, your points and your next payout – all one login away.'}
+            {aud === 'pro'
+              ? 'New B2B studies, your points and your next payout – all one login away.'
+              : aud === 'minor'
+                ? 'Teen panel, ages 13–17: your channels, your points and your next age-checked survey.'
+                : 'New surveys, your points and your next payout – all one login away.'}
           </p>
           <WelcomePortal aud={aud} />
           <AuthVoice aud={aud} />
@@ -330,7 +343,7 @@ if (incomplete) {
               <SocialAuth />
 
               <p className="join-alt">
-                New here? <Link to={aud === 'pro' ? '/join/professional/' : '/join/'}>Create a free account</Link>
+                New here? <Link to={aud === 'pro' ? '/join/professional/' : aud === 'minor' ? '/join/minor/' : '/join/'}>Create a free account</Link>
               </p>
 
               <FollowUs />
