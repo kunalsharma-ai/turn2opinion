@@ -260,6 +260,18 @@ export const ROUTES = [
     sitemap: false
   },
   {
+    // A few welcome questions, asked once after the first login (Consumers, Professionals and Teens).
+    path: '/welcome/',
+    load: page(() => import('./pages/Welcome.jsx')),
+    seo: {
+      title: 'Welcome | Turn2Opinion',
+      description: 'A few quick welcome questions so your first surveys fit you.',
+      crumb: 'Welcome',
+      robots: 'noindex,nofollow'
+    },
+    sitemap: false
+  },
+  {
     path: '/login/',
     load: page(() => import('./pages/Login.jsx')),
     seo: {

@@ -18,7 +18,7 @@ import { formatDate } from '../components/FormFields.jsx';
 import { COUNTRIES } from '../data/countries.js';
 import { answerLabel, loadBank } from '../components/onboarding/WelcomeQuestions.jsx';
 
-/** What the teen submitted (details and welcome answers), for the parent to review before consenting. */
+/** What the teen submitted, for the parent to review before consenting, and the welcome questions they will be asked after their first login. */
 function TeenReview({ teen, reviewed, setReviewed, error }) {
   const [bank, setBank] = useState(null);
   useEffect(() => {
@@ -78,6 +78,20 @@ function TeenReview({ teen, reviewed, setReviewed, error }) {
           </ul>
         </details>
       )}
+      {bank && keys.length === 0 && (
+        <details className="pgc-answers">
+          <summary>
+            After their first login, {teen?.name?.first || 'your teen'} answers {bank.sections.teen.flatMap((s) => s.keys).length} short welcome questions
+          </summary>
+          <ul className="rv-answers">
+            {bank.sections.teen.flatMap((s) => s.keys).map((k) => (
+              <li key={k}>
+                <span>{bank.Q[k][0]}</span>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
       <label className={`check ${error ? 'has-error' : ''}`}>
         <input type="checkbox" checked={reviewed} onChange={(e) => setReviewed(e.target.checked)} />
         <span className="check-ui" />
@@ -104,7 +118,7 @@ const CONFIRMS = [
 const SECTIONS = [
   ['target', 'What the Teen panel is', (t) => `Turn2Opinion is an online survey and market research panel operated by Frequent Research Fieldwork Solutions Pvt. Ltd. The Teen panel is for members aged 13 to 17. ${t} is invited only to studies that are suitable for their age and earns reward points for completed surveys.`],
   ['clipboard', 'What participation involves', () => 'Short online surveys about everyday topics such as games, apps, school life, media and products. Taking part is always voluntary: any question can be skipped and any survey can be stopped at any time, without penalty.'],
-  ['shield', 'Privacy and data protection', () => 'We keep the details given at sign-up (name, email, date of birth, gender, country, state and city), the welcome answers shown above, survey answers and reward details. We never ask a teen for income, health or other sensitive details. Answers are used for research in anonymised or aggregated form and are not sold. Full details are in the Privacy Policy, including the section on members under 18.'],
+  ['shield', 'Privacy and data protection', () => 'We keep the details given at sign-up (name, email, date of birth, gender, country, state and city), the answers to the short welcome questions listed above, survey answers and reward details. We never ask a teen for income, health or other sensitive details. Answers are used for research in anonymised or aggregated form and are not sold. Full details are in the Privacy Policy, including the section on members under 18.'],
   ['users', 'Your responsibilities', () => 'Keep your contact details up to date, talk with your teen about safe and honest participation, and tell us if anything about their account changes.'],
   ['refresh', 'Withdrawing consent', () => `You can withdraw consent, ask what we hold, or ask us to suspend or delete the account at any time by writing to ${SITE.email || 'our support team'}. When consent is withdrawn, the Teen account is paused and its data is deleted or anonymised under our retention policy.`]
 ];

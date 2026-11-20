@@ -118,7 +118,7 @@ function Nudge({ v, phase, onOpen, onClose, onHold }) {
   );
 }
 
-export default function VideoFab() {
+export default function VideoFab({ quiet = false }) {
   const path = usePath();
   const [open, setOpen] = useState(false);
   const [seen, setSeen] = useState(true);
@@ -134,7 +134,7 @@ export default function VideoFab() {
     const already = !v || has(SEEN, path) || visit.get('t2o_vid_off');
     setSeen(already);
     // Closing the message with X turns it off on every page until the visitor reloads.
-    if (already || has(NUDGED, path) || visit.get('t2o_vid_off')) return undefined;
+    if (quiet || already || has(NUDGED, path) || visit.get('t2o_vid_off')) return undefined;
     const t = [];
     const later = (fn, ms) => t.push(setTimeout(fn, ms));
     later(() => setPhase('typing'), 3500);
@@ -149,7 +149,7 @@ export default function VideoFab() {
     };
     later(out, 16000);
     return () => t.forEach(clearTimeout);
-  }, [path, v]);
+  }, [path, v, quiet]);
 
   const dismiss = useCallback(() => {
     setPhase('out');

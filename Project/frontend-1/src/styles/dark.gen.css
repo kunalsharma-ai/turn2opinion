@@ -1834,6 +1834,12 @@ html:where([data-mode='dark'])[data-mode='dark'] .wq-tab,
 html:where([data-mode='dark'])[data-mode='dark'] .ssel-list {
     border-color: rgba(23, 33, 79, 0.12)
 }
+:where(html[data-mode='dark']) .wl-next li {
+    border: 1px solid rgba(23, 33, 79, 0.12)
+}
+:where(html[data-mode='dark']) .wl-next li.is-now {
+    border-color: rgba(23, 33, 79, 0.4)
+}
 :where(html[data-mode='dark']) #t2o {
     color: #d9deef
 }

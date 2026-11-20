@@ -63,12 +63,12 @@ export function ParentFields({ p, setParent, errOf, okOf, setTouched, emailLocke
               </Field>
             </div>
             <div data-k={k('middle')}>
-              <Field id={`${idp}-middle`} label="Middle name" optional error={errOf(k('middle'))}>
+              <Field id={`${idp}-middle`} label="Middle name" error={errOf(k('middle'))}>
                 <input id={`${idp}-middle`} className="input" value={p.middle} onChange={(e) => setParent('middle', e.target.value)} onBlur={touch('middle')} autoComplete="off" maxLength={49} />
               </Field>
             </div>
             <div data-k={k('last')}>
-              <Field id={`${idp}-last`} label="Last name" optional error={errOf(k('last'))}>
+              <Field id={`${idp}-last`} label="Last name" error={errOf(k('last'))}>
                 <input id={`${idp}-last`} className="input" value={p.last} onChange={(e) => setParent('last', e.target.value)} onBlur={touch('last')} autoComplete="off" maxLength={49} />
               </Field>
             </div>

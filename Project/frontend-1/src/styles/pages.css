@@ -8417,3 +8417,66 @@ main :is(.wq-q, .wq-blurb, .wq-save-note, .wq-kicker, .rv-head, .done-next, .wq-
     top: 70%;
   }
 }
+/* Round 13: labels in a row of fields stay on one line, so every input in the row starts level. */
+.form-grid :is(.three, .two) .field-label,
+.form-grid.three .field-label,
+.form-grid.two .field-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.form-grid.three,
+.form-grid.two {
+  align-items: start;
+}
+
+/* Round 13: the after-login welcome page (pages/Welcome.jsx) */
+.join.is-welcome .join-lead {
+  text-align: left;
+  hyphens: manual;
+  max-width: 34ch;
+}
+.wl-next {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  max-width: 380px;
+}
+.wl-next li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.wl-next li svg {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  padding: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+}
+.wl-next li.is-done {
+  color: #fff;
+}
+.wl-next li.is-done svg {
+  color: #0b1440;
+  background: #4ade80;
+}
+.wl-next li.is-now {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.6);
+}
+.wl-next li.is-now svg {
+  color: #0b1440;
+  background: #ffd23f;
+}

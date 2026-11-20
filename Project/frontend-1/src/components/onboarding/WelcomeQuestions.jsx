@@ -336,7 +336,7 @@ export default function WelcomeQuestions({ journey, ans, setAnswers, ctx, onDone
         </div>
         <div>
           <p className="wq-kicker">
-            Welcome questions · part {sec + 1} of {sections.length}
+            {sections.length > 1 ? `Welcome questions · part ${sec + 1} of ${sections.length}` : `Welcome questions · ${vis.length} quick ones`}
           </p>
           <h2 className="wq-title">
             <Icon name={cur.icon} size={20} /> {cur.title}
@@ -344,6 +344,7 @@ export default function WelcomeQuestions({ journey, ans, setAnswers, ctx, onDone
           <p className="wq-blurb">{cur.blurb}</p>
         </div>
       </div>
+      {sections.length > 1 && (
       <ol className="wq-tabs" aria-label="Welcome question parts">
         {sections.map((s, i) => {
           const done = doneOf(s);
@@ -358,6 +359,7 @@ export default function WelcomeQuestions({ journey, ans, setAnswers, ctx, onDone
           );
         })}
       </ol>
+      )}
       <div className="wq-list" key={cur.id}>
         {vis.map((k) => (
           <Question key={k} n={++num} k={k} bank={bank} journey={journey} ans={ans} setAns={setAns} ctx={ctx} jobs={jobs} err={errs[k]} />
@@ -382,7 +384,7 @@ export default function WelcomeQuestions({ journey, ans, setAnswers, ctx, onDone
         </button>
       </div>
       <p className="wq-save-note">
-        <Icon name="shield" size={14} /> Answers stay on this device until you send them on the last step. Going back never loses them.
+        <Icon name="shield" size={14} /> Your answers are saved to your profile, and you can change them any time from your dashboard.
       </p>
     </div>
   );

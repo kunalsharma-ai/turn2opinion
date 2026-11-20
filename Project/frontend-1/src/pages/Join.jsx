@@ -1,19 +1,19 @@
 // Free sign-up for the three panels.
 //
 // Consumer / Business professional (the previous create-account process, Kunal 20 Nov 2026:
-// details -> CAPTCHA -> email link -> password -> welcome questions -> T&C -> dashboard)
+// details -> CAPTCHA -> email link -> password -> login -> welcome questions -> T&C -> dashboard)
 //   0 Your details       First (required), Middle, Last, email, mobile, date of birth, gender,
 //                        country, state / province, city, postal code, consents, CAPTCHA
 //                        -> PUT /api/v1/user -> account link by email
 //   email link           ?user=…&code=… -> password + CAPTCHA (AccountSetup); login is by email
-//                        -> welcome questions (components/onboarding/WelcomeQuestions.jsx), saved
-//                           with PUT /api/v1/user/welcome while signed in
+//                        -> logged in -> /welcome/ (pages/Welcome.jsx): a few welcome questions
+//                           from the original profile bank, saved with PUT /api/v1/user/welcome
 //                        -> the panel's Terms & Conditions form (/user/terms-b2c|b2b.html)
 //                        -> the member dashboard (Project/frontend, unchanged)
 //
 // Teen (13–17): a 13–17 birthday on the Consumer or Professional form moves the visitor here
 // (the API checks the age again).
-//   0 You · 1 Parent or guardian · 2 Teen welcome questions · 3 Consent & send
+//   0 You · 1 Parent or guardian · 2 Consent & send (welcome questions come after the first login)
 //   -> the parent/guardian gets the onboarding and consent form (/parent-consent/)
 //   -> after consent the teen gets a secure link back here (?user&code&activate=1) to choose a
 //      password. No password is ever emailed.
@@ -37,10 +37,9 @@ import { AuthAura, AuthVoice, saveAud } from '../components/AuthAura.jsx';
 import { playAudience } from '../utils/sound.js';
 import { relLabel, TeenConsentStep, TeenParentStep, TeenStatus, TEEN_CONSENTS } from '../components/TeenJoin.jsx';
 import { readReferral, clearReferral } from '../utils/referral.js';
-import { DASHBOARD, redirectIfLoggedIn } from '../utils/session.js';
+import { DASHBOARD, redirectIfLoggedIn, termsUrl, WELCOME, welcomeChannels } from '../utils/session.js';
 import { fullPhone, NAME_RE, phoneError, validateParent } from '../utils/signup.js';
 import LocationFields, { locationErrors } from '../components/onboarding/LocationFields.jsx';
-import WelcomeQuestions, { answerLabel, loadBank, welcomePayload } from '../components/onboarding/WelcomeQuestions.jsx';
 import AccountSetup from '../components/onboarding/AccountSetup.jsx';
 
 const emailCheck = {
@@ -168,9 +167,9 @@ function MemberCard({ f, step }) {
   const unlocks = teen
     ? [
         ['user', 'You & your parent', 'Your details and theirs'],
-        ['sparkles', 'Welcome questions', 'So surveys fit you'],
         ['users', 'Parent consent', 'They get an onboarding form by email'],
-        ['key', 'Your password', 'Link sent once they consent']
+        ['key', 'Your password', 'Link sent once they consent'],
+        ['sparkles', 'Welcome questions', 'A few, after your first login']
       ]
     : [
         ['user', 'Account', 'Free, no investment'],
@@ -255,10 +254,11 @@ function Done({ icon = 'mail', title, children }) {
 const TYPE_KEY = 't2o_join_type';
 const DRAFT_KEY = 't2o_join_draft_v2';
 // Adults fill in one page; the other stages happen after the email link and are shown for orientation.
-const STEPS = ['Your details', 'Secure your account', 'Welcome questions'];
+const STEPS = ['Your details', 'Secure your account', 'Welcome questions after login'];
 const STEP_ICONS = ['user', 'lock', 'sparkles'];
-const TEEN_STEPS = ['You', 'Parent or guardian', 'Welcome questions', 'Consent & send'];
-const TEEN_ICONS = ['user', 'users', 'sparkles', 'shield'];
+// Welcome questions are asked after the first login (pages/Welcome.jsx), for every audience.
+const TEEN_STEPS = ['You', 'Parent or guardian', 'Consent & send'];
+const TEEN_ICONS = ['user', 'users', 'shield'];
 const CHANNELS = [
   ['email', 'Email', 'mail'],
   ['sms', 'SMS', 'sms'],
@@ -301,7 +301,7 @@ function dobError(dob, type) {
   return '';
 }
 
-// Steps. Adults: 0 details (with consents and CAPTCHA). Teens: 0 you, 1 parent, 2 welcome, 3 consent.
+// Steps. Adults: 0 details (with consents and CAPTCHA). Teens: 0 you, 1 parent, 2 consent.
 function validate(step, f) {
   const e = {};
   const teen = f.type === 'minor';
@@ -330,7 +330,7 @@ function validate(step, f) {
     if (!f.privacy) e.privacy = 'Please accept the Privacy Policy to create your account.';
     if (!f.research) e.research = 'Consent to take part in research is needed to receive surveys.';
   }
-  if (teen && step === 3) {
+  if (teen && step === 2) {
     TEEN_CONSENTS.forEach(([k, , msg]) => {
       if (!f[k]) e[k] = msg;
     });
@@ -347,13 +347,10 @@ const readDraft = () => {
 };
 
 /** Read-only summary of what will be sent (adult confirm step and Teen consent step). */
-function ReviewCard({ f, answers, bank, journey, onEdit }) {
+function ReviewCard({ f, journey, onEdit }) {
   const teen = journey === 'teen';
   const c = COUNTRIES.find((x) => x.c === f.country);
   const name = [f.firstName, f.middleName, f.lastName].map((s) => s.trim()).filter(Boolean).join(' ');
-  const ctx = { country: f.country };
-  const payload = bank ? welcomePayload(bank, journey, answers, ctx, {}) : {};
-  const qs = bank ? bank.sections[journey].flatMap((s) => s.keys).filter((k) => k in payload) : [];
   return (
     <div className="review-card">
       <div className="rv-block">
@@ -402,22 +399,6 @@ function ReviewCard({ f, answers, bank, journey, onEdit }) {
           </dl>
         </div>
       )}
-      <div className="rv-block">
-        <p className="rv-head">
-          <Icon name="sparkles" size={16} /> Welcome answers · {qs.length}
-          <button type="button" className="link-soft" onClick={() => onEdit(teen ? 2 : 1)}>
-            Edit
-          </button>
-        </p>
-        <ul className="rv-answers">
-          {qs.slice(0, 40).map((k) => (
-            <li key={k}>
-              <span>{bank.Q[k][0]}</span>
-              <b>{answerLabel(bank, journey, k, answers, ctx, {})}</b>
-            </li>
-          ))}
-        </ul>
-      </div>
     </div>
   );
 }
@@ -425,7 +406,6 @@ function ReviewCard({ f, answers, bank, journey, onEdit }) {
 export default function Join() {
   const [f, setF] = useState(initial);
   const [answers, setAnswers] = useState({});
-  const [bank, setBank] = useState(null);
   useEffect(() => saveAud(f.type), [f.type]);
   const [step, setStep] = useState(0);
   const [link, setLink] = useState(null); // { user, code, teen } from the email link
@@ -439,14 +419,12 @@ export default function Join() {
   const [ageNotice, setAgeNotice] = useState('');
   const [duplicate, setDuplicate] = useState(false);
   const [emailErr, setEmailErr] = useState('');
-  const [welcomeFromEnd, setWelcomeFromEnd] = useState(false);
   const formRef = useRef(null);
   const restored = useRef(false);
 
   const teen = f.type === 'minor';
   const journey = teen ? 'teen' : f.type === 'pro' ? 'pro' : 'consumer';
-  const welcomeStep = teen ? 2 : -1;
-  const lastStep = teen ? 3 : 0;
+  const lastStep = teen ? 2 : 0;
   const age = ageOn(f.dob);
   const teenDates = useMemo(() => teenWindow(), []);
   const live = validate(step, f);
@@ -461,9 +439,6 @@ export default function Join() {
     if (t) setCaptchaErr('');
   }, []);
 
-  useEffect(() => {
-    loadBank().then(setBank).catch(() => {});
-  }, []);
 
   // Keep the unfinished form for this tab, so a refresh or Back never loses it.
   useEffect(() => {
@@ -513,7 +488,7 @@ export default function Join() {
     if (d && d.f) {
       setF({ ...initial, ...d.f, parent: { ...EMPTY_PARENT, ...(d.f.parent || {}) }, ...(type && type !== d.f.type && !isTeenAge(ageOn(d.f.dob)) ? { type } : {}) });
       setAnswers(d.answers || {});
-      setStep(d.f.type === 'minor' ? Math.min(d.step || 0, 2) : 0);
+      setStep(d.f.type === 'minor' ? Math.min(d.step || 0, 1) : 0);
     } else if (type) setF((p) => ({ ...p, type }));
     const parts = (q.get('name') || '').trim().split(/\s+/).filter(Boolean);
     const email = q.get('email');
@@ -636,7 +611,6 @@ export default function Join() {
       setState('idle');
       if (!ok) return;
     }
-    setWelcomeFromEnd(false);
     goStep(step + 1);
   };
 
@@ -652,10 +626,8 @@ export default function Join() {
     if (isTeenAge(age) && !teen) return onDob(f.dob);
     setState('sending');
     setMsg('');
-    const ctx = { country: f.country };
-    const b = teen ? bank || (await loadBank()) : null;
+    // Only the sign-up details go with the request; the welcome questions are asked after login.
     const welcome = {
-      ...(teen ? welcomePayload(b, journey, answers, ctx, {}) : {}),
       country: f.country,
       ...(f.state ? { state: f.state } : {}),
       city: f.city.trim(),
@@ -758,7 +730,7 @@ export default function Join() {
             <Icon name="key" size={14} /> Create your password
           </li>
           <li>
-            <Icon name="sparkles" size={14} /> A few welcome questions
+            <Icon name="sparkles" size={14} /> Log in: a few welcome questions
           </li>
           <li>
             <Icon name="clipboard" size={14} /> {f.type === 'pro' ? 'Professional' : 'Consumer'} panel Terms &amp; Conditions
@@ -779,7 +751,7 @@ export default function Join() {
     return (
       <Done icon="users" title="Request sent to your parent or guardian">
         <p>
-          Your details and welcome answers are saved. We have sent a <strong>Parent/Guardian Onboarding Form</strong> to <strong>{f.parent.email}</strong>, and a note to you at <strong>{f.email}</strong>. Please ask them to check
+          Your details are saved. We have sent a <strong>Parent/Guardian Onboarding Form</strong> to <strong>{f.parent.email}</strong>, and a note to you at <strong>{f.email}</strong>. Please ask them to check
           their inbox (and spam folder) and complete the onboarding and consent form.
         </p>
         <p className="muted">Your Teen account stays switched off until they consent. Then we email you a secure link to create your password.</p>
@@ -805,8 +777,17 @@ export default function Join() {
       <Done icon="check" title="Your Teen account is active 🎉">
         <p>Your parent or guardian has consented and your password is set. You log in with your email address. You can change your password any time in your account settings.</p>
         <TeenStatus stage="account-active" />
-        <a href={DASHBOARD} className="btn btn-primary">
-          Go to my dashboard <Icon name="arrow" size={18} />
+        <a href={hrefFor(WELCOME)} className="btn btn-primary">
+          Continue: a few welcome questions <Icon name="arrow" size={18} />
+        </a>
+      </Done>
+    );
+  if (state === 'to-welcome')
+    return (
+      <Done icon="check" title="Your account is ready">
+        <p>You are logged in. Next: a few quick welcome questions, then your panel agreement.</p>
+        <a href={hrefFor(WELCOME)} className="btn btn-primary">
+          Continue <Icon name="arrow" size={18} />
         </a>
       </Done>
     );
@@ -858,70 +839,6 @@ export default function Join() {
 
   const aud = f.type === 'pro' || teen ? f.type : 'consumer';
 
-  // ================= adults: welcome questions after the password =================
-  const saveWelcomeAnswers = async () => {
-    setState('welcome-saving');
-    setMsg('');
-    try {
-      const b = bank || (await loadBank());
-      const country = (f.country || f.dial || '').toLowerCase();
-      if (country) await api.put(`/api/v1/user/${link.user}`, { address: [{ tag: 'Home', country }] });
-      const welcome = {
-        ...welcomePayload(b, journey, answers, { country: f.country }, {}),
-        'communication-methods': Object.keys(f.channels)
-          .filter((k) => f.channels[k])
-          .concat('dashboard')
-      };
-      const res = await api.put('/api/v1/user/welcome', { welcome });
-      if (res?.status !== 'success') {
-        setState('welcome');
-        setMsg(errText(res, 'We couldn’t save your answers. Please try again.'));
-        return;
-      }
-      track('sign_up_welcome_complete', { category: f.type, answers: Object.keys(welcome).length });
-      setState('to-terms');
-      setTimeout(() => window.location.assign(termsUrl(link?.category, f.type)), ENV.DEMO_MODE ? 2500 : 900);
-    } catch {
-      setState('welcome');
-      setMsg('Unable to save your answers. Please try again.');
-    }
-  };
-  if (link && (state === 'welcome' || state === 'welcome-saving'))
-    return (
-      <section className={`join theme-${aud} at-step-welcome`}>
-        <div className="join-bg" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </div>
-        <AuthAura aud={aud} />
-        <div className="wrap join-grid">
-          <div className="join-side">
-            <Breadcrumbs items={[{ label: 'Welcome questions' }]} />
-            <h1>Your account is ready. A few welcome questions</h1>
-            <p className="join-lead">These answers decide which surveys reach you. They take a few minutes, and you can update them later from your dashboard. Next comes your panel agreement.</p>
-            <MemberCard f={f} step={2} />
-          </div>
-          <div className="join-card">
-            <span className="join-card-ring" aria-hidden="true" />
-            <div className="join-step" ref={formRef}>
-              <WelcomeQuestions journey={journey} ans={answers} setAnswers={setAnswers} ctx={{ country: f.country }} onDone={saveWelcomeAnswers} doneLabel="Save and continue to the agreement" />
-              {state === 'welcome-saving' && (
-                <p className="join-progress-note" role="status">
-                  <span className="btn-spin" aria-hidden="true" /> Saving your answers…
-                </p>
-              )}
-              {msg && (
-                <p className="form-alert" role="alert">
-                  {msg}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-    );
-
   // ================= account setup from the email link =================
   if (link)
     return (
@@ -936,7 +853,7 @@ export default function Join() {
           <div className="join-side">
             <Breadcrumbs items={[{ label: 'Create your account' }]} />
             <h1>{link.teen ? 'Switch on your Teen account' : 'Create your account'}</h1>
-            <p className="join-lead">{link.teen ? 'Your parent or guardian said yes. Create a password you’ll remember.' : 'Your email is confirmed. Create your password, then answer a few welcome questions.'}</p>
+            <p className="join-lead">{link.teen ? 'Your parent or guardian said yes. Create a password you’ll remember.' : 'Your email is confirmed. Create your password. A few welcome questions come next, once you are logged in.'}</p>
             <MemberCard f={f} step={2} />
           </div>
           <div className="join-card">
@@ -955,9 +872,13 @@ export default function Join() {
                 window.history.replaceState(null, '', window.location.pathname + window.location.hash);
                 track('sign_up_account_created', { category: f.type });
                 if (link.teen) return setState('teen-active');
-                setAnswers({});
-                setState('welcome');
-                window.scrollTo({ top: 0 });
+                // Logged in now: the welcome questions follow on their own page, then the agreement.
+                welcomeChannels.set(Object.keys(f.channels).filter((k) => f.channels[k]).concat('dashboard'));
+                setState('to-welcome');
+                const country = (f.country || f.dial || '').toLowerCase();
+                const go = () => window.location.assign(hrefFor(WELCOME));
+                if (country && !ENV.DEMO_MODE) api.put(`/api/v1/user/${link.user}`, { address: [{ tag: 'Home', country }] }).catch(() => {}).finally(go);
+                else go();
               }}
             />
           </div>
@@ -1011,7 +932,7 @@ export default function Join() {
   );
 
   return (
-    <section className={`join theme-${aud} at-step-${step === welcomeStep ? 'welcome' : step}`}>
+    <section className={`join theme-${aud} at-step-${step}`}>
       <div className="join-bg" aria-hidden="true">
         <span />
         <span />
@@ -1031,7 +952,7 @@ export default function Join() {
           </p>
           <p className="join-lead">
             {teen
-              ? 'For ages 13 to 17. You fill in your details, your parent or guardian’s and a few welcome questions. They get an onboarding and consent form by email, and your account switches on only after they consent.'
+              ? 'For ages 13 to 17. You fill in your details and your parent or guardian’s. They get an onboarding and consent form by email, and your account switches on only after they consent. A few welcome questions come after your first login.'
               : 'No fees, no investment – just honest answers. Unlock each step below as you go.'}
           </p>
           <MemberCard f={f} step={teen ? Math.min(step, 3) : Math.min(step, 2)} />
@@ -1053,20 +974,7 @@ export default function Join() {
             {teen ? `Step ${step + 1} of ${steps.length} · nothing is sent until the last step` : 'Step 1 of 3 · the next steps start from the link we email you'}
           </p>
 
-          {step === welcomeStep ? (
-            <div className="join-step" ref={formRef}>
-              <WelcomeQuestions
-                key={`${journey}-${welcomeFromEnd}`}
-                journey={journey}
-                ans={answers}
-                setAnswers={setAnswers}
-                ctx={{ country: f.country }}
-                startAtEnd={welcomeFromEnd}
-                onBack={() => goStep(step - 1)}
-                onDone={() => goStep(step + 1)}
-              />
-            </div>
-          ) : (
+          {(
             <form ref={formRef} onSubmit={onSubmit} noValidate key={`${step}-${teen}`} className="join-step">
               {step === 0 && (
                 <>
@@ -1105,7 +1013,7 @@ export default function Join() {
                         <i>🛡️</i>
                       </span>
                       <span>
-                        <strong>Parent or guardian consent is required.</strong> First your details, then theirs, then a few welcome questions. They receive an onboarding form by email and your account switches on only after they
+                        <strong>Parent or guardian consent is required.</strong> First your details, then theirs. They receive an onboarding form by email and your account switches on only after they
                         consent. <a href={hrefFor('/earn/teens/')}>How the Teen panel works</a>
                       </span>
                     </p>
@@ -1224,13 +1132,13 @@ export default function Join() {
                   </div>
                   {!teen && (
                     <div data-k="middleName">
-                      <Field id="j-middle" label="Middle name" optional error={errOf('middleName')}>
+                      <Field id="j-middle" label="Middle name" error={errOf('middleName')}>
                         <input id="j-middle" className="input" value={f.middleName} onChange={(e) => set('middleName', e.target.value)} onBlur={touch('middleName')} autoComplete="additional-name" maxLength={49} />
                       </Field>
                     </div>
                   )}
                   <div data-k="lastName">
-                    <Field id="j-last" label="Last name" optional error={errOf('lastName')} valid={okOf('lastName') && !!f.lastName.trim()}>
+                    <Field id="j-last" label="Last name" error={errOf('lastName')} valid={okOf('lastName') && !!f.lastName.trim()}>
                       <input id="j-last" className="input" value={f.lastName} onChange={(e) => set('lastName', e.target.value)} onBlur={touch('lastName')} autoComplete="family-name" maxLength={49} />
                     </Field>
                   </div>
@@ -1328,13 +1236,8 @@ export default function Join() {
                   <p className="join-step-lead">Check everything once. When you press the button we save it and send the {teen ? 'onboarding form to your parent or guardian' : 'account link to your email'}.</p>
                   <ReviewCard
                     f={f}
-                    answers={answers}
-                    bank={bank}
                     journey={journey}
-                    onEdit={(s) => {
-                      setWelcomeFromEnd(s === welcomeStep);
-                      goStep(s);
-                    }}
+                    onEdit={(s) => goStep(s)}
                   />
                   <TeenConsentStep f={f} set={set} errOf={errOf} />
                   {captchaBox}
@@ -1347,10 +1250,7 @@ export default function Join() {
                   <button
                     type="button"
                     className="btn btn-ghost btn-lg"
-                    onClick={() => {
-                      setWelcomeFromEnd(step - 1 === welcomeStep);
-                      goStep(step - 1);
-                    }}
+                    onClick={() => goStep(step - 1)}
                   >
                     <Icon name="arrowLeft" size={18} /> Back
                   </button>
@@ -1366,7 +1266,7 @@ export default function Join() {
                     </>
                   ) : (
                     <>
-                      {step === welcomeStep - 1 ? 'Continue to welcome questions' : 'Continue'} <Icon name="arrow" size={18} />
+                      Continue <Icon name="arrow" size={18} />
                     </>
                   )}
                 </button>
@@ -1385,8 +1285,4 @@ export default function Join() {
   );
 }
 
-/** The panel agreement pages (existing Consumer and Professional T&C forms, served at /user/). */
-export function termsUrl(cat, type) {
-  const c = cat === 'b2b' || (!cat && type === 'pro') ? 'b2b' : 'b2c';
-  return ENV.DEMO_MODE ? hrefFor('/terms/') : `/user/terms-${c}.html`;
-}
+export { termsUrl };

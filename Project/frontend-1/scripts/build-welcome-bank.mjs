@@ -2,7 +2,7 @@
 // (public/profiles/data/core.json, the same file the member profiles use). Question keys, option
 // labels and option values are kept as they are in the bank, so the answers saved at sign-up land
 // in the same Answer records the member profiles read. Only a few display texts are tidied (typos),
-// and the Teen set adds two school questions the bank does not have.
+// Only questions that exist in the bank are used.
 //   node scripts/build-welcome-bank.mjs   ->  src/data/welcome/bank.json + states.json
 import fs from 'node:fs';
 import path from 'node:path';
@@ -14,39 +14,24 @@ const { Q, O, A = {}, L = {}, lazy = {} } = core;
 const canon = (k) => { const c = A[k] || k; return L[c] || c; };
 
 // Sections per journey: [id, title, icon, blurb, [question keys]]
+// Round 13 (Kunal, 20 Nov 2026): "very limited questions to understand their profile only", taken from
+// the original question bank, nothing invented. One short part per journey, asked after the first
+// login. Everything else stays in the member profiles, where it always was.
 const SECTIONS = {
   consumer: [
-    ['home', 'Home & household', 'home', 'Who you live with and where. Brands design products around real households.', ['relationship', 'children-num', 'add-housing', 'rural', 'household-income']],
-    ['work', 'Study & work', 'briefcase', 'Your day job (or school) decides a lot of the studies that fit you.', ['education', 'empstat', 'industry', 'jobseeker']],
-    ['shop', 'How you shop', 'bag', 'The biggest share of consumer surveys is about buying things.', ['shopping24', 'shopping22', 'shopping25', 'shopping26', 'add-decisions']],
-    ['free', 'Free time', 'sparkle', 'Hobbies, food and travel: the fun surveys start here.', ['lifestyle_1', 'lifestyle_8', 'food4', 'sports25', 'travel13']],
-    ['tech', 'Screens & tech', 'phone', 'Phones, apps, streaming and games you use today.', ['mobile1', 'mobile11', 'tech1', 'media6', 'media8', 'gaming0', 'gaming1']],
-    ['research', 'Your research style', 'chat', 'How you like to take part, so we only invite you to formats you enjoy.', ['add-primary-language', 'research-panel1', 'research-panel3', 'research-panel6']]
+    ['about', 'About you', 'sparkle', 'Six quick questions so the first surveys we send fit you.', ['relationship', 'children-num', 'education', 'empstat', 'industry', 'household-income']]
   ],
   pro: [
-    ['role', 'Your role', 'briefcase', 'Employment, industry and job title decide which B2B studies you qualify for.', ['empstat', 'freelancer', 'jobseeker', 'unemp-industry', 'industry', 'sector', 'department', 'jobrole', 'add-seniority', 'experience']],
-    ['org', 'Your organisation', 'building', 'Company size and reach. We never contact your employer.', ['orgsize', 'organization-revenue', 'orgoverseas']],
-    ['decide', 'Decisions you make', 'target', 'Decision-makers are the most wanted voices in business research.', ['orgdecision', 'orgspend', 'add-b2b-influence']],
-    ['background', 'Background & formats', 'book', 'Education, languages and the research formats you are open to.', ['education', 'add-languages', 'research-panel1', 'research-panel7', 'research-panel8']]
+    ['work', 'Your work', 'briefcase', 'Six quick questions so the first business studies we send fit your role.', ['empstat', 'industry', 'add-seniority', 'orgsize', 'orgdecision', 'education']]
   ],
   teen: [
-    ['school', 'School life', 'book', 'Your class and favourite subjects. Nothing about which school you go to.', ['teen-school-level', 'teen-subjects']],
-    ['interests', 'What you are into', 'sparkle', 'Music, movies and sport: the topics brands most want teen opinions on.', ['lifestyle_1', 'lifestyle_8', 'lifestyle_3', 'sports25', 'sports26', 'sports27']],
-    ['screens', 'Screens & gaming', 'phone', 'Phones, social apps, streaming and games.', ['mobile1', 'mobile11', 'media6', 'media8', 'gaming0', 'gaming1', 'gaming2', 'gaming7']],
-    ['shop', 'Shopping', 'bag', 'What you buy and how often. No money details asked.', ['shopping24', 'shopping25']],
-    ['research', 'Survey style', 'chat', 'Language and topics, so your invitations fit you.', ['add-primary-language', 'research-panel3']]
+    ['about', 'About you', 'sparkle', 'Five quick questions so your first surveys fit you. Nothing about money or which school you go to.', ['student', 'lifestyle_1', 'media6', 'gaming0', 'add-primary-language']]
   ]
 };
 
-// Questions the bank does not have (Teen only). Same shape as the bank: [text, parent].
-const EXTRA_Q = {
-  'teen-school-level': ['Which year of school are you in?', ''],
-  'teen-subjects': ['Which subjects do you enjoy most? Select all that apply.', '']
-};
-const EXTRA_O = {
-  'teen-school-level': { '': ['Middle school (grades 6 to 8)', 'High school (grades 9 and 10)', 'Senior high school (grades 11 and 12)', 'Junior college / pre-university', 'Homeschooled', 'Not in school right now'] },
-  'teen-subjects': { '': ['Maths', 'Science', 'Computers & coding', 'English & literature', 'Languages', 'History & social studies', 'Business & economics', 'Art & design', 'Music', 'Drama & media', 'Sport & PE', 'Something else'] }
-};
+// No questions outside the original bank (the two made-up Teen school questions were removed).
+const EXTRA_Q = {};
+const EXTRA_O = {};
 
 // Display texts only (keys and options stay as in the bank).
 const TEXT = {

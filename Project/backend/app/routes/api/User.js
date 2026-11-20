@@ -92,10 +92,10 @@ async function sendParentOnboarding(req, user) {
 }
 
 
-// ---------- sign-up welcome questionnaire ----------
-// Teens answer the welcome questions before the parent email goes out (saved at sign-up). Consumers
-// and professionals answer them after creating their password (PUT /welcome, signed in;
-// Kunal, 20 Nov 2026). Answers are stored as ordinary Answer records (the same records the member
+// ---------- welcome questionnaire ----------
+// Every member (Consumer, Professional and Teen) answers a few welcome questions after they log in
+// for the first time (GET /welcome tells the site whether they still need to; PUT /welcome saves;
+// Kunal, 20 Nov 2026). Older clients may still send answers at sign-up, which are saved as before. Answers are stored as ordinary Answer records (the same records the member
 // profiles read). When the questionnaire is complete, a "welcome" Response is recorded so the member
 // area does not ask the welcome survey a second time.
 const ANSWER_KEY = /^[a-z0-9][a-z0-9_\-]{0,59}$/i;
@@ -224,8 +224,8 @@ router
                 if (Array.isArray(userInfo.terms)) userInfo.terms = userInfo.terms.filter((t) => typeof t === "string").slice(0, 20);
                 let message = "";
                 let data = await userController.create(userInfo);
-                // Adults: only contact/location answers here; their questionnaire comes after the password.
-                try { await saveWelcome(req, Mutate(data), welcome, teenWithParent); } catch { /* member area asks again */ }
+                // Only contact/location answers here; every member answers the welcome questions after login.
+                try { await saveWelcome(req, Mutate(data), welcome, false); } catch { /* saved again after login */ }
 
                 if (teenWithParent) {
                     // Teen sign-up: the parent/guardian gets the onboarding form first. The teen's own
@@ -313,6 +313,19 @@ router
             userController
         )
     )
+router
+    .get("/welcome", asyncHandler(isAuthenticated), expressRoute(
+        async req => {
+            if (!req.user || !req.user._id) throw new Error("Please log in.");
+            const user = Mutate(await userController.read(req.user._id));
+            if (!user || !user._id) throw new Error("Invalid request");
+            let done = Boolean(user.welcomeCompletedAt);
+            // members who finished the member-area welcome survey before this change count as done
+            if (!done) done = Boolean(await responseModel.exists({ "survey.slug": "welcome", user: user._id, status: "complete" }));
+            return { message: "ok", data: { done, category: user.category } };
+        },
+        userController
+    ))
 router
     .put("/welcome", asyncHandler(isAuthenticated), expressRoute(
         async req => {

@@ -1,6 +1,8 @@
 // Signed-in check for the public pages. The API keeps the session in an httpOnly cookie, so the
 // only way to know is to ask /api/v1/me.
 import { api } from './api.js';
+import { ENV } from '../config/env.js';
+import { hrefFor } from '../router/Router.jsx';
 
 export const DASHBOARD = '/member/dashboard';
 
@@ -19,3 +21,42 @@ export async function redirectIfLoggedIn() {
   if (me) window.location.replace(DASHBOARD);
   return me;
 }
+
+/** The panel agreement pages (existing Consumer and Professional T&C forms, served at /user/). */
+export function termsUrl(cat, type) {
+  const c = cat === 'b2b' || (!cat && type === 'pro') ? 'b2b' : 'b2c';
+  return ENV.DEMO_MODE ? hrefFor('/terms/') : `/user/terms-${c}.html`;
+}
+
+/** The welcome questions page, shown once after the first login (see pages/Welcome.jsx). */
+export const WELCOME = '/welcome/';
+/** After logging in: the welcome questions if they are still unanswered, otherwise the dashboard. */
+export async function afterLogin() {
+  try {
+    const w = await api.get('/api/v1/user/welcome');
+    if (w?.status === 'success' && w.data && w.data.done === false) return hrefFor(WELCOME);
+  } catch {
+    /* fall through to the dashboard; the member area has its own check */
+  }
+  return DASHBOARD;
+}
+
+const CH_KEY = 't2o_welcome_channels';
+export const welcomeChannels = {
+  set(list) {
+    try {
+      sessionStorage.setItem(CH_KEY, JSON.stringify(list || []));
+    } catch {
+      /* private mode: the channels simply are not saved with the answers */
+    }
+  },
+  take() {
+    try {
+      const v = JSON.parse(sessionStorage.getItem(CH_KEY) || '[]');
+      sessionStorage.removeItem(CH_KEY);
+      return Array.isArray(v) ? v : [];
+    } catch {
+      return [];
+    }
+  }
+};

@@ -17,7 +17,7 @@ import LiveChat from './LiveChat.jsx';
 import VideoFab from './video/VideoFab.jsx';
 import ReviewWidget from './ReviewWidget.jsx';
 import ReviewToasts from './ReviewToasts.jsx';
-import { Link } from '../router/Router.jsx';
+import { Link, usePath } from '../router/Router.jsx';
 import { prefersReducedMotion } from '../hooks/useMounted.js';
 import { armArrivalSound, playReward } from '../utils/sound.js';
 import { useMe } from '../utils/gems.js';
@@ -398,7 +398,12 @@ function FloatingActions({ chatOpen, onChat }) {
   );
 }
 
+// Pages that are one long form: no pop-ups slide in over the fields while someone fills them in.
+export const FORM_PAGE = /^\/(join|login|parent-consent|forgot-password|reset-password|contact|account-setup|verify)(\/|$)/;
+
 export default function GlobalWidgets() {
+  const path = usePath();
+  const formPage = FORM_PAGE.test(path || '');
   const [chatOpen, setChatOpen] = useState(false);
   const [consentDone, setConsentDone] = useState(false);
   useEffect(() => {
@@ -412,6 +417,24 @@ export default function GlobalWidgets() {
     document.documentElement.classList.toggle('chat-open', chatOpen);
     return () => document.documentElement.classList.remove('chat-open');
   }, [chatOpen]);
+
+  // While a field has focus, the floating buttons and pop-ups step aside so nothing covers what is typed.
+  useEffect(() => {
+    const root = document.documentElement;
+    const isField = (el) => el && el.matches && el.matches('input:not([type=checkbox]):not([type=radio]), textarea, select, [contenteditable=true], [role=combobox]') && !el.closest('.chat');
+    const on = (e) => root.classList.toggle('is-typing', isField(e.target));
+    const off = () => setTimeout(() => root.classList.toggle('is-typing', isField(document.activeElement)), 0);
+    document.addEventListener('focusin', on);
+    document.addEventListener('focusout', off);
+    return () => {
+      document.removeEventListener('focusin', on);
+      document.removeEventListener('focusout', off);
+      root.classList.remove('is-typing');
+    };
+  }, []);
+  useEffect(() => {
+    document.documentElement.classList.toggle('form-page', formPage);
+  }, [formPage]);
 
   // The site's signature arrival sound. Browsers block audio until the visitor interacts, so this
   // arms the chime and fires it on their first tap, click, key press or scroll — see utils/sound.js.
@@ -428,13 +451,13 @@ export default function GlobalWidgets() {
     <>
       <ModeAmbience />
       <ScrollProgress />
-      <VideoFab />
+      <VideoFab quiet={formPage} />
       <FloatingActions chatOpen={chatOpen} onChat={() => setChatOpen((o) => !o)} />
       <LiveChat open={chatOpen} onClose={() => setChatOpen(false)} />
-      <ReviewWidget ready={consentDone} />
+      <ReviewWidget ready={consentDone && !formPage} />
       {/* Right-hand side: live member reviews. Bottom-left: reward tickets. They never collide. */}
-      <ReviewToasts blocked={!consentDone || chatOpen} />
-      <ActivityToasts blocked={!consentDone || chatOpen} />
+      <ReviewToasts blocked={!consentDone || chatOpen || formPage} />
+      <ActivityToasts blocked={!consentDone || chatOpen || formPage} />
       <CookieConsent onDone={() => setConsentDone(true)} />
     </>
   );

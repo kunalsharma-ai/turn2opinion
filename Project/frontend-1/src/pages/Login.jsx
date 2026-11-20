@@ -5,7 +5,7 @@ import { SITE } from '../config/site.js';
 import { postJSON, failureMessage,api } from '../utils/api.js';
 import { track } from '../utils/analytics.js';
 import Captcha, { captchaLocalOk, captchaPayload, captchaReady, isCaptchaError } from '../components/Captcha.jsx';
-import { redirectIfLoggedIn, DASHBOARD } from '../utils/session.js';
+import { redirectIfLoggedIn, afterLogin } from '../utils/session.js';
 import { Breadcrumbs } from '../components/Common.jsx';
 import { EMAIL_RE, Field } from '../components/FormFields.jsx';
 import Icon from '../components/Icon.jsx';
@@ -155,7 +155,8 @@ export default function Login() {
         }
 
         setState('ok');
-        if (!res.demo) window.location.assign(DASHBOARD);
+        // first login: a few welcome questions before the dashboard (asked once)
+        if (!res.demo) window.location.assign(await afterLogin());
         return;
       }
 

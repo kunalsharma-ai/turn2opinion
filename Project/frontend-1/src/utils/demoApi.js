@@ -82,5 +82,6 @@ export async function demoRespond(method, endpoint, body = {}) {
   }
   if (verify && method === 'PUT') return ok(st.user || {});
   if (path === '/api/v1/me/answer') return ok([], 'Updated successfully');
+  if (path === '/api/v1/user/welcome') return method === 'GET' ? ok({ done: false }) : ok({ welcomeCompletedAt: new Date().toISOString() }, 'Welcome answers saved');
   return err('Preview mode: no server');
 }

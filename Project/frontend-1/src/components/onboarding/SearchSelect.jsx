@@ -3,12 +3,14 @@
 // member types can be kept as the answer when the list doesn't have it (city / job title fallback).
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import Icon from '../Icon.jsx';
+import Floating from '../Floating.jsx';
 
 export default function SearchSelect({ id, value, options, onChange, placeholder = 'Search or choose', invalid, allowFree = false, freeLabel = 'Use', disabled, loading, describedBy }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState('');
   const [hi, setHi] = useState(0);
   const root = useRef(null);
+  const pop = useRef(null);
   const listId = useId();
   const sel = options.find((o) => o[1] === value);
   const shown = useMemo(() => {
@@ -18,7 +20,7 @@ export default function SearchSelect({ id, value, options, onChange, placeholder
   }, [q, options]);
   useEffect(() => {
     if (!open) return;
-    const off = (e) => root.current && !root.current.contains(e.target) && setOpen(false);
+    const off = (e) => root.current && !root.current.contains(e.target) && !(pop.current && pop.current.contains(e.target)) && setOpen(false);
     document.addEventListener('pointerdown', off);
     return () => document.removeEventListener('pointerdown', off);
   }, [open]);
@@ -77,7 +79,7 @@ export default function SearchSelect({ id, value, options, onChange, placeholder
         )}
       </div>
       {open && !disabled && (
-        <ul className="ssel-list" id={listId} role="listbox">
+        <Floating as="ul" anchor={root} popRef={pop} width="anchor" className="ssel-list" id={listId} role="listbox">
           {shown.map((o, i) => (
             <li
               key={o[1]}
@@ -108,7 +110,7 @@ export default function SearchSelect({ id, value, options, onChange, placeholder
             </li>
           )}
           {!shown.length && !free && <li className="ssel-empty">No match. Try another spelling.</li>}
-        </ul>
+        </Floating>
       )}
     </div>
   );

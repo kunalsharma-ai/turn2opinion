@@ -4,6 +4,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { COUNTRIES } from '../data/countries.js';
 import { Flag } from './Brand.jsx';
 import Icon from './Icon.jsx';
+import Floating from './Floating.jsx';
 
 export function Field({ id, label, error, hint, children, optional, className = '', valid }) {
   return (
@@ -40,6 +41,7 @@ export function CountryPicker({ id, value, onChange, onBlur, showDial = false, p
   const [q, setQ] = useState('');
   const [hi, setHi] = useState(0);
   const root = useRef(null);
+  const pop = useRef(null);
   const search = useRef(null);
   const listId = useId();
   const sel = COUNTRIES.find((c) => c.c === value);
@@ -64,7 +66,7 @@ export function CountryPicker({ id, value, onChange, onBlur, showDial = false, p
     setHi(Math.max(0, items.findIndex((c) => c.c === value)));
     setTimeout(() => search.current && search.current.focus(), 10);
     const out = (e) => {
-      if (root.current && !root.current.contains(e.target)) {
+      if (root.current && !root.current.contains(e.target) && !(pop.current && pop.current.contains(e.target))) {
         setOpen(false);
         onBlur && onBlur();
       }
@@ -123,7 +125,7 @@ export function CountryPicker({ id, value, onChange, onBlur, showDial = false, p
         <Icon name="chevron" size={16} className="cp-caret" />
       </button>
       {open && (
-        <div className="cp-pop">
+        <Floating anchor={root} popRef={pop} width={300} className="cp-pop">
           <div className="cp-search">
             <Icon name="search" size={16} />
             <input
@@ -164,7 +166,7 @@ export function CountryPicker({ id, value, onChange, onBlur, showDial = false, p
             ))}
             {!items.length && <li className="cp-empty">No match. Try a country name or dial code.</li>}
           </ul>
-        </div>
+        </Floating>
       )}
     </div>
   );
@@ -207,6 +209,7 @@ export function formatDate(s) {
 }
 
 /** Calendar date picker (full date of birth: day, month and year). value = 'YYYY-MM-DD'. */
+const DATE_W = { fixed: 330 };
 export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920, maxDate = new Date(), minDate = null, lockedYears = 0, foot, describedBy }) {
   // minDate narrows the pickable range (e.g. the Teen 13-17 window). lockedYears shows that many
   // extra years either side in the year menu, greyed out, so people can see they are not allowed.
@@ -219,13 +222,14 @@ export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920
   });
   const [focusDay, setFocusDay] = useState(sel ? sel.getDate() : 1);
   const root = useRef(null);
+  const pop = useRef(null);
   const grid = useRef(null);
 
   useEffect(() => {
     if (!open) return undefined;
     if (sel) setView({ y: sel.getFullYear(), m: sel.getMonth() });
     const out = (e) => {
-      if (root.current && !root.current.contains(e.target)) {
+      if (root.current && !root.current.contains(e.target) && !(pop.current && pop.current.contains(e.target))) {
         setOpen(false);
         onBlur && onBlur();
       }
@@ -295,7 +299,7 @@ export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920
         <Icon name="chevron" size={16} className="cp-caret" />
       </button>
       {open && (
-        <div className="date-pop" role="dialog" aria-label="Choose date of birth">
+        <Floating anchor={root} popRef={pop} width={DATE_W} className="date-pop" role="dialog" aria-label="Choose date of birth">
           <div className="date-head">
             <button type="button" className="date-nav" onClick={() => shiftMonth(-1)} aria-label="Previous month">
               <Icon name="chevronLeft" size={18} />
@@ -349,7 +353,7 @@ export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920
             })}
           </div>
           <p className="date-foot">{foot || 'Use the month and year menus to jump quickly.'}</p>
-        </div>
+        </Floating>
       )}
     </div>
   );
