@@ -71,7 +71,7 @@ export const PAGE_VIDEOS = [
     cta: { label: 'Join as a professional', to: '/join/professional/' }
   },
   {
-    path: '/earn/minors/',
+    path: '/earn/teens/',
     template: 'sticker',
     yt: '',
     eyebrow: 'New · Teen panel',
@@ -79,7 +79,7 @@ export const PAGE_VIDEOS = [
     em: 'one teen voice',
     lede: 'How a parent says yes, a teen says yes, and the account switches on.',
     points: ['Ask · your parent or guardian', 'Agree · in your own words', 'Tune in · your profile channels'],
-    cta: { label: 'Start as a teen', to: '/join/minor/' }
+    cta: { label: 'Start as a teen', to: '/join/teen/' }
   },
   {
     path: '/earn/who-can-join/',

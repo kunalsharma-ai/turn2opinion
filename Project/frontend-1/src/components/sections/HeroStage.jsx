@@ -46,7 +46,7 @@ export const AUDIENCES = {
   },
   // Round 10b (Kunal, 20 Nov 2026): the teen panel gets its own neon "soundstage" slide, rebuilt from scratch.
   minor: {
-    label: 'Minors',
+    label: 'Teens',
     tag: 'New',
     motto: ['Press play.', 'Say it loud.', 'Get heard.'],
     title: ['Aged 13 to 17?', 'Turn Your Voice Up.'],
@@ -60,7 +60,7 @@ export const AUDIENCES = {
 };
 const AUD_ICON = { consumer: 'bag', professional: 'briefcase', minor: 'sparkles' };
 const AUD_ORDER = ['consumer', 'professional', 'minor'];
-const JOIN_LINK = { consumer: '/join/', professional: '/join/professional/', minor: '/join/minor/' };
+const JOIN_LINK = { consumer: '/join/', professional: '/join/professional/', minor: '/join/teen/' };
 const PROOF = {
   consumer: ['Free forever', 'No investment', 'PayPal, cash, bank, wire, vouchers, gift cards & UPI in India'],
   professional: ['Free forever', 'No investment', 'PayPal, cash, bank, wire, vouchers, gift cards & UPI in India'],
@@ -393,7 +393,7 @@ export default function HomeHero() {
             <a href={JOIN_LINK[aud]} className="btn btn-primary btn-lg btn-shimmer">
               {a.cta} <Icon name="arrow" size={18} />
             </a>
-            <Link to={aud === 'minor' ? '/earn/minors/' : '/how-it-works/'} className="btn btn-ghost btn-lg">
+            <Link to={aud === 'minor' ? '/earn/teens/' : '/how-it-works/'} className="btn btn-ghost btn-lg">
               <Icon name="play" size={18} /> {aud === 'minor' ? 'See how the two keys work' : 'How it works'}
             </Link>
           </div>

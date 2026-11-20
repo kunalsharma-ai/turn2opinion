@@ -60,7 +60,7 @@ export function AuthAura({ aud }) {
   );
 }
 
-/** Consumer / Professional / Minor switch. It recolours the page and is remembered for next time. */
+/** Consumer / Professional / Teen switch. It recolours the page and is remembered for next time. */
 export function AudSwitch({ value, onChange, label = 'I am a' }) {
   return (
     <div className={`auth-switch is-${value}`} role="radiogroup" aria-label={label}>
@@ -68,7 +68,7 @@ export function AudSwitch({ value, onChange, label = 'I am a' }) {
       {[
         ['consumer', 'Consumer', 'users'],
         ['pro', 'Professional', 'briefcase'],
-        ['minor', 'Minor', 'sparkles']
+        ['minor', 'Teen', 'sparkles']
       ].map(([k, l, ic]) => (
         <button key={k} type="button" role="radio" aria-checked={value === k} className={value === k ? 'is-on' : ''} onClick={() => {
             if (k !== value) playAudience(k);

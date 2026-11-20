@@ -1,4 +1,4 @@
-// /earn/minors/ — Earn menu, page 3 of 4: the teen panel for ages 13 to 17 (round 10, Kunal 20 Nov 2026).
+// /earn/teens/ — Earn menu, page 3 of 4: the teen panel for ages 13 to 17 (round 10, Kunal 20 Nov 2026).
 //
 // Content source: Kunal's teen onboarding files (parent onboarding v1.1.0 and teen profiles v1.1.0),
 // retold in the Turn2Opinion voice. The facts kept from them: a parent or legal guardian registers and
@@ -268,7 +268,7 @@ export default function EarnMinors() {
         </span>
         <div className="wrap mn-hero-grid">
           <div className="mn-hero-copy">
-            <Breadcrumbs items={[{ label: 'Earn', to: '/paid-surveys/' }, { label: 'Minors (13–17)' }]} />
+            <Breadcrumbs items={[{ label: 'Earn', to: '/paid-surveys/' }, { label: 'Teens (13–17)' }]} />
             <p className="mn-new">
               <span>✦ Recently introduced</span> Teen panel · ages 13–17
             </p>
@@ -280,7 +280,7 @@ export default function EarnMinors() {
               teen panel you just tell them, with a parent or guardian on board from the very first step.
             </p>
             <div className="mn-actions">
-              <Link to="/join/minor/" className="btn btn-lg mn-btn-glow">
+              <Link to="/join/teen/" className="btn btn-lg mn-btn-glow">
                 Press start <Icon name="arrow" size={18} />
               </Link>
               <a href="#mn-parents" className="mn-btn-line">
@@ -429,7 +429,7 @@ export default function EarnMinors() {
             Choose your player
           </h2>
           <div className="mn-players">
-            <Link to="/join/minor/" className="mn-player p1" data-reveal>
+            <Link to="/join/teen/" className="mn-player p1" data-reveal>
               <span className="mn-push" aria-hidden="true">
                 <i>P1</i>
               </span>

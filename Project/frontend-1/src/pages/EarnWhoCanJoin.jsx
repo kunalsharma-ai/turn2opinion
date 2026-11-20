@@ -36,7 +36,7 @@ function verdict(age, work, country) {
   if (!listed)
     return { ok: false, stamp: 'WAITLIST', t: 'Not in your country yet', d: 'We are only enrolling in our 55 panel countries for now. New countries are added as research demand grows.' };
   if (age === 'teen')
-    return { ok: true, stamp: 'TEEN 13–17', t: 'Welcome to the teen panel', d: 'You can join, and your parent or guardian gives permission before anything starts.', to: '/join/minor/', cta: 'Join the teen panel', more: '/earn/minors/' };
+    return { ok: true, stamp: 'TEEN 13–17', t: 'Welcome to the teen panel', d: 'You can join, and your parent or guardian gives permission before anything starts.', to: '/join/teen/', cta: 'Join the teen panel', more: '/earn/teens/' };
   if (work === 'work' || work === 'own')
     return { ok: true, stamp: 'PROFESSIONAL', t: 'Two doors are open for you', d: 'Join as a business professional to get B2B studies matched to your role, on top of everyday consumer surveys.', to: '/join/professional/', cta: 'Join as a professional', more: '/earn/business-professionals/' };
   return { ok: true, stamp: 'CONSUMER 18+', t: 'You’re in', d: 'Join as a consumer and get surveys about the things you buy, use, watch and love.', to: '/join/', cta: 'Join as a consumer', more: '/earn/consumers/' };
@@ -170,11 +170,11 @@ const DOORS = [
   },
   {
     k: 'teen',
-    t: 'Minors',
+    t: 'Teens',
     age: '13–17',
     icon: 'sparkles',
     asks: ['Be 13 to 17', 'A parent or legal guardian gives verified permission', 'Your own yes as well', 'Age-checked studies only'],
-    to: '/earn/minors/',
+    to: '/earn/teens/',
     tag: 'New'
   }
 ];
@@ -326,7 +326,7 @@ export default function EarnWhoCanJoin() {
             <Link to="/join/professional/" className="btn btn-lg ej-btn is-ink">
               Professional <Icon name="arrow" size={16} />
             </Link>
-            <Link to="/join/minor/" className="btn btn-lg ej-btn is-pop">
+            <Link to="/join/teen/" className="btn btn-lg ej-btn is-pop">
               Teen 13–17 <Icon name="arrow" size={16} />
             </Link>
           </div>

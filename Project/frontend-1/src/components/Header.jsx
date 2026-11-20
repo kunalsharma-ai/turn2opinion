@@ -34,7 +34,7 @@ export const ABOUT_MENU = [
 export const EARN_MENU = [
   { to: '/earn/consumers/', label: 'Consumers', sub: 'Everyday opinions, everyday rewards', icon: 'bag', tone: 'consumer' },
   { to: '/earn/business-professionals/', label: 'Business Professionals', sub: 'B2B studies matched to your role', icon: 'briefcase', tone: 'pro' },
-  { to: '/earn/minors/', label: 'Minors (13–17)', sub: 'Teen panel with parent permission', icon: 'sparkles', tone: 'minor', tag: 'Recently introduced' },
+  { to: '/earn/teens/', label: 'Teens (13–17)', sub: 'Teen panel with parent permission', icon: 'sparkles', tone: 'minor', tag: 'Recently introduced' },
   { to: '/earn/who-can-join/', label: 'Who can join our panel', sub: 'Ages, countries and roles explained', icon: 'globe', tone: 'join' }
 ];
 

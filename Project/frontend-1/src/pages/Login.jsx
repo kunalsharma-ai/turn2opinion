@@ -343,7 +343,7 @@ if (incomplete) {
               <SocialAuth />
 
               <p className="join-alt">
-                New here? <Link to={aud === 'pro' ? '/join/professional/' : aud === 'minor' ? '/join/minor/' : '/join/'}>Create a free account</Link>
+                New here? <Link to={aud === 'pro' ? '/join/professional/' : aud === 'minor' ? '/join/teen/' : '/join/'}>Create a free account</Link>
               </p>
 
               <FollowUs />

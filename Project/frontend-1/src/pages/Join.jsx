@@ -332,7 +332,7 @@ useEffect(() => {
   const queries = Object.fromEntries(params.entries());
   // /join/professional/ is the clean URL; ?category= still works for old links.
   if (/\/join\/professional\/?$/.test(window.location.pathname)) queries.category = 'professional';
-  if (/\/join\/minor\/?$/.test(window.location.pathname)) queries.category = 'minor';
+  if (/\/join\/teen\/?$/.test(window.location.pathname)) queries.category = 'minor';
 
   if (!(queries.category)) return;
 
@@ -901,7 +901,7 @@ const submitSignup = async () => {
                   {[
                     ['consumer', 'Consumer', 'users', 'Everyday opinions on products & life'],
                     ['pro', 'Business professional', 'briefcase', 'Also get B2B & workplace studies'],
-                    ['minor', 'Minor · 13–17', 'sparkles', 'Teen panel, with a parent’s permission']
+                    ['minor', 'Teen · 13–17', 'sparkles', 'Teen panel, with a parent’s permission']
                   ].map(([v, l, ic, d]) => (
                     <button type="button" role="radio" aria-checked={f.type === v} key={v} className={`type-opt to-${v} ${f.type === v ? 'is-on' : ''}`} onClick={() => {
                       if (f.type !== v) playAudience(v);
@@ -930,7 +930,7 @@ const submitSignup = async () => {
                       <i>🔑</i>
                     </span>
                     <span>
-                      <strong>Two keys switch your account on.</strong> After you sign up we email your parent or guardian. They say yes, you say yes in your own words, and only then do surveys start. <a href="/earn/minors/">How the teen panel works</a>
+                      <strong>Two keys switch your account on.</strong> After you sign up we email your parent or guardian. They say yes, you say yes in your own words, and only then do surveys start. <a href="/earn/teens/">How the teen panel works</a>
                     </span>
                   </p>
                 )}

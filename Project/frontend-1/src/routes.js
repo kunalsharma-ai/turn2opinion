@@ -66,13 +66,13 @@ export const ROUTES = [
     sitemap: { priority: '0.9', changefreq: 'monthly' }
   },
   {
-    path: '/earn/minors/',
+    path: '/earn/teens/',
     load: page(() => import('./pages/EarnMinors.jsx')),
     seo: {
       title: 'Teen Survey Panel for Ages 13–17 With Parent Permission | Turn2Opinion',
       description:
         'Our new teen panel lets 13 to 17 year olds share their views safely: a parent or guardian gives permission, the teen decides, and every study is age-checked.',
-      crumb: 'Minors (13–17)',
+      crumb: 'Teens (13–17)',
       parent: { path: '/paid-surveys/', name: 'Earn' }
     },
     sitemap: { priority: '0.8', changefreq: 'monthly' }
@@ -234,8 +234,8 @@ export const ROUTES = [
     sitemap: false
   },
   {
-    // Teen (13–17) sign-up: same page as /join/ with the Minor option preselected.
-    path: '/join/minor/',
+    // Teen (13–17) sign-up: same page as /join/ with the Teen option preselected.
+    path: '/join/teen/',
     load: page(() => import('./pages/Join.jsx')),
     seo: {
       title: 'Join the Teen Panel (13–17) | Turn2Opinion',
