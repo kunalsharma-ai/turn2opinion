@@ -18,8 +18,9 @@
 //   activation       after the parent consents, the teen gets a one-time link back here
 //                    (?user=…&code=…&activate=1) to create a password.
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from '../router/Router.jsx';
+import { Link, hrefFor } from '../router/Router.jsx';
 import { asset } from '../config/env.js';
+import PreviewLinks from '../components/PreviewLinks.jsx';
 import { SITE } from '../config/site.js';
 import { COUNTRIES } from '../data/countries.js';
 import { api, failureMessage } from '../utils/api.js';
@@ -574,8 +575,7 @@ export default function Join() {
     track('sign_up_start');
     (async () => {
       try {
-        const response = await fetch('/api/v1/get-country');
-        const info = await response.json();
+        const info = await api.get('/api/v1/get-country');
         const country = info?.country;
         if (country) setF((p) => ({ ...p, country: p.country || country, dial: p.dial || country, parent: { ...p.parent, dial: p.parent.dial || country } }));
       } catch {
@@ -936,6 +936,7 @@ export default function Join() {
         </p>
         <p className="muted">The link works for 24 hours. If you can’t see the email, check your spam or promotions folder.</p>
         <ResendVerify email={f.email} compact />
+        <PreviewLinks links={[['Open the verification link', '?user=demo-adult&code=000000', '/join/']]} />
         <Link to="/" className="btn btn-primary">
           Back to home
         </Link>
@@ -950,6 +951,7 @@ export default function Join() {
         </p>
         <p className="muted">Your Teen account stays switched off until they consent. Then we email you a link to create your password.</p>
         <TeenStatus stage="parent-verification-pending" parentEmail={f.parent.email} />
+        <PreviewLinks links={[['Open the parent’s onboarding form', '?user=demo-teen&code=000000', '/parent-consent/']]} />
         <Link to="/earn/teens/" className="btn btn-primary">
           How the Teen panel works
         </Link>
@@ -1035,14 +1037,14 @@ export default function Join() {
     <div className="consents">
       <Consent k="terms" f={f} set={set} errOf={errOf}>
         I have read and accept the{' '}
-        <a href="/terms/" target="_blank" rel="noopener">
+        <a href={hrefFor('/terms/')} target="_blank" rel="noopener">
           Terms &amp; Conditions
         </a>
         .
       </Consent>
       <Consent k="privacy" f={f} set={set} errOf={errOf}>
         I have read and accept the{' '}
-        <a href="/privacy/" target="_blank" rel="noopener">
+        <a href={hrefFor('/privacy/')} target="_blank" rel="noopener">
           Privacy Policy
         </a>
         , including how my data is used for research.
@@ -1142,7 +1144,7 @@ export default function Join() {
                     </span>
                     <span>
                       <strong>Parent or guardian consent is required.</strong> First your details, then theirs. They receive an onboarding form by email and your account switches on
-                      only after they consent. <a href="/earn/teens/">How the Teen panel works</a>
+                      only after they consent. <a href={hrefFor('/earn/teens/')}>How the Teen panel works</a>
                     </span>
                   </p>
                 )}

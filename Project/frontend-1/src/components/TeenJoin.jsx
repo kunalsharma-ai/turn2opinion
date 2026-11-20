@@ -2,6 +2,7 @@
 //   TeenParentStep   step 2: Mother / Father / Legal guardian and their details
 //   TeenConsentStep  step 3: what the parent is asked to authorise, legal links, the teen's own yes
 //   TeenStatus       where the registration stands (reflects the API's registrationStatus)
+import { hrefFor } from '../router/Router.jsx';
 import Icon from './Icon.jsx';
 import { DateField, EMAIL_RE, Field, PhoneField } from './FormFields.jsx';
 
@@ -197,7 +198,7 @@ export function TeenConsentStep({ f, set, errOf }) {
               {label === 'TERMS' ? (
                 <>
                   I have read and accept the{' '}
-                  <a href="/terms/" target="_blank" rel="noopener">
+                  <a href={hrefFor('/terms/')} target="_blank" rel="noopener">
                     Terms &amp; Conditions
                   </a>
                   .
@@ -205,7 +206,7 @@ export function TeenConsentStep({ f, set, errOf }) {
               ) : label === 'PRIVACY' ? (
                 <>
                   I have read and accept the{' '}
-                  <a href="/privacy/" target="_blank" rel="noopener">
+                  <a href={hrefFor('/privacy/')} target="_blank" rel="noopener">
                     Privacy Policy
                   </a>
                   , including the section on members under 18.

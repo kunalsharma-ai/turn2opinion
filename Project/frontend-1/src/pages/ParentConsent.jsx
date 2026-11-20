@@ -6,7 +6,8 @@
 // The API records the consent (status, time, version, IP, confirmations), emails the parent a
 // confirmation and emails the teen a one-time link to create their password.
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from '../router/Router.jsx';
+import { Link, hrefFor } from '../router/Router.jsx';
+import PreviewLinks from '../components/PreviewLinks.jsx';
 import { api } from '../utils/api.js';
 import { SITE } from '../config/site.js';
 import Icon from '../components/Icon.jsx';
@@ -191,6 +192,7 @@ export default function ParentConsent() {
         </p>
         <TeenStatus stage={result?.registrationStatus === 'account-active' ? 'account-active' : 'account-activation-pending'} />
         <p className="muted">You can withdraw consent at any time by writing to {SITE.email}.</p>
+        <PreviewLinks links={[['Open the Teen’s password link', '?user=demo-teen&code=000000&activate=1', '/join/teen/']]} />
       </Shell>
     );
 
@@ -253,7 +255,7 @@ export default function ParentConsent() {
                         {label === 'TERMS' ? (
                           <>
                             I have read and accept the{' '}
-                            <a href="/terms/" target="_blank" rel="noopener">
+                            <a href={hrefFor('/terms/')} target="_blank" rel="noopener">
                               Terms &amp; Conditions
                             </a>{' '}
                             on {teenName}’s behalf.
@@ -261,7 +263,7 @@ export default function ParentConsent() {
                         ) : label === 'PRIVACY' ? (
                           <>
                             I have read the{' '}
-                            <a href="/privacy/" target="_blank" rel="noopener">
+                            <a href={hrefFor('/privacy/')} target="_blank" rel="noopener">
                               Privacy Policy
                             </a>{' '}
                             and agree to {teenName}’s data being used as it describes.

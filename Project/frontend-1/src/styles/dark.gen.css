@@ -1722,6 +1722,11 @@
 :where(html[data-mode='dark']) .join-progress-note {
     color: #b7bed8
 }
+:where(html[data-mode='dark']) .preview-links {
+    border: 1px dashed #311e76;
+    background-color: #160b2d;
+    color: #9d8dd8
+}
 :where(html[data-mode='dark']) #t2o {
     color: #d9deef
 }
