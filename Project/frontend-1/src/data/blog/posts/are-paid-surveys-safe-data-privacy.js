@@ -94,7 +94,7 @@ Security isn't only about your data – it's about keeping the community fair. C
 
 ## Cookies and tracking
 
-Survey websites use cookies for login, security (such as reCAPTCHA) and, with your consent, analytics. You should be able to choose which non-essential cookies to allow. Turn2Opinion's [cookie policy](/cookies/) lists each cookie, its purpose and how long it lasts, and you can change your preferences at any time.
+Survey websites use cookies for login, security (such as CAPTCHA checks) and, with your consent, analytics. You should be able to choose which non-essential cookies to allow. Turn2Opinion's [cookie policy](/cookies/) lists each cookie, its purpose and how long it lasts, and you can change your preferences at any time.
 
 ## Deleting your account
 
@@ -106,7 +106,7 @@ Even on safe platforms, good digital habits matter. Use a strong, unique passwor
 
 ## What about children and teenagers?
 
-Some platforms, including Turn2Opinion, allow members under 18 to take part after informing a parent or guardian, who provides their email during registration. Parents and guardians can request details of the minor's participation, restrict use, or ask for the account to be suspended or deleted at any time. Sensitive information is not knowingly collected from minors without appropriate awareness.
+Some platforms, including Turn2Opinion, run a separate Teen panel for ages 13 to 17. A parent or guardian receives an onboarding and consent form by email, and the teen account only switches on after they consent. Parents and guardians can request details of the minor's participation, restrict use, or ask for the account to be suspended or deleted at any time. Sensitive information is not knowingly collected from minors without appropriate awareness.
 
 ## Legit paid surveys and GDPR surveys: what "compliant" really means
 

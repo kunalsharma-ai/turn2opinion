@@ -41,7 +41,7 @@ const STEPS = [
   },
   {
     t: 'Redeem your rewards',
-    d: 'Points add up in your dashboard. Reach the threshold and claim via PayPal, cash rewards, bank or wire transfer, shopping or grocery vouchers or a digital gift card – or UPI if you live in India.',
+    d: 'Points add up in your dashboard. Reach the threshold and claim via PayPal, bank or wire transfer, shopping or grocery vouchers or a digital gift card – or cash rewards or UPI if you live in India.',
     icon: 'gift',
     screen: { title: 'Rewards', lines: ['Balance ready', 'PayPal · Cash · Bank', 'Vouchers · Gift cards', 'UPI (India)'], cta: 'Redeem now', color: '#1F5BFF' }
   }
@@ -144,7 +144,7 @@ function TwoSides() {
         <span className="duo-knob">
           <Icon name="heart" size={16} />
           <b>You</b>
-          <small>most people are both</small>
+          <small>pick the one that fits</small>
         </span>
       </span>
       <label className="sr-only" htmlFor="duo-range">

@@ -116,7 +116,7 @@ export default function PaidSurveys() {
 
       <section className="section s-mist" aria-labelledby="types-h">
         <div className="wrap">
-          <SectionHead id="types-h" title="Surveys for consumers, professionals and teens" lead="Two moving worlds of research, plus a teen panel for ages 13 to 17. Hover to pause – most adult members end up in both." />
+          <SectionHead id="types-h" title="Surveys for consumers, professionals and teens" lead="Two moving worlds of research, plus a teen panel for ages 13 to 17. Hover to pause. You join one panel: Consumer or Business professional, by your own situation." />
           <div className="escal">
             {['consumer', 'business'].map((k) => (
               <div key={k} className={`esc esc-${k}`}>
@@ -153,8 +153,8 @@ export default function PaidSurveys() {
               </div>
             ))}
             <span className="esc-and" aria-hidden="true">
-              <b>+</b>
-              <small>join both</small>
+              <b>or</b>
+              <small>one panel each</small>
             </span>
           </div>
           <TeenBand variant="surveys" />
@@ -218,7 +218,7 @@ export default function PaidSurveys() {
             </p>
           </div>
           <ul className="method-pills">
-            {['PayPal', 'Cash Rewards', 'Bank Transfer', 'Wire Transfer', 'Shopping Vouchers', 'Grocery Vouchers', 'Digital Gift Cards', 'UPI (India only)'].map((m) => (
+            {['PayPal', 'Cash Rewards (India only)', 'Bank Transfer', 'Wire Transfer', 'Shopping Vouchers', 'Grocery Vouchers', 'Digital Gift Cards', 'UPI (India only)'].map((m) => (
               <li key={m}>
                 <Icon name="gift" size={16} /> {m}
               </li>

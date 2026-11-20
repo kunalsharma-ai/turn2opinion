@@ -176,6 +176,8 @@
   font-size: 0.84rem;
   box-shadow: var(--shadow-2);
   animation: labelPeek 9s var(--ease) infinite;
+  /* Decorative peek label: never block the form button underneath it. */
+  pointer-events: none;
 }
 @keyframes labelPeek {
   0%,

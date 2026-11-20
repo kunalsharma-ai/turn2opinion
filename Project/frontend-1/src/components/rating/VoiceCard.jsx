@@ -166,7 +166,8 @@ function DetailRatings({ detailrating, size = "md" }) {
       aria-label="Review detail ratings"
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+        // Narrow cards drop to one column, so labels never wrap letter by letter (feedback 20 Nov 2026).
+        gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 168px), 1fr))",
         gap: 7,
         marginTop: 12,
         width: "100%",
@@ -188,6 +189,7 @@ function DetailRatings({ detailrating, size = "md" }) {
             className="vc-detailrating"
             style={{
               display: "flex",
+              flexWrap: "wrap",
               alignItems: "center",
               gap: 8,
               minWidth: 0,
@@ -218,11 +220,11 @@ function DetailRatings({ detailrating, size = "md" }) {
               className="vc-detailrating-label"
               style={{
                 flex: 1,
-                minWidth: 0,
+                minWidth: "8em",
                 fontSize: 10,
                 lineHeight: 1.35,
                 fontWeight: 600,
-                overflowWrap: "anywhere",
+                overflowWrap: "normal",
               }}
             >
               {item.label}

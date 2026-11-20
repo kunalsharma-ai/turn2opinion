@@ -177,7 +177,7 @@ export default function Profiling() {
                   <Icon name="bot" size={24} />
                 </span>
                 <h3>BOT validation</h3>
-                <p>Google reCAPTCHA at registration, randomised attention checks and open-answer checks (no copy-paste) stop bots before they reach a survey.</p>
+                <p>A server-checked CAPTCHA at registration and login, randomised attention checks and open-answer checks (no copy-paste) stop bots before they reach a survey.</p>
               </div>
               <div className="gw-card" style={{ '--i': 1 }} data-reveal>
                 <span className="gw-ico">

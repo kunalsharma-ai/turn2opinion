@@ -11,7 +11,7 @@ export const FAQ_GROUPS = [
       },
       {
         q: 'Do I have to pay anything to join?',
-        a: 'No. Registration is completely free and you will never be asked for a payment. You earn points by taking part in sponsored surveys, and you can redeem those points for rewards such as PayPal, cash rewards, bank or wire transfer, shopping or grocery vouchers and digital gift cards, depending on what is available in your country. UPI is available to members in India only.'
+        a: 'No. Registration is completely free and you will never be asked for a payment. You earn points by taking part in sponsored surveys, and you can redeem those points for rewards such as PayPal, cash rewards, bank or wire transfer, shopping or grocery vouchers and digital gift cards, depending on what is available in your country. Cash rewards and UPI are available to members in India only.'
       },
       {
         q: 'What do I get as a member?',
@@ -84,7 +84,7 @@ export const FAQ_GROUPS = [
     items: [
       {
         q: 'How do I redeem my points?',
-        a: 'Once you reach the minimum threshold, request a redemption from your dashboard. There are eight reward options: PayPal, Cash Rewards, Bank Transfer, Wire Transfer, Shopping Vouchers, Grocery Vouchers and Digital Gift Cards everywhere we pay, plus UPI for members in India. Please make sure your payment details are correct to avoid delays.'
+        a: 'Once you reach the minimum threshold, request a redemption from your dashboard. There are eight reward options: PayPal, Bank Transfer, Wire Transfer, Shopping Vouchers, Grocery Vouchers and Digital Gift Cards everywhere we pay, plus Cash Rewards and UPI for members in India. Please make sure your payment details are correct to avoid delays.'
       },
       {
         q: 'How long does it take to receive a reward?',

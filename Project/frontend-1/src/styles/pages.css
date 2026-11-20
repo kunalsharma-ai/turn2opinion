@@ -7909,3 +7909,288 @@ code {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
+
+/* ============ Sign-up restore + Teen consent flow (20 Nov 2026) ============ */
+.form-grid.three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+@media (max-width: 720px) {
+  .form-grid.three {
+    grid-template-columns: 1fr 1fr;
+  }
+  .form-grid.three > :first-child {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 420px) {
+  .form-grid.three {
+    grid-template-columns: 1fr;
+  }
+}
+.join-progress-note {
+  margin: -6px 0 14px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.join-step-lead {
+  margin: 0 0 16px;
+  font-weight: 600;
+}
+.age-notice {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(255, 46, 151, 0.5);
+  background: linear-gradient(120deg, rgba(255, 46, 151, 0.08), rgba(34, 228, 255, 0.08));
+  font-size: 0.9rem;
+  line-height: 1.45;
+  animation: avIn 0.5s var(--spring) both;
+}
+.age-notice .icon {
+  flex: none;
+  margin-top: 2px;
+  color: #ff2e97;
+}
+.btn-spin {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  animation: btnSpin 0.8s linear infinite;
+}
+@keyframes btnSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.consents a {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.resend-inline {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  margin: 6px 0 16px;
+}
+
+/* Teen parent / consent steps (extends the tj- set) */
+.tj-rels.is-three .tj-rel {
+  flex: 1 1 140px;
+  justify-content: center;
+  padding: 12px 14px;
+}
+.tj-parent-form {
+  margin-top: 6px;
+  animation: avIn 0.45s var(--spring) both;
+}
+.tj-explain {
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.6);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+.tj-explain p {
+  margin: 0 0 8px;
+}
+.tj-explain .tick-list {
+  margin: 0;
+}
+.teen-status {
+  list-style: none;
+  margin: 16px auto;
+  padding: 14px 16px;
+  max-width: 460px;
+  display: grid;
+  gap: 8px;
+  text-align: left;
+  border-radius: 16px;
+  background: linear-gradient(150deg, #1b0840, #12052c 60%, #0b1a3a);
+  color: #e9dcff;
+  font-size: 0.86rem;
+}
+.teen-status li {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  opacity: 0.55;
+}
+.teen-status li.is-done,
+.teen-status li.is-now {
+  opacity: 1;
+}
+.teen-status li.is-now {
+  color: #c8ff3a;
+  font-weight: 700;
+}
+.teen-status small {
+  font-weight: 500;
+  color: #e9dcff;
+}
+.ts-dot {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(233, 220, 255, 0.5);
+}
+.teen-status li.is-done .ts-dot {
+  background: #22e4ff;
+  border-color: #22e4ff;
+  color: #12052c;
+}
+.ts-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #c8ff3a;
+  box-shadow: 0 0 0 0 rgba(200, 255, 58, 0.7);
+  animation: tsPulse 1.6s ease-out infinite;
+}
+@keyframes tsPulse {
+  to {
+    box-shadow: 0 0 0 10px rgba(200, 255, 58, 0);
+  }
+}
+.teen-pending {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(255, 46, 151, 0.5);
+  background: rgba(255, 46, 151, 0.06);
+  font-size: 0.88rem;
+}
+.teen-pending p {
+  margin: 0 0 8px;
+}
+
+/* Parent / guardian onboarding + consent page (/parent-consent/) */
+.pgc {
+  padding: 120px 0 80px;
+  background: radial-gradient(1200px 500px at 10% -10%, rgba(138, 92, 255, 0.16), transparent 60%), radial-gradient(900px 500px at 100% 10%, rgba(34, 228, 255, 0.14), transparent 60%), #f7f6ff;
+}
+.pgc-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 40px;
+  align-items: start;
+}
+.pgc-side h1 {
+  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+  line-height: 1.1;
+  margin: 10px 0 12px;
+}
+.pgc-kicker {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #12052c;
+  color: #c8ff3a;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.pgc-steps {
+  list-style: none;
+  display: flex;
+  gap: 10px;
+  padding: 0;
+  margin: 18px 0;
+}
+.pgc-steps li {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #fff;
+  font-weight: 600;
+  font-size: 0.88rem;
+  box-shadow: var(--shadow-1);
+}
+.pgc-steps b {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #e8e4ff;
+  font-size: 0.75rem;
+}
+.pgc-steps li.is-on b {
+  background: linear-gradient(120deg, #ff2e97, #8a5cff);
+  color: #fff;
+}
+.pgc-steps li.is-done b {
+  background: #22e4ff;
+}
+.pgc-side .teen-status {
+  margin: 0;
+}
+.pgc-card {
+  padding: 28px;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 30px 80px -40px rgba(42, 20, 110, 0.45);
+}
+.pgc-card h2 {
+  font-size: 1.3rem;
+  margin: 0 0 18px;
+}
+.pgc-sections {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.pgc-sec {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 16px;
+  background: #f7f6ff;
+}
+.pgc-sec h3 {
+  margin: 0 0 4px;
+  font-size: 0.98rem;
+}
+.pgc-sec p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.pgc-ico {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: linear-gradient(120deg, #ff2e97, #8a5cff);
+  color: #fff;
+}
+.pgc-wait {
+  text-align: center;
+}
+@media (max-width: 900px) {
+  .pgc {
+    padding-top: 96px;
+  }
+  .pgc-grid {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .pgc-card {
+    padding: 20px 16px;
+  }
+}

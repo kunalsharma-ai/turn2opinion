@@ -4,7 +4,7 @@ import Icon from '../Icon.jsx';
 const STEPS = [
   { t: 'Sign up free', d: 'Register with an active email and phone number, then verify both with a link and an OTP.', icon: 'user', color: '#49B6FF' },
   { t: 'Share your opinion', d: 'Complete your profile, get matched invitations and answer honestly – on mobile or desktop.', icon: 'chat', color: '#7B5CFF' },
-  { t: 'Get rewarded', d: 'Reach your threshold and redeem through PayPal, cash rewards, bank or wire transfer, vouchers or digital gift cards – plus UPI in India.', icon: 'gift', color: '#FFB020' }
+  { t: 'Get rewarded', d: 'Reach your threshold and redeem through PayPal, bank or wire transfer, vouchers or digital gift cards – plus cash rewards and UPI in India.', icon: 'gift', color: '#FFB020' }
 ];
 
 export function StepsPipeline() {

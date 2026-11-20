@@ -111,6 +111,29 @@
           </td>
         </tr>
 
+        {% if otp and otp.code %}
+        <!-- ACTIVATE: create your password (sent only to Teens who signed up on the Teen form) -->
+        <tr>
+          <td align="center" style="padding: 0 55px 35px">
+            <p style="margin: 0 0 18px; color: #17285f; font-size: 20px; line-height: 32px;">
+              One last step: create your password to switch your Teen account on.
+            </p>
+            <a
+              href="https://{{user.origin}}/join/teen/?user={{user._id}}&code={{otp.code}}&activate=1"
+              target="_blank"
+              style="display:inline-block; background:#002b8f; color:#ffffff; text-decoration:none; padding:15px 40px; border-radius:10px; font-size:17px; font-weight:bold;">
+              CREATE MY PASSWORD
+            </a>
+            <p style="margin: 14px 0 0; font-size: 15px; line-height: 22px; color: #5b6785;">
+              This link works once and expires in 7 days.
+            </p>
+            <p style="margin: 8px 0 0; font-size: 14px; line-height: 20px; word-break: break-all; color: #0D5CC7;">
+              https://{{ user.origin }}/join/teen/?user={{ user._id }}&code={{ otp.code }}&activate=1
+            </p>
+          </td>
+        </tr>
+        {% endif %}
+
         <!-- IMPORTANT NOTICE -->
         <tr>
           <td style="padding: 0 55px 35px">

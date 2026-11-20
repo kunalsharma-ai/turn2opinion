@@ -46,7 +46,7 @@ function RewardCard({ m, i, n }) {
   );
 }
 
-/** Country switch deals the reward cards that apply there: eight in India (with UPI), seven everywhere else. */
+/** Country switch deals the reward cards that apply there: eight in India (with cash rewards and UPI), six everywhere else. */
 export function RewardWallet() {
   const [where, setWhere] = useState('IN');
   const [deal, setDeal] = useState(0);

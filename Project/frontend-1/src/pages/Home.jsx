@@ -98,7 +98,7 @@ export default function Home() {
       {/* REWARDS */}
       <section className="section s-gold" aria-labelledby="rw-title">
         <div className="wrap">
-          <SectionHead kicker="Rewards" id="rw-title" title="Get paid the way that suits you" lead="Eight ways to get paid: PayPal, cash rewards, bank or wire transfer, shopping and grocery vouchers, digital gift cards – and UPI if you live in India. You choose when you cash out." />
+          <SectionHead kicker="Rewards" id="rw-title" title="Get paid the way that suits you" lead="Eight ways to get paid: PayPal, bank or wire transfer, shopping and grocery vouchers, digital gift cards – and cash rewards or UPI if you live in India. You choose when you cash out." />
           <RewardWallet />
           <div className="routes-block" data-reveal>
             <h3 className="sub-h">Every profile has a way to earn</h3>
@@ -180,7 +180,7 @@ export default function Home() {
               <h3>Paid surveys for cash, vouchers and gift cards</h3>
               <p>
                 Every survey shows its reward and how long it takes before you start. Points add up in your account and you redeem them
-                through PayPal, cash rewards, a bank or wire transfer, shopping or grocery vouchers, a digital gift card or, if you live in India, straight to your UPI ID. You pick the
+                through PayPal, a bank or wire transfer, shopping or grocery vouchers, a digital gift card or, if you live in India, cash rewards or straight to your UPI ID. You pick the
                 payout and the moment you cash out.
               </p>
             </article>

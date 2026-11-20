@@ -321,7 +321,7 @@ export default function EarnConsumers() {
             <p className="ec-kicker is-dark">Cash out your way</p>
             <h2 id="ec-v-h">Eight slots. You press the button.</h2>
             <p>
-              PayPal, cash rewards, bank or wire transfer, shopping and grocery vouchers, digital gift cards, and UPI if you live in India. Pick whatever suits you this time
+              PayPal, bank or wire transfer, shopping and grocery vouchers, digital gift cards, and cash rewards or UPI if you live in India. Pick whatever suits you this time
               and something else next time.
             </p>
           </div>

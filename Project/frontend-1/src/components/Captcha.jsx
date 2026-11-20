@@ -1,13 +1,21 @@
-// CAPTCHA with two modes:
-// 1) Google reCAPTCHA v2 when VITE_RECAPTCHA_SITE_KEY is set (token MUST be verified server-side
-//    with the secret key – the backend endpoint is responsible for that).
-// 2) Built-in visual/text challenge as a fallback for local development & previews.
-//    It blocks naive bots but is NOT a security control on its own – always configure reCAPTCHA in production.
+// Human check for sign-up and login.
+//
+// The challenge comes from the API (GET /api/v1/user/captcha) and is checked on the server when the
+// form is submitted, once: a used or expired challenge is rejected, so the parent form asks for a new
+// one (resetKey) after every failed submit. Typing never checks or submits anything. Enter inside
+// the code box is ignored, so only the form's own button sends it.
+//
+// If the API can't be reached (local preview, older backend), a picture code drawn in the browser is
+// used instead and checked on submit; that fallback blocks naive bots only.
+//
+// onChange receives null (nothing typed yet) or
+//   { provider: 'server', id, answer }  -> send as `captcha: { id, answer }`
+//   { provider: 'local', answer, valid } -> check `valid` on submit
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
-import { ENV } from '../config/env.js';
+import { api } from '../utils/api.js';
 import Icon from './Icon.jsx';
 
-const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const CHARS = 'ABCDEFGHJKLMNPRSTUVWXYZ2345678';
 const rnd = (n) => Math.floor(Math.random() * n);
 
 function makeCode() {
@@ -57,101 +65,129 @@ function drawCode(canvas, code) {
   });
 }
 
-let recaptchaPromise = null;
-function loadRecaptcha() {
-  if (recaptchaPromise) return recaptchaPromise;
-  recaptchaPromise = new Promise((resolve, reject) => {
-    window.__t2oRecaptchaReady = () => resolve(window.grecaptcha);
-    const s = document.createElement('script');
-    s.src = 'https://www.google.com/recaptcha/api.js?onload=__t2oRecaptchaReady&render=explicit';
-    s.async = true;
-    s.defer = true;
-    s.onerror = reject;
-    document.head.appendChild(s);
-  });
-  return recaptchaPromise;
-}
+const norm = (v) => String(v || '').replace(/\s+/g, '').toUpperCase();
 
-function GoogleCaptcha({ onChange, resetKey }) {
-  const box = useRef(null);
-  const widget = useRef(null);
-  useEffect(() => {
-    let alive = true;
-    loadRecaptcha()
-      .then((g) => {
-        if (!alive || !box.current) return;
-        if (widget.current === null) {
-          widget.current = g.render(box.current, {
-            sitekey: ENV.RECAPTCHA_SITE_KEY,
-            callback: (t) => onChange({ provider: 'recaptcha', token: t }),
-            'expired-callback': () => onChange(null),
-            'error-callback': () => onChange(null)
-          });
-        }
-      })
-      .catch(() => onChange(null));
-    return () => {
-      alive = false;
-    };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    if (widget.current !== null && window.grecaptcha) {
-      window.grecaptcha.reset(widget.current);
-      onChange(null);
-    }
-  }, [resetKey]); // eslint-disable-line react-hooks/exhaustive-deps
-  return <div ref={box} className="recaptcha-box" />;
+/** True when the value from onChange is ready to be submitted. */
+export function captchaReady(c) {
+  return !!(c && c.answer && norm(c.answer).length >= 1);
 }
+/** Body field for the API, or undefined for the browser-only fallback. */
+export function captchaPayload(c) {
+  return c && c.provider === 'server' ? { id: c.id, answer: norm(c.answer) } : undefined;
+}
+/** For the browser fallback only: does the typed answer match? */
+export function captchaLocalOk(c) {
+  return !!(c && c.provider === 'local' && c.valid);
+}
+/** Server message about the human check (so forms can put it under the box). */
+export const isCaptchaError = (msg) => /human check|captcha/i.test(String(msg || ''));
 
-function LocalCaptcha({ onChange, resetKey, error, label }) {
+export default function Captcha({ onChange, resetKey = 0, error, label, notice }) {
   const id = useId();
   const canvas = useRef(null);
+  const timer = useRef(null);
   const [mode, setMode] = useState('image');
-  const [code, setCode] = useState('');
-  const [sum, setSum] = useState(null);
+  const [source, setSource] = useState('loading'); // loading | server | local
+  const [challenge, setChallenge] = useState(null); // server: { id, image | question }
+  const [local, setLocal] = useState({ code: '', sum: null });
   const [value, setValue] = useState('');
-  const [ok, setOk] = useState(false);
+  const [expired, setExpired] = useState(false);
 
-  const regenerate = useCallback(() => {
-    const c = makeCode();
-    setCode(c);
-    setSum(makeSum());
-    setValue('');
-    setOk(false);
-    onChange(null);
-  }, [onChange]);
+  const load = useCallback(
+    async (m = mode) => {
+      clearTimeout(timer.current);
+      setValue('');
+      onChange(null);
+      setSource('loading');
+      try {
+        const r = await api.get(`/api/v1/user/captcha?mode=${m === 'text' ? 'text' : 'image'}`);
+        if (r?.status === 'success' && r.data?.id) {
+          setChallenge(r.data);
+          setSource('server');
+          // Swap in a fresh code a little before the server forgets this one.
+          const ms = Math.max(30, (r.data.expiresIn || 300) - 10) * 1000;
+          timer.current = setTimeout(() => {
+            setExpired(true);
+            load(m);
+          }, ms);
+          return;
+        }
+        if (r?.status === 'error' && /too many/i.test(r.message || '')) {
+          setChallenge({ id: null, blocked: r.message });
+          setSource('server');
+          return;
+        }
+      } catch {
+        /* fall through to the browser code */
+      }
+      setLocal({ code: makeCode(), sum: makeSum() });
+      setSource('local');
+    },
+    [mode, onChange]
+  );
 
   useEffect(() => {
-    regenerate();
+    load(mode);
+    return () => clearTimeout(timer.current);
   }, [resetKey]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    if (mode === 'image' && canvas.current && code) drawCode(canvas.current, code);
-  }, [code, mode]);
 
-  const check = (v) => {
+  useEffect(() => {
+    if (source === 'local' && mode === 'image' && canvas.current && local.code) drawCode(canvas.current, local.code);
+  }, [local, mode, source]);
+
+  const type = (v) => {
     setValue(v);
-    const good = mode === 'image' ? v.trim().toUpperCase() === code : sum && v.trim() === sum.a;
-    setOk(good);
-    onChange(good ? { provider: 'local', token: `local.${Date.now().toString(36)}` } : null);
+    setExpired(false);
+    if (!v.trim()) return onChange(null);
+    if (source === 'server' && challenge?.id) onChange({ provider: 'server', id: challenge.id, answer: v });
+    else if (source === 'local') {
+      const valid = mode === 'image' ? norm(v) === local.code : local.sum && v.trim() === local.sum.a;
+      onChange({ provider: 'local', answer: v, valid });
+    }
   };
 
+  const switchMode = () => {
+    const m = mode === 'image' ? 'text' : 'image';
+    setMode(m);
+    if (source === 'local') {
+      setValue('');
+      onChange(null);
+    } else load(m);
+  };
+
+  const refresh = () => {
+    setExpired(false);
+    if (source === 'local') {
+      setLocal({ code: makeCode(), sum: makeSum() });
+      setValue('');
+      onChange(null);
+    } else load(mode);
+  };
+
+  const question = source === 'server' ? challenge?.question : local.sum?.q;
   return (
-    <div className={`captcha ${ok ? 'is-ok' : ''} ${error ? 'has-error' : ''}`}>
+    <div className={`captcha ${error ? 'has-error' : ''}`}>
       <div className="captcha-top">
         <span className="captcha-shield" aria-hidden="true">
-          <Icon name={ok ? 'check' : 'shield'} size={18} />
+          <Icon name="shield" size={18} />
         </span>
         <span className="captcha-title">{label || 'Prove you’re human'}</span>
-        <button type="button" className="captcha-refresh" onClick={regenerate} aria-label="New challenge">
+        <button type="button" className="captcha-refresh" onClick={refresh} aria-label="Get a new code">
           <Icon name="refresh" size={16} />
         </button>
       </div>
       <div className="captcha-body">
-        {mode === 'image' ? (
-          <canvas ref={canvas} className="captcha-canvas" style={{ width: 168, height: 52 }} aria-hidden="true" />
+        {source === 'loading' ? (
+          <span className="captcha-canvas captcha-loading" aria-hidden="true" />
+        ) : mode === 'image' ? (
+          source === 'server' ? (
+            challenge?.image ? <img className="captcha-canvas" src={challenge.image} width="168" height="52" alt="CAPTCHA code: five letters and numbers" /> : <span className="captcha-canvas captcha-loading" aria-hidden="true" />
+          ) : (
+            <canvas ref={canvas} className="captcha-canvas" style={{ width: 168, height: 52 }} aria-hidden="true" />
+          )
         ) : (
           <p className="captcha-q" id={`${id}-q`}>
-            {sum && sum.q}
+            {question}
           </p>
         )}
         <input
@@ -159,23 +195,33 @@ function LocalCaptcha({ onChange, resetKey, error, label }) {
           className="captcha-input"
           inputMode={mode === 'image' ? 'text' : 'numeric'}
           autoComplete="off"
+          autoCorrect="off"
           autoCapitalize="characters"
           spellCheck="false"
+          enterKeyHint="done"
           maxLength={mode === 'image' ? 5 : 3}
           value={value}
-          onChange={(e) => check(e.target.value)}
-          aria-label={mode === 'image' ? 'Type the five characters shown in the image' : sum ? sum.q : 'Answer'}
+          disabled={source === 'loading' || !!challenge?.blocked}
+          onChange={(e) => type(e.target.value)}
+          onKeyDown={(e) => {
+            // Never submit the form from the code box: only the form's button does that.
+            if (e.key === 'Enter') e.preventDefault();
+          }}
+          aria-label={mode === 'image' ? 'Type the five characters shown in the image' : question || 'Answer'}
           aria-invalid={error ? 'true' : 'false'}
           placeholder={mode === 'image' ? 'Type the code' : 'Answer'}
         />
       </div>
-      <button type="button" className="captcha-switch" onClick={() => { setMode((m) => (m === 'image' ? 'text' : 'image')); setValue(''); setOk(false); onChange(null); }}>
+      <p className="captcha-note">
+        {challenge?.blocked
+          ? challenge.blocked
+          : expired
+            ? 'That code expired, so here’s a new one.'
+            : notice || (mode === 'image' ? 'Not case-sensitive. We check it when you press the button.' : 'We check it when you press the button.')}
+      </p>
+      <button type="button" className="captcha-switch" onClick={switchMode}>
         {mode === 'image' ? 'Can’t read it? Answer a text question instead' : 'Use the picture code instead'}
       </button>
     </div>
   );
-}
-
-export default function Captcha(props) {
-  return ENV.RECAPTCHA_SITE_KEY ? <GoogleCaptcha {...props} /> : <LocalCaptcha {...props} />;
 }

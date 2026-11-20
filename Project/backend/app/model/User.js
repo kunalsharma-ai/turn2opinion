@@ -8,6 +8,17 @@ import { parsePhoneNumberFromString } from "libphonenumber-js"
 
 const resolveMx = promisify(dns.resolveMx)
 
+// Whole years between a date of birth and today (birthday-exact, not 365.25-day maths).
+export function ageInYears(dob, now = new Date()) {
+    if (!dob) return null;
+    const d = new Date(dob);
+    if (isNaN(d.getTime())) return null;
+    let y = now.getFullYear() - d.getFullYear();
+    const m = now.getMonth() - d.getMonth();
+    if (m < 0 || (m === 0 && now.getDate() < d.getDate())) y--;
+    return y;
+}
+
 export default mongooseModel(
     "User",
     {
@@ -50,10 +61,11 @@ export default mongooseModel(
                 trim: true,
                 default: ""
             },
+            // Last name is optional on the registration forms (some members have a single name).
             last: {
                 type: String,
                 trim: true,
-                required: [true, "Lastname is required"]
+                default: ""
             }
         },
         gender: {
@@ -291,12 +303,28 @@ export default mongooseModel(
                 type: String,
                 trim: true,
                 lowercase: true,
-                enum: ["father", "mother"]
+                enum: ["father", "mother", "guardian"]
             },
+            phone: { type: String, trim: true },
+            dob: { type: Date },
+            // Asked only when the relation is "guardian".
+            gender: { type: String, enum: ["Male", "Female", "Other"] },
             consent: {
                 type: Boolean,
                 default: null
-            }
+            },
+            // Consent record for Teen (13-17) members. consentStatus is what the member area reads.
+            consentStatus: {
+                type: String,
+                enum: ["pending", "approved", "withdrawn"]
+            },
+            submittedAt: { type: Date },
+            onboardingOpenedAt: { type: Date },
+            consentAt: { type: Date },
+            consentVersion: { type: String },
+            consentIP: { type: String },
+            consentConfirmations: [{ type: String }],
+            verifiedVia: { type: String }
         }
     },
     [
@@ -328,6 +356,18 @@ export default mongooseModel(
                 return [this.name.salutation, this.name.first, this.name.middle, this.name.last]
                     .filter(Boolean)
                     .join(" ");
+            },
+            // Where a member is in sign-up, from real backend events (see docs in the PR).
+            registrationStatus: function () {
+                const verified = this.isVerified?.email === "verified";
+                const years = ageInYears(this.dob);
+                const isTeen = this.category === "minor" || (years !== null && years < 18);
+                if (!isTeen) return verified ? "account-active" : "email-verification-pending";
+                const p = this.parent || {};
+                if (!p.email) return verified ? "parent-details-needed" : "registration-started";
+                if (p.consent === true || p.consentStatus === "approved") return verified ? "account-active" : "account-activation-pending";
+                if (p.consentStatus === "withdrawn") return "consent-withdrawn";
+                return p.onboardingOpenedAt ? "consent-pending" : "parent-verification-pending";
             },
             age: function () {
                 if (!this.dob) return null;

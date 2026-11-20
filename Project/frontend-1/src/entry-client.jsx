@@ -3,10 +3,14 @@ import { createRoot, hydrateRoot } from 'react-dom/client';
 import App from './App.jsx';
 import { preloadPath } from './app/routeCache.js';
 import { normalizePath, isHashMode } from './router/Router.jsx';
+import { captureReferral } from './utils/referral.js';
 
 // Dev and the single-file preview use one combined stylesheet. The production build ships the
 // same rules as four separate bundles, linked by scripts/prerender.mjs — see src/styles/index.css.
 if (import.meta.env.DEV) import('./styles/index.css');
+
+// Referral links (/?ref=<id>&signup): remember the referrer and open the sign-up page.
+if (captureReferral()) location.replace('/join/' + location.search);
 
 const container = document.getElementById('root');
 const path = isHashMode() ? normalizePath(location.hash.replace(/^#/, '') || '/') : normalizePath(location.pathname);

@@ -15,8 +15,35 @@ function gtag() {
   dl().push(arguments);
 }
 
+// The choice is kept in localStorage and mirrored in a first-party cookie (essential, 12 months,
+// shared by turn2opinion.com and www.turn2opinion.com), so it survives either being cleared.
+const COOKIE = 't2o_consent';
+function readCookie() {
+  try {
+    const m = document.cookie.match(/(?:^|; )t2o_consent=([^;]*)/);
+    return m ? JSON.parse(decodeURIComponent(m[1])) : null;
+  } catch {
+    return null;
+  }
+}
+function writeCookie(value) {
+  try {
+    const host = window.location.hostname;
+    const domain = /(^|\.)turn2opinion\.com$/.test(host) ? '; domain=.turn2opinion.com' : '';
+    const secure = window.location.protocol === 'https:' ? '; secure' : '';
+    document.cookie = `${COOKIE}=${encodeURIComponent(JSON.stringify(value))}; max-age=${60 * 60 * 24 * 365}; path=/; samesite=lax${domain}${secure}`;
+  } catch {
+    /* ignore */
+  }
+}
+
 export function getConsent() {
-  return typeof window === 'undefined' ? null : store.get(CONSENT_KEY, null);
+  if (typeof window === 'undefined') return null;
+  const local = store.get(CONSENT_KEY, null);
+  if (local) return local;
+  const fromCookie = readCookie();
+  if (fromCookie) store.set(CONSENT_KEY, fromCookie);
+  return fromCookie;
 }
 
 function consentState(c) {
@@ -33,8 +60,9 @@ function consentState(c) {
 }
 
 function loadGtm() {
-  if (gtmLoaded || !ENV.GTM_ID) return;
+  if (gtmLoaded || window.__t2oGtmLoaded || !ENV.GTM_ID) return;
   gtmLoaded = true;
+  window.__t2oGtmLoaded = 1;
   dl().push({ 'gtm.start': Date.now(), event: 'gtm.js' });
   const s = document.createElement('script');
   s.async = true;
@@ -62,6 +90,7 @@ export function initAnalytics() {
 export function saveConsent(c) {
   const value = { necessary: true, analytics: !!c.analytics, marketing: !!c.marketing, preferences: !!c.preferences, ts: Date.now() };
   store.set(CONSENT_KEY, value);
+  writeCookie(value);
   gtag('consent', 'update', consentState(value));
   metaConsent(value);
   if (value.analytics || value.marketing) loadGtm();

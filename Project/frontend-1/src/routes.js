@@ -248,6 +248,18 @@ export const ROUTES = [
     sitemap: false
   },
   {
+    // Parent/guardian onboarding and consent form for a Teen sign-up (link from the parent's email).
+    path: '/parent-consent/',
+    load: page(() => import('./pages/ParentConsent.jsx')),
+    seo: {
+      title: 'Parent or Guardian Consent – Teen Panel | Turn2Opinion',
+      description: 'Complete the parent or guardian onboarding form and consent for a Turn2Opinion Teen panel sign-up.',
+      crumb: 'Parent consent',
+      robots: 'noindex,nofollow'
+    },
+    sitemap: false
+  },
+  {
     path: '/login/',
     load: page(() => import('./pages/Login.jsx')),
     seo: {

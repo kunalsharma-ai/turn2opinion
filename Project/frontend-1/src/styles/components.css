@@ -1075,9 +1075,22 @@ select.input {
   color: var(--blue);
   text-decoration: underline;
 }
-.recaptcha-box {
-  margin: 14px 0;
-  min-height: 78px;
+.captcha-loading {
+  display: inline-block;
+  width: 168px;
+  height: 52px;
+  background: linear-gradient(90deg, #eef2ff 0%, #f6f1ff 50%, #eef2ff 100%) 0 0 / 200% 100%;
+  animation: captcha-shimmer 1.2s linear infinite;
+}
+@keyframes captcha-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+.captcha-note {
+  margin: 8px 0 0;
+  font-size: 0.78rem;
+  color: var(--muted, #5b6785);
 }
 
 /* ================= Chat-style FAQ ================= */

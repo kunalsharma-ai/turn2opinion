@@ -214,6 +214,12 @@
 :where(html[data-mode='dark']) .captcha-switch {
     color: #8cabff
 }
+:where(html[data-mode='dark']) .captcha-loading {
+    background: linear-gradient(90deg, #0c142e 0%, #170b2d 50%, #0c142e 100%) 0 0 / 200% 100%
+}
+:where(html[data-mode='dark']) .captcha-note {
+    color: #b7bed8
+}
 :where(html[data-mode='dark']) .cf-qs button {
     border: 1.5px solid #263253;
     background-color: #0b1128;
@@ -348,9 +354,6 @@
 }
 :where(html[data-mode='dark']) .footer-bottom {
     border-top: 1px solid rgba(23, 33, 79, 0.14)
-}
-:where(html[data-mode='dark']) .ts-card {
-    background-color: #0b1128
 }
 :where(html[data-mode='dark']) .social-divider {
     color: #b5bbd7
@@ -1715,6 +1718,9 @@
 }
 :where(html[data-mode='dark']) .gvf-flag {
     border: 1px solid rgba(23, 33, 79, 0.1)
+}
+:where(html[data-mode='dark']) .join-progress-note {
+    color: #b7bed8
 }
 :where(html[data-mode='dark']) #t2o {
     color: #d9deef

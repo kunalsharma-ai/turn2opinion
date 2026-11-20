@@ -33,6 +33,62 @@ import {
     sendMail,
     Token
 } from "../../utils/index.js"
+import { createCaptcha, requireCaptcha } from "../../utils/captcha.js";
+import { captchaLimit, loginLimit, registerLimit, linkLimit } from "../../utils/limits.js";
+import { ageInYears } from "../../model/User.js";
+
+const TEEN_LINK_MS = 7 * 24 * 60 * 60 * 1000; // parent onboarding and teen activation links
+const TEEN_CONSENT_VERSION = "teen-consent-2026-11";
+const PARENT_RELATIONS = ["mother", "father", "guardian"];
+const isTeenUser = (u) => {
+    if (!u) return false;
+    const a = ageInYears(u.dob);
+    return u.category === "minor" || (a !== null && a < 18);
+};
+const consentApproved = (u) => u?.parent?.consent === true || u?.parent?.consentStatus === "approved";
+
+// Keep only the parent/guardian fields a sign-up form may set.
+function cleanParent(p = {}) {
+    const name = p.name || {};
+    const out = {
+        email: String(p.email || "").trim().toLowerCase(),
+        relation: String(p.relation || "").trim().toLowerCase(),
+        name: {
+            first: String(name.first || "").trim(),
+            middle: String(name.middle || "").trim(),
+            last: String(name.last || "").trim()
+        },
+        phone: p.phone ? String(p.phone).trim() : undefined,
+        dob: p.dob || undefined
+    };
+    // Gender is asked only for a legal guardian.
+    if (out.relation === "guardian" && ["Male", "Female", "Other"].includes(p.gender)) out.gender = p.gender;
+    if (out.relation === "mother") out.name.salutation = "Mrs.";
+    if (out.relation === "father") out.name.salutation = "Mr.";
+    return out;
+}
+
+function checkParent(parent, teenMail) {
+    if (!parent.email) throw new Error("Enter your parent or guardian’s email address.");
+    if (parent.email === String(teenMail || "").toLowerCase()) throw new Error("Your parent or guardian needs their own email address, not yours.");
+    if (!PARENT_RELATIONS.includes(parent.relation)) throw new Error("Choose Mother, Father or Legal guardian.");
+    if (!parent.name.first) throw new Error("Enter your parent or guardian’s first name.");
+    const pAge = ageInYears(parent.dob);
+    if (parent.dob && (pAge === null || pAge < 18)) throw new Error("A parent or guardian must be 18 or older.");
+}
+
+async function sendParentOnboarding(req, user) {
+    const otp = await otpController.generate(user._id, "parent-consent", user.origin || req.origin, TEEN_LINK_MS);
+    if (otp?.cooldown) return otp;
+    const mailer = await getMailer("register", "minor", { user, otp });
+    await sendMail(
+        { origin: req.origin, "content-type": "application/json" },
+        user?.parent?.email,
+        `${process.env.PROJECT_NAME || "Turn2Opinion"}: Parent/Guardian Onboarding Form`,
+        mailer.data
+    );
+    return otp;
+}
 
 const router = express.Router();
 router
@@ -80,16 +136,51 @@ router
         )
     )
     .put(
+        registerLimit,
         expressRoute(
             async req => {
+                await requireCaptcha(req);
                 const userInfo = req.body;
-                const unwantedCols = ["password", "fullName", "age"];
+                const unwantedCols = ["password", "fullName", "age", "role", "isVerified", "registrationStatus"];
                 for (let index = 0; index < unwantedCols.length; index++) {
                     const col = unwantedCols[index];
                     if (col in userInfo) delete (userInfo[col]);
                 }
+                // Panel by date of birth, decided here so a changed form value can't bypass it.
+                const age = ageInYears(userInfo.dob);
+                if (age !== null && age < 13) throw new Error("Turn2Opinion members must be at least 13 years old.");
+                const isTeen = age !== null && age < 18;
+                let teenWithParent = false;
+                if (isTeen) {
+                    userInfo.category = "minor";
+                    if (userInfo.parent && userInfo.parent.email) {
+                        const parent = cleanParent(userInfo.parent);
+                        checkParent(parent, userInfo.mail);
+                        userInfo.parent = {
+                            ...parent,
+                            consent: null,
+                            consentStatus: "pending",
+                            submittedAt: new Date()
+                        };
+                        teenWithParent = true;
+                    } else throw new Error("Members aged 13 to 17 join the Teen panel, which needs a parent or guardian’s details and consent.");
+                } else {
+                    delete userInfo.parent;
+                    if (userInfo.category === "minor") userInfo.category = "b2c";
+                }
+                if (Array.isArray(userInfo.terms)) userInfo.terms = userInfo.terms.filter((t) => typeof t === "string").slice(0, 20);
                 let message = "";
                 let data = await userController.create(userInfo);
+
+                if (teenWithParent) {
+                    // Teen sign-up: the parent/guardian gets the onboarding form first. The teen's own
+                    // activation (set-password) link is sent only after the parent consents.
+                    await sendParentOnboarding(req, Mutate(data));
+                    return {
+                        message: "Registration request submitted. We emailed the parent/guardian onboarding form.",
+                        data: { user: data._id, registrationStatus: "parent-verification-pending" }
+                    };
+                }
 
                 let otp = await otpController.generate(
                     data._id,
@@ -112,22 +203,38 @@ router
                     `${process.env.PROJECT_NAME || "Turn 2 Opinion"}: Registration`,
                     mailer.data
                 )
-                return { message, data: otp };
+                // Never return the verification code itself: it would let anyone skip the email check.
+                return { message, data: { user: data._id, expiresAt: otp?.expiresAt, registrationStatus: "email-verification-pending" } };
             },
             userController
         )
     )
     .patch(
+        linkLimit,
         expressRoute(
             async req => {
                 if (!req?.body?.password || !req?.body?.confirmPassword || req?.body?.password !== req?.body?.confirmPassword) throw new Error("Passwords not matching.")
                 const message = "Your password is created. Go to login page and proceed.";
                 let otp = await otpController.verify(req.body.userID, "email", req.origin, req.body.emailOTP);
                 if (!otp) throw new Error("Link Expired. Unable to set password.");
+                const who = await userController.read(req.body.userID);
+                if (isTeenUser(who) && who?.parent?.email && !consentApproved(who))
+                    throw new Error("Your parent or guardian hasn’t given consent yet. Your account switches on after they do.");
                 let status = await userController.setPassword(req.body.userID, req.body.password)
                 if (!status) throw new Error("Something went wrong. Please contact support for more details");
                 await otp.remove();
-                return { message, data: [] };
+                // Sign the member in straight away (same token and cookie as /login), so the last
+                // sign-up step doesn't need a second login with a new CAPTCHA.
+                const token = Token.generate({
+                    _id: status._id,
+                    category: status.category,
+                    email: status.mail,
+                    phone: status.phone,
+                    name: status.name,
+                    origin: status.origin,
+                    role: who?.role || "respondent"
+                })
+                return { message, data: [], token };
             },
             userController
         )
@@ -165,11 +272,39 @@ router
             userController
         )
     )
-    .post("/login", expressRoute(
+    .get("/captcha", captchaLimit, expressRoute(
+        async req => {
+            const data = await createCaptcha(req.origin, req.query.mode === "text" ? "text" : "image");
+            return { message: "", data };
+        },
+        userController
+    ))
+    .post("/login", loginLimit, expressRoute(
         async req => {
             const message = "Login successful";
             let data = [];
-            const user = await userController.login(req.body);
+            await requireCaptcha(req);
+            let user;
+            try {
+                user = await userController.login(req.body);
+            } catch (err) {
+                // A Teen awaiting consent has no password yet, so login stops at "Account is inactive".
+                // Say why instead (that message already shows the account exists, so nothing new leaks).
+                if (/inactive/i.test(err.message) && req.body.mail) {
+                    const [pending] = await userController.list({ mail: req.body.mail });
+                    if (pending && isTeenUser(pending) && pending.parent?.email && !consentApproved(pending))
+                        throw new Error(pending.parent?.consentStatus === "withdrawn"
+                            ? "Your parent or guardian has withdrawn consent, so this Teen account is paused."
+                            : "Your parent or guardian hasn’t approved your Teen account yet. We’ve emailed them the onboarding form.");
+                }
+                throw err;
+            }
+            // Teen accounts open only after the parent/guardian has consented.
+            const teen = isTeenUser(user);
+            if (teen && user?.parent?.email && !consentApproved(user))
+                throw new Error("Your parent or guardian hasn’t approved your Teen account yet. We’ve emailed them the onboarding form.");
+            if (teen && user?.parent?.consentStatus === "withdrawn")
+                throw new Error("Your parent or guardian has withdrawn consent, so this Teen account is paused.");
             const token = Token.generate({
                 _id: user._id,
                 category: user.category,
@@ -393,17 +528,36 @@ router
 router
     .put(
         "/parent-consent/:id",
+        linkLimit,
         expressRoute(
             async req => {
                 let message = "Permission updated."
                 let data = [];
                 let otp = await otpController.verify(req.params.id, "parent-consent", req.origin, req.body.code)
                 if (!otp) throw new Error("Link Expired")
+                const before = await userController.read(req.params.id);
+                // The onboarding form may complete or correct the parent/guardian details.
+                const update = {
+                    "parent.consent": true,
+                    "parent.consentStatus": "approved",
+                    "parent.consentAt": new Date(),
+                    "parent.consentVersion": String(req.body.version || TEEN_CONSENT_VERSION).slice(0, 60),
+                    "parent.consentIP": String(req.clientIP || req.ip || ""),
+                    "parent.verifiedVia": "email-link"
+                };
+                if (Array.isArray(req.body.confirmations)) update["parent.consentConfirmations"] = req.body.confirmations.filter((c) => typeof c === "string").slice(0, 12);
+                if (Array.isArray(req.body.terms)) update.terms = req.body.terms;
+                if (req.body.parent && typeof req.body.parent === "object") {
+                    const p = cleanParent({ ...before.parent, ...req.body.parent, email: before?.parent?.email });
+                    checkParent(p, before.mail);
+                    update["parent.name"] = p.name;
+                    update["parent.relation"] = p.relation;
+                    if (p.phone) update["parent.phone"] = p.phone;
+                    if (p.dob) update["parent.dob"] = p.dob;
+                    if (p.gender) update["parent.gender"] = p.gender;
+                }
                 userController.request.user = {};
-                let user = await userController.update(req.params.id, {
-                    ["parent.consent"]: true,
-                    terms: req.body.terms
-                })
+                let user = Mutate(await userController.update(req.params.id, update))
                 let mailer = await getMailer(
                     "register",
                     "minor-permitted-parent",
@@ -418,11 +572,19 @@ router
                     mailer.data
                 )
 
+                // A teen who signed up through the Teen form has no password yet: send a one-time,
+                // time-limited activation link so they can create it.
+                let activation = null;
+                if (user?.isVerified?.email !== "verified") {
+                    activation = await otpController.generate(user._id, "email", user.origin || req.origin, TEEN_LINK_MS);
+                    if (activation?.cooldown) activation = null;
+                }
                 mailer = await getMailer(
                     "register",
                     "minor-permitted-child",
                     {
-                        user
+                        user,
+                        otp: activation
                     }
                 );
                 await sendMail(
@@ -431,9 +593,28 @@ router
                     `${process.env.PROJECT_NAME}: Your parent granted you access of panel.`,
                     mailer.data
                 )
-                // throw new HttpError(404,"Something went wrong")
                 await otpController.delete(otp._id);
+                data = { registrationStatus: activation ? "account-activation-pending" : "account-active" };
                 return { message, data };
+            },
+            userController
+        )
+    )
+    .post(
+        "/parent-consent-resend",
+        linkLimit,
+        expressRoute(
+            async req => {
+                // A teen whose parent lost the email asks for it again from the login page.
+                // Same reply whether or not the address exists, so it can't be used to find accounts.
+                const done = { message: "If there is a pending Teen request for this email, we’ve sent the form to the parent or guardian again.", data: [] };
+                const found = await userController.findOne({ mail: String(req.body.mail || "").trim().toLowerCase(), origin: req.origin });
+                if (!found) return done;
+                const user = Mutate(await userController.read(found._id));
+                if (!user?.parent?.email || consentApproved(user)) return done;
+                const otp = await sendParentOnboarding(req, user);
+                if (otp?.cooldown) throw new Error(`Please wait ${otp.remaining} seconds before sending it again.`);
+                return done;
             },
             userController
         )
@@ -471,14 +652,35 @@ router
     )
     .post(
         // asyncHandler(isAuthenticated),
+        linkLimit,
         expressRoute(
             async req => {
                 // read single entry
                 let message = ""
                 let channel = req.body.channel ?? "email"
+                if (!["email", "parent-consent"].includes(channel)) throw new Error("Link Expired")
                 let otp = await otpController.verify(req.params.id, channel, req.origin, req.body.code)
                 if (!otp) throw new Error("Link Expired")
                 let user = await userController.read(req.params.id);
+                if (channel === "parent-consent") {
+                    // The parent sees only what the onboarding form needs, not the teen's whole record.
+                    if (!user?.parent?.onboardingOpenedAt) {
+                        userController.request.user = {};
+                        await userController.update(req.params.id, { "parent.onboardingOpenedAt": new Date() });
+                    }
+                    return {
+                        message,
+                        data: {
+                            _id: user._id,
+                            name: { first: user?.name?.first },
+                            category: user.category,
+                            origin: user.origin,
+                            parent: user.parent,
+                            isMinor: user.isMinor,
+                            registrationStatus: "consent-pending"
+                        }
+                    };
+                }
                 return { message, data: user };
             },
             userController
