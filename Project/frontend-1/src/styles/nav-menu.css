@@ -402,3 +402,58 @@
     animation: none;
   }
 }
+
+/* Round 10c (Kunal, 20 Nov 2026): compact dropdowns. Smaller icons and type, one line per subtitle
+   where it fits, and the reviews score sits under the label as a small pill so nothing overlaps. */
+.drop-panel {
+  width: 340px;
+  padding: 8px;
+  gap: 2px;
+  border-radius: 20px;
+}
+.drop-panel.is-coin {
+  width: 360px;
+}
+.drop-item {
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 14px;
+}
+.drop-ico {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+.drop-ico svg {
+  width: 18px;
+  height: 18px;
+}
+.drop-copy strong {
+  font-size: 0.9rem;
+}
+.drop-copy small {
+  font-size: 0.74rem;
+  line-height: 1.3;
+}
+.drop-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 5px;
+  padding: 2px 8px 2px 6px;
+  border-radius: 999px;
+  background: rgba(47, 107, 255, 0.08);
+  line-height: 1;
+}
+.drop-score b {
+  font-size: 0.78rem;
+}
+.drop-score small {
+  display: inline;
+  margin: 0;
+  font-size: 0.68rem;
+}
+.drop-tag {
+  font-size: 0.6rem;
+}

@@ -8436,3 +8436,53 @@ button.vm-lcd:focus-visible {
     animation: none !important;
   }
 }
+
+/* Round 10c: the profile machine gets a third audience, Teens, in the neon teen grade. */
+.mode-switch {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.mode-thumb {
+  width: calc((100% - 12px) / 3);
+}
+.mode-thumb.con {
+  transform: translateX(100%);
+}
+.mode-thumb.teen {
+  transform: translateX(200%);
+  background: linear-gradient(110deg, #ff2e97, #8a5cff 55%, #22e4ff);
+  box-shadow: 0 0 22px rgba(255, 46, 151, 0.5);
+}
+.mode-teen .machine2 {
+  background: radial-gradient(400px 220px at 80% 0%, rgba(34, 228, 255, 0.25), transparent 60%), linear-gradient(160deg, #3a0f6e, #12052c 60%, #0b0320);
+  box-shadow: 0 0 0 1px rgba(255, 46, 151, 0.45), 0 0 40px rgba(255, 46, 151, 0.3), 0 40px 70px -35px #000;
+}
+.mode-teen .m2-title {
+  color: #c8ff3a;
+}
+.mode-teen .m2-lever {
+  color: #12052c;
+  background: linear-gradient(110deg, #c8ff3a, #22e4ff);
+}
+.mode-teen .sr-person {
+  background: radial-gradient(circle at 40% 30%, #fff, #ffd2ec 60%, #c9f6ff);
+}
+.mode-teen .rail:nth-child(2) .rail-track span {
+  background: linear-gradient(110deg, #ff2e97, #8a5cff);
+}
+.mode-teen .rail-track .icon {
+  color: #ff2e97;
+}
+@media (max-width: 640px) {
+  .mode-switch {
+    display: grid;
+    width: 100%;
+  }
+  .mode-switch button {
+    padding: 10px 6px;
+    font-size: 0.78rem;
+    gap: 4px;
+  }
+  .mode-switch button .icon {
+    display: none;
+  }
+}

@@ -856,7 +856,7 @@
 .mvx-switch {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   padding: 5px;
   border-radius: 999px;
   background: rgba(4, 10, 40, 0.55);
@@ -867,7 +867,7 @@
   top: 5px;
   bottom: 5px;
   left: 5px;
-  width: calc(50% - 5px);
+  width: calc((100% - 10px) / 3);
   border-radius: 999px;
   background: linear-gradient(120deg, #1f5bff, #22b8ff);
   box-shadow: 0 8px 24px -8px rgba(34, 184, 255, 0.8);
@@ -1111,5 +1111,251 @@
   .mvx-stage {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+/* ---------------- TEEN: after hours (Round 10c) ---------------- */
+.mvx-switch.is-teen .mvx-knob {
+  transform: translateX(200%);
+  background: linear-gradient(120deg, #ff2e97, #8a5cff);
+  box-shadow: 0 0 22px rgba(255, 46, 151, 0.7), inset 0 0 0 1.5px #22e4ff;
+}
+.mvx-switch.is-teen button.is-on {
+  color: #fff;
+}
+.rvx-teen {
+  color: #f3eaff;
+  background: radial-gradient(700px 400px at 85% 0%, #3a0f6e, transparent 60%), linear-gradient(180deg, #12052c, #0b0320);
+}
+.rt-night {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+.rt-glow {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.45;
+  animation: rtGlow 12s ease-in-out infinite alternate;
+}
+.rt-glow.g1 {
+  left: -120px;
+  top: -80px;
+  background: #ff2e97;
+}
+.rt-glow.g2 {
+  right: -100px;
+  bottom: -120px;
+  background: #22e4ff;
+  animation-delay: -6s;
+}
+@keyframes rtGlow {
+  to {
+    transform: translate(60px, 40px) scale(1.15);
+  }
+}
+.rt-floor {
+  position: absolute;
+  left: -20%;
+  right: -20%;
+  bottom: 0;
+  height: 40%;
+  background-image: linear-gradient(rgba(255, 46, 151, 0.25) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 228, 255, 0.2) 1px, transparent 1px);
+  background-size: 64px 42px;
+  transform: perspective(420px) rotateX(62deg);
+  transform-origin: 50% 100%;
+  mask-image: linear-gradient(transparent, #000 70%);
+  animation: rtFloor 2.8s linear infinite;
+}
+@keyframes rtFloor {
+  to {
+    background-position: 0 42px, 0 0;
+  }
+}
+.rvx-teen .rvx-pkicker {
+  color: #12052c;
+  background: linear-gradient(110deg, #c8ff3a, #22e4ff);
+  box-shadow: 0 0 20px rgba(200, 255, 58, 0.45);
+}
+.rvx-teen h2,
+.rvx-teen .rvx-ptitle {
+  color: #fff;
+}
+.rvx-teen h2 span,
+.rvx-teen .rvx-ptitle span {
+  background: linear-gradient(100deg, #ff2e97, #8a5cff 50%, #22e4ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.rvx-teen .rvx-psub {
+  color: #c9badf;
+}
+.rvx-teen .rvx-pscore {
+  background: rgba(18, 5, 44, 0.8);
+  border: 1px solid rgba(255, 46, 151, 0.6);
+  box-shadow: 0 0 30px rgba(255, 46, 151, 0.3);
+}
+.rvx-teen .rvx-pscore b {
+  color: #c8ff3a;
+}
+.rvx-teen .rvx-pscore span {
+  color: #c9badf;
+}
+.rt-notes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+.rvx-teen:not(.is-compact) .rt-notes > li:nth-child(3n + 2) {
+  margin-top: 28px;
+}
+.rt-notes > li {
+  animation: rtIn 0.7s calc(var(--k) * 0.08s) cubic-bezier(0.2, 1.3, 0.4, 1) both;
+}
+@keyframes rtIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+  }
+}
+.rt-card {
+  margin: 0;
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border-radius: 22px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  border: 1px solid color-mix(in srgb, var(--tc) 70%, transparent);
+  box-shadow: 0 0 22px color-mix(in srgb, var(--tc) 30%, transparent), inset 0 0 18px color-mix(in srgb, var(--tc) 12%, transparent);
+  backdrop-filter: blur(8px);
+  transition: transform 0.35s var(--spring), box-shadow 0.35s;
+}
+.rt-card:hover {
+  transform: translateY(-6px) rotate(-0.6deg);
+  box-shadow: 0 0 36px color-mix(in srgb, var(--tc) 55%, transparent);
+}
+.rt-top {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+.rt-avatar {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #12052c;
+  box-shadow: 0 0 0 2px var(--tc), 0 0 14px var(--tc);
+  overflow: hidden;
+}
+.rt-wave {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 26px;
+}
+.rt-wave i {
+  flex: 1;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--tc);
+  transform-origin: center;
+  transform: scaleY(calc(0.2 + mod(var(--j) * 37, 10) * 0.08));
+  animation: rtWave 1.1s ease-in-out infinite alternate;
+  animation-delay: calc(var(--j) * -0.07s);
+  opacity: 0.85;
+}
+@keyframes rtWave {
+  to {
+    transform: scaleY(0.25);
+  }
+}
+.rt-card blockquote {
+  margin: 0;
+  color: #fff;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+.rt-tags {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.rt-tags li {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--tc);
+  border: 1px solid color-mix(in srgb, var(--tc) 60%, transparent);
+}
+.rt-card figcaption {
+  display: grid;
+  gap: 2px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.16);
+}
+.rt-card figcaption b {
+  color: #fff;
+}
+.rt-card figcaption span {
+  color: #c9badf;
+  font-size: 0.82rem;
+}
+.rt-sample {
+  justify-self: start;
+  margin-top: 4px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-style: normal;
+  font: 700 0.62rem/1.4 var(--mono, monospace);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c9badf;
+  background: rgba(255, 255, 255, 0.08);
+}
+.rvx-teen .rvx-pbtn {
+  color: #12052c;
+  background: linear-gradient(110deg, #c8ff3a, #22e4ff);
+}
+.rvx-teen .rc-pages button {
+  background: rgba(255, 255, 255, 0.3);
+}
+.rvx-teen .rc-pages button.is-on {
+  background: #c8ff3a;
+}
+@media (max-width: 900px) {
+  .rt-notes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .rvx-teen .rt-notes > li {
+    margin-top: 0 !important;
+  }
+}
+@media (max-width: 600px) {
+  .rt-notes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rt-glow,
+  .rt-floor,
+  .rt-wave i,
+  .rt-notes > li {
+    animation: none;
   }
 }

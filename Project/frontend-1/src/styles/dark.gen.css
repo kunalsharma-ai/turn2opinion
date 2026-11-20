@@ -918,6 +918,12 @@
 :where(html[data-mode='dark']) .aud-switch button.is-on .aud-new {
     background-color: #0b1128
 }
+:where(html[data-mode='dark']) .mode-teen .sr-person {
+    background-image: radial-gradient(circle at 40% 30%, #0b1128, #370e26 60%, #0f333a)
+}
+:where(html[data-mode='dark']) .mode-teen .rail-track .icon {
+    color: #ff92c9
+}
 :where(html[data-mode='dark']) .rw-track span {
     background-image: linear-gradient(90deg, #ffd68c, #ff5c7a)
 }

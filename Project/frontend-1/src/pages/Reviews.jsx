@@ -20,7 +20,7 @@ import { SectionHead } from '../components/Common.jsx';
 import Gem from '../components/rating/Gem.jsx';
 import FacetDials from '../components/rating/FacetDials.jsx';
 import { countryName } from '../components/rating/VoiceCard.jsx';
-import { ConsumerPanel, ProPanel, ReviewsHero } from '../components/rating/ReviewPanels.jsx';
+import { ConsumerPanel, ProPanel, TeenPanel, ReviewsHero } from '../components/rating/ReviewPanels.jsx';
 
 const openStudio = (rating) => window.dispatchEvent(new CustomEvent('t2o:open-review', { detail: rating ? { rating } : {} }));
 
@@ -70,6 +70,7 @@ export default function Reviews() {
       {/* ======================= 2. THE TWO PANELS, each in its own world ======================= */}
       <ConsumerPanel list={list} stats={stats} />
       <ProPanel list={list} stats={stats} />
+      <TeenPanel list={list} stats={stats} />
 
       {/* ======================= 2. THE SCALE ======================= */}
       <section className="section s-paper gv-scale" aria-labelledby="rv-scale">

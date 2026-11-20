@@ -3575,3 +3575,111 @@ html[data-mode='dark'] .ej-hero h1 { color: #0f3b3a; }
     display: none;
   }
 }
+
+/* ---------- 7. FAQ as a group chat ---------- */
+.mn-faq-sec {
+  background: radial-gradient(600px 400px at 15% 20%, rgba(138, 92, 255, 0.2), transparent 70%), #0e0428 !important;
+}
+.mn-chat {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 18px clamp(12px, 3vw, 26px) 26px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 40px 80px -40px #000, inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+.mn-chat-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font: 700 0.76rem/1 var(--mono, monospace);
+  color: var(--mint) !important;
+}
+.mn-msg {
+  margin: 0 0 10px;
+}
+.mn-msg summary {
+  list-style: none;
+  display: flex;
+  justify-content: flex-end;
+  cursor: pointer;
+}
+.mn-msg summary::-webkit-details-marker {
+  display: none;
+}
+.mn-ask {
+  position: relative;
+  max-width: 78%;
+  padding: 12px 16px;
+  border-radius: 20px 20px 6px 20px;
+  color: #fff;
+  font-weight: 700;
+  background: linear-gradient(120deg, #ff2e97, #8a5cff);
+  box-shadow: 0 10px 24px -12px rgba(255, 46, 151, 0.8);
+  transition: transform 0.3s var(--spring), box-shadow 0.3s;
+}
+.mn-ask::after {
+  content: '+';
+  display: inline-block;
+  margin-left: 10px;
+  font-weight: 800;
+  color: #c8ff3a;
+  transition: transform 0.3s;
+}
+.mn-msg[open] .mn-ask::after {
+  transform: rotate(45deg);
+}
+.mn-msg summary:hover .mn-ask,
+.mn-msg summary:focus-visible .mn-ask {
+  transform: translateY(-2px);
+  box-shadow: 0 0 24px rgba(255, 46, 151, 0.6);
+}
+.mn-msg summary:focus-visible {
+  outline: none;
+}
+.mn-reply {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  max-width: 86%;
+  margin: 10px 0 4px;
+  animation: mnReply 0.5s cubic-bezier(0.2, 1.3, 0.4, 1) both;
+}
+.mn-reply > span:last-child {
+  padding: 12px 16px;
+  border-radius: 20px 20px 20px 6px;
+  color: #eef6ff;
+  line-height: 1.55;
+  background: rgba(34, 228, 255, 0.1);
+  border: 1px solid rgba(34, 228, 255, 0.4);
+}
+.mn-reply-av {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font: 800 0.6rem/1 var(--display);
+  color: #12052c;
+  background: linear-gradient(120deg, #c8ff3a, #22e4ff);
+}
+@keyframes mnReply {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+}
+@media (max-width: 560px) {
+  .mn-ask {
+    max-width: 92%;
+    font-size: 0.92rem;
+  }
+  .mn-reply {
+    max-width: 100%;
+  }
+}

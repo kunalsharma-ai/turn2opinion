@@ -21,6 +21,7 @@ import { Link } from '../router/Router.jsx';
 import { prefersReducedMotion, useInView, useReveal } from '../hooks/useMounted.js';
 import { Breadcrumbs } from '../components/Common.jsx';
 import Icon from '../components/Icon.jsx';
+import { TEEN_FAQS } from '../data/page-faqs.js';
 
 const CHANNELS = [
   { e: '👋', t: 'The basics', d: 'Where you live and the language you want surveys in.' },
@@ -419,7 +420,36 @@ export default function EarnMinors() {
         </div>
       </section>
 
-      {/* 7. CLOSER */}
+      {/* 7. FAQ: a group chat. Each question is a message; tap it and the answer comes back as a reply. */}
+      <section className="section mn-faq-sec" id="teen-faq" aria-labelledby="mn-f-h">
+        <div className="wrap">
+          <div className="mn-head" data-reveal>
+            <p className="mn-kicker is-cyan">Questions</p>
+            <h2 id="mn-f-h">Ask anything. We reply in the chat.</h2>
+            <p>The questions teens and parents send us most, answered in plain words.</p>
+          </div>
+          <div className="mn-chat">
+            <p className="mn-chat-top" aria-hidden="true">
+              <span className="mn-dot" /> Teen panel help · usually replies instantly
+            </p>
+            {TEEN_FAQS.map((f, k) => (
+              <details key={f.q} className="mn-msg" style={{ '--k': k }} name="mn-faq">
+                <summary>
+                  <span className="mn-ask">{f.q}</span>
+                </summary>
+                <p className="mn-reply">
+                  <span className="mn-reply-av" aria-hidden="true">
+                    T2O
+                  </span>
+                  <span>{f.a}</span>
+                </p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 8. CLOSER */}
       <section className="mn-closer" aria-labelledby="mn-x-h">
         <div className="wrap">
           <p className="mn-insert" aria-hidden="true">

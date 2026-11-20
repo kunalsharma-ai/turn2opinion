@@ -25,7 +25,7 @@ import { levelOf } from '../data/reviewFacets.js';
 
 export const ABOUT_MENU = [
   { to: '/about/', label: 'About Turn2Opinion', sub: 'Who we are, our certifications and reach', icon: 'building', tone: 'about' },
-  { to: '/about/reviews/', label: 'Our Ratings & Reviews', sub: 'Real scores from consumers and professionals', icon: 'quote', tone: 'reviews' },
+  { to: '/about/reviews/', label: 'Our Ratings & Reviews', sub: 'Real scores from consumers, professionals and teens', icon: 'quote', tone: 'reviews' },
   { to: '/about/scan-connect/', label: 'Scan & Connect', sub: 'QR codes for our panels and social channels', icon: 'qr', tone: 'scan' }
 ];
 
@@ -197,17 +197,13 @@ function NavDropdown({ item, i, path, movePill }) {
                 {c.tag && <em className="drop-tag">{c.tag}</em>}
               </strong>
               <small>{c.sub}</small>
+              {c.tone === 'reviews' && stats.avg > 0 && (
+                <span className="drop-score" aria-label={`Average gem ${levelOf(stats.avg).gem} from ${stats.count} reviews`}>
+                  <Gem level={Math.round(stats.avg)} size={14} motion="still" /> <b>{levelOf(stats.avg).gem}</b> <small>· {stats.count} reviews</small>
+                </span>
+              )}
             </span>
-            {c.tone === 'reviews' && stats.avg > 0 ? (
-              <span className="drop-score" aria-label={`Average gem ${levelOf(stats.avg).gem} from ${stats.count} reviews`}>
-                <b>
-                  <Gem level={Math.round(stats.avg)} size={18} motion="still" /> {levelOf(stats.avg).gem}
-                </b>
-                <small>{stats.count} reviews</small>
-              </span>
-            ) : (
-              <Icon name="arrow" size={16} className="drop-go" />
-            )}
+            <Icon name="arrow" size={16} className="drop-go" />
           </Link>
         ))}
       </div>

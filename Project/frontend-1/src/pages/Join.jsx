@@ -1,6 +1,6 @@
 // Free sign-up: 3-step wizard with live member-card preview, full validation, full DOB (calendar),
 // country flags + dial codes, guardian email for under-18s and CAPTCHA.
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { Link } from '../router/Router.jsx';
 import { ENV, asset } from '../config/env.js';
@@ -19,6 +19,7 @@ import FollowUs from '../components/FollowUs.jsx';
 import ResendVerify from '../components/ResendVerify.jsx';
 import { AuthAura, AuthVoice, saveAud } from '../components/AuthAura.jsx';
 import { playAudience } from '../utils/sound.js';
+import { TeenAssent, TeenKeys, TeenParentBlock } from '../components/TeenJoin.jsx';
 
 const emailCheck = {
   validateDomain: async (v) => {
@@ -38,6 +39,34 @@ const emailCheck = {
 // Teens (13–17) sign up as b2c: the backend is unchanged and recognises under-18s by date of birth.
 const category = { consumer: "b2c", pro: "b2b", minor: "b2c" };
 const STEPS = ['About you', 'Secure your account', 'Contact & profile'];
+// Teen panel (13-17) uses the same three API steps, relabelled for the two-keys flow:
+// step 0 adds the parent or guardian, step 1 adds the teen's own yes (assent).
+const TEEN_STEPS = ['You & your parent', 'Account & your yes', 'Contact & profile'];
+const TEEN_PARENT_KEY = 't2o_teen_parent_v1';
+// Only birthdays for ages 13 to 17 today can be picked on the teen calendar.
+function teenWindow(now = new Date()) {
+  const max = new Date(now.getFullYear() - SITE.minAge, now.getMonth(), now.getDate());
+  const min = new Date(now.getFullYear() - SITE.adultAge, now.getMonth(), now.getDate() + 1);
+  return { min, max };
+}
+function teenParentFields(saved, p) {
+  if (!saved) return {};
+  return {
+    guardianName: saved.guardianName || p.guardianName,
+    guardianRel: saved.guardianRel || p.guardianRel,
+    guardianEmail: saved.guardianEmail || p.guardianEmail,
+    parentAware: true
+  };
+}
+function readTeenParent(email) {
+  try {
+    const saved = JSON.parse(localStorage.getItem(TEEN_PARENT_KEY));
+    if (saved && email && saved.email === String(email).trim().toLowerCase()) return saved;
+  } catch (e) {
+    /* ignore */
+  }
+  return null;
+}
 const STEP_ICONS = ['user', 'lock', 'phone'];
 const TYPE_KEY = 't2o_join_type';
 const PENDING_JOIN_KEY = 't2o_pending_registration';
@@ -122,6 +151,12 @@ const initial = {
   company: '',
   workEmail: '',
   guardianEmail: '',
+  guardianName: '',
+  guardianRel: '',
+  parentAware: false,
+  teenAssent: false,
+  teenSkip: false,
+  teenWait: false,
   channels: { email: true, sms: false, whatsapp: true },
   password: '',
   confirm: '',
@@ -158,6 +193,13 @@ function validate(step, f) {
     else if (age > 100) e.dob = 'Check the year – that makes you over 100.';
     else if (f.type === 'minor' && age >= SITE.adultAge) e.dob = 'The teen panel is for ages 13 to 17. Pick Consumer or Business professional instead.';
     if (!f.gender) e.gender = 'Select your gender.';
+    if (f.type === 'minor') {
+      if (!NAME_RE.test(f.guardianName.trim())) e.guardianName = 'Enter your parent or guardian’s first name.';
+      if (!f.guardianRel) e.guardianRel = 'Tell us how they’re related to you.';
+      if (!EMAIL_RE.test(f.guardianEmail.trim())) e.guardianEmail = 'Enter your parent or guardian’s email, so we can ask for their permission.';
+      else if (f.guardianEmail.trim().toLowerCase() === f.email.trim().toLowerCase()) e.guardianEmail = 'Use your parent or guardian’s own email, not yours.';
+      if (!f.parentAware) e.parentAware = 'Let your parent or guardian know first, then tick this box.';
+    }
   }
 
   if (step === 1) {
@@ -167,6 +209,11 @@ function validate(step, f) {
     else if (f.confirm !== f.password) e.confirm = 'Passwords don’t match.';
     if (!f.terms) e.terms = 'You need to accept the Terms and Privacy Policy to activate your account.';
     if (!f.research) e.research = 'Consent to take part in research is needed to receive surveys.';
+    if (f.type === 'minor') {
+      if (!f.teenAssent) e.teenAssent = 'This is your own yes. Tick it if you want to take part.';
+      if (!f.teenSkip) e.teenSkip = 'Please confirm you know you can skip or stop any time.';
+      if (!f.teenWait) e.teenWait = 'Please confirm you know surveys wait for your parent’s yes.';
+    }
   }
 
   if (step === 2) {
@@ -293,6 +340,7 @@ export default function Join() {
 
   const age = ageOn(f.dob);
   const minor = age !== null && age < SITE.adultAge;
+  const teen = useMemo(() => teenWindow(), []);
   const live = validate(step, f);
   // const errOf = (k) => (touched[k] || submitted ? live[k] || '' : '');
   // const okOf = (k) => touched[k] && !live[k];
@@ -374,6 +422,7 @@ useEffect(() => {
           dob: u.dob ? String(u.dob).slice(0, 10) : p.dob,
           gender: u.gender ?? p.gender,
           type: savedType || (u.category === 'b2b' ? 'pro' : 'consumer'),
+          ...teenParentFields(readTeenParent(u.mail), p),
         }));
       }
 
@@ -410,6 +459,7 @@ useEffect(() => {
     dob: saved.dob ?? p.dob,
     gender: saved.gender ?? p.gender,
     type: saved.type ?? p.type,
+    ...teenParentFields(readTeenParent(saved.email), p),
   }));
   setQueryParams({ user: q.get('user') });
 
@@ -536,6 +586,22 @@ const submitSignup = async () => {
   console.log({res});
     if (res.status === "success") {
       try { localStorage.setItem(TYPE_KEY, f.type); } catch (e) { /* ignore */ }
+      if (f.type === 'minor') {
+        // The parent's details come back on step 3 (after the email link), so keep them on this device.
+        try {
+          localStorage.setItem(
+            TEEN_PARENT_KEY,
+            JSON.stringify({
+              email: f.email.trim().toLowerCase(),
+              guardianName: f.guardianName.trim(),
+              guardianRel: f.guardianRel,
+              guardianEmail: f.guardianEmail.trim().toLowerCase()
+            })
+          );
+        } catch (e) {
+          /* ignore */
+        }
+      }
       setPendingSignup(true);
       setState('done');
 
@@ -777,6 +843,9 @@ const submitSignup = async () => {
           <p className="muted">
             If you don't see the email, check your spam folder.
           </p>
+          {f.type === 'minor' && (
+            <TeenKeys f={f} stage={0} />
+          )}
 
           <Link to="/" className="btn btn-primary">
             Back to home
@@ -801,8 +870,18 @@ const submitSignup = async () => {
       
           <h1>Your account has been created successfully! 🎉</h1>
 
-            <p>Welcome to our community! You're all set to get started and explore exciting opportunities and rewards.</p>
-            <p>We're glad to have you with us!</p>
+          {f.type === 'minor' ? (
+            <>
+              <p>Your key is turned. Next, your parent or guardian gets their own permission form at <strong>{f.guardianEmail}</strong>.</p>
+              <p>Surveys switch on once they say yes. Ask them to check their inbox (and spam folder).</p>
+              <TeenKeys f={f} stage={2} />
+            </>
+          ) : (
+            <>
+              <p>Welcome to our community! You're all set to get started and explore exciting opportunities and rewards.</p>
+              <p>We're glad to have you with us!</p>
+            </>
+          )}
 
           <Link to="/login?new=1" className="btn btn-primary">
             Login
@@ -884,7 +963,7 @@ const submitSignup = async () => {
         <div className="join-card">
           <span className="join-card-ring" aria-hidden="true" />
           <ol className="stepper" aria-label="Sign-up progress">
-            {STEPS.map((s, i) => (
+            {(f.type === 'minor' ? TEEN_STEPS : STEPS).map((s, i) => (
               <li key={s} className={i === step ? 'is-on' : i < step ? 'is-done' : ''} aria-current={i === step ? 'step' : undefined}>
                 <span className="stepper-dot">{i < step ? <Icon name="check" size={14} strokeWidth={3} /> : <Icon name={STEP_ICONS[i]} size={15} />}</span>
                 <span className="stepper-label">{s}</span>
@@ -962,9 +1041,23 @@ onBlur={() => { touch('email')(); checkEmail(); }} autoComplete="email" maxLengt
                     }
                     error={errOf('dob')}
                     valid={!!f.dob && !live.dob}
-                    hint="Full date: day, month and year. It can’t be changed later."
+                    hint={f.type === 'minor' ? 'Teen panel: only birthdays for ages 13 to 17 can be picked. Other years are switched off.' : 'Full date: day, month and year. It can’t be changed later.'}
                   >
-                    <DateField id="j-dob" value={f.dob} onChange={(v) => { set('dob', v); setTouched((t) => ({ ...t, dob: true })); }} invalid={!!errOf('dob')} />
+                    {f.type === 'minor' ? (
+                      <DateField
+                        key="dob-teen"
+                        id="j-dob"
+                        value={f.dob}
+                        onChange={(v) => { set('dob', v); setTouched((t) => ({ ...t, dob: true })); }}
+                        invalid={!!errOf('dob')}
+                        minDate={teen.min}
+                        maxDate={teen.max}
+                        lockedYears={4}
+                        foot="Ages 13–17 only. Greyed-out years and days can’t be picked."
+                      />
+                    ) : (
+                      <DateField key="dob-all" id="j-dob" value={f.dob} onChange={(v) => { set('dob', v); setTouched((t) => ({ ...t, dob: true })); }} invalid={!!errOf('dob')} />
+                    )}
                   </Field>
                   {f.dob && !live.dob && birthdayInfo(f.dob) && (
                     <p className="bday-chip" key={f.dob}>
@@ -980,7 +1073,7 @@ onBlur={() => { touch('email')(); checkEmail(); }} autoComplete="email" maxLengt
                     </p>
                   )}
                 </div>
-                {minor && !live.dob && (
+                {minor && f.type !== 'minor' && !live.dob && (
                   <p className="inline-note">
                     <Icon name="users" size={16} /> As you’re under 18, we’ll ask for a parent or guardian email on the last step.
                   </p>
@@ -1019,6 +1112,7 @@ onBlur={() => { touch('email')(); checkEmail(); }} autoComplete="email" maxLengt
                     </div>
                   </Field>
                 </div>
+                {f.type === 'minor' && <TeenParentBlock f={f} set={set} touch={touch} errOf={errOf} okOf={okOf} setTouched={setTouched} />}
                 {state === 'error' && !duplicate && (
                   <p className="form-alert" role="alert">
                     {msg}
@@ -1079,6 +1173,7 @@ onBlur={() => { touch('email')(); checkEmail(); }} autoComplete="email" maxLengt
                     <span>Send me tips, reward news and the occasional newsletter (optional).</span>
                   </label>
                 </div>
+                {f.type === 'minor' && <TeenAssent f={f} set={set} errOf={errOf} />}
                 <Captcha onChange={onCaptcha} resetKey={resetKey} error={captchaErr} />
                 {captchaErr && <p className="field-error">{captchaErr}</p>}
                 {state === 'error' && (
@@ -1163,9 +1258,10 @@ onBlur={() => { touch('email')(); checkEmail(); }} autoComplete="email" maxLengt
                     </div>
                   </fieldset>
                 )}
+                {f.type === 'minor' && <TeenKeys f={f} stage={1} />}
                 {minor && (
                   <div data-k="guardianEmail">
-                    <Field id="j-guardian" label="Parent or guardian email" error={errOf('guardianEmail')} valid={okOf('guardianEmail')} hint="We’ll let them know you’ve joined. They can ask us to pause or delete your account anytime.">
+                    <Field id="j-guardian" label="Parent or guardian email" error={errOf('guardianEmail')} valid={okOf('guardianEmail')} hint={f.type === 'minor' ? 'This is where their permission form goes. Check it’s right before you finish.' : 'We’ll let them know you’ve joined. They can ask us to pause or delete your account anytime.'}>
                       <input id="j-guardian" className="input" type="email" value={f.guardianEmail} onChange={(e) => set('guardianEmail', e.target.value)} onBlur={touch('guardianEmail')} maxLength={120} />
                     </Field>
                   </div>

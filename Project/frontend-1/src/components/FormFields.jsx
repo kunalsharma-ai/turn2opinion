@@ -207,11 +207,14 @@ export function formatDate(s) {
 }
 
 /** Calendar date picker (full date of birth: day, month and year). value = 'YYYY-MM-DD'. */
-export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920, maxDate = new Date(), describedBy }) {
+export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920, maxDate = new Date(), minDate = null, lockedYears = 0, foot, describedBy }) {
+  // minDate narrows the pickable range (e.g. the Teen 13-17 window). lockedYears shows that many
+  // extra years either side in the year menu, greyed out, so people can see they are not allowed.
+  const loY = minDate ? minDate.getFullYear() : minYear;
   const sel = parseISO(value);
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(() => {
-    const base = sel || new Date(maxDate.getFullYear() - 25, 0, 1);
+    const base = sel || (minDate ? new Date(maxDate.getFullYear(), 0, 1) : new Date(maxDate.getFullYear() - 25, 0, 1));
     return { y: base.getFullYear(), m: base.getMonth() };
   });
   const [focusDay, setFocusDay] = useState(sel ? sel.getDate() : 1);
@@ -240,9 +243,13 @@ export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920
   const daysIn = new Date(view.y, view.m + 1, 0).getDate();
   const lead = (new Date(view.y, view.m, 1).getDay() + 6) % 7;
   const years = [];
-  for (let y = maxDate.getFullYear(); y >= minYear; y--) years.push(y);
+  for (let y = maxDate.getFullYear() + lockedYears; y >= loY - lockedYears; y--) years.push(y);
+  const yearOff = (y) => y > maxDate.getFullYear() || y < loY;
 
-  const disabled = (d) => new Date(view.y, view.m, d) > maxDate;
+  const disabled = (d) => {
+    const t = new Date(view.y, view.m, d);
+    return t > maxDate || (minDate && t < minDate);
+  };
   const choose = (d) => {
     if (disabled(d)) return;
     onChange(toISO(new Date(view.y, view.m, d)));
@@ -253,7 +260,7 @@ export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920
   const shiftMonth = (delta) => {
     setView((v) => {
       const d = new Date(v.y, v.m + delta, 1);
-      return d.getFullYear() < minYear ? v : { y: d.getFullYear(), m: d.getMonth() };
+      return d.getFullYear() < loY || d.getFullYear() > maxDate.getFullYear() ? v : { y: d.getFullYear(), m: d.getMonth() };
     });
   };
   const onGridKey = (e) => {
@@ -302,8 +309,9 @@ export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920
             </select>
             <select aria-label="Year" value={view.y} onChange={(e) => setView((v) => ({ ...v, y: Number(e.target.value) }))}>
               {years.map((y) => (
-                <option key={y} value={y}>
+                <option key={y} value={y} disabled={yearOff(y)}>
                   {y}
+                  {yearOff(y) ? ' (not eligible)' : ''}
                 </option>
               ))}
             </select>
@@ -340,7 +348,7 @@ export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920
               );
             })}
           </div>
-          <p className="date-foot">Use the month and year menus to jump quickly.</p>
+          <p className="date-foot">{foot || 'Use the month and year menus to jump quickly.'}</p>
         </div>
       )}
     </div>

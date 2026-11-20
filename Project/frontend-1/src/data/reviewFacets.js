@@ -61,6 +61,21 @@ export const AUDIENCES = {
     card: 'pass',
     askName: 'Your company',
     askRole: 'IT manager, CFO, procurement lead…'
+  },
+  teen: {
+    key: 'teen',
+    label: 'Teen',
+    plural: 'Teens',
+    sub: 'Ages 13–17, with a parent’s permission',
+    pitch: 'I answer age-checked surveys about games, music, school, style and the apps I use.',
+    icon: 'sparkles',
+    c1: '#FF2E97',
+    c2: '#22E4FF',
+    c3: '#12052C',
+    ink: '#12052C',
+    card: 'postcard',
+    askName: 'Where you study',
+    askRole: 'Year 10 student, gamer, artist…'
   }
 };
 
@@ -93,7 +108,8 @@ export const HIGHLIGHTS = {
 /** Sentence starters offered above the review box (tap to insert). */
 export const STARTERS = {
   consumer: ['What I like most is…', 'My first reward…', 'I usually answer on…', 'One thing to improve…'],
-  professional: ['The B2B surveys I get…', 'Compared with other panels…', 'The incentive arrived…', 'One thing to improve…']
+  professional: ['The B2B surveys I get…', 'Compared with other panels…', 'The incentive arrived…', 'One thing to improve…'],
+  teen: ['My favourite channel is…', 'The best survey so far…', 'My parent thought…', 'One thing to improve…']
 };
 
 /** Average of the facet scores a person actually set (0 when they set none). */

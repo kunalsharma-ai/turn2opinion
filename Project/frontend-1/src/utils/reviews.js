@@ -80,7 +80,7 @@ export function normaliseReview(r) {
     company: clean(r.company, 80),
     role: clean(r.role, 80),
     audience:
-      r.audience === "professional" || r.audience === "consumer"
+      r.audience === "professional" || r.audience === "consumer" || r.audience === "teen"
         ? r.audience
         : "",
     rating:
@@ -101,6 +101,7 @@ export function normaliseReview(r) {
           .slice(0, 4)
       : [],
     date: r.date === "" ? "" : r.date || new Date().toISOString(),
+    sample: !!r.sample,
     mine: !!r.mine,
   };
 }
@@ -185,7 +186,9 @@ export function seedTestimonials() {
 
 /** { avg, count, dist[5..1], facets{key:avg}, byAudience{consumer,professional} } */
 export function summarise(list) {
-  const rated = list.filter((r) => r.rating > 0);
+  // Sample (placeholder) reviews show on their own panel but never count towards the site-wide score.
+  const allRated = list.filter((r) => r.rating > 0);
+  const rated = allRated.filter((r) => !r.sample);
   const count = rated.length;
   const avg = count ? rated.reduce((a, r) => a + r.rating, 0) / count : 0;
   const dist = [5, 4, 3, 2, 1].map(
@@ -201,7 +204,7 @@ export function summarise(list) {
   }
 
   const forAudience = (k) => {
-    const sub = rated.filter(
+    const sub = allRated.filter(
       (r) => r.audience === k || (!r.audience && k === "consumer"),
     );
     return {
@@ -218,8 +221,9 @@ export function summarise(list) {
     byAudience: {
       consumer: forAudience("consumer"),
       professional: forAudience("professional"),
+      teen: forAudience("teen"),
     },
-    countries: new Set(list.map((r) => r.country).filter(Boolean)).size,
+    countries: new Set(list.filter((r) => !r.sample).map((r) => r.country).filter(Boolean)).size,
   };
 }
 
