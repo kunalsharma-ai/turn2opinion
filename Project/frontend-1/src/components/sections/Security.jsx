@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useInView, prefersReducedMotion } from '../../hooks/useMounted.js';
 import { asset } from '../../config/env.js';
-import { SECURITY_CHECKS, CHECK_GROUPS, VERIFICATION_LAYERS } from '../../data/quality.js';
+import { SECURITY_CHECKS, CHECK_GROUPS, VERIFICATION_LAYERS, TEEN_SAFEGUARDS } from '../../data/quality.js';
 import Icon from '../Icon.jsx';
 
 export function SecurityHive() {
@@ -21,6 +21,9 @@ export function SecurityHive() {
             <span className="hive-dot" /> {g.name}
           </button>
         ))}
+        <button type="button" className={`hive-teen ${group === 'teen' ? 'is-on' : ''}`} onClick={() => setGroup('teen')}>
+          <Icon name="sparkles" size={12} /> Extra for teens
+        </button>
       </div>
       <div className="hive-stage">
         <div className="hive-radar" aria-hidden="true">
@@ -33,7 +36,7 @@ export function SecurityHive() {
           {SECURITY_CHECKS.map((c, i) => (
             <li
               key={c.name}
-              className={`hex ${group !== 'all' && group !== c.group ? 'is-dim' : ''} ${active === i ? 'is-active' : ''}`}
+              className={`hex ${group !== 'all' && (group === 'teen' ? !c.teen : group !== c.group) ? 'is-dim' : ''} ${group === 'teen' && c.teen ? 'is-teen' : ''} ${active === i ? 'is-active' : ''}`}
               style={{ '--g': color(c.group), '--i': i }}
             >
               <button type="button" onMouseEnter={() => setActive(i)} onFocus={() => setActive(i)} onClick={() => setActive(i)} aria-describedby="hive-detail">
@@ -53,10 +56,11 @@ export function SecurityHive() {
             <div>
               <strong>{shown.name}</strong>
               <p>{shown.text}</p>
+              {shown.teen && <p className="hive-teen-note">{shown.teen}</p>}
             </div>
           </>
         ) : (
-          <p>Hover or tap any check to see what it does.</p>
+          <p>{group === 'teen' ? 'Glowing checks do extra work on the teen panel. Hover or tap one to see how.' : 'Hover or tap any check to see what it does.'}</p>
         )}
       </div>
     </div>
@@ -113,7 +117,7 @@ export function VerificationStack() {
         ))}
       </ol>
       <p className="vstack-note">
-        <Icon name="search" size={18} /> Our quality team also checks professional credentials and employment by hand, where applicable.
+        <Icon name="search" size={18} /> Our quality team also checks professional credentials and employment by hand, where applicable. For teens (13–17), a parent or guardian’s permission is verified before the account switches on.
       </p>
     </div>
   );
@@ -153,6 +157,63 @@ export function PrivacyVault() {
           ))}
         </ul>
       </div>
+    </div>
+  );
+}
+
+/** Teen panel (13-17): the extra standards on top of the 18 checks. A neon shield with two keys orbiting it,
+ * and ten safeguard tiles that light up one after another. */
+export function TeenSafeguards({ compact = false }) {
+  const [ref, inView] = useInView({ threshold: 0.2 });
+  const [k, setK] = useState(-1);
+  useEffect(() => {
+    if (!inView) return undefined;
+    if (prefersReducedMotion()) {
+      setK(TEEN_SAFEGUARDS.length);
+      return undefined;
+    }
+    const t = setTimeout(() => setK((n) => (n >= TEEN_SAFEGUARDS.length ? 0 : n + 1)), k >= TEEN_SAFEGUARDS.length ? 2600 : 650);
+    return () => clearTimeout(t);
+  }, [inView, k]);
+  return (
+    <div className={`tsg ${compact ? 'is-compact' : ''} ${inView ? 'is-in' : ''}`} ref={ref}>
+      <div className="tsg-head">
+        <div className="tsg-art" aria-hidden="true">
+          <span className="tsg-ring r1" />
+          <span className="tsg-ring r2" />
+          <span className="tsg-shield">
+            <b>13–17</b>
+          </span>
+          <span className="tsg-orbit">
+            <i>🔑</i>
+            <i>🗝️</i>
+          </span>
+        </div>
+        <div className="tsg-copy">
+          <span className="tsg-kicker">
+            <Icon name="sparkles" size={14} /> Teen panel · 13–17
+          </span>
+          <h3>10 extra safeguards for teens, on top of all 18 checks</h3>
+          <p>
+            Research with young people follows stricter rules, so the teen panel has its own standards. They’re the reason parents say yes,
+            and the reason brands trust what teens tell us.
+          </p>
+          <a href="/earn/teens/" className="tsg-link">
+            How the teen panel works <Icon name="arrow" size={14} />
+          </a>
+        </div>
+      </div>
+      <ol className="tsg-grid">
+        {TEEN_SAFEGUARDS.map((g, i) => (
+          <li key={g.name} className={i < k ? 'is-on' : i === k ? 'is-now' : ''} style={{ '--i': i }}>
+            <span className="tsg-ico">
+              <Icon name={i < k ? 'check' : g.icon} size={16} />
+            </span>
+            <strong>{g.name}</strong>
+            <small>{g.text}</small>
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }

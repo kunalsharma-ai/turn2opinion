@@ -232,7 +232,7 @@ export default function Footer() {
           <div className="fs-copy">
             <h2 id="footer-cta-title">Your opinion already has value. Start collecting it.</h2>
             <p>
-              Consumers and professionals earn rewards for honest answers – redeemed through PayPal, cash rewards, bank or wire transfer,
+              Consumers, professionals and teens (13–17, with a parent’s permission) earn rewards for honest answers – redeemed through PayPal, cash rewards, bank or wire transfer,
               shopping and grocery vouchers and digital gift cards worldwide, plus UPI for members in India.
             </p>
             <div className="fs-actions">

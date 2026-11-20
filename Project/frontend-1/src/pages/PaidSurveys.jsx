@@ -3,6 +3,7 @@ import { useReveal } from '../hooks/useMounted.js';
 import { asset } from '../config/env.js';
 import { CtaBand, FlipFaq, PageHero, SectionHead } from '../components/Common.jsx';
 import SurveyMachine from '../components/sections/SurveyMachine.jsx';
+import TeenBand from '../components/sections/TeenBand.jsx';
 import Icon from '../components/Icon.jsx';
 import { PAID_SURVEY_FAQS as FAQS } from '../data/page-faqs.js';
 import { peopleAlt } from '../data/illustrations.js';
@@ -115,7 +116,7 @@ export default function PaidSurveys() {
 
       <section className="section s-mist" aria-labelledby="types-h">
         <div className="wrap">
-          <SectionHead id="types-h" title="Surveys for consumers and professionals" lead="Two moving worlds of research. Hover to pause – most members end up in both." />
+          <SectionHead id="types-h" title="Surveys for consumers, professionals and teens" lead="Two moving worlds of research, plus a teen panel for ages 13 to 17. Hover to pause – most adult members end up in both." />
           <div className="escal">
             {['consumer', 'business'].map((k) => (
               <div key={k} className={`esc esc-${k}`}>
@@ -156,6 +157,7 @@ export default function PaidSurveys() {
               <small>join both</small>
             </span>
           </div>
+          <TeenBand variant="surveys" />
         </div>
       </section>
 
@@ -201,7 +203,7 @@ export default function PaidSurveys() {
 
       <section className="section s-gold" aria-labelledby="top-h">
         <div className="wrap">
-          <SectionHead id="top-h" title="Browse a few of our paid surveys" lead="Consumer and professional surveys with their typical reward and length. Press a slot to see the details." />
+          <SectionHead id="top-h" title="Browse a few of our paid surveys" lead="Consumer, professional and teen surveys with their typical reward and length. Press a slot to see the details." />
           <SurveyMachine />
         </div>
       </section>

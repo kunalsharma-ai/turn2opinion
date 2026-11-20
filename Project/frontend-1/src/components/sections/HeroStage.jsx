@@ -44,14 +44,14 @@ export const AUDIENCES = {
     badge: 'B2B study · matched to your role',
     ribbon: [['chip', 'IT managers'], ['pulse', 'Doctors'], ['bank', 'CFOs'], ['megaphone', 'Marketers'], ['gear', 'Engineers'], ['users', 'HR leaders'], ['briefcase', 'Founders'], ['truck', 'Buyers']]
   },
-  // Round 10b (Kunal, 20 Nov 2026): the teen panel gets its own neon "soundstage" slide, rebuilt from scratch.
+  // Round 10d (Kunal, 20 Nov 2026): the teen slide, rebuilt again as "Swipe the trend" with new hero text.
   minor: {
     label: 'Teens',
     tag: 'New',
-    motto: ['Press play.', 'Say it loud.', 'Get heard.'],
-    title: ['Aged 13 to 17?', 'Turn Your Voice Up.'],
-    tagline: 'The games you play, the music on repeat, the trainers you want next – brands are making them for you. This is where you tell them what you really think.',
-    lead: 'The teen panel runs on two keys: a parent or guardian says yes first, then you do, and every study is age-checked. Made for',
+    motto: ['Swipe it.', 'Rate it.', 'Start the trend.'],
+    title: ['Aged 13 to 17?', 'Your Taste Sets the Trend.'],
+    tagline: 'Rate the games, snacks, music and trainers brands are making for you. Every honest swipe earns points, and the brands really do listen.',
+    lead: 'Safe by design: a parent or guardian says yes, then you do, and every study is checked for age-appropriate content before you see it. Made for',
     leadEnd: 'and every teen with something to say.',
     who: ['gamers', 'creators', 'sneakerheads', 'bookworms', 'athletes', 'coders', 'artists', 'music lovers'],
     cta: 'Join the teen panel',

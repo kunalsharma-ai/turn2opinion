@@ -9,7 +9,7 @@
 //   4. By the numbers .. stat tiles, a region bar chart and a pay scatter plot built from the
 //                        site's own data (profiles.js, surveys.js) so the charts never drift
 //   5. Family tree ..... Frequent Research and the panels it runs, as an org diagram
-//   6. Product worlds .. Consumer and Professional panels, each in its own colour world with its
+//   6. Product worlds .. Consumer, Professional and Teen panels, each in its own colour world with its
 //                        own member testimonials (only genuine reviews from data/testimonials.js)
 //   7. Values .......... a honeycomb of flip tiles
 //   8. Certifications .. 3D medals that turn over
@@ -53,9 +53,10 @@ function OpinionGlobe() {
         {[
           ['megaphone', 'Brands'],
           ['users', 'Consumers'],
-          ['briefcase', 'Professionals']
+          ['briefcase', 'Professionals'],
+          ['sparkles', 'Teens']
         ].map(([ic, t], i) => (
-          <b key={t} style={{ '--i': i, '--n': 3 }}>
+          <b key={t} style={{ '--i': i, '--n': 4 }}>
             <Icon name={ic} size={14} /> {t}
           </b>
         ))}
@@ -158,6 +159,7 @@ function CountUp({ to, run, suffix = '' }) {
 
 const CONSUMER = SURVEYS.consumer || [];
 const PRO = SURVEYS.professional || [];
+const TEEN = SURVEYS.teen || [];
 const avg = (l, k) => (l.length ? l.reduce((s, x) => s + x[k], 0) / l.length : 0);
 
 function Numbers() {
@@ -168,13 +170,13 @@ function Numbers() {
     if (seen) setLive(true);
   }, [seen]);
   const maxRegion = Math.max(...REGIONS.map((r) => r.countries.length));
-  const all = [...CONSUMER.map((s) => ({ ...s, k: 'c' })), ...PRO.map((s) => ({ ...s, k: 'p' }))];
+  const all = [...CONSUMER.map((s) => ({ ...s, k: 'c' })), ...PRO.map((s) => ({ ...s, k: 'p' })), ...TEEN.map((s) => ({ ...s, k: 't' }))];
   const maxR = Math.max(...all.map((s) => s.reward));
   const maxM = Math.max(...all.map((s) => s.mins));
   const stats = [
     [ALL_COUNTRIES.length, '', 'countries', 'globe', '#49B6FF'],
     [REGIONS.length, '', 'regions', 'map', '#12C29B'],
-    [CONSUMER.length + PRO.length, '', 'survey topics', 'clipboard', '#FFB020'],
+    [CONSUMER.length + PRO.length + TEEN.length, '', 'survey topics', 'clipboard', '#FFB020'],
     [4, '', 'ways to get paid', 'wallet', '#FF5C7A'],
     [SITE.certifications.length, '', 'certifications', 'shield', '#7B5CFF'],
     [24, '/7', 'live help', 'headset', '#1F5BFF']
@@ -216,10 +218,10 @@ function Numbers() {
 
           <figure className="abn-card abn-scatter">
             <figcaption>
-              <strong>Two panels, two pay scales</strong>
+              <strong>Three panels, three pay scales</strong>
               <span>Typical reward (USD) against survey length, one dot per topic</span>
             </figcaption>
-            <svg viewBox="0 0 320 200" role="img" aria-label={`Consumer surveys average $${avg(CONSUMER, 'reward').toFixed(1)} for about ${Math.round(avg(CONSUMER, 'mins'))} minutes; professional surveys average $${avg(PRO, 'reward').toFixed(1)} for about ${Math.round(avg(PRO, 'mins'))} minutes.`}>
+            <svg viewBox="0 0 320 200" role="img" aria-label={`Consumer surveys average $${avg(CONSUMER, 'reward').toFixed(1)} for about ${Math.round(avg(CONSUMER, 'mins'))} minutes; professional surveys average $${avg(PRO, 'reward').toFixed(1)} for about ${Math.round(avg(PRO, 'mins'))} minutes; teen surveys average $${avg(TEEN, 'reward').toFixed(1)} for about ${Math.round(avg(TEEN, 'mins'))} minutes.`}>
               {[0, 0.25, 0.5, 0.75, 1].map((g) => (
                 <line key={g} className="grid" x1="30" x2="310" y1={180 - g * 160} y2={180 - g * 160} />
               ))}
@@ -248,6 +250,7 @@ function Numbers() {
             <p className="abn-legend">
               <span className="c">Consumer · avg ${avg(CONSUMER, 'reward').toFixed(1)}</span>
               <span className="p">Professional · avg ${avg(PRO, 'reward').toFixed(1)}</span>
+              <span className="t">Teen · avg ${avg(TEEN, 'reward').toFixed(1)}</span>
             </p>
           </figure>
 
@@ -285,7 +288,7 @@ function Numbers() {
 
 /* ---------------- 5. Family tree ---------------- */
 const FAMILY_EXTRA = {
-  turn2opinion: { tag: 'Turn your opinion into rewards.', who: 'Consumers & professionals' },
+  turn2opinion: { tag: 'Turn your opinion into rewards.', who: 'Consumers, professionals & teens (13–17)' },
   myfrequentrewards: { tag: 'Share your views. Earn every time.', who: 'Consumers & professionals' },
   myhealthopinions: { tag: 'Your experience can improve healthcare.', who: 'HCPs, patients & caregivers' }
 };
@@ -340,13 +343,24 @@ function FamilyTree() {
 
 /* ---------------- 6. Product worlds with testimonials ---------------- */
 const isPro = (t) => t.audience === 'professional';
+const isTeenR = (t) => t.audience === 'teen';
+// What makes the teen panel different: the safeguards a parent would ask about first.
+const TEEN_PROMISES = [
+  ['key', 'Two keys', 'A verified parent or guardian says yes, then the teen says yes in their own words.'],
+  ['cake', 'Ages 13–17 only', 'Date of birth is checked at sign-up and again in screeners.'],
+  ['eye', 'Age-appropriate studies', 'Every study is reviewed before teens see it. Sensitive topics need separate permission.'],
+  ['lock', 'Less data, by design', 'No school names, no photos, no location tracking. Answers are reported in totals.'],
+  ['wallet', 'A parent picks the payout', 'Rewards go to a method the family has approved.'],
+  ['refresh', 'Stop any time', 'Skip any question, pause or close the account, no questions asked.']
+];
 function ProductWorlds() {
-  const consumers = TESTIMONIALS.filter((t) => !isPro(t) && t.text).slice(0, 6);
+  const consumers = TESTIMONIALS.filter((t) => !isPro(t) && !isTeenR(t) && t.text).slice(0, 6);
+  const teens = TESTIMONIALS.filter((t) => isTeenR(t) && t.text).slice(0, 4);
   const pros = TESTIMONIALS.filter((t) => isPro(t) && t.text).slice(0, 8);
   return (
     <section className="ab-worlds" aria-labelledby="ab-w-h">
       <div className="wrap abw-head">
-        <SectionHead id="ab-w-h" kicker="Two panels, two flavours" title="Every panel has its own world" align="center" lead="Same honest rewards, built for very different days." />
+        <SectionHead id="ab-w-h" kicker="Three panels, three flavours" title="Every panel has its own world" align="center" lead="Same honest rewards, built for very different days: consumers, professionals and, new this year, teens aged 13 to 17." />
       </div>
 
       <div className="abw abw--consumer">
@@ -430,8 +444,69 @@ function ProductWorlds() {
           </div>
         </div>
       </div>
+      <div className="abw abw--teen">
+        <span className="abw-floor" aria-hidden="true" />
+        <div className="wrap abw-grid">
+          <div className="abw-copy" data-reveal>
+            <span className="abw-badge">
+              <Icon name="sparkles" size={16} /> Teen panel · 13–17 <b className="abw-new">New</b>
+            </span>
+            <h3>
+              Your taste sets the trend. <em>Now it earns points.</em>
+            </h3>
+            <p className="abw-lead">
+              Games, music, snacks, trainers and study apps: brands build them for teens, so they need to hear from teens. Every member joins with a
+              parent or guardian’s permission and their own yes, and every study is checked before it reaches them.
+            </p>
+            <ul className="abw-tags">
+              {TEEN.slice(0, 8).map((s) => (
+                <li key={s.id} style={{ '--c': s.c }}>
+                  <Icon name={s.icon} size={14} /> {s.cat}
+                </li>
+              ))}
+            </ul>
+            <div className="abw-ctas">
+              <Link to="/join/teen/" className="abw-cta">
+                Join the teen panel <Icon name="arrow" size={16} />
+              </Link>
+              <Link to="/earn/teens/" className="abw-cta is-ghost">
+                How the two keys work
+              </Link>
+            </div>
+          </div>
+          <div className="abw-teen-side">
+            <ul className="abw-promises">
+              {TEEN_PROMISES.map(([ic, t, d], i) => (
+                <li key={t} style={{ '--i': i }} data-reveal>
+                  <span className="abw-p-ico">
+                    <Icon name={ic} size={18} />
+                  </span>
+                  <strong>{t}</strong>
+                  <small>{d}</small>
+                </li>
+              ))}
+            </ul>
+            <ul className="abw-notes">
+              {teens.map((t, i) => (
+                <li key={t.id} style={{ '--i': i }}>
+                  <span className="abw-wave" aria-hidden="true">
+                    {Array.from({ length: 14 }).map((_, k) => (
+                      <i key={k} style={{ '--k': k }} />
+                    ))}
+                  </span>
+                  <p>“{t.text}”</p>
+                  <footer>
+                    <Flag code={t.country} size={14} /> <strong>{t.name}</strong> <span>{t.role}</span>
+                    <em>Sample review</em>
+                  </footer>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
       <p className="wrap abw-note">
-        Reviews are from members who agreed to publish them. <Link to="/about/reviews/">Read every review</Link>.
+        Reviews are from members who agreed to publish them. Teen reviews are labelled samples until real ones are published. <Link to="/about/reviews/">Read every review</Link>.
       </p>
     </section>
   );
@@ -442,7 +517,7 @@ const VALUES = [
   ['heart', 'Respect for your time', 'Short, relevant surveys and honest information about rewards before you start.', '#FF5C7A'],
   ['lock', 'Privacy by default', 'Your details are never sold. Answers are reported in aggregate.', '#49B6FF'],
   ['shield', 'Quality, no shortcuts', 'Strict checks protect honest members and the clients who rely on them.', '#12C29B'],
-  ['globe', 'Open to everyone', 'Consumers and professionals in every region and walk of life.', '#FFB020'],
+  ['globe', 'Open to everyone', 'Consumers, professionals and teens aged 13 to 17 (with a parent’s permission) in every region.', '#FFB020'],
   ['headset', 'Help that answers', 'Live help 24/7, WhatsApp and email with real follow-through.', '#7B5CFF'],
   ['gift', 'Rewards your way', 'PayPal, cash, bank or wire transfer, vouchers or gift cards, plus UPI in India.', '#1F5BFF']
 ];
@@ -534,9 +609,9 @@ export default function About() {
               <span className="bridge-beam b-right" />
             </div>
             <div className="bridge-side">
-              {['Consumers', 'Professionals', 'Decision-makers', 'Specialists'].map((t, i) => (
+              {['Consumers', 'Professionals', 'Teens 13–17', 'Decision-makers', 'Specialists'].map((t, i) => (
                 <span key={t} className="bridge-chip alt" style={{ '--i': i }}>
-                  <Icon name={['users', 'briefcase', 'target', 'sparkles'][i]} size={16} /> {t}
+                  <Icon name={['users', 'briefcase', 'sparkles', 'target', 'star'][i]} size={16} /> {t}
                 </span>
               ))}
               <p>share answers & get rewarded</p>

@@ -5,6 +5,7 @@ import { asset } from '../config/env.js';
 import { peopleAlt } from '../data/illustrations.js';
 import { CtaBand, PageHero, SectionHead } from '../components/Common.jsx';
 import { InvitationChannels } from '../components/sections/Rewards.jsx';
+import TeenBand from '../components/sections/TeenBand.jsx';
 import Icon from '../components/Icon.jsx';
 
 const STEPS = [
@@ -361,10 +362,11 @@ export default function HowItWorks() {
 
       <section className="section s-mist" aria-labelledby="who-can">
         <div className="wrap">
-          <SectionHead id="who-can" title="Who can take part?" lead="Anyone with an honest opinion. Studies look for all kinds of people, so every profile has value." align="center" />
+          <SectionHead id="who-can" title="Who can take part?" lead="Anyone with an honest opinion: consumers, professionals and teens aged 13 to 17. Studies look for all kinds of people, so every profile has value." align="center" />
           <TwoSides />
+          <TeenBand variant="how" />
           <p className="center-link">
-            Members under 18 can join after informing a parent or guardian – see our <Link to="/privacy/">privacy policy</Link>.
+            Teens aged 13 to 17 join the teen panel with a parent or guardian’s verified permission – see our <Link to="/privacy/">privacy policy</Link>.
           </p>
         </div>
       </section>

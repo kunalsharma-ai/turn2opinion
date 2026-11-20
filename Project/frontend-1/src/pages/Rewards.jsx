@@ -2,6 +2,7 @@ import { Link } from '../router/Router.jsx';
 import { useReveal } from '../hooks/useMounted.js';
 import { ChatFaq, CtaBand, PageHero, SectionHead } from '../components/Common.jsx';
 import { ClaimJourney, PayoutTracker, RewardRoutes, RewardWallet } from '../components/sections/Rewards.jsx';
+import TeenBand from '../components/sections/TeenBand.jsx';
 import { FAQ_GROUPS } from '../data/faqs.js';
 import Icon from '../components/Icon.jsx';
 
@@ -105,8 +106,9 @@ export default function Rewards() {
 
       <section className="section s-gold" aria-labelledby="routes-h">
         <div className="wrap">
-          <SectionHead id="routes-h" title="Every profile has a way to earn" lead="Consumers and professionals in every region choose the reward that suits them." align="center" />
+          <SectionHead id="routes-h" title="Every profile has a way to earn" lead="Consumers, professionals and teens in every region choose the reward that suits them. For teens, a parent or guardian picks the payout." align="center" />
           <RewardRoutes />
+          <TeenBand variant="rewards" />
         </div>
       </section>
 

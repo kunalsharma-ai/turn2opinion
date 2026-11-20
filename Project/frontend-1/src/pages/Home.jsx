@@ -10,13 +10,13 @@ import FlagCarousel from '../components/sections/FlagCarousel.jsx';
 import CredentialScanner from '../components/sections/CredentialScanner.jsx';
 import HomeHero from '../components/sections/HeroStage.jsx';
 import { ClaimJourney, InvitationChannels, RewardRoutes, RewardWallet } from '../components/sections/Rewards.jsx';
-import { PrivacyVault, SecurityHive, VerificationStack } from '../components/sections/Security.jsx';
+import { PrivacyVault, SecurityHive, TeenSafeguards, VerificationStack } from '../components/sections/Security.jsx';
 import MemberVoices from '../components/sections/MemberVoices.jsx';
 import BlogCard from '../components/BlogCard.jsx';
 import { BLOG_POSTS } from '../data/blog/index.js';
 import { FAQ_GROUPS } from '../data/faqs.js';
 
-const MARQUEE = ['Paid online surveys', 'Earn money online without investment', 'Online work from home', 'Paid surveys for cash', 'B2B surveys for professionals', 'PayPal · Cash · Bank · Wire · Vouchers · Gift cards · UPI in India', 'Free to join', 'Get paid to do surveys'];
+const MARQUEE = ['Paid online surveys', 'Earn money online without investment', 'Online work from home', 'Paid surveys for cash', 'B2B surveys for professionals', 'Teen surveys (13–17) with a parent’s permission', 'PayPal · Cash · Bank · Wire · Vouchers · Gift cards · UPI in India', 'Free to join', 'Get paid to do surveys'];
 
 export default function Home() {
   const ref = useReveal();
@@ -124,6 +124,7 @@ export default function Home() {
             </div>
             <PrivacyVault />
           </div>
+          <TeenSafeguards />
         </div>
       </section>
 
@@ -192,11 +193,12 @@ export default function Home() {
               </p>
             </article>
             <article data-reveal>
-              <h3>Surveys for consumers and business professionals</h3>
+              <h3>Surveys for consumers, business professionals and teens</h3>
               <p>
                 Consumers share views on shopping, food, travel, technology, health and finance. Managers, IT decision-makers, doctors and
                 other professionals get B2B surveys about the tools and services they use at work, which usually pay more because fewer
-                people qualify.
+                people qualify. Teens aged 13 to 17 have their own panel: they join with a parent or guardian’s verified permission and
+                their own yes, and every teen study is checked for age-appropriate content first.
               </p>
             </article>
             <article data-reveal>

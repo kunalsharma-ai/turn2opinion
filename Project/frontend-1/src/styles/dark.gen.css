@@ -1042,6 +1042,9 @@
 :where(html[data-mode='dark']) .abm li > span {
     color: #b7bed8
 }
+:where(html[data-mode='dark']) .abn-legend .t {
+    color: #ee8cc0
+}
 :where(html[data-mode='dark']) .stack-card {
     background-color: #0b1128;
     color: #d9deef

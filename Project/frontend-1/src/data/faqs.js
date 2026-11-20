@@ -19,7 +19,7 @@ export const FAQ_GROUPS = [
       },
       {
         q: 'Can business professionals join as well as consumers?',
-        a: 'Yes. Turn2Opinion welcomes both consumers and working professionals. If you tell us about your job title, industry and department in your profile, you can also be invited to business and professional studies, such as surveys for IT, finance, HR, healthcare and other decision-makers.'
+        a: 'Yes. Turn2Opinion welcomes consumers, working professionals and, through the teen panel, teens aged 13 to 17 with a parent’s permission. If you tell us about your job title, industry and department in your profile, you can also be invited to business and professional studies, such as surveys for IT, finance, HR, healthcare and other decision-makers.'
       }
     ]
   },
@@ -89,6 +89,33 @@ export const FAQ_GROUPS = [
       {
         q: 'How long does it take to receive a reward?',
         a: 'After you request a redemption, our support team verifies your profile and survey completions and passes the request to our accounts team. Payments can take up to 2–3 weeks to arrive because transfers are processed in batches.'
+      }
+    ]
+  },
+  {
+    id: 'teens',
+    title: 'Teens (13–17)',
+    icon: 'sparkles',
+    items: [
+      {
+        q: 'Can teenagers join Turn2Opinion?',
+        a: 'Yes. Teens aged 13 to 17 can join the teen panel. The sign-up calendar only accepts teen birthdays, a parent or guardian confirms their own email and gives permission, and the teen gives their own yes. Surveys stay locked until both have agreed.'
+      },
+      {
+        q: 'What kind of surveys do teens get?',
+        a: 'Short studies about things teens actually use: games, music, snacks, trainers, phones, study apps, sport and creators. Every teen study is reviewed for age-appropriate content first. Teens never see surveys about alcohol, gambling, dating or adult topics, and anything about health or wellbeing needs a separate yes from the parent.'
+      },
+      {
+        q: 'How are teen rewards paid?',
+        a: 'Teens collect points like every member. The parent or guardian chooses how rewards are paid out, usually as gift cards or vouchers, so the reward goes somewhere the family trusts.'
+      },
+      {
+        q: 'What data do you collect from teens?',
+        a: 'As little as possible. We never ask teens for a school name, home address or photos, and we do not track location. Personal details are removed from written answers, results are reported only in totals, and brands never contact teen members.'
+      },
+      {
+        q: 'Can a teen or parent stop at any time?',
+        a: 'Yes. A teen can skip any question or leave any survey without a reason. The teen or the parent can pause or close the account at any time from the dashboard or by contacting support.'
       }
     ]
   },
