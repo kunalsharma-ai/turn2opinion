@@ -119,7 +119,7 @@ writeFileSync(
     'Disallow: /upivalidate/',
     '',
     // Named explicitly so AI-readiness checks (and the crawlers themselves) see a clear yes.
-    ...['GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'Claude-User', 'PerplexityBot', 'Perplexity-User', 'Google-Extended', 'Applebot-Extended', 'Bingbot', 'CCBot'].flatMap((ua) => [
+    ...['GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'Claude-User', 'PerplexityBot', 'Perplexity-User', 'Google-Extended', 'GoogleOther', 'Googlebot', 'Applebot', 'Applebot-Extended', 'Bingbot', 'DuckAssistBot', 'Meta-ExternalAgent', 'Meta-ExternalFetcher', 'Amazonbot', 'MistralAI-User', 'cohere-ai', 'YouBot', 'CCBot'].flatMap((ua) => [
       `User-agent: ${ua}`,
       'Allow: /',
       'Disallow: /api/',
@@ -150,7 +150,8 @@ writeFileSync(
     '',
     'Key facts:',
     '- Joining is free; members never pay to take part.',
-    '- Two audiences: consumers (B2C surveys) and business professionals such as IT decision-makers, managers and healthcare professionals (B2B surveys).',
+    '- Three audiences: consumers 18+ (B2C surveys), business professionals such as IT decision-makers, managers and finance leads (B2B surveys), and a Teen panel for ages 13–17 that needs a parent or guardian\'s permission before any survey starts.',
+    '- Available in 55 countries; one honest account per person.',
     '- Rewards: seven payout options (PayPal, bank transfer, wire transfer, shopping vouchers, grocery vouchers, digital gift cards, and UPI for members in India). Every survey shows its reward and length before it starts.',
     '- Ratings: members rate Turn2Opinion in gems, from Pebble (1) through Quartz, Amber and Sapphire to Diamond (5); every review is published at /about/reviews/.',
     '- Quality: profiling, bot checks and multi-layer verification keep the panel genuine.',
@@ -166,11 +167,77 @@ writeFileSync(
     '',
     '## Optional',
     '',
+    `- [Full text of every page (llms-full.txt)](${SITE_URL}/llms-full.txt)`,
     `- [Sitemap](${SITE_URL}/sitemap.xml)`,
     `- [Respondent profile builder overview](${SITE_URL}/profiles/llms.txt)`,
     ''
   ].join('\n');
   writeFileSync(join(clientDir, 'llms.txt'), llms);
+
+  // llms-full.txt – the readable text of every indexable page in one Markdown file, so an AI
+  // assistant can answer from the real content without running the site's JavaScript.
+  const decode = (t) =>
+    t.replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'").replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(+n));
+  const toText = (html) => {
+    let main = (html.match(/<main[\s\S]*?<\/main>/) || [html])[0];
+    main = main.replace(/<(script|style|svg|noscript|template|button)[\s\S]*?<\/\1>/g, ' ');
+    // Drop decorative subtrees (aria-hidden="true": marquees, animation copies, icons).
+    {
+      const VOID = /^(area|base|br|col|embed|hr|img|input|link|meta|source|track|wbr)$/i;
+      let out = '', hidden = 0, i = 0;
+      const re = /<\/?([a-zA-Z][\w-]*)[^>]*?(\/?)>/g;
+      let m;
+      while ((m = re.exec(main))) {
+        if (!hidden) out += main.slice(i, m.index);
+        i = re.lastIndex;
+        const tag = m[0], closing = tag[1] === '/', isVoid = VOID.test(m[1]) || m[2] === '/';
+        if (hidden) {
+          if (closing) hidden--;
+          else if (!isVoid) hidden++;
+          continue;
+        }
+        if (!closing && !isVoid && /\saria-hidden="true"/.test(tag)) { hidden = 1; continue; }
+        out += tag;
+      }
+      if (!hidden) out += main.slice(i);
+      main = out;
+    }
+    const seen = new Set();
+    return decode(
+      main
+        .replace(/<(script|style|svg|noscript|template|button)[\s\S]*?<\/\1>/g, ' ')
+        .replace(/<h([1-4])[^>]*>/g, (_, n) => `\n\n${'#'.repeat(Math.min(+n + 1, 5))} `)
+        .replace(/<\/h[1-4]>/g, '\n')
+        .replace(/<li[^>]*>/g, '\n- ')
+        .replace(/<(p|div|section|article|tr|br|dt|dd)[^>]*>/g, '\n')
+        .replace(/<[^>]+>/g, ' ')
+    )
+      .replace(/[ \t]+/g, ' ')
+      .replace(/ *\n */g, '\n')
+      .replace(/\n(- )?\n/g, '\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .split('\n')
+      .filter((l) => {
+        const t = l.replace(/^[-#\s]+/, '');
+        if (!l.trim()) return true;
+        if (t.length < 3 || /^[\d\s.,:%₹$€£¥+–-]*$/.test(t)) return false; // counters, bullets, currency confetti
+        if (seen.has(t)) return false; // repeated copies of the same line
+        seen.add(t);
+        return true;
+      })
+      .join('\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  };
+  const full = ['# Turn2Opinion – full site text', '', `> Generated from the prerendered pages on ${today}. Summary and links: ${SITE_URL}/llms.txt`, ''];
+  for (const { path, route, params } of allStaticPaths()) {
+    if (!route.sitemap) continue;
+    const seo = seoOf(route, params);
+    const file = join(clientDir, path, 'index.html');
+    if (!existsSync(file)) continue;
+    full.push('---', '', `## ${seo.title}`, '', `URL: ${SITE_URL}${path}`, '', seo.description, '', toText(readFileSync(file, 'utf8')), '');
+  }
+  writeFileSync(join(clientDir, 'llms-full.txt'), full.join('\n'));
 }
 
 console.log(`[prerender] ${count} pages + 404.html, sitemap.xml (${urls.length} URLs), robots.txt -> ${clientDir}`);
