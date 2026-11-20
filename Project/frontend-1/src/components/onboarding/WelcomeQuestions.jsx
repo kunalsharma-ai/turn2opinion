@@ -336,7 +336,7 @@ export default function WelcomeQuestions({ journey, ans, setAnswers, ctx, onDone
         </div>
         <div>
           <p className="wq-kicker">
-            {sections.length > 1 ? `Welcome questions · part ${sec + 1} of ${sections.length}` : `Welcome questions · ${vis.length} quick ones`}
+            {sections.length > 1 ? `Welcome questions · part ${sec + 1} of ${sections.length}` : `Welcome questions · ${cur.keys.length} quick ones`}
           </p>
           <h2 className="wq-title">
             <Icon name={cur.icon} size={20} /> {cur.title}

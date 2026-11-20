@@ -9,7 +9,7 @@
 //   5. VENDING     the seven ways to redeem, as a vending machine (UPI only in India)
 //   6. CHAT FAQ    questions as chat bubbles that open to an answer (round 12)
 //   7. SUNRISE     the closing call to action
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from '../router/Router.jsx';
 import { useInView, useReveal, prefersReducedMotion } from '../hooks/useMounted.js';
 import { Breadcrumbs } from '../components/Common.jsx';
@@ -63,6 +63,88 @@ const TICKETS = [
   ['Can I take surveys on my phone?', 'Yes. Most surveys work on any phone, tablet or laptop, and you can pause many of them and come back later.'],
   ['When can I redeem my points?', 'As soon as your balance reaches the threshold shown in your dashboard. You choose the reward option each time.']
 ];
+
+// Round 13: "Ask us anything" as a chat window. Questions on the left, the conversation on the right;
+// every answer is also in the page as a plain list for search engines and screen readers.
+function AskChat() {
+  const [thread, setThread] = useState([0, 1]);
+  const [typing, setTyping] = useState(false);
+  const box = useRef(null);
+  const t = useRef(0);
+  useEffect(() => () => clearTimeout(t.current), []);
+  useEffect(() => {
+    const el = box.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+  }, [thread, typing]);
+  const ask = (k) => {
+    if (typing) return;
+    setThread((th) => [...th.filter((x) => x !== k), -1 - k]);
+    setTyping(true);
+    clearTimeout(t.current);
+    t.current = setTimeout(() => {
+      setThread((th) => th.map((x) => (x === -1 - k ? k : x)));
+      setTyping(false);
+    }, 650);
+  };
+  const shown = thread.map((x) => (x < 0 ? -1 - x : x));
+  return (
+    <>
+      <div className="eca-grid">
+        <ul className="eca-qs" aria-label="Questions">
+          {TICKETS.map(([q], k) => (
+            <li key={q}>
+              <button type="button" className={`eca-q ${shown.includes(k) ? 'is-asked' : ''}`} onClick={() => ask(k)} aria-controls="eca-log">
+                <span className="eca-no">{String(k + 1).padStart(2, '0')}</span>
+                {q}
+                <Icon name="send" size={15} />
+              </button>
+            </li>
+          ))}
+        </ul>
+        <div className="eca-win">
+          <div className="eca-bar">
+            <span className="eca-av" aria-hidden="true">
+              T2O
+            </span>
+            <span>
+              <b>Turn2Opinion</b>
+              <small>
+                <i className="eca-dot" /> Answers in seconds
+              </small>
+            </span>
+          </div>
+          <div className="eca-log" id="eca-log" ref={box} aria-live="polite">
+            {thread.map((x) => {
+              const k = x < 0 ? -1 - x : x;
+              return (
+                <div key={k} className="eca-pair">
+                  <p className="eca-me">{TICKETS[k][0]}</p>
+                  {x < 0 ? (
+                    <p className="eca-them is-typing" aria-label="Typing">
+                      <i />
+                      <i />
+                      <i />
+                    </p>
+                  ) : (
+                    <p className="eca-them">{TICKETS[k][1]}</p>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      <dl className="sr-only">
+        {TICKETS.map(([q, a]) => (
+          <div key={q}>
+            <dt>{q}</dt>
+            <dd>{a}</dd>
+          </div>
+        ))}
+      </dl>
+    </>
+  );
+}
 
 // Round 12: the hero is a phone lock screen where everyday moments arrive as survey invitations.
 function InvitePhone() {
@@ -339,27 +421,81 @@ export default function EarnConsumers() {
             <p className="ec-kicker">How points add up</p>
             <h2 id="ec-t-h">Two ways in, one balance out</h2>
           </div>
-          <div className={`ecj ${towersIn ? 'is-on' : ''}`} ref={towerRef}>
-            {TOWERS.slice(0, 2).map((t, k) => (
-              <div key={t.t} className={`ecj-src s${k}`} style={{ '--c': t.c }}>
-                <span className="ecj-ico">
-                  <Icon name={k ? 'clipboard' : 'user'} size={22} />
-                </span>
-                <b>{t.t}</b>
-                <p>{t.d}</p>
-                <svg className="ecj-pipe" viewBox="0 0 200 120" preserveAspectRatio="none" aria-hidden="true">
-                  <path d={k ? 'M190 10 C 190 80, 60 50, 20 110' : 'M10 10 C 10 80, 140 50, 180 110'} />
-                </svg>
-              </div>
-            ))}
-            <div className="ecj-jar" style={{ '--c': TOWERS[2].c }}>
-              <span className="ecj-glass" aria-hidden="true">
-                <span className="ecj-fill" />
-                {Array.from({ length: 9 }).map((_, j) => (
-                  <i key={j} className="ecj-coin" style={{ '--j': j }} />
+          <div className={`ecx ${towersIn ? 'is-on' : ''}`} ref={towerRef}>
+            {/* way in 1: profile sections tick off one by one */}
+            <div className="ecx-card is-profile" style={{ '--c': TOWERS[0].c }}>
+              <span className="ecx-tag">Way in · 1</span>
+              <div className="ecx-vis" aria-hidden="true">
+                {['About you', 'Home & family', 'Work & study', 'Shopping'].map((l, j) => (
+                  <span key={l} className="ecx-row" style={{ '--j': j }}>
+                    <i className="ecx-tick">
+                      <Icon name="check" size={11} strokeWidth={3} />
+                    </i>
+                    <em>{l}</em>
+                    <b className="ecx-plus">+ pts</b>
+                  </span>
                 ))}
+              </div>
+              <span className="ecx-ico">
+                <Icon name="user" size={20} />
               </span>
-              <b>{TOWERS[2].t}</b>
+              <h3>{TOWERS[0].t}</h3>
+              <p>{TOWERS[0].d}</p>
+            </div>
+            <span className="ecx-op" aria-hidden="true">
+              +
+            </span>
+            {/* way in 2: survey tickets slide in, each shows its length and reward first */}
+            <div className="ecx-card is-survey" style={{ '--c': TOWERS[1].c }}>
+              <span className="ecx-tag">Way in · 2</span>
+              <div className="ecx-vis" aria-hidden="true">
+                {[
+                  ['Snacks & drinks', 6],
+                  ['Phone plans', 12],
+                  ['Streaming habits', 9]
+                ].map(([l, m], j) => (
+                  <span key={l} className="ecx-ticket" style={{ '--j': j }}>
+                    <Icon name="clipboard" size={14} />
+                    <em>{l}</em>
+                    <small>
+                      <Icon name="clock" size={11} /> {m} min
+                    </small>
+                    <b className="ecx-plus">+ pts</b>
+                  </span>
+                ))}
+              </div>
+              <span className="ecx-ico">
+                <Icon name="clipboard" size={20} />
+              </span>
+              <h3>{TOWERS[1].t}</h3>
+              <p>{TOWERS[1].d}</p>
+            </div>
+            <span className="ecx-op is-eq" aria-hidden="true">
+              =
+            </span>
+            {/* one balance out: the jar fills to the redeem line */}
+            <div className="ecx-card is-jar" style={{ '--c': TOWERS[2].c }}>
+              <span className="ecx-tag">One balance out</span>
+              <div className="ecx-vis" aria-hidden="true">
+                <span className="ecx-glass">
+                  <span className="ecx-fill" />
+                  <span className="ecx-line">
+                    <b>Redeem</b>
+                  </span>
+                  {Array.from({ length: 7 }).map((_, j) => (
+                    <i key={j} className="ecx-coin" style={{ '--j': j }} />
+                  ))}
+                </span>
+                <span className="ecx-outs">
+                  {['PayPal', 'Bank', 'Vouchers', 'Gift cards'].map((o) => (
+                    <i key={o}>{o}</i>
+                  ))}
+                </span>
+              </div>
+              <span className="ecx-ico">
+                <Icon name="wallet" size={20} />
+              </span>
+              <h3>{TOWERS[2].t}</h3>
               <p>{TOWERS[2].d}</p>
             </div>
           </div>
@@ -397,28 +533,14 @@ export default function EarnConsumers() {
 
       {/* 6. TICKETS */}
       <section className="section ec-ticket-sec" aria-labelledby="ec-q-h">
-        <div className="wrap">
-          <div className="ec-head" data-reveal>
-            <p className="ec-kicker is-dark">Straight answers</p>
-            <h2 id="ec-q-h">Ask us anything</h2>
-          </div>
-          <div className="ecq">
-            {TICKETS.map(([q, a], k) => (
-              <details key={q} className="ecq-item" style={{ '--k': k }} data-reveal>
-                <summary>
-                  <span className="ecq-q">{q}</span>
-                  <span className="ecq-plus" aria-hidden="true">
-                    <Icon name="plus" size={16} />
-                  </span>
-                </summary>
-                <p className="ecq-a">
-                  <span className="ecq-av" aria-hidden="true">
-                    T2O
-                  </span>
-                  <span className="ecq-bubble">{a}</span>
-                </p>
-              </details>
-            ))}
+        <div className="wrap eca">
+          <div className="eca-side">
+            <div className="ec-head" data-reveal>
+              <p className="ec-kicker is-dark">Straight answers</p>
+              <h2 id="ec-q-h">Ask us anything</h2>
+              <p className="eca-lead">Tap a question. The answer comes straight back, the same one our live help gives.</p>
+            </div>
+            <AskChat />
           </div>
         </div>
       </section>

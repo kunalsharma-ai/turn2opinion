@@ -1,0 +1,395 @@
+/* Round 13: Home "Earn money online without investment" - the four text cards became a bento of
+   four illustrated tiles (the SEO copy is unchanged, word for word). */
+.seo-bento {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 34px;
+}
+.sb-card {
+  position: relative;
+  display: grid;
+  gap: 18px;
+  padding: 18px;
+  border-radius: 28px;
+  background: #fff;
+  border: 1px solid var(--line);
+  box-shadow: 0 30px 60px -44px rgba(11, 20, 64, 0.55);
+  overflow: hidden;
+  isolation: isolate;
+}
+.sb-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(120% 70% at 0% 0%, color-mix(in srgb, var(--k) 14%, transparent), transparent 60%);
+}
+.sb-pay {
+  --k: #ffb020;
+  grid-column: span 2;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: stretch;
+}
+.sb-time {
+  --k: #22b8ff;
+}
+.sb-aud {
+  --k: #ff4d8d;
+  grid-column: span 2;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  align-items: stretch;
+}
+.sb-why {
+  --k: #2f6bff;
+}
+.sb-pay .sb-txt,
+.sb-aud .sb-txt {
+  align-self: center;
+}
+.sb-time,
+.sb-why {
+  align-content: start;
+}
+.sb-aud .sb-vis {
+  order: 2;
+}
+.sb-vis {
+  position: relative;
+  min-height: 200px;
+  border-radius: 20px;
+  background: linear-gradient(150deg, color-mix(in srgb, var(--k) 22%, #0b1440), #0b1440 75%);
+  overflow: hidden;
+}
+.sb-txt {
+  padding: 4px 8px 8px;
+}
+.sb-no {
+  display: inline-block;
+  margin-bottom: 8px;
+  font: 800 0.75rem/1 var(--ui);
+  letter-spacing: 0.12em;
+  color: color-mix(in srgb, var(--k) 80%, #0b1440);
+}
+.sb-card h3 {
+  margin: 0 0 10px;
+  font: 800 clamp(1.1rem, 1.6vw, 1.3rem) / 1.25 var(--display);
+  color: var(--ink);
+}
+.sb-card p {
+  margin: 0;
+  font-size: 0.97rem;
+  line-height: 1.65;
+  color: var(--muted);
+}
+/* 01 payouts orbit a coin */
+.sb-pay .sb-vis {
+  min-height: 260px;
+}
+.sb-pay-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  color: #0b1440;
+  background: radial-gradient(circle at 35% 35%, #fff4b8, #ffc21a 60%, #d98a00);
+  box-shadow: 0 0 0 10px rgba(255, 210, 63, 0.15), 0 0 0 22px rgba(255, 210, 63, 0.07), 0 20px 40px -10px rgba(255, 176, 32, 0.7);
+  animation: sbPulse 3s ease-in-out infinite;
+}
+@keyframes sbPulse {
+  50% {
+    box-shadow: 0 0 0 14px rgba(255, 210, 63, 0.2), 0 0 0 30px rgba(255, 210, 63, 0.06), 0 20px 40px -10px rgba(255, 176, 32, 0.7);
+  }
+}
+.sb-pay-chip {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 11px;
+  border-radius: 999px;
+  font: 700 0.78rem/1 var(--ui);
+  white-space: nowrap;
+  color: #0b1440;
+  background: #fff;
+  box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.5);
+  --a: calc(var(--j) * (360deg / 7));
+  transform: translate(-50%, -50%) rotate(var(--a)) translateY(-104px) rotate(calc(var(--a) * -1));
+  animation: sbOrbit 28s linear infinite;
+}
+@keyframes sbOrbit {
+  to {
+    transform: translate(-50%, -50%) rotate(calc(var(--a) + 360deg)) translateY(-104px) rotate(calc((var(--a) + 360deg) * -1));
+  }
+}
+/* 02 a clock and the moments a survey fits in */
+.sb-time .sb-vis {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+}
+.sb-clock {
+  position: relative;
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 6px rgba(34, 184, 255, 0.35), inset 0 0 0 3px #0b1440;
+}
+.sb-clock::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  margin: -4px;
+  border-radius: 50%;
+  background: #ff4d8d;
+}
+.sb-hand {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  width: 4px;
+  margin-left: -2px;
+  border-radius: 4px;
+  background: #0b1440;
+  transform-origin: 50% 100%;
+}
+.sb-hand.h1 {
+  height: 24px;
+  animation: spin 24s linear infinite;
+}
+.sb-hand.h2 {
+  height: 34px;
+  width: 2px;
+  margin-left: -1px;
+  background: #22b8ff;
+  animation: spin 4s linear infinite;
+}
+.sb-slots {
+  display: grid;
+  gap: 8px;
+}
+.sb-slots i {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  font: 600 0.8rem/1.2 var(--ui);
+  font-style: normal;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border-left: 3px solid #22b8ff;
+  animation: sbSlot 4.5s ease calc(var(--j) * 1.5s) infinite;
+}
+.sb-slots b {
+  flex: none;
+  padding: 3px 7px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  color: #0b1440;
+  background: #8fd3ff;
+}
+@keyframes sbSlot {
+  0%,
+  100% {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  15%,
+  30% {
+    background: rgba(34, 184, 255, 0.35);
+  }
+}
+/* 03 three panels */
+.sb-aud .sb-vis {
+  display: grid;
+  align-content: center;
+  gap: 10px;
+  padding: 18px;
+}
+.sb-aud-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  font: 800 0.9rem/1 var(--ui);
+  color: #fff;
+  background: color-mix(in srgb, var(--c) 30%, rgba(255, 255, 255, 0.06));
+  border: 1px solid color-mix(in srgb, var(--c) 60%, transparent);
+  translate: calc(var(--j) * 10px) 0;
+  margin-right: 24px;
+  animation: sbFloat 5s ease-in-out calc(var(--j) * -1.6s) infinite;
+}
+.sb-aud-pill i {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--c);
+}
+@keyframes sbFloat {
+  50% {
+    translate: calc(var(--j) * 10px + 6px) -3px;
+  }
+}
+/* 04 from a brand's question to your reward */
+.sb-why .sb-vis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  gap: 6px;
+  padding: 18px 14px;
+}
+.sb-why .sb-vis::before {
+  content: '';
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: calc(50% - 14px);
+  height: 3px;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.5) 0 8px, transparent 8px 14px);
+  background-size: 28px 3px;
+  animation: sbDash 1.2s linear infinite;
+}
+@keyframes sbDash {
+  to {
+    background-position: 28px 0;
+  }
+}
+.sb-step {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  font: 700 0.76rem/1.2 var(--ui);
+  text-align: center;
+  color: #fff;
+}
+.sb-step i {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  color: #0b1440;
+  background: #fff;
+  box-shadow: 0 0 0 5px rgba(47, 107, 255, 0.35);
+  animation: sbStep 4s ease calc(var(--j) * 1s) infinite;
+}
+@keyframes sbStep {
+  0%,
+  100% {
+    scale: 1;
+    background: #fff;
+  }
+  12% {
+    scale: 1.15;
+    background: #ffd23f;
+  }
+  25% {
+    scale: 1;
+    background: #fff;
+  }
+}
+@media (max-width: 1000px) {
+  .seo-bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sb-pay,
+  .sb-aud {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 760px) {
+  .seo-bento {
+    grid-template-columns: 1fr;
+  }
+  .sb-pay,
+  .sb-aud {
+    grid-column: auto;
+    grid-template-columns: 1fr;
+  }
+  .sb-aud .sb-vis {
+    order: 0;
+  }
+  .sb-pay-chip {
+    transform: translate(-50%, -50%) rotate(var(--a)) translateY(-96px) rotate(calc(var(--a) * -1));
+  }
+  @keyframes sbOrbit {
+    to {
+      transform: translate(-50%, -50%) rotate(calc(var(--a) + 360deg)) translateY(-96px) rotate(calc((var(--a) + 360deg) * -1));
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .seo-bento * {
+    animation: none !important;
+  }
+}
+/* final layout: an even 2 x 2, illustration on top, so no tile is left half empty */
+.seo-bento {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.seo-bento .sb-card {
+  grid-column: auto;
+  grid-template-columns: 1fr;
+  align-content: start;
+  align-items: start;
+}
+.seo-bento .sb-vis {
+  order: 0;
+  min-height: 200px;
+  height: 200px;
+}
+.seo-bento .sb-txt {
+  align-self: start;
+}
+/* payouts ride two belts past the coin */
+.sb-pay .sb-vis {
+  display: grid;
+  align-content: center;
+  gap: 54px;
+}
+.sb-belt {
+  display: flex;
+  gap: 10px;
+  width: max-content;
+  animation: sbBelt 18s linear infinite;
+}
+.sb-belt.r1 {
+  animation-direction: reverse;
+}
+@keyframes sbBelt {
+  to {
+    translate: -50% 0;
+  }
+}
+.seo-bento .sb-pay-chip {
+  position: static;
+  transform: none;
+  animation: none;
+}
+.sb-pay-core {
+  z-index: 2;
+  width: 64px;
+  height: 64px;
+}
+@media (max-width: 760px) {
+  .seo-bento {
+    grid-template-columns: 1fr;
+  }
+}

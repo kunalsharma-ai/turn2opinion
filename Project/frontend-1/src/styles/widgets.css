@@ -3177,3 +3177,10 @@ html.form-page .vfab-msg {
     display: none;
   }
 }
+/* Form pages at any width: the video button (bottom left) and the "Live help 24/7" label sat over the
+   form's own content on shorter screens. The round live-help, WhatsApp and rating buttons stay. */
+html.form-page .vfab,
+html.form-page .vfab-msg,
+html.form-page .fab-chat-label {
+  display: none;
+}

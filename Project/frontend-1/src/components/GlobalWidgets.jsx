@@ -399,7 +399,7 @@ function FloatingActions({ chatOpen, onChat }) {
 }
 
 // Pages that are one long form: no pop-ups slide in over the fields while someone fills them in.
-export const FORM_PAGE = /^\/(join|login|parent-consent|forgot-password|reset-password|contact|account-setup|verify)(\/|$)/;
+export const FORM_PAGE = /^\/(join|login|welcome|parent-consent|forgot-password|reset-password|contact|account-setup|verify)(\/|$)/;
 
 export default function GlobalWidgets() {
   const path = usePath();

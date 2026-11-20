@@ -2803,6 +2803,61 @@ html:where([data-mode='dark'])[data-mode='dark'] .ssel-list {
     border: 1px solid #283350;
     color: #d6dce9
 }
+:where(html[data-mode='dark']) .ecx-card {
+    border: 1px solid rgba(23, 33, 79, 0.22)
+}
+:where(html[data-mode='dark']) .ecx-tag {
+    color: #dee1f2;
+    background: color-mix(in srgb, var(--c) 55%, #0b1128)
+}
+:where(html[data-mode='dark']) .ecx-vis {
+    border: 1px solid rgba(23, 33, 79, 0.1)
+}
+:where(html[data-mode='dark']) .ecx-op {
+    color: #dee1f2;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .ecx-tick {
+    border: 2px solid rgba(23, 33, 79, 0.4)
+}
+:where(html[data-mode='dark']) .ecx-ticket {
+    border-left: 4px solid #20597e
+}
+:where(html[data-mode='dark']) .ecx-glass {
+    border: 3px solid rgba(23, 33, 79, 0.7)
+}
+:where(html[data-mode='dark']) .ecx-line {
+    border-top: 2px dashed rgba(23, 33, 79, 0.9)
+}
+:where(html[data-mode='dark']) .ecx-outs i {
+    color: #dee1f2;
+    background-color: rgba(11, 17, 40, 0.92)
+}
+:where(html[data-mode='dark']) .eca-lead {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .eca-q {
+    color: #d9deef;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .eca-q svg {
+    color: #92b2ff
+}
+:where(html[data-mode='dark']) .eca-no {
+    color: #f8a96d;
+    background-color: #34280d
+}
+:where(html[data-mode='dark']) .eca-av {
+    color: #8cabff;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .eca-them {
+    color: #dee1f2;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .eca-them.is-typing i {
+    background-color: #353c45
+}
 :where(html[data-mode='dark']) .xm-head p {
     color: #bec4dc
 }
@@ -2953,6 +3008,33 @@ html:where([data-mode='dark'])[data-mode='dark'] .ssel-list {
 }
 :where(html[data-mode='dark']) .mtrack-card small {
     color: #b7bed8
+}
+:where(html[data-mode='dark']) .sb-card {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .sb-no {
+    color: color-mix(in srgb, var(--k) 80%, #dee1f2)
+}
+:where(html[data-mode='dark']) .sb-card h3 {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .sb-card p {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .sb-pay-chip {
+    color: #dee1f2;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .sb-clock {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .sb-slots b {
+    color: #dee1f2;
+    background-color: #13364d
+}
+:where(html[data-mode='dark']) .sb-step i {
+    color: #dee1f2;
+    background-color: #0b1128
 }
 :where(html[data-mode='dark']) .ftw-scale {
     color: #b7bed8

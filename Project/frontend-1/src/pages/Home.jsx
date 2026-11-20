@@ -175,24 +175,92 @@ export default function Home() {
             title="Earn money online without investment, one survey at a time"
             lead="Turn2Opinion pays real people for honest opinions. There is no joining fee, nothing to buy and nothing to sell – you answer paid online surveys, collect points and redeem them."
           />
-          <div className="seo-intro-grid">
-            <article data-reveal>
+          <div className="seo-bento">
+            <article className="sb-card sb-pay" data-reveal>
+              <div className="sb-vis" aria-hidden="true">
+                <span className="sb-pay-core">
+                  <Icon name="coin" size={30} />
+                </span>
+                {[0, 1].map((row) => (
+                  <span key={row} className={`sb-belt r${row}`}>
+                    {[0, 1].map((copy) =>
+                      (row
+                        ? [
+                            ['Grocery', 'basket'],
+                            ['Gift card', 'gift'],
+                            ['UPI · India', 'upi'],
+                            ['PayPal', 'card']
+                          ]
+                        : [
+                            ['PayPal', 'card'],
+                            ['Bank', 'bank'],
+                            ['Wire', 'transfer'],
+                            ['Shopping', 'bag']
+                          ]
+                      ).map(([l, ic]) => (
+                        <span key={`${copy}-${l}`} className="sb-pay-chip">
+                          <Icon name={ic} size={14} /> {l}
+                        </span>
+                      ))
+                    )}
+                  </span>
+                ))}
+              </div>
+              <div className="sb-txt">
+                <span className="sb-no">01</span>
               <h3>Paid surveys for money, vouchers and gift cards</h3>
               <p>
                 Every survey shows its reward and how long it takes before you start. Points add up in your account and you redeem them
                 through PayPal, a bank or wire transfer, shopping or grocery vouchers, a digital gift card or, if you live in India, straight to your UPI ID. You pick the
                 payout and the moment you redeem.
               </p>
+              </div>
             </article>
-            <article data-reveal>
+            <article className="sb-card sb-time" data-reveal>
+              <div className="sb-vis" aria-hidden="true">
+                <span className="sb-clock">
+                  <i className="sb-hand h1" />
+                  <i className="sb-hand h2" />
+                </span>
+                <span className="sb-slots">
+                  {[
+                    ['Coffee break', 5],
+                    ['On the bus', 10],
+                    ['After dinner', 15]
+                  ].map(([l, m], j) => (
+                    <i key={l} style={{ '--j': j }}>
+                      <b>{m} min</b> {l}
+                    </i>
+                  ))}
+                </span>
+              </div>
+              <div className="sb-txt">
+                <span className="sb-no">02</span>
               <h3>Online work from home that fits around your day</h3>
               <p>
                 Surveys run on your phone, tablet or laptop, so you can answer on a break, on the bus or after the kids are asleep. Each one
                 shows its length up front, so you pick the ones that fit the time you have. Students, homemakers, retirees and full-time workers all use Turn2Opinion as a
                 flexible side income, not a full-time job.
               </p>
+              </div>
             </article>
-            <article data-reveal>
+            <article className="sb-card sb-aud" data-reveal>
+              <div className="sb-vis" aria-hidden="true">
+                {[
+                  ['Consumers', 'users', '#ff4d8d'],
+                  ['Professionals', 'briefcase', '#2f6bff'],
+                  ['Teens 13–17', 'sparkles', '#8b5cf6']
+                ].map(([l, ic, c], j) => (
+                  <span key={l} className="sb-aud-pill" style={{ '--j': j, '--c': c }}>
+                    <i>
+                      <Icon name={ic} size={16} />
+                    </i>
+                    {l}
+                  </span>
+                ))}
+              </div>
+              <div className="sb-txt">
+                <span className="sb-no">03</span>
               <h3>Surveys for consumers, business professionals and teens</h3>
               <p>
                 Consumers share views on shopping, food, travel, technology, health and finance. Managers, IT decision-makers, doctors and
@@ -200,14 +268,33 @@ export default function Home() {
                 people qualify. Teens aged 13 to 17 have their own panel: they join with a parent or guardian’s verified permission and
                 their own yes, and every teen study is checked for age-appropriate content first.
               </p>
+              </div>
             </article>
-            <article data-reveal>
+            <article className="sb-card sb-why" data-reveal>
+              <div className="sb-vis" aria-hidden="true">
+                {[
+                  ['megaphone', 'A brand asks'],
+                  ['chat', 'You answer'],
+                  ['target', 'They decide'],
+                  ['gift', 'You get paid']
+                ].map(([ic, l], j) => (
+                  <span key={l} className="sb-step" style={{ '--j': j }}>
+                    <i>
+                      <Icon name={ic} size={18} />
+                    </i>
+                    {l}
+                  </span>
+                ))}
+              </div>
+              <div className="sb-txt">
+                <span className="sb-no">04</span>
               <h3>Why brands pay for your opinion</h3>
               <p>
                 Companies, agencies and public bodies commission market research before they launch a product, change a price or run a
                 campaign. Turn2Opinion is run by Frequent Research, an ISO-certified research company in New Delhi, so the studies you
                 take are real projects and every answer is protected by our privacy policy.
               </p>
+              </div>
             </article>
           </div>
           <p className="center-link seo-intro-links" data-reveal>
