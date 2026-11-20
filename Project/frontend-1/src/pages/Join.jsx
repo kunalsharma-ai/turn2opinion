@@ -868,15 +868,15 @@ const submitSignup = async () => {
       <div className="wrap join-grid">
         <div className="join-side">
           <Breadcrumbs items={[{ label: 'Join free' }]} />
-          <h1>Create your free account</h1>
-          <p className="join-tag">
-            {'Two minutes now. Rewards for every survey after.'.split(' ').map((w, i) => (
+          <h1>{f.type === 'minor' ? 'Get on the teen panel' : 'Create your free account'}</h1>
+          <p className="join-tag" key={`tag-${f.type === 'minor' ? 'm' : 'x'}`}>
+            {(f.type === 'minor' ? 'Two keys. One voice. Yours.' : 'Two minutes now. Rewards for every survey after.').split(' ').map((w, i) => (
               <span key={i} style={{ '--i': i }}>
                 {w}{' '}
               </span>
             ))}
           </p>
-          <p className="join-lead">No fees, no investment – just honest answers. Unlock each step below as you go.</p>
+          <p className="join-lead">{f.type === 'minor' ? 'Free, always. You sign up, we invite your parent or guardian, and the account switches on once you both say yes.' : 'No fees, no investment – just honest answers. Unlock each step below as you go.'}</p>
           <MemberCard f={f} step={step} />
           <AuthVoice aud={f.type === 'pro' || f.type === 'minor' ? f.type : 'consumer'} />
         </div>

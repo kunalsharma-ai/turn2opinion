@@ -49,11 +49,10 @@ export function AuthAura({ aud }) {
       </span>
       <span className="aa-token t-gem" />
       {aud === 'minor' && (
-        <span className="aa-stickers">
-          {['⭐', '🎮', '🎧', '🛹', '✏️', '💬'].map((e, k) => (
-            <i key={k} style={{ '--k': k }}>
-              {e}
-            </i>
+        <span className="aa-neon">
+          <span className="aa-floor" />
+          {['tri', 'ring', 'plus', 'zig', 'tri', 'ring', 'plus', 'zig'].map((s, k) => (
+            <i key={k} className={`n-${s}`} style={{ '--k': k }} />
           ))}
         </span>
       )}

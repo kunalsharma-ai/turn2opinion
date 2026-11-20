@@ -36,11 +36,11 @@ const PORTAL = {
   },
   minor: {
     img: 'gamer',
-    hi: 'Hey, you’re back! ✌️',
+    hi: 'Mic check… you’re back! 🎙️',
     chips: [
-      ['sparkles', 'Channels to tune', '+100 points each', '#FF5FA2'],
-      ['shield', 'Age-checked studies', 'Skip anything, anytime', '#2DE2C0'],
-      ['users', 'Parent connected', 'Two keys, both turned', '#FFD84A']
+      ['sparkles', 'Channels on the desk', '+100 points each', '#FF2E97'],
+      ['shield', 'Age-checked studies', 'Skip anything, any time', '#22E4FF'],
+      ['users', 'Two keys turned', 'Parent connected', '#C8FF3A']
     ]
   }
 };
@@ -268,12 +268,12 @@ if (incomplete) {
         <div className="login-art">
           <Breadcrumbs items={[{ label: 'Login' }]} />
           <AudSwitch value={aud} onChange={setAud} label="I log in as a" />
-          <h1>{aud === 'pro' ? 'Your expertise is in demand' : aud === 'minor' ? 'Your say is saved' : 'Your rewards are waiting'}</h1>
+          <h1>{aud === 'pro' ? 'Your expertise is in demand' : aud === 'minor' ? 'Back on the mic' : 'Your rewards are waiting'}</h1>
           <p className="login-tag" key={aud}>
             {aud === 'pro'
               ? 'New B2B studies, your points and your next payout – all one login away.'
               : aud === 'minor'
-                ? 'Teen panel, ages 13–17: your channels, your points and your next age-checked survey.'
+                ? 'Teen panel, ages 13–17: your channels, your points and the next age-checked survey, right where you left them.'
                 : 'New surveys, your points and your next payout – all one login away.'}
           </p>
           <WelcomePortal aud={aud} />

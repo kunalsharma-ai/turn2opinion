@@ -1707,14 +1707,6 @@
 :where(html[data-mode='dark']) .gvf-flag {
     border: 1px solid rgba(23, 33, 79, 0.1)
 }
-:where(html[data-mode='dark']) .minor-join-note {
-    color: #e5d8ed;
-    background-image: linear-gradient(120deg, #2e0b1b, #0c3025);
-    border: 2px dashed #7a1e4f
-}
-:where(html[data-mode='dark']) .minor-join-note a {
-    color: #ef80ac
-}
 :where(html[data-mode='dark']) #t2o {
     color: #d9deef
 }
@@ -2432,6 +2424,9 @@
 }
 :where(html[data-mode='dark']) .sc-cloud {
     background-color: rgba(11, 17, 40, 0.9)
+}
+:where(html[data-mode='dark']) .vs--sticker .vs-word {
+    -webkit-text-stroke-color: rgba(255, 146, 201, 0.22)
 }
 :where(html[data-mode='dark']) .sc-stk {
     background-color: #0b1128;

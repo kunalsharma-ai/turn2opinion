@@ -7,14 +7,15 @@
 // study is age-checked; skip or stop any time; recordings and sensitive topics need separate permission;
 // only necessary data; 13 profile channels worth 100 points each; parents see three sections of their own.
 //
-// World: "sticker book". Candy pink, mint and lemon on the Turn2Opinion royal blue.
-//   1. HERO        a phone that tunes through the profile channels, with stickers orbiting it
-//   2. TWO KEYS    a padlock that opens only when the parent key and the teen key both turn
-//   3. BOARD GAME  the onboarding steps as squares on a winding game board, a token hopping along
-//   4. CHANNELS    the 13 profile channels as a TV grid you can "tune"
-//   5. STICKERS    our promises as a peelable sticker sheet
-//   6. PARENTS     the grown-up corner: calm navy and mint, what parents see and control
-//   7. CLOSER      two doors, one for teens and one for parents
+// World (Round 10b, Kunal 20 Nov 2026): "After dark", the same neon grade as the Minors slide of the home
+// hero. Night violet with magenta, cyan and lime light; the parents' corner is a calmer mint.
+//   1. HERO        a mixtape: reels spin while the tracklist plays through the 13 profile channels
+//   2. TWO KEYS    a round vault door that only swings open when both key slots light up
+//   3. LEVELS      the onboarding steps as an arcade "level select" map, one level at a time
+//   4. CHANNELS    the 13 profile channels as a mixing desk: push a fader up to tune a channel
+//   5. PROMISES    our promises as neon signs that flicker on
+//   6. PARENTS     the grown-up corner: a calm night-mode dashboard of what parents see and control
+//   7. CLOSER      two arcade buttons, Player 1 (teens) and Player 2 (parents)
 import { useEffect, useState } from 'react';
 import { Link } from '../router/Router.jsx';
 import { prefersReducedMotion, useInView, useReveal } from '../hooks/useMounted.js';
@@ -67,246 +68,295 @@ const PARENT = [
   { e: '🛡️', t: 'Permissions & oversight', d: 'What you want to approve yourself, and what your teen may decide alone.', n: '≈1 min' }
 ];
 
-function TunerPhone() {
+const SHORT = ['Basics', 'School', 'Home', 'Devices', 'Social', 'Gaming', 'Shopping', 'Food', 'Style', 'Sports', 'Tech & AI', 'Research', 'Topics'];
+
+function Mixtape() {
   const [i, setI] = useState(0);
   useEffect(() => {
     if (prefersReducedMotion()) return undefined;
-    const t = setInterval(() => setI((n) => (n + 1) % CHANNELS.length), 1900);
+    const t = setInterval(() => setI((n) => (n + 1) % CHANNELS.length), 2100);
     return () => clearInterval(t);
   }, []);
-  const c = CHANNELS[i];
+  const view = [-1, 0, 1, 2].map((d) => (i + d + CHANNELS.length) % CHANNELS.length);
   return (
-    <div className="em-phone-wrap" aria-hidden="true">
-      <span className="em-orbit">
-        {['⭐', '🎧', '🛹', '🎨', '💬', '🏆', '✨', '🎮'].map((s, k) => (
-          <i key={k} style={{ '--k': k }}>
-            {s}
-          </i>
+    <div className="mn-tape-wrap" aria-hidden="true">
+      <span className="mn-sunring" />
+      <div className="mn-tape">
+        <span className="mn-tape-label">
+          <b>Teen panel · Side A</b>
+          <small>13 channels · +100 each</small>
+        </span>
+        <span className="mn-reels">
+          <span className="mn-reel l">
+            {Array.from({ length: 6 }).map((_, k) => (
+              <i key={k} style={{ '--k': k }} />
+            ))}
+          </span>
+          <span className="mn-window">
+            <span className="mn-ribbon" />
+          </span>
+          <span className="mn-reel r">
+            {Array.from({ length: 6 }).map((_, k) => (
+              <i key={k} style={{ '--k': k }} />
+            ))}
+          </span>
+        </span>
+        <span className="mn-screws">
+          <i />
+          <i />
+          <i />
+          <i />
+        </span>
+      </div>
+      <ol className="mn-tracks">
+        {view.map((k, row) => (
+          <li key={`${k}-${i}`} className={row === 1 ? 'is-now' : row === 0 ? 'is-done' : ''}>
+            <span className="mn-tn">{String(k + 1).padStart(2, '0')}</span>
+            <span className="mn-te">{CHANNELS[k].e}</span>
+            <b>{CHANNELS[k].t}</b>
+            <em>{row === 0 ? '✓ +100' : row === 1 ? 'Now playing' : '+100'}</em>
+          </li>
+        ))}
+      </ol>
+      <span className="mn-eq">
+        {Array.from({ length: 16 }).map((_, k) => (
+          <i key={k} style={{ '--k': k }} />
         ))}
       </span>
-      <div className="em-phone">
-        <span className="em-notch" />
-        <p className="em-ph-top">
-          <b>Your channels</b>
-          <span>
-            {i + 1}/{CHANNELS.length}
-          </span>
-        </p>
-        <div className="em-screen" key={i}>
-          <span className="em-static" />
-          <span className="em-ch-emoji">{c.e}</span>
-          <b>{c.t}</b>
-          <small>{c.d}</small>
-          <span className="em-ch-prize">+100 points</span>
-        </div>
-        <span className="em-dial">
-          {CHANNELS.map((_, k) => (
-            <i key={k} className={k === i ? 'is-on' : k < i ? 'is-done' : ''} />
+    </div>
+  );
+}
+
+function Vault() {
+  const [ref, inView] = useInView({ threshold: 0.4 });
+  return (
+    <div className={`mn-vault ${inView ? 'is-open' : ''}`} ref={ref} aria-hidden="true">
+      <span className="mn-slot s-parent">
+        <i>🔑</i>
+        <b>Parent key</b>
+        <small>Permission, verified</small>
+      </span>
+      <span className="mn-door">
+        <span className="mn-door-ring">
+          {Array.from({ length: 12 }).map((_, k) => (
+            <i key={k} style={{ '--k': k }} />
           ))}
         </span>
-        <span className="em-rank">
-          <Icon name="trophy" size={14} /> Rank: Rookie → Rising voice
+        <span className="mn-door-face">
+          <span className="mn-wheel">
+            <i />
+            <i />
+            <i />
+          </span>
         </span>
+        <span className="mn-door-inside">
+          <b>Unlocked</b>
+          <small>Your account switches on</small>
+        </span>
+      </span>
+      <span className="mn-slot s-teen">
+        <i>🗝️</i>
+        <b>Your key</b>
+        <small>Your own yes</small>
+      </span>
+    </div>
+  );
+}
+
+function Levels() {
+  const [ref, inView] = useInView({ threshold: 0.25 });
+  const [at, setAt] = useState(0);
+  const [held, setHeld] = useState(false);
+  useEffect(() => {
+    if (!inView || held || prefersReducedMotion()) return undefined;
+    const t = setInterval(() => setAt((n) => (n + 1) % STEPS.length), 2600);
+    return () => clearInterval(t);
+  }, [inView, held]);
+  const s = STEPS[at];
+  const who = s.who === 'teen' ? 'You' : s.who === 'parent' ? 'Parent or guardian' : 'Turn2Opinion';
+  return (
+    <div className="mn-levels" ref={ref}>
+      <svg className="mn-path" viewBox="0 0 1000 160" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M40 120 C 140 20, 220 20, 300 80 S 460 150, 540 80 S 700 10, 780 70 S 900 140, 960 60" pathLength="100" />
+        <path className="lit" d="M40 120 C 140 20, 220 20, 300 80 S 460 150, 540 80 S 700 10, 780 70 S 900 140, 960 60" pathLength="100" style={{ '--p': (at + 1) / STEPS.length }} />
+      </svg>
+      <ol className="mn-nodes" aria-label="How a teen joins, level by level">
+        {STEPS.map((x, k) => (
+          <li key={x.t} className={`who-${x.who} ${k === at ? 'is-here' : ''} ${k < at ? 'is-past' : ''}`} style={{ '--k': k }}>
+            <button type="button" aria-pressed={k === at} onClick={() => { setAt(k); setHeld(true); }}>
+              <span className="mn-node-e" aria-hidden="true">
+                {x.e}
+              </span>
+              <span className="mn-node-n">LVL {k + 1}</span>
+              <span className="sr-only">{x.t}</span>
+            </button>
+          </li>
+        ))}
+      </ol>
+      <div className={`mn-level-card who-${s.who}`} key={at} aria-live="polite">
+        <span className="mn-level-no">Level {at + 1} of {STEPS.length}</span>
+        <h3>{s.t}</h3>
+        <p>{s.d}</p>
+        <span className="mn-level-who">{who}</span>
       </div>
     </div>
   );
 }
 
-function TwoKeys() {
-  const [ref, inView] = useInView({ threshold: 0.4 });
-  return (
-    <div className={`em-keys ${inView ? 'is-turning' : ''}`} ref={ref} aria-hidden="true">
-      <span className="em-key k-parent">
-        <i>🔑</i>
-        <b>Parent key</b>
-      </span>
-      <span className="em-lock">
-        <span className="em-shackle" />
-        <span className="em-lock-body">
-          <span className="em-hole h1" />
-          <span className="em-hole h2" />
-        </span>
-        <span className="em-lock-burst">
-          {Array.from({ length: 10 }).map((_, k) => (
-            <i key={k} style={{ '--k': k }} />
-          ))}
-        </span>
-      </span>
-      <span className="em-key k-teen">
-        <i>🗝️</i>
-        <b>Your key</b>
-      </span>
-    </div>
-  );
-}
-
-function Board() {
-  const [ref, inView] = useInView({ threshold: 0.2 });
-  const [at, setAt] = useState(0);
-  useEffect(() => {
-    if (!inView || prefersReducedMotion()) return undefined;
-    const t = setInterval(() => setAt((n) => (n + 1) % STEPS.length), 2200);
-    return () => clearInterval(t);
-  }, [inView]);
-  return (
-    <ol className="em-board" ref={ref} aria-label="How a teen joins, step by step">
-      {STEPS.map((s, k) => (
-        <li key={s.t} className={`em-sq who-${s.who} ${k === at ? 'is-here' : ''} ${k < at ? 'is-past' : ''}`} style={{ '--k': k }}>
-          <span className="em-sq-n">{k + 1}</span>
-          <span className="em-sq-e" aria-hidden="true">
-            {s.e}
-          </span>
-          <b>{s.t}</b>
-          <small>{s.d}</small>
-          <span className="em-sq-who">{s.who === 'teen' ? 'You' : s.who === 'parent' ? 'Parent or guardian' : 'Turn2Opinion'}</span>
-          {k === at && (
-            <span className="em-token" aria-hidden="true">
-              ⭐
-            </span>
-          )}
-        </li>
-      ))}
-    </ol>
-  );
-}
-
-function ChannelGrid() {
+function Mixer() {
   const [tuned, setTuned] = useState(() => new Set());
-  const toggle = (k) =>
+  const [last, setLast] = useState(0);
+  const toggle = (k) => {
+    setLast(k);
     setTuned((s) => {
       const n = new Set(s);
       if (n.has(k)) n.delete(k);
       else n.add(k);
       return n;
     });
+  };
+  const c = CHANNELS[last];
   return (
-    <>
-      <p className="em-tally" aria-live="polite">
-        <b>{tuned.size}</b> / {CHANNELS.length} tuned · <b>{tuned.size * 100}</b> preview points
-      </p>
-      <div className="em-tv">
-        {CHANNELS.map((c, k) => (
-          <button key={c.t} type="button" className={`em-tile ${tuned.has(k) ? 'is-tuned' : ''}`} style={{ '--k': k }} aria-pressed={tuned.has(k)} onClick={() => toggle(k)}>
-            <span className="em-tile-no">CH {String(k + 1).padStart(2, '0')}</span>
-            <span className="em-tile-e" aria-hidden="true">
-              {c.e}
+    <div className="mn-desk">
+      <div className="mn-display" aria-live="polite">
+        <span className="mn-disp-e" aria-hidden="true">
+          {c.e}
+        </span>
+        <span>
+          <b>
+            CH {String(last + 1).padStart(2, '0')} · {c.t}
+          </b>
+          <small>{c.d}</small>
+        </span>
+        <span className="mn-tally">
+          <b>{tuned.size}</b>/{CHANNELS.length} tuned · <b>{tuned.size * 100}</b> pts
+        </span>
+      </div>
+      <div className="mn-faders">
+        {CHANNELS.map((x, k) => (
+          <button key={x.t} type="button" className={`mn-fader ${tuned.has(k) ? 'is-up' : ''}`} style={{ '--k': k }} aria-pressed={tuned.has(k)} aria-label={`${x.t}: ${tuned.has(k) ? 'tuned' : 'tap to tune'}`} onClick={() => toggle(k)}>
+            <span className="mn-leds" aria-hidden="true">
+              {Array.from({ length: 6 }).map((_, j) => (
+                <i key={j} style={{ '--j': j }} />
+              ))}
             </span>
-            <b>{c.t}</b>
-            <small>{c.d}</small>
-            <span className="em-tile-state">{tuned.has(k) ? '✓ Tuned · +100' : 'Tap to tune'}</span>
+            <span className="mn-track" aria-hidden="true">
+              <span className="mn-knob" />
+            </span>
+            <span className="mn-fe" aria-hidden="true">
+              {x.e}
+            </span>
+            <span className="mn-fl">{SHORT[k]}</span>
           </button>
         ))}
       </div>
-    </>
+    </div>
   );
 }
 
 export default function EarnMinors() {
   const ref = useReveal();
   return (
-    <div ref={ref} className="em-page">
+    <div ref={ref} className="mn-page">
       {/* 1. HERO */}
-      <section className="em-hero">
-        <span className="em-confetti" aria-hidden="true">
-          {Array.from({ length: 18 }).map((_, k) => (
+      <section className="mn-hero">
+        <span className="mn-floor" aria-hidden="true" />
+        <span className="mn-stars" aria-hidden="true">
+          {Array.from({ length: 24 }).map((_, k) => (
             <i key={k} style={{ '--k': k }} />
           ))}
         </span>
-        <div className="wrap em-hero-grid">
-          <div className="em-hero-copy">
+        <div className="wrap mn-hero-grid">
+          <div className="mn-hero-copy">
             <Breadcrumbs items={[{ label: 'Earn', to: '/paid-surveys/' }, { label: 'Minors (13–17)' }]} />
-            <p className="em-new">
+            <p className="mn-new">
               <span>✦ Recently introduced</span> Teen panel · ages 13–17
             </p>
             <h1>
-              <span className="em-h-1">Your say.</span> <span className="em-h-2">Your rules.</span> <span className="em-h-3">Parent-approved.</span>
+              <span className="mn-h-1">Your taste sets the trend.</span> <span className="mn-h-2">Now it earns points.</span>
             </h1>
-            <p className="em-lead">
-              Brands are building games, apps, snacks and trainers for you, so they should hear from you. Our new teen panel gives 13 to 17 year olds a safe, age-checked
-              place to share what they think, with a parent or guardian on board from the very first step.
+            <p className="mn-lead">
+              The playlists you build, the games you stay up for, the snacks you swear by. Brands spend a fortune guessing what 13 to 17 year olds think. On the Turn2Opinion
+              teen panel you just tell them, with a parent or guardian on board from the very first step.
             </p>
-            <div className="em-actions">
-              <Link to="/join/minor/" className="btn btn-lg em-btn-pop">
-                I’m a teen, let me in <Icon name="arrow" size={18} />
+            <div className="mn-actions">
+              <Link to="/join/minor/" className="btn btn-lg mn-btn-glow">
+                Press start <Icon name="arrow" size={18} />
               </Link>
-              <a href="#em-parents" className="em-btn-soft">
+              <a href="#mn-parents" className="mn-btn-line">
                 I’m a parent <Icon name="users" size={16} />
               </a>
             </div>
-            <ul className="em-chips">
+            <ul className="mn-chips">
               <li>🔑 Two keys to start</li>
               <li>⏭️ Skip anything</li>
-              <li>📺 13 channels · +100 each</li>
+              <li>🎛️ 13 channels · +100 each</li>
             </ul>
           </div>
-          <TunerPhone />
+          <Mixtape />
         </div>
-        <svg className="em-wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0 50 Q 120 10 240 50 T 480 50 T 720 50 T 960 50 T 1200 50 T 1440 50 V90 H0Z" />
-        </svg>
       </section>
 
       {/* 2. TWO KEYS */}
-      <section className="section em-keys-sec" aria-labelledby="em-k-h">
-        <div className="wrap em-split">
+      <section className="section mn-keys-sec" aria-labelledby="mn-k-h">
+        <div className="wrap mn-split">
           <div data-reveal>
-            <p className="em-kicker">The golden rule</p>
-            <h2 id="em-k-h">Two keys. Both have to turn.</h2>
+            <p className="mn-kicker">The golden rule</p>
+            <h2 id="mn-k-h">One vault. Two keys. Both have to turn.</h2>
             <p>
-              Your parent or guardian holds one key: their permission, which we verify. You hold the other: your own yes, in your own words. The account stays locked until
-              both turn, and every individual study still asks you again.
+              Your parent or guardian holds one key: their permission, which we verify. You hold the other: your own yes, in your own words. The door stays shut until both
+              light up, and every single study still asks you again.
             </p>
-            <p className="em-quote">“Giving parental permission never means a teen has to take part in any particular survey.”</p>
+            <p className="mn-quote">“Giving parental permission never means a teen has to take part in any particular survey.”</p>
           </div>
           <div data-reveal>
-            <TwoKeys />
+            <Vault />
           </div>
         </div>
       </section>
 
-      {/* 3. BOARD GAME */}
-      <section className="section em-board-sec" aria-labelledby="em-b-h">
+      {/* 3. LEVELS */}
+      <section className="section mn-levels-sec" aria-labelledby="mn-b-h">
         <div className="wrap">
-          <div className="em-head" data-reveal>
-            <p className="em-kicker">How joining works</p>
-            <h2 id="em-b-h">Six squares from sign-up to your first survey</h2>
+          <div className="mn-head" data-reveal>
+            <p className="mn-kicker is-cyan">Level select</p>
+            <h2 id="mn-b-h">Six levels from sign-up to your first survey</h2>
             <p>
-              <span className="em-leg who-teen">You</span> <span className="em-leg who-parent">Parent or guardian</span> <span className="em-leg who-us">Turn2Opinion</span>
+              <span className="mn-leg who-teen">You</span> <span className="mn-leg who-parent">Parent or guardian</span> <span className="mn-leg who-us">Turn2Opinion</span>
             </p>
           </div>
-          <Board />
+          <Levels />
         </div>
       </section>
 
       {/* 4. CHANNELS */}
-      <section className="section em-tv-sec" aria-labelledby="em-c-h">
+      <section className="section mn-desk-sec" aria-labelledby="mn-c-h">
         <div className="wrap">
-          <div className="em-head is-light" data-reveal>
-            <p className="em-kicker">Your profile, your channels</p>
-            <h2 id="em-c-h">Thirteen channels to tune in</h2>
-            <p>Each channel is a short set of questions about one part of your life. Finish one and win 100 points, and surveys start matching you far better. Start anywhere.</p>
+          <div className="mn-head" data-reveal>
+            <p className="mn-kicker is-lime">Your profile, your mix</p>
+            <h2 id="mn-c-h">Thirteen channels on the desk. Push one up.</h2>
+            <p>Each channel is a short set of questions about one part of your life. Finish one for 100 points, and the surveys you get start sounding a lot more like you.</p>
           </div>
-          <ChannelGrid />
-          <p className="em-small">Preview only: tuning here does not save anything. Your real channels open after both keys have turned.</p>
+          <Mixer />
+          <p className="mn-small">Preview only: nothing here is saved. Your real channels open once both keys have turned.</p>
         </div>
       </section>
 
-      {/* 5. STICKERS */}
-      <section className="section em-sticker-sec" aria-labelledby="em-s-h">
+      {/* 5. PROMISES */}
+      <section className="section mn-neon-sec" aria-labelledby="mn-s-h">
         <div className="wrap">
-          <div className="em-head" data-reveal>
-            <p className="em-kicker">Our promises</p>
-            <h2 id="em-s-h">A sticker sheet of things we will always do</h2>
+          <div className="mn-head" data-reveal>
+            <p className="mn-kicker">Our promises</p>
+            <h2 id="mn-s-h">Twelve promises, lit up all night</h2>
           </div>
-          <ul className="em-sheet">
+          <ul className="mn-signs">
             {PROMISES.map((p, k) => (
-              <li key={p.t} className="em-sticker" style={{ '--c': p.c, '--k': k, '--r': `${((k * 7) % 9) - 4}deg` }} data-reveal>
-                <span className="em-st-e" aria-hidden="true">
+              <li key={p.t} className="mn-sign" style={{ '--c': p.c, '--k': k }} data-reveal>
+                <span className="mn-sign-e" aria-hidden="true">
                   {p.e}
                 </span>
                 <b>{p.t}</b>
                 <small>{p.d}</small>
-                <span className="em-peel" aria-hidden="true" />
               </li>
             ))}
           </ul>
@@ -314,16 +364,16 @@ export default function EarnMinors() {
       </section>
 
       {/* 6. PARENTS */}
-      <section className="section em-parent-sec" id="em-parents" aria-labelledby="em-p-h">
-        <div className="wrap em-split">
+      <section className="section mn-parent-sec" id="mn-parents" aria-labelledby="mn-p-h">
+        <div className="wrap mn-split">
           <div data-reveal>
-            <p className="em-kicker is-mint">For parents and guardians</p>
-            <h2 id="em-p-h">You stay in the loop, without reading over their shoulder</h2>
+            <p className="mn-kicker is-mint">For parents and guardians</p>
+            <h2 id="mn-p-h">You stay in the loop, without reading over their shoulder</h2>
             <p>
               When your teen signs up, we email you. You tell us who you are, confirm you are legally able to give permission, and choose exactly what you agree to. Nothing
               is switched on until you say yes, and you can withdraw at any time.
             </p>
-            <ul className="em-parent-list">
+            <ul className="mn-parent-list">
               <li>
                 <Icon name="check" size={15} /> Your own three sections come first, and only you can change them.
               </li>
@@ -341,13 +391,13 @@ export default function EarnMinors() {
               </li>
             </ul>
           </div>
-          <div className="em-dash" data-reveal aria-label="What the parent view contains">
-            <p className="em-dash-top">
-              <span className="em-dot" /> Parent view · Aarav, 15
+          <div className="mn-dash" data-reveal aria-label="What the parent view contains">
+            <p className="mn-dash-top">
+              <span className="mn-dot" /> Parent view · Aarav, 15
             </p>
             {PARENT.map((p, k) => (
-              <div key={p.t} className="em-dash-row" style={{ '--k': k }}>
-                <span className="em-dash-e" aria-hidden="true">
+              <div key={p.t} className="mn-dash-row" style={{ '--k': k }}>
+                <span className="mn-dash-e" aria-hidden="true">
                   {p.e}
                 </span>
                 <span>
@@ -357,7 +407,7 @@ export default function EarnMinors() {
                 <em>{p.n}</em>
               </div>
             ))}
-            <div className="em-dash-foot">
+            <div className="mn-dash-foot">
               <span>
                 <Icon name="shield" size={15} /> Permission verified
               </span>
@@ -370,29 +420,32 @@ export default function EarnMinors() {
       </section>
 
       {/* 7. CLOSER */}
-      <section className="em-closer" aria-labelledby="em-x-h">
+      <section className="mn-closer" aria-labelledby="mn-x-h">
         <div className="wrap">
-          <h2 id="em-x-h" data-reveal>
-            Pick your door
+          <p className="mn-insert" aria-hidden="true">
+            Insert opinion to continue
+          </p>
+          <h2 id="mn-x-h" data-reveal>
+            Choose your player
           </h2>
-          <div className="em-doors">
-            <Link to="/join/minor/" className="em-door is-teen" data-reveal>
-              <span className="em-door-e" aria-hidden="true">
-                🙋
+          <div className="mn-players">
+            <Link to="/join/minor/" className="mn-player p1" data-reveal>
+              <span className="mn-push" aria-hidden="true">
+                <i>P1</i>
               </span>
               <b>I’m 13 to 17</b>
               <small>Sign up now. We’ll invite your parent or guardian for you.</small>
-              <span className="em-door-go">
-                Start <Icon name="arrow" size={16} />
+              <span className="mn-player-go">
+                Press start <Icon name="arrow" size={16} />
               </span>
             </Link>
-            <Link to="/contact/" className="em-door is-parent" data-reveal>
-              <span className="em-door-e" aria-hidden="true">
-                🧑‍🍼
+            <Link to="/contact/" className="mn-player p2" data-reveal>
+              <span className="mn-push" aria-hidden="true">
+                <i>P2</i>
               </span>
               <b>I’m a parent or guardian</b>
               <small>Questions before you say yes? Talk to a real person, any time.</small>
-              <span className="em-door-go">
+              <span className="mn-player-go">
                 Ask us <Icon name="arrow" size={16} />
               </span>
             </Link>

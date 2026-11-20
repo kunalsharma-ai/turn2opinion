@@ -2958,20 +2958,24 @@
 
 /* 22. STICKER (Earn · Minors) — candy sticker album with an XP bar. */
 .vs--sticker {
-  --v1: #ff4fa0;
-  --v2: #19c9a7;
-  --vbg: linear-gradient(135deg, #fff0f8 0%, #f1fff9 55%, #fffbe0 100%);
-  --vink: #2b1250;
-  --vtext: #6a4f88;
+  --v1: #ff2e97;
+  --v2: #c8ff3a;
+  --vbg: radial-gradient(90% 80% at 80% 0%, #3a0f6e 0%, #12052c 55%, #0b0320 100%);
+  --vink: #fff;
+  --vtext: #c9badf;
   --vfont: 'ui-rounded', 'SF Pro Rounded', 'Nunito', var(--display);
   --vscreen: #fffdf6;
 }
 .vs--sticker .vs-word {
-  -webkit-text-stroke-color: rgba(255, 79, 160, 0.14);
+  -webkit-text-stroke-color: rgba(255, 46, 151, 0.22);
+}
+.vs--sticker .vs-h em {
+  color: #c8ff3a;
 }
 .vs--sticker .vs-screen {
   border-radius: 28px;
-  border: 4px dashed rgba(255, 79, 160, 0.35);
+  border: 3px dashed rgba(34, 228, 255, 0.5);
+  box-shadow: 0 0 30px rgba(255, 46, 151, 0.3);
   background-image: radial-gradient(rgba(43, 18, 80, 0.08) 1.5px, transparent 1.6px);
   background-size: 18px 18px;
 }
