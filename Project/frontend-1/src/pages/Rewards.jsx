@@ -41,7 +41,7 @@ export default function Rewards() {
 
       <section className="section s-paper" aria-labelledby="methods-h">
         <div className="wrap">
-          <SectionHead id="methods-h" title="Eight ways to get paid" lead="Tell us where you live and we’ll deal the cards that apply to you." />
+          <SectionHead id="methods-h" title="Seven ways to get paid" lead="Tell us where you live and we’ll deal the cards that apply to you." />
           <RewardWallet />
         </div>
       </section>

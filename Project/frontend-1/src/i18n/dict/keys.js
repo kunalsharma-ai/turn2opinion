@@ -62,7 +62,7 @@ export const KEYS = [
   'Hear it from members', 'Real reviews from real members. Post yours and it shows up here straight away.',
   'Add your voice', 'Your review shows up here straight away.', 'All member reviews',
   'A real research company stands behind us', 'About Turn2Opinion', 'Trending on the blog',
-  'Plain-talking guides on earning money online, paid surveys for cash and working from home without investment.',
+  'Plain-talking guides on earning money online, paid surveys for money and working from home without investment.',
   'All blogs', 'Quick answers', 'Pick a question and get a straight answer. Live help answers 24/7.', 'All FAQs',
   // 160–199 footer
   'Your opinion already has value. Start collecting it.',

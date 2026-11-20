@@ -230,6 +230,8 @@ export default mongooseModel(
             canAcceptPushNotification: { type: Boolean, default: false },
         },
         password: { type: String, select: false },
+        // When the sign-up welcome questionnaire was answered (answers are stored as Answer records).
+        welcomeCompletedAt: { type: Date },
         origin: {
             type: String,
             required: true,

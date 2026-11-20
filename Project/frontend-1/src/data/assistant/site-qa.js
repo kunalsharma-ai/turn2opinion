@@ -334,7 +334,7 @@ export const SITE_QA = [
   "a": "Cash (PayPal, UPI or bank transfer) is more flexible because you can spend it anywhere. Gift cards are just as good if you already shop with that retailer and prefer not to share payment details.",
   "src": [
    "/blog/paid-surveys-for-cash-vs-gift-cards/",
-   "Blog · Paid Surveys for Cash vs Gift Cards: Which Reward Should You Choose?"
+   "Blog · Money Transfers vs Gift Cards: Which Survey Reward Should You Choose?"
   ]
  },
  {
@@ -342,7 +342,7 @@ export const SITE_QA = [
   "a": "Speed depends mostly on the platform’s verification process. Once a payout is approved, UPI and PayPal are typically quick to arrive, while international bank transfers can take longer.",
   "src": [
    "/blog/paid-surveys-for-cash-vs-gift-cards/",
-   "Blog · Paid Surveys for Cash vs Gift Cards: Which Reward Should You Choose?"
+   "Blog · Money Transfers vs Gift Cards: Which Survey Reward Should You Choose?"
   ]
  },
  {
@@ -350,7 +350,7 @@ export const SITE_QA = [
   "a": "Usually not. Gift cards are generally meant to be spent with the issuing retailer, so choose cash if you want flexibility.",
   "src": [
    "/blog/paid-surveys-for-cash-vs-gift-cards/",
-   "Blog · Paid Surveys for Cash vs Gift Cards: Which Reward Should You Choose?"
+   "Blog · Money Transfers vs Gift Cards: Which Survey Reward Should You Choose?"
   ]
  },
  {
@@ -358,7 +358,7 @@ export const SITE_QA = [
   "a": "Only the identifier that receives money: a PayPal email, UPI ID, bank account details or an email for gift cards. Never share passwords, PINs or OTPs.",
   "src": [
    "/blog/paid-surveys-for-cash-vs-gift-cards/",
-   "Blog · Paid Surveys for Cash vs Gift Cards: Which Reward Should You Choose?"
+   "Blog · Money Transfers vs Gift Cards: Which Survey Reward Should You Choose?"
   ]
  },
  {
@@ -366,7 +366,7 @@ export const SITE_QA = [
   "a": "Payout methods depend on local laws and provider coverage. For example, UPI is available only in India. Your dashboard shows the options available where you live.",
   "src": [
    "/blog/paid-surveys-for-cash-vs-gift-cards/",
-   "Blog · Paid Surveys for Cash vs Gift Cards: Which Reward Should You Choose?"
+   "Blog · Money Transfers vs Gift Cards: Which Survey Reward Should You Choose?"
   ]
  },
  {
@@ -374,7 +374,7 @@ export const SITE_QA = [
   "a": "Yes. You choose a method each time you redeem, so you can take cash one month and a gift card the next, as long as the method is available in your country. Always confirm your details are current before submitting a claim.",
   "src": [
    "/blog/paid-surveys-for-cash-vs-gift-cards/",
-   "Blog · Paid Surveys for Cash vs Gift Cards: Which Reward Should You Choose?"
+   "Blog · Money Transfers vs Gift Cards: Which Survey Reward Should You Choose?"
   ]
  },
  {

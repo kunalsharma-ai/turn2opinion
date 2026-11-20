@@ -14,6 +14,83 @@ import Icon from '../components/Icon.jsx';
 import { Breadcrumbs } from '../components/Common.jsx';
 import { ParentFields, relLabel, TeenStatus } from '../components/TeenJoin.jsx';
 import { splitPhone, validateParent, fullPhone } from '../utils/signup.js';
+import { formatDate } from '../components/FormFields.jsx';
+import { COUNTRIES } from '../data/countries.js';
+import { answerLabel, loadBank } from '../components/onboarding/WelcomeQuestions.jsx';
+
+/** What the teen submitted (details and welcome answers), for the parent to review before consenting. */
+function TeenReview({ teen, reviewed, setReviewed, error }) {
+  const [bank, setBank] = useState(null);
+  useEffect(() => {
+    loadBank().then(setBank).catch(() => {});
+  }, []);
+  const t = teen?.teen || {};
+  const name = [teen?.name?.first, teen?.name?.middle, teen?.name?.last].filter(Boolean).join(' ');
+  const cc = String(t.address?.country || '').toUpperCase();
+  const c = COUNTRIES.find((x) => x.c === cc);
+  const ans = t.answers || {};
+  const keys = bank ? bank.sections.teen.flatMap((s) => s.keys).filter((k) => ans[k] != null && ans[k] !== '') : [];
+  return (
+    <div className="pgc-review" data-k="reviewed">
+      <h3>
+        <Icon name="user" size={18} /> Review {teen?.name?.first || 'your teen'}’s details
+      </h3>
+      <dl className="rv-dl">
+        <dt>Name</dt>
+        <dd>{name || '—'}</dd>
+        {t.mail && (
+          <>
+            <dt>Email</dt>
+            <dd>{t.mail}</dd>
+          </>
+        )}
+        {t.dob && (
+          <>
+            <dt>Born</dt>
+            <dd>{formatDate(String(t.dob).slice(0, 10))}</dd>
+          </>
+        )}
+        {t.gender && (
+          <>
+            <dt>Gender</dt>
+            <dd>{t.gender}</dd>
+          </>
+        )}
+        {(t.address?.city || c) && (
+          <>
+            <dt>Lives in</dt>
+            <dd>{[t.address?.city, t.address?.zipcode, c?.n].filter(Boolean).join(', ')}</dd>
+          </>
+        )}
+      </dl>
+      {keys.length > 0 && (
+        <details className="pgc-answers">
+          <summary>
+            Welcome answers ({keys.length})
+          </summary>
+          <ul className="rv-answers">
+            {keys.map((k) => (
+              <li key={k}>
+                <span>{bank.Q[k][0]}</span>
+                <b>{answerLabel(bank, 'teen', k, { ...ans, [k]: ans[k] }, { country: cc }, {})}</b>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+      <label className={`check ${error ? 'has-error' : ''}`}>
+        <input type="checkbox" checked={reviewed} onChange={(e) => setReviewed(e.target.checked)} />
+        <span className="check-ui" />
+        <span>I have reviewed these details and they are correct. (If anything is wrong, contact {SITE.email} before consenting.)</span>
+      </label>
+      {error && (
+        <p className="field-error" role="alert">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
 
 const CONSENT_VERSION = 'teen-consent-2026-11';
 const CONFIRMS = [
@@ -27,7 +104,7 @@ const CONFIRMS = [
 const SECTIONS = [
   ['target', 'What the Teen panel is', (t) => `Turn2Opinion is an online survey and market research panel operated by Frequent Research Fieldwork Solutions Pvt. Ltd. The Teen panel is for members aged 13 to 17. ${t} is invited only to studies that are suitable for their age and earns reward points for completed surveys.`],
   ['clipboard', 'What participation involves', () => 'Short online surveys about everyday topics such as games, apps, school life, media and products. Taking part is always voluntary: any question can be skipped and any survey can be stopped at any time, without penalty.'],
-  ['shield', 'Privacy and data protection', () => 'We collect the profile details given at sign-up (name, email, date of birth, gender), survey answers and reward details. Answers are used for research in anonymised or aggregated form and are not sold. Full details are in the Privacy Policy, including the section on members under 18.'],
+  ['shield', 'Privacy and data protection', () => 'We keep the details given at sign-up (name, email, date of birth, gender, country, state and city), the welcome answers shown above, survey answers and reward details. We never ask a teen for income, health or other sensitive details. Answers are used for research in anonymised or aggregated form and are not sold. Full details are in the Privacy Policy, including the section on members under 18.'],
   ['users', 'Your responsibilities', () => 'Keep your contact details up to date, talk with your teen about safe and honest participation, and tell us if anything about their account changes.'],
   ['refresh', 'Withdrawing consent', () => `You can withdraw consent, ask what we hold, or ask us to suspend or delete the account at any time by writing to ${SITE.email || 'our support team'}. When consent is withdrawn, the Teen account is paused and its data is deleted or anonymised under our retention policy.`]
 ];
@@ -45,6 +122,7 @@ export default function ParentConsent() {
   const [submitted, setSubmitted] = useState(false);
   const [msg, setMsg] = useState('');
   const [result, setResult] = useState(null);
+  const [reviewed, setReviewed] = useState(false);
   const q = useRef({});
   const formRef = useRef(null);
 
@@ -94,7 +172,7 @@ export default function ParentConsent() {
 
   const teenName = teen?.name?.first || 'your teen';
   const rel = relLabel(p.rel);
-  const detailErrors = useMemo(() => validateParent(p, null), [p]);
+  const detailErrors = useMemo(() => ({ ...(reviewed ? {} : { reviewed: 'Please review your teen’s details and confirm them.' }), ...validateParent(p, null) }), [p, reviewed]);
   const consentErrors = useMemo(() => {
     const e = {};
     CONFIRMS.forEach(([k, , m]) => {
@@ -188,7 +266,7 @@ export default function ParentConsent() {
     return (
       <Shell icon="check" title="Thank you. Your consent is recorded.">
         <p>
-          We’ve emailed you a confirmation. {teenName} will receive a separate email with a one-time link to create their password, and the Teen account switches on once they do.
+          We’ve emailed you a confirmation. {teenName} will receive a separate email with a secure, one-time link to create their password. They log in with their email address. No password is ever sent by email. You will get a note when the Teen account is active.
         </p>
         <TeenStatus stage={result?.registrationStatus === 'account-active' ? 'account-active' : 'account-activation-pending'} />
         <p className="muted">You can withdraw consent at any time by writing to {SITE.email}.</p>
@@ -222,6 +300,8 @@ export default function ParentConsent() {
           {step === 0 ? (
             <form ref={formRef} onSubmit={next} noValidate>
               <h2>Parent / guardian onboarding form</h2>
+              <TeenReview teen={teen} reviewed={reviewed} setReviewed={setReviewed} error={errOf('reviewed')} />
+              <h3 className="pgc-sub">Your details</h3>
               <ParentFields p={p} setParent={setParent} errOf={errOf} okOf={okOf} setTouched={setTouched} emailLocked idp="pc" />
               <div className="join-actions">
                 <button type="submit" className="btn btn-primary btn-lg">

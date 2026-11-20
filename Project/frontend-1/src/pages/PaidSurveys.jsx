@@ -84,7 +84,7 @@ export default function PaidSurveys() {
             <p>
               Paid online surveys are questionnaires that companies, researchers and public bodies use to understand what real people
               think. Because honest opinions are valuable, research companies like Turn2Opinion reward members with points that turn into
-              cash or gift cards.
+              PayPal, bank transfers, vouchers or gift cards.
             </p>
             <p>
               It’s one of the simplest ways to earn money online without investment: no special skills, no equipment beyond your phone, and
@@ -98,7 +98,7 @@ export default function PaidSurveys() {
             {[
               ['megaphone', 'Who pays?', 'Brands, agencies, governments and institutions running research.', '#7B5CFF'],
               ['chat', 'What do you do?', 'Answer questions honestly – usually in a few minutes.', '#1F5BFF'],
-              ['gift', 'What do you get?', 'Points you redeem via PayPal, cash, bank or wire transfer, vouchers or gift cards – plus UPI in India.', '#C76A00']
+              ['gift', 'What do you get?', 'Points you redeem via PayPal, bank or wire transfer, vouchers or gift cards – plus UPI in India.', '#C76A00']
             ].map(([ic, t, d, c], i) => (
               <div key={t} className="relay-st" style={{ '--c': c, '--i': i }}>
                 <span className="relay-ico">
@@ -218,7 +218,7 @@ export default function PaidSurveys() {
             </p>
           </div>
           <ul className="method-pills">
-            {['PayPal', 'Cash Rewards (India only)', 'Bank Transfer', 'Wire Transfer', 'Shopping Vouchers', 'Grocery Vouchers', 'Digital Gift Cards', 'UPI (India only)'].map((m) => (
+            {['PayPal', 'Bank Transfer', 'Wire Transfer', 'Shopping Vouchers', 'Grocery Vouchers', 'Digital Gift Cards', 'UPI (India only)'].map((m) => (
               <li key={m}>
                 <Icon name="gift" size={16} /> {m}
               </li>

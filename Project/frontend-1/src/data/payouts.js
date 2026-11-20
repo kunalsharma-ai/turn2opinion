@@ -1,11 +1,10 @@
-// Reward options, shared across the Frequent Research group (same eight options as MyFrequentRewards).
-// UPI and Cash Rewards are India-only (Kunal's feedback, 20 Nov 2026):
-// - India (IN): all eight options
-// - Everywhere else: the six options without UPI and Cash Rewards
+// Reward options. Cash Rewards was removed completely (Kunal, 20 Nov 2026): do not add it back
+// or replace it. UPI is India-only:
+// - India (IN): all seven options
+// - Everywhere else: the six options without UPI
 // Every widget that shows payout methods (tickets, reward routes, chat) must use methodsFor().
 export const REWARDS = [
   { id: 'paypal', name: 'PayPal', short: 'PayPal', kind: 'money', icon: 'wallet', c1: '#003087', c2: '#009CDE', line: 'Rewards sent straight to your PayPal wallet, used worldwide.', best: 'Worldwide', arrive: 'To your PayPal email' },
-  { id: 'cash', name: 'Cash Rewards', short: 'Cash', kind: 'money', icon: 'cash', c1: '#0F9D58', c2: '#7BE495', line: 'Turn your balance into cash rewards, for members in India only.', best: 'India only', only: 'IN', arrive: 'Cash to spend' },
   { id: 'bank', name: 'Bank Transfer', short: 'Bank', kind: 'money', icon: 'bank', c1: '#0E7C66', c2: '#3DDBB4', line: 'Paid directly into your verified bank account.', best: 'Bank-first members', arrive: 'To your bank account' },
   { id: 'wire', name: 'Wire Transfer', short: 'Wire', kind: 'money', icon: 'globe', c1: '#0B1E5B', c2: '#2F6BFF', line: 'Secure international transfer to your verified account.', best: 'International', arrive: 'International transfer' },
   { id: 'upi', name: 'UPI (India)', short: 'UPI', kind: 'money', icon: 'upi', c1: '#5B2EA6', c2: '#ED752E', line: 'Instant transfer to your UPI ID, for members in India only.', best: 'India only', only: 'IN', arrive: 'To your UPI ID' },
@@ -19,9 +18,9 @@ export const REWARD_KINDS = {
   voucher: { label: 'Vouchers & gift cards', c: '#FF8A00' }
 };
 
-/** One line for copy: "PayPal, cash rewards, bank or wire transfer, ... plus UPI in India". */
-export const REWARDS_LINE = 'PayPal, bank or wire transfer, shopping and grocery vouchers and digital gift cards, plus cash rewards and UPI in India';
-export const REWARDS_SHORT = 'PayPal, bank, wire, vouchers and gift cards, plus cash and UPI in India';
+/** One line for copy: "PayPal, bank or wire transfer, ... plus UPI in India". */
+export const REWARDS_LINE = 'PayPal, bank or wire transfer, shopping and grocery vouchers and digital gift cards, plus UPI in India';
+export const REWARDS_SHORT = 'PayPal, bank, wire, vouchers and gift cards, plus UPI in India';
 
 export const METHOD_META = Object.fromEntries(REWARDS.map((r) => [r.name, { icon: r.icon, color: r.c1, c2: r.c2, short: r.short, kind: r.kind, id: r.id }]));
 // The UPI key without the "(India)" suffix is kept so older feed events still resolve.
@@ -34,7 +33,7 @@ export function methodsFor(countryCode) {
   return String(countryCode).toUpperCase() === 'IN' ? INDIA : REST_OF_WORLD;
 }
 
-/** Maps any feed/legacy label ("Amazon Gift Card", "UPI", "wire") to one of the eight reward names. */
+/** Maps any feed/legacy label ("Amazon Gift Card", "UPI", "wire") to one of the seven reward names. */
 export function normalizeMethod(m = '') {
   const a = String(m).toLowerCase();
   if (a.includes('upi')) return 'UPI (India)';
@@ -44,6 +43,5 @@ export function normalizeMethod(m = '') {
   if (a.includes('grocery')) return 'Grocery Vouchers';
   if (a.includes('shopping') || a.includes('voucher')) return 'Shopping Vouchers';
   if (a.includes('gift') || a.includes('amazon')) return 'Digital Gift Cards';
-  if (a.includes('cash')) return 'Cash Rewards';
   return m;
 }

@@ -14,6 +14,7 @@ import { prefersReducedMotion, useReveal } from '../hooks/useMounted.js';
 import { Breadcrumbs } from '../components/Common.jsx';
 import Icon from '../components/Icon.jsx';
 import { REWARDS } from '../data/payouts.js';
+import { WorkProfileChart, ExpertChecks } from '../components/earn/EarnMore.jsx';
 
 const TITLES = ['IT DIRECTOR', 'CFO', 'HR LEAD', 'ENGINEER', 'FOUNDER', 'BUYER', 'MARKETER', 'CTO', 'OPS HEAD'];
 const W = 11; // characters on the board
@@ -237,6 +238,37 @@ export default function EarnProfessionals() {
         </div>
       </section>
 
+      {/* 3b. WORK PROFILE */}
+      <section className="section xm-sec xm-org-sec" aria-labelledby="xm-o-h">
+        <div className="wrap">
+          <div className="xm-head is-center" data-reveal>
+            <p className="xm-kicker">
+              <Icon name="building" size={14} /> Your work profile
+            </p>
+            <h2 id="xm-o-h">Three branches decide which B2B studies you see</h2>
+            <p>
+              The professional welcome questions build a small org chart of you: what you do, where you do it and how much say you have. Researchers ask for a profile, such
+              as “IT managers at companies with 500 or more staff”, and never for a person.
+            </p>
+          </div>
+          <WorkProfileChart />
+        </div>
+      </section>
+
+      {/* 3c. EXPERT CHECKS */}
+      <section className="section xm-sec xm-checks-sec" aria-labelledby="xm-c-h">
+        <div className="wrap">
+          <div className="xm-head" data-reveal>
+            <p className="xm-kicker" style={{ '--xk': '#c0392b' }}>
+              <Icon name="shield" size={14} /> Quality
+            </p>
+            <h2 id="xm-c-h">Five checks before an expert answer counts</h2>
+            <p>Clients pay for B2B research because the people answering really do the job. These checks are why the rewards can be higher, and why genuine experts keep being invited.</p>
+          </div>
+          <ExpertChecks />
+        </div>
+      </section>
+
       {/* 4. LANYARD */}
       <section className="section ep-pass-sec" aria-labelledby="ep-p-h">
         <div className="wrap ep-split is-rev">
@@ -300,12 +332,12 @@ export default function EarnProfessionals() {
                   <dd>None</dd>
                 </div>
                 <div>
-                  <dt>Ways to cash out</dt>
+                  <dt>Ways to redeem</dt>
                   <dd>{REWARDS.length}</dd>
                 </div>
               </dl>
             </div>
-            <ul className="ep-ledger-r" aria-label="Ways to cash out">
+            <ul className="ep-ledger-r" aria-label="Ways to redeem">
               {REWARDS.map((r, k) => (
                 <li key={r.id} style={{ '--k': k, '--c1': r.c1, '--c2': r.c2 }}>
                   <span className="ep-coin">

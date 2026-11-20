@@ -1,7 +1,7 @@
 export default {
   body: `When you've built up a survey balance, there's a pleasant decision to make: do you take it as cash, or as a gift card? Many survey platforms offer both, and the right choice depends on what you plan to do with the money, how quickly you need it and which options are available where you live.
 
-This guide compares paid surveys for cash – through PayPal, UPI or bank transfer – with gift card rewards, so you can pick the one that works hardest for you.
+This guide compares paid surveys for money – through PayPal, UPI or bank transfer – with gift card rewards, so you can pick the one that works hardest for you.
 
 ## How survey rewards work in the first place
 
@@ -9,7 +9,7 @@ On most platforms, every completed survey adds points to your balance. When your
 
 At Turn2Opinion, the available methods include **PayPal**, **UPI**, **wire transfer** and **Amazon gift cards**, depending on your country. For the full process, see our [Rewards page](/rewards/) and our explainer on [survey rewards, points and thresholds](/blog/survey-rewards-points-thresholds-explained/).
 
-## Option 1: Paid surveys for cash
+## Option 1: Paid surveys for money
 
 "Cash" in the online world usually means money that lands in an account you can spend from or withdraw.
 
@@ -134,7 +134,7 @@ There's no wrong answer. Many members switch methods depending on the month – 
 
 ## Get started
 
-Whether you prefer paid surveys for cash or the convenience of gift cards, the first step is the same: build up your balance with surveys that match you. [Join Turn2Opinion free](/join/), complete your profile, and choose the reward that suits you when you're ready to redeem. Compare all methods in our guide to [UPI, PayPal, wire transfer and Amazon gift cards](/blog/upi-paypal-wire-amazon-survey-payouts/).`,
+Whether you prefer paid surveys for money or the convenience of gift cards, the first step is the same: build up your balance with surveys that match you. [Join Turn2Opinion free](/join/), complete your profile, and choose the reward that suits you when you're ready to redeem. Compare all methods in our guide to [UPI, PayPal, wire transfer and Amazon gift cards](/blog/upi-paypal-wire-amazon-survey-payouts/).`,
   faqs: [
     {
       q: 'Is it better to take survey rewards as cash or gift cards?',

@@ -1727,6 +1727,113 @@
     background-color: #160b2d;
     color: #9d8dd8
 }
+:where(html[data-mode='dark']) .jf-group > legend {
+    color: var(--wq-acc, #8cabff)
+}
+:where(html[data-mode='dark']) .ssel-box > svg {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .ssel-clear {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .ssel-list {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .ssel-list li {
+    color: #d9ddec
+}
+:where(html[data-mode='dark']) .ssel-list li.is-sel {
+    color: var(--wq-acc, #8cabff)
+}
+:where(html[data-mode='dark']) .ssel-list .ssel-free {
+    color: var(--wq-acc, #8cabff)
+}
+:where(html[data-mode='dark']) .ssel-list .ssel-empty {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .wq-ring b {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .wq-title {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .wq-blurb {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .wq-tab {
+    background-color: #0b1128;
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .wq-tab.is-on {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .wq {
+    background-image: linear-gradient(180deg, #0b1128, #0b122a)
+}
+:where(html[data-mode='dark']) .wq-q {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .wq-multi {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .wq-card {
+    background-color: #0b1128;
+    color: #d9ddec
+}
+:where(html[data-mode='dark']) .wq-key {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .wq-card.is-on {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .wq-chip {
+    background-color: #0b1128;
+    color: #d9ddec
+}
+:where(html[data-mode='dark']) .wq-filter svg {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .wq-loading {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .wq-save-note {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .rv-block {
+    background-color: #0b142d
+}
+:where(html[data-mode='dark']) .rv-head {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .rv-dl dt {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .rv-dl dd {
+    color: #d9ddec
+}
+:where(html[data-mode='dark']) .rv-answers li span {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .rv-answers li b {
+    color: #d9ddec
+}
+:where(html[data-mode='dark']) .done-next li {
+    background-color: rgba(11, 17, 40, 0.7);
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .done-next li.is-done {
+    color: #72f3d3
+}
+:where(html[data-mode='dark']) .done-next li.is-now {
+    color: #d9deef
+}
+html:where([data-mode='dark'])[data-mode='dark'] .wq,
+html:where([data-mode='dark'])[data-mode='dark'] .wq-card,
+html:where([data-mode='dark'])[data-mode='dark'] .wq-chip:not(.is-on),
+html:where([data-mode='dark'])[data-mode='dark'] .wq-tab,
+html:where([data-mode='dark'])[data-mode='dark'] .ssel-list {
+    border-color: rgba(23, 33, 79, 0.12)
+}
 :where(html[data-mode='dark']) #t2o {
     color: #d9deef
 }
@@ -2524,6 +2631,287 @@
 }
 :where(html[data-mode='dark']) .mode-tw {
     background-color: #0b1128
+}
+:where(html[data-mode='dark']) .apz-beam {
+    background-image: linear-gradient(90deg, rgba(255, 255, 255, 0), #0b1128 60%)
+}
+:where(html[data-mode='dark']) .apz-ray b {
+    color: #e3e7f3
+}
+:where(html[data-mode='dark']) .apz-sparks i {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .aat-side b {
+    color: #e1e2ef
+}
+:where(html[data-mode='dark']) .aat-side p {
+    color: #bec4dc
+}
+:where(html[data-mode='dark']) .aat-side li {
+    background-color: #0b1128;
+    border: 1px solid #283350
+}
+:where(html[data-mode='dark']) .aat-side.is-say li svg {
+    color: #8cabff
+}
+:where(html[data-mode='dark']) .aat-phone {
+    background-image: linear-gradient(180deg, #0b122c, #0c142e)
+}
+:where(html[data-mode='dark']) .aat-top {
+    color: #a9b0d1
+}
+:where(html[data-mode='dark']) .aat-who {
+    color: #a9b0d1
+}
+:where(html[data-mode='dark']) .aat-bubble {
+    color: #dbdeec;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .aat-typing {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .aat-typing i {
+    background-color: #303443
+}
+:where(html[data-mode='dark']) .aat .aat-note {
+    color: #a9b0d1
+}
+:where(html[data-mode='dark']) .ab-river {
+    background-image: linear-gradient(180deg, #0b182d 0%, #0b1128 100%)
+}
+:where(html[data-mode='dark']) .arv-bed {
+    background-color: #141c2e
+}
+:where(html[data-mode='dark']) .arv-dot {
+    background-color: #0b1128;
+    border: 2px solid #243355
+}
+:where(html[data-mode='dark']) .arv-card {
+    background-color: #0b1128;
+    border: 1px solid #29344f
+}
+:where(html[data-mode='dark']) .arv li.is-on .arv-card {
+    border-color: color-mix(in srgb, var(--c) 45%, #17214f)
+}
+:where(html[data-mode='dark']) .arv-card b {
+    color: #e1e2ef
+}
+:where(html[data-mode='dark']) .arv-card p {
+    color: #bec4dc
+}
+:where(html[data-mode='dark']) .agb > * {
+    border: 1px solid rgba(23, 33, 79, 0.1)
+}
+:where(html[data-mode='dark']) .agb-needle {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .acf-paper {
+    background-color: #2c240b;
+    border: 1px solid #5e5133
+}
+:where(html[data-mode='dark']) .acf-paper::before {
+    border: 1px dashed #6e603a
+}
+:where(html[data-mode='dark']) .acf-paper small {
+    color: #d6cdb4
+}
+:where(html[data-mode='dark']) .acf-paper b {
+    color: #d9d6e9
+}
+:where(html[data-mode='dark']) .acf-paper span {
+    color: #c2bddb
+}
+:where(html[data-mode='dark']) .acf-sign {
+    border-bottom: 1px solid #7a6f52
+}
+:where(html[data-mode='dark']) .arg-btn {
+    background-color: #0b1128;
+    color: #d3cbea
+}
+:where(html[data-mode='dark']) .arg-q {
+    border: 1px solid rgba(23, 33, 79, 0.12)
+}
+:where(html[data-mode='dark']) .ars-flag {
+    border: 1px solid rgba(23, 33, 79, 0.14)
+}
+:where(html[data-mode='dark']) .ecp-note {
+    background-color: rgba(11, 17, 40, 0.78)
+}
+:where(html[data-mode='dark']) .ecp-txt b {
+    color: #dbdeec
+}
+:where(html[data-mode='dark']) .ecp-txt em {
+    color: #a9b0d1
+}
+:where(html[data-mode='dark']) .ecp-txt small {
+    color: #d2d5e7
+}
+:where(html[data-mode='dark']) .ecp-home {
+    background-color: rgba(11, 17, 40, 0.8)
+}
+:where(html[data-mode='dark']) .ecp-chip {
+    color: #e1e2ef;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .ecp-chip svg {
+    color: #8cabff
+}
+:where(html[data-mode='dark']) .ecw-front {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .ecw-cap {
+    color: #dbdeec
+}
+:where(html[data-mode='dark']) .ecj-glass {
+    border: 4px solid rgba(23, 33, 79, 0.7)
+}
+:where(html[data-mode='dark']) .ecq-plus {
+    color: #8cabff;
+    background-color: #0c1930
+}
+:where(html[data-mode='dark']) .ecq-bubble {
+    background-color: #0b1128;
+    border: 1px solid #283350;
+    color: #d6dce9
+}
+:where(html[data-mode='dark']) .xm-head p {
+    color: #bec4dc
+}
+:where(html[data-mode='dark']) .xm-kicker {
+    background: color-mix(in srgb, var(--xk, #1f5bff) 10%, #0b1128);
+    border: 1px solid color-mix(in srgb, var(--xk, #1f5bff) 25%, #17214f)
+}
+:where(html[data-mode='dark']) .xm-binder-sec {
+    background-image: linear-gradient(180deg, #2f220c 0%, #0b1128 100%)
+}
+:where(html[data-mode='dark']) .xm-rings i {
+    border: 4px solid #393f4d;
+    border-left-color: #2b3043
+}
+:where(html[data-mode='dark']) .xm-page {
+    background-color: #2b230b;
+    color: #dbdeec
+}
+:where(html[data-mode='dark']) .xm-page::before {
+    background-color: #411010
+}
+:where(html[data-mode='dark']) .xm-page-no {
+    color: #a9b0d1
+}
+:where(html[data-mode='dark']) .xm-page h3 {
+    color: #e1e2ef
+}
+:where(html[data-mode='dark']) .xm-page-n {
+    color: #bec4dc
+}
+:where(html[data-mode='dark']) .xm-page dd {
+    color: #d2d5e7
+}
+:where(html[data-mode='dark']) .xm-tabs button {
+    border: 1px solid #534833;
+    background-color: #0b1128;
+    color: #dbdeec
+}
+:where(html[data-mode='dark']) .xm-tabs button small {
+    color: #a9b0d1
+}
+:where(html[data-mode='dark']) .xm-tabs button:hover,
+:where(html[data-mode='dark']) .xm-tabs button.is-on {
+    background: color-mix(in srgb, var(--c) 9%, #0b1128)
+}
+:where(html[data-mode='dark']) .xm-binder-foot {
+    color: #bec4dc
+}
+:where(html[data-mode='dark']) .xm-steps li {
+    border: 1px solid rgba(23, 33, 79, 0.1)
+}
+:where(html[data-mode='dark']) .xm-talk-sec {
+    background-color: #0b142c
+}
+:where(html[data-mode='dark']) .xm-talk-yes {
+    background-color: #0b1128;
+    border: 1px solid #18295e
+}
+:where(html[data-mode='dark']) .xm-talk-yes h3 {
+    color: #c9ece5
+}
+:where(html[data-mode='dark']) .xm-talk-yes li > span {
+    color: #c9ece5;
+    background-color: #152d25
+}
+:where(html[data-mode='dark']) .xm-talk-yes p {
+    color: #bec4dc
+}
+:where(html[data-mode='dark']) .xm-org-col {
+    border: 1px solid rgba(23, 33, 79, 0.12)
+}
+:where(html[data-mode='dark']) .xm-org-col li {
+    border: 1px solid rgba(23, 33, 79, 0.12)
+}
+:where(html[data-mode='dark']) .xm-checks-sec {
+    background-color: #2a2317
+}
+:where(html[data-mode='dark']) .xm-checks li {
+    background-color: #2b220b
+}
+:where(html[data-mode='dark']) .xm-checks b {
+    color: #d1d1e6
+}
+:where(html[data-mode='dark']) .xm-checks p {
+    color: #bcbbda
+}
+:where(html[data-mode='dark']) .xm-stamp {
+    color: #e69890
+}
+:where(html[data-mode='dark']) .xm-compare-sec {
+    background-color: #2e220b
+}
+:where(html[data-mode='dark']) .xm-cmp-label {
+    color: #e0f0f0
+}
+:where(html[data-mode='dark']) .xm-cmp-cell {
+    background-color: #0b1128;
+    border-top: 3px solid color-mix(in srgb, var(--c) 40%, #17214f);
+    color: #d6dce9
+}
+:where(html[data-mode='dark']) .xm-metro-sec {
+    background-color: #171d24
+}
+:where(html[data-mode='dark']) .xm-metro {
+    background-color: #0b1128;
+    background-image: radial-gradient(#1c222a 1px, transparent 1px);
+    border: 1px solid #323b4b
+}
+:where(html[data-mode='dark']) .xm-line li {
+    color: #d6dce9
+}
+:where(html[data-mode='dark']) .xm-line li i {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .xm-metro-note {
+    color: #bcc2db
+}
+:where(html[data-mode='dark']) .xm-ready-sec {
+    background-image: linear-gradient(180deg, #162926 0%, #2e220b 100%)
+}
+:where(html[data-mode='dark']) .xm-ready-item {
+    background-color: #0b1128;
+    border: 1px solid #33514b
+}
+:where(html[data-mode='dark']) .xm-ready-item > svg {
+    color: #ceebe9
+}
+:where(html[data-mode='dark']) .xm-ready-item b {
+    color: #e0f0f0
+}
+:where(html[data-mode='dark']) .xm-ready-item small {
+    color: #c2dedc
+}
+:where(html[data-mode='dark']) .xm-ready-box {
+    border: 2px solid #486a66
+}
+:where(html[data-mode='dark']) .xm-ready-item.is-on {
+    background-color: #132823
 }
 :where(html[data-mode='dark']) .scn-code {
     background-color: #0b1128

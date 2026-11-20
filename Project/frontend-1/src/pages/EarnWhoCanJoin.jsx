@@ -12,6 +12,7 @@ import { useMemo, useState } from 'react';
 import { Link } from '../router/Router.jsx';
 import { useReveal } from '../hooks/useMounted.js';
 import { Breadcrumbs } from '../components/Common.jsx';
+import { PanelCompare, JoinMetro, ReadyCheck } from '../components/earn/EarnMore.jsx';
 import Icon from '../components/Icon.jsx';
 import { Flag } from '../components/Brand.jsx';
 import { ALL_COUNTRIES, REGIONS } from '../data/profiles.js';
@@ -263,6 +264,34 @@ export default function EarnWhoCanJoin() {
         </div>
       </section>
 
+      {/* 3b. COMPARE */}
+      <section className="section xm-sec xm-compare-sec" aria-labelledby="xm-cp-h">
+        <div className="wrap">
+          <div className="xm-head" data-reveal>
+            <p className="xm-kicker" style={{ '--xk': '#146e69' }}>
+              <Icon name="layers" size={14} /> Side by side
+            </p>
+            <h2 id="xm-cp-h">Consumer, Professional or Teen: the differences that matter</h2>
+            <p>All three panels are free and use the same rewards. What changes is who can join, what we ask at sign-up and when the account switches on.</p>
+          </div>
+          <PanelCompare />
+        </div>
+      </section>
+
+      {/* 3c. JOURNEYS */}
+      <section className="section xm-sec xm-metro-sec" aria-labelledby="xm-m-h">
+        <div className="wrap">
+          <div className="xm-head" data-reveal>
+            <p className="xm-kicker" style={{ '--xk': '#334155' }}>
+              <Icon name="route" size={14} /> Sign-up journeys
+            </p>
+            <h2 id="xm-m-h">Three lines, seven stops each</h2>
+            <p>Every panel has its own route to the dashboard. The Teen line adds a parent or guardian, and their consent always comes before the Teen account opens.</p>
+          </div>
+          <JoinMetro />
+        </div>
+      </section>
+
       {/* 4. HOUSE RULES */}
       <section className="section ej-rules-sec" aria-labelledby="ej-r-h">
         <div className="wrap ej-split">
@@ -309,6 +338,20 @@ export default function EarnWhoCanJoin() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* 5b. READY CHECK */}
+      <section className="section xm-sec xm-ready-sec" aria-labelledby="xm-r-h">
+        <div className="wrap">
+          <div className="xm-head" data-reveal>
+            <p className="xm-kicker" style={{ '--xk': '#146e69' }}>
+              <Icon name="check" size={14} /> Ready check
+            </p>
+            <h2 id="xm-r-h">Have these to hand before you start</h2>
+            <p>Tick them off. When all five are ready, sign-up takes about ten minutes, including the welcome questions.</p>
+          </div>
+          <ReadyCheck />
         </div>
       </section>
 

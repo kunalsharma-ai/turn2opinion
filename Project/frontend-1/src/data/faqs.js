@@ -84,7 +84,7 @@ export const FAQ_GROUPS = [
     items: [
       {
         q: 'How do I redeem my points?',
-        a: 'Once you reach the minimum threshold, request a redemption from your dashboard. There are eight reward options: PayPal, Bank Transfer, Wire Transfer, Shopping Vouchers, Grocery Vouchers and Digital Gift Cards everywhere we pay, plus Cash Rewards and UPI for members in India. Please make sure your payment details are correct to avoid delays.'
+        a: 'Once you reach the minimum threshold, request a redemption from your dashboard. There are seven reward options: PayPal, Bank Transfer, Wire Transfer, Shopping Vouchers, Grocery Vouchers and Digital Gift Cards everywhere we pay, plus UPI for members in India. Please make sure your payment details are correct to avoid delays.'
       },
       {
         q: 'How long does it take to receive a reward?',

@@ -27,7 +27,14 @@ const SAMPLE_TEEN = {
   mail: 'riya@example.com',
   dob: '2011-03-14',
   gender: 'Female',
-  parent: { relation: 'mother', name: { first: 'Meera', last: 'Shah' }, email: 'meera@example.com', phone: '919900011122', dob: '1982-06-02', consentStatus: 'pending' }
+  parent: { relation: 'mother', name: { first: 'Meera', last: 'Shah' }, email: 'meera@example.com', phone: '919900011122', dob: '1982-06-02', consentStatus: 'pending' },
+  teen: {
+    mail: 'riya@example.com',
+    dob: '2011-03-14',
+    gender: 'Female',
+    address: { country: 'in', state: 'IN-MH', city: 'Pune', zipcode: '411001' },
+    answers: { 'teen-school-level': 'High school (grades 9 and 10)', 'teen-subjects': ['Science', 'Computers & coding', 'Art & design'], mobile1: 'Yes', gaming0: 'Yes', 'add-primary-language': 'English' }
+  }
 };
 const OPTIONS = {
   empstat: ['Employed full-time', 'Employed part-time', 'Self-employed'],
@@ -67,7 +74,8 @@ export async function demoRespond(method, endpoint, body = {}) {
   }
   const verify = path.match(/^\/api\/v1\/user\/([\w-]+)$/);
   if (verify && method === 'POST') {
-    const u = st.user && st.user._id === verify[1] ? st.user : (verify[1] === 'demo-teen' ? SAMPLE_TEEN : { _id: 'demo-adult', category: 'b2c', name: { first: 'Asha' }, mail: 'asha@example.com', dob: '1994-05-10', gender: 'Female' });
+    const saved = st.user && st.user._id === verify[1] ? { ...st.user, teen: st.user.parent ? { mail: st.user.mail, dob: st.user.dob, gender: st.user.gender, address: (st.user.address || [])[0], answers: st.user.welcome || {} } : undefined } : null;
+    const u = saved ? saved : (verify[1] === 'demo-teen' ? SAMPLE_TEEN : { _id: 'demo-adult', category: 'b2c', name: { first: 'Asha' }, mail: 'asha@example.com', dob: '1994-05-10', gender: 'Female' });
     const approved = st.consent === 'approved' || new URLSearchParams(window.location.search).get('activate') === '1';
     const parent = u.parent ? { ...u.parent, consent: approved ? true : null, consentStatus: approved ? 'approved' : 'pending' } : undefined;
     return ok({ ...u, parent, isMinor: u.category === 'minor' });

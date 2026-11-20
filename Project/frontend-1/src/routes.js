@@ -11,9 +11,9 @@ export const ROUTES = [
     path: '/',
     load: page(() => import('./pages/Home.jsx')),
     seo: {
-      title: 'Paid Online Surveys for Cash & Rewards | Turn2Opinion',
+      title: 'Paid Online Surveys for Money & Rewards | Turn2Opinion',
       description:
-        'Earn money online without investment. Take paid surveys for cash as a consumer or professional, join Turn2Opinion free and redeem PayPal, UPI or gift cards.',
+        'Earn money online without investment. Take paid surveys for money as a consumer or professional, join Turn2Opinion free and redeem PayPal, UPI or gift cards.',
       schema: ['website', 'organization', 'localBusiness']
     },
     sitemap: { priority: '1.0', changefreq: 'weekly' }
@@ -170,7 +170,7 @@ export const ROUTES = [
     seo: {
       title: 'Blogs: Earn Money Online & Paid Survey Guides | Turn2Opinion',
       description:
-        'Practical blogs on earning money online without investment, paid surveys for cash, online work from home, survey rewards and staying safe from scams.',
+        'Practical blogs on earning money online without investment, paid surveys for money, online work from home, survey rewards and staying safe from scams.',
       crumb: 'Blogs'
     },
     sitemap: { priority: '0.8', changefreq: 'weekly' }

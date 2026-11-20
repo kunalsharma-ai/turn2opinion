@@ -64,7 +64,7 @@ Verification is part of a wider set of quality controls, including email and pho
 | Wire transfer | Selected countries | Direct to your bank; bank fees may apply |
 | Amazon Gift Card | Regular Amazon shoppers | Delivered by email; spend with Amazon only |
 
-Availability varies by country law and provider coverage. For a deeper comparison, read [UPI, PayPal, wire transfer or Amazon gift card](/blog/upi-paypal-wire-amazon-survey-payouts/) and [paid surveys for cash vs gift cards](/blog/paid-surveys-for-cash-vs-gift-cards/).
+Availability varies by country law and provider coverage. For a deeper comparison, read [UPI, PayPal, wire transfer or Amazon gift card](/blog/upi-paypal-wire-amazon-survey-payouts/) and [paid surveys for money vs gift cards](/blog/paid-surveys-for-cash-vs-gift-cards/).
 
 UPI payments in India run on infrastructure managed by the [National Payments Corporation of India](https://www.npci.org.in/), and [PayPal](https://www.paypal.com/) publishes country-specific rules for receiving and withdrawing funds.
 

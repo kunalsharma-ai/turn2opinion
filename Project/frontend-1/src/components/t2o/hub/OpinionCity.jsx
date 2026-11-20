@@ -84,7 +84,7 @@ export default function OpinionCity({
               <small>pts</small>
             </span>
             <span className="neon-usd">
-              <span>Cash value</span>
+              <span>Points value</span>
               <b>{cash}</b>
             </span>
           </div>

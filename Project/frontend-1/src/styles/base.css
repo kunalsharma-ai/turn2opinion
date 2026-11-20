@@ -309,3 +309,41 @@ main .prose li,
     opacity: 0;
   }
 }
+
+/* Content protection (src/utils/antiCopy.js). Text and pictures can't be selected or dragged;
+   form fields, contenteditable areas and anything marked data-allow-copy work as normal. */
+html[data-nocopy] body {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+html[data-nocopy] :is(input, textarea, select, [contenteditable=''], [contenteditable='true'], [data-allow-copy], [data-allow-copy] *, a[href^='mailto:'], a[href^='tel:']) {
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
+html[data-nocopy] img {
+  -webkit-user-drag: none;
+}
+.nocopy-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 2147483000;
+  max-width: min(92vw, 460px);
+  padding: 12px 18px;
+  border-radius: 14px;
+  background: #0b1430;
+  color: #fff;
+  font: 600 14px/1.45 inherit;
+  text-align: center;
+  box-shadow: 0 18px 40px -12px rgba(5, 12, 40, 0.55);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 12px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.nocopy-toast.is-on {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}

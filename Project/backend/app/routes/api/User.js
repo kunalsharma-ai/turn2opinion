@@ -36,6 +36,7 @@ import {
 import { createCaptcha, requireCaptcha } from "../../utils/captcha.js";
 import { captchaLimit, loginLimit, registerLimit, linkLimit } from "../../utils/limits.js";
 import { ageInYears } from "../../model/User.js";
+import { Answers as answerModel, Response as responseModel } from "../../model/index.js";
 
 const TEEN_LINK_MS = 7 * 24 * 60 * 60 * 1000; // parent onboarding and teen activation links
 const TEEN_CONSENT_VERSION = "teen-consent-2026-11";
@@ -90,6 +91,57 @@ async function sendParentOnboarding(req, user) {
     return otp;
 }
 
+
+// ---------- sign-up welcome questionnaire ----------
+// Teens answer the welcome questions before the parent email goes out (saved at sign-up). Consumers
+// and professionals answer them after creating their password (PUT /welcome, signed in;
+// Kunal, 20 Nov 2026). Answers are stored as ordinary Answer records (the same records the member
+// profiles read). When the questionnaire is complete, a "welcome" Response is recorded so the member
+// area does not ask the welcome survey a second time.
+const ANSWER_KEY = /^[a-z0-9][a-z0-9_\-]{0,59}$/i;
+function cleanWelcome(w) {
+    if (!w || typeof w !== "object" || Array.isArray(w)) return null;
+    const out = {};
+    for (const [k, v] of Object.entries(w).slice(0, 80)) {
+        if (!ANSWER_KEY.test(k)) continue;
+        const list = (Array.isArray(v) ? v : [v])
+            .filter((x) => typeof x === "string" || typeof x === "number")
+            .map((x) => String(x).trim().slice(0, 200))
+            .filter(Boolean)
+            .slice(0, 60);
+        if (list.length) out[k] = list;
+    }
+    return Object.keys(out).length ? out : null;
+}
+async function saveWelcome(req, user, answers, complete = true) {
+    if (!answers) return;
+    const origin = user.origin || req.origin;
+    const ops = Object.entries(answers).map(([question, answer]) => ({
+        updateOne: {
+            filter: { question, user: String(user._id), origin },
+            update: { question, answer, user: String(user._id), origin },
+            upsert: true
+        }
+    }));
+    try {
+        if (ops.length) await answerModel.bulkWrite(ops, { ordered: false });
+        if (!complete) return;
+        const now = new Date();
+        await responseModel.updateOne(
+            { "survey.slug": "welcome", user: user._id },
+            { $setOnInsert: { user: user._id, survey: { name: "Welcome", slug: "welcome" }, timeline: { start: now, end: now }, status: "complete", source: "sign-up", points: 0, origin } },
+            { upsert: true }
+        );
+        userController.request.user = {};
+        await userController.update(user._id, { welcomeCompletedAt: now });
+    } catch (err) {
+        // The account exists either way; a failed save here only means the member area asks again.
+        console.error("welcome answers not saved", err?.message);
+        if (!complete) return;
+        throw err;
+    }
+}
+
 const router = express.Router();
 router
     .route('/')
@@ -141,7 +193,8 @@ router
             async req => {
                 await requireCaptcha(req);
                 const userInfo = req.body;
-                const unwantedCols = ["password", "fullName", "age", "role", "isVerified", "registrationStatus"];
+                const welcome = cleanWelcome(req.body.welcome);
+                const unwantedCols = ["password", "fullName", "age", "role", "isVerified", "registrationStatus", "welcome", "welcomeCompletedAt"];
                 for (let index = 0; index < unwantedCols.length; index++) {
                     const col = unwantedCols[index];
                     if (col in userInfo) delete (userInfo[col]);
@@ -171,11 +224,18 @@ router
                 if (Array.isArray(userInfo.terms)) userInfo.terms = userInfo.terms.filter((t) => typeof t === "string").slice(0, 20);
                 let message = "";
                 let data = await userController.create(userInfo);
+                // Adults: only contact/location answers here; their questionnaire comes after the password.
+                try { await saveWelcome(req, Mutate(data), welcome, teenWithParent); } catch { /* member area asks again */ }
 
                 if (teenWithParent) {
                     // Teen sign-up: the parent/guardian gets the onboarding form first. The teen's own
                     // activation (set-password) link is sent only after the parent consents.
                     await sendParentOnboarding(req, Mutate(data));
+                    // A short note to the teen too: what happens next (no link, nothing to do yet).
+                    try {
+                        const note = await getMailer("register", "minor-request-child", { user: Mutate(data) });
+                        await sendMail({ origin: req.origin, "content-type": "application/json" }, data.mail, `${process.env.PROJECT_NAME || "Turn2Opinion"}: Your Teen request is waiting for your parent or guardian`, note.data);
+                    } catch (err) { console.error("teen request note not sent", err?.message); }
                     return {
                         message: "Registration request submitted. We emailed the parent/guardian onboarding form.",
                         data: { user: data._id, registrationStatus: "parent-verification-pending" }
@@ -214,6 +274,13 @@ router
         expressRoute(
             async req => {
                 if (!req?.body?.password || !req?.body?.confirmPassword || req?.body?.password !== req?.body?.confirmPassword) throw new Error("Passwords not matching.")
+                // The account-creation page also sends a CAPTCHA (and gets the strong-password rule).
+                // The older reset-password page doesn't, so both stay optional unless it is included.
+                const wantsCaptcha = "captcha" in req.body;
+                if (wantsCaptcha) await requireCaptcha(req);
+                const pw = String(req.body.password);
+                if (wantsCaptcha && (pw.length < 8 || !/[a-z]/.test(pw) || !/[A-Z]/.test(pw) || !/\d/.test(pw) || !/[^A-Za-z0-9]/.test(pw)))
+                    throw new Error("Use at least 8 characters with upper and lower case letters, a number and a symbol.");
                 const message = "Your password is created. Go to login page and proceed.";
                 let otp = await otpController.verify(req.body.userID, "email", req.origin, req.body.emailOTP);
                 if (!otp) throw new Error("Link Expired. Unable to set password.");
@@ -223,6 +290,13 @@ router
                 let status = await userController.setPassword(req.body.userID, req.body.password)
                 if (!status) throw new Error("Something went wrong. Please contact support for more details");
                 await otp.remove();
+                // Teen accounts: tell the parent/guardian the account is now active.
+                if (isTeenUser(who) && who?.parent?.email) {
+                    try {
+                        const m = await getMailer("register", "minor-activated-parent", { user: Mutate(who) });
+                        await sendMail({ origin: req.origin, "content-type": "application/json" }, who.parent.email, `${process.env.PROJECT_NAME || "Turn2Opinion"}: ${who?.name?.first || "Your teen"}’s Teen account is active`, m.data);
+                    } catch (err) { console.error("parent activation note not sent", err?.message); }
+                }
                 // Sign the member in straight away (same token and cookie as /login), so the last
                 // sign-up step doesn't need a second login with a new CAPTCHA.
                 const token = Token.generate({
@@ -239,6 +313,19 @@ router
             userController
         )
     )
+router
+    .put("/welcome", asyncHandler(isAuthenticated), expressRoute(
+        async req => {
+            if (!req.user || !req.user._id) throw new Error("Please log in to save your welcome answers.");
+            const user = Mutate(await userController.read(req.user._id));
+            if (!user || !user._id) throw new Error("Invalid request");
+            const answers = cleanWelcome(req.body?.welcome);
+            if (!answers) throw new Error("Please answer the welcome questions.");
+            await saveWelcome(req, user, answers, true);
+            return { message: "Welcome answers saved", data: { welcomeCompletedAt: new Date() } };
+        },
+        userController
+    ))
 router
     .post("/check", expressRoute(
         async req => {
@@ -668,11 +755,26 @@ router
                         userController.request.user = {};
                         await userController.update(req.params.id, { "parent.onboardingOpenedAt": new Date() });
                     }
+                    // What the teen submitted, for the parent to review (no password, no internal fields).
+                    let answers = {};
+                    try {
+                        answerController.request = { ...req, user: { _id: user._id }, origin: user.origin || req.origin };
+                        answers = Mutate(await answerController.getAnswers({ user: String(user._id) })) || {};
+                    } catch { answers = {}; }
+                    const home = Array.isArray(user.address) && user.address[0] ? user.address[0] : {};
                     return {
                         message,
                         data: {
                             _id: user._id,
-                            name: { first: user?.name?.first },
+                            name: { first: user?.name?.first, middle: user?.name?.middle, last: user?.name?.last },
+                            teen: {
+                                mail: user.mail,
+                                phone: user.phone,
+                                dob: user.dob,
+                                gender: user.gender,
+                                address: { country: home.country, state: home.state, city: home.city, zipcode: home.zipcode },
+                                answers
+                            },
                             category: user.category,
                             origin: user.origin,
                             parent: user.parent,

@@ -55,8 +55,8 @@ export const PAGE_VIDEOS = [
     eyebrow: 'Everyday earning',
     title: 'Small opinions,',
     em: 'a jar that fills up',
-    lede: 'How shopping trips, streaming nights and app habits turn into points you can cash out.',
-    points: ['Live · your everyday life', 'Answer · surveys that fit it', 'Redeem · eight ways to get paid'],
+    lede: 'How shopping trips, streaming nights and app habits turn into points you can redeem.',
+    points: ['Live · your everyday life', 'Answer · surveys that fit it', 'Redeem · seven ways to get paid'],
     cta: { label: 'Join as a consumer', to: '/join/' }
   },
   {

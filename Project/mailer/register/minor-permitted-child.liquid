@@ -115,14 +115,20 @@
         <!-- ACTIVATE: create your password (sent only to Teens who signed up on the Teen form) -->
         <tr>
           <td align="center" style="padding: 0 55px 35px">
-            <p style="margin: 0 0 18px; color: #17285f; font-size: 20px; line-height: 32px;">
-              One last step: create your password to switch your Teen account on.
+            <p style="margin: 0 0 18px; color: #17285f; font-size: 19px; line-height: 31px; text-align: left;">
+              Your parent or legal guardian has completed the required onboarding and consent process for your account.
+              Your account is now ready to be activated. Please follow the secure instructions provided in this email
+              to set up your password and access your account. You can change your password later through your account settings.
+            </p>
+            <p style="margin: 0 0 18px; color: #17285f; font-size: 16px; line-height: 26px; text-align: left;">
+              Press the button below, create your password, and you can log in to your Teen dashboard straight away.
+              For your safety we never send passwords by email.
             </p>
             <a
               href="https://{{user.origin}}/join/teen/?user={{user._id}}&code={{otp.code}}&activate=1"
               target="_blank"
               style="display:inline-block; background:#002b8f; color:#ffffff; text-decoration:none; padding:15px 40px; border-radius:10px; font-size:17px; font-weight:bold;">
-              CREATE MY PASSWORD
+              SET UP MY PASSWORD
             </a>
             <p style="margin: 14px 0 0; font-size: 15px; line-height: 22px; color: #5b6785;">
               This link works once and expires in 7 days.

@@ -62,8 +62,8 @@ const AUD_ICON = { consumer: 'bag', professional: 'briefcase', minor: 'sparkles'
 const AUD_ORDER = ['consumer', 'professional', 'minor'];
 const JOIN_LINK = { consumer: '/join/', professional: '/join/professional/', minor: '/join/teen/' };
 const PROOF = {
-  consumer: ['Free forever', 'No investment', 'PayPal, cash, bank, wire, vouchers, gift cards & UPI in India'],
-  professional: ['Free forever', 'No investment', 'PayPal, cash, bank, wire, vouchers, gift cards & UPI in India'],
+  consumer: ['Free forever', 'No investment', 'PayPal, bank, wire, vouchers, gift cards & UPI in India'],
+  professional: ['Free forever', 'No investment', 'PayPal, bank, wire, vouchers, gift cards & UPI in India'],
   minor: ['Free, always', 'A parent says yes first', 'Skip anything, any time']
 };
 
