@@ -2734,6 +2734,29 @@ html:where([data-mode='dark'])[data-mode='dark'] .ssel-list {
 :where(html[data-mode='dark']) .ars-flag {
     border: 1px solid rgba(23, 33, 79, 0.14)
 }
+:where(html[data-mode='dark']) .bstand-cap {
+    border: 1px solid rgba(23, 33, 79, 0.16)
+}
+:where(html[data-mode='dark']) .bstand-go {
+    color: #dee1f2;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .bstand-item {
+    color: #d9deef;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .bstand-txt .bstand-cat {
+    color: #92b2ff
+}
+:where(html[data-mode='dark']) .bstand-txt strong {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .bstand-txt .bstand-meta {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .bstand-arrow {
+    background: color-mix(in srgb, #2f6bff 10%, #0b1128)
+}
 :where(html[data-mode='dark']) .ecp-note {
     background-color: rgba(11, 17, 40, 0.78)
 }
@@ -2913,6 +2936,42 @@ html:where([data-mode='dark'])[data-mode='dark'] .ssel-list {
 :where(html[data-mode='dark']) .xm-ready-item.is-on {
     background-color: #132823
 }
+:where(html[data-mode='dark']) .mtrack-ticket {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .mtrack-card {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .mtrack-card strong {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .mtrack-card small {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .ftw-scale {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .ftw-bub {
+    background-color: rgba(11, 17, 40, 0.75)
+}
+:where(html[data-mode='dark']) .ftw-t.has .ftw-cap {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .ftw-score strong {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .ftw-score small {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .ftw-t.empty .ftw-score strong {
+    color: color-mix(in srgb, var(--c1) 70%, #b7bed8)
+}
+:where(html[data-mode='dark']) .ftw-t h3 {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .ftw-t p {
+    color: #b7bed8
+}
 :where(html[data-mode='dark']) .scn-code {
     background-color: #0b1128
 }
@@ -2942,4 +3001,10 @@ html:where([data-mode='dark'])[data-mode='dark'] .ssel-list {
     border: 1px solid #74571d;
     background-color: #31250c;
     color: #f0e7d2
+}
+:where(html[data-mode='dark']) .sn.sn5 .sn-rail {
+    border: 1px solid rgba(23, 33, 79, 0.1)
+}
+:where(html[data-mode='dark']) .sn.sn5 .sn-waves i {
+    border: 2px solid rgba(23, 33, 79, 0.35)
 }

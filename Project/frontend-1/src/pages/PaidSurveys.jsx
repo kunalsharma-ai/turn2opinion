@@ -174,29 +174,33 @@ export default function PaidSurveys() {
               <Link to="/profiling/">survey profile</Link> complete is the best way to qualify more often.
             </p>
           </div>
-          <div className="sieve" data-reveal>
-            <div className="sieve-drops" aria-hidden="true">
-              {Array.from({ length: 14 }).map((_, i) => (
-                <i key={i} className={`drop lv${[4, 1, 3, 2, 4, 1, 3, 4, 2, 4, 1, 3, 4, 2][i]}`} style={{ '--x': `${8 + ((i * 37) % 84)}%`, '--i': i }} />
-              ))}
-            </div>
+          {/* Round 12: the four stages as a track a survey ticket travels down. Each stage lights up
+              as the ticket reaches it, and the cards sit either side of the track. */}
+          <div className="mtrack" data-reveal>
+            <span className="mtrack-rail" aria-hidden="true">
+              <i className="mtrack-ticket" />
+            </span>
+            <ol className="mtrack-list">
             {[
-              ['Profile matched', 'Your profile fits the study brief', 'id'],
-              ['Invitation sent', 'Dashboard, SMS, WhatsApp or email', 'bell'],
-              ['Screening questions', 'A few quick checks confirm the fit', 'filter'],
-              ['Survey completed', 'Points added to your balance', 'coin']
-            ].map(([t, d, ic], i) => (
-              <div key={t} className="sieve-layer" style={{ '--i': i }}>
-                <span className="sieve-mesh" aria-hidden="true" />
-                <span className="sieve-ico">
+              ['Profile matched', 'Your profile fits the study brief', 'id', '#2f6bff'],
+              ['Invitation sent', 'Dashboard, SMS, WhatsApp or email', 'bell', '#7c4dff'],
+              ['Screening questions', 'A few quick checks confirm the fit', 'filter', '#e040a0'],
+              ['Survey completed', 'Points added to your balance', 'coin', '#ff7a1a']
+            ].map(([t, d, ic, c], i) => (
+              <li key={t} className="mtrack-stop" style={{ '--i': i, '--c': c }}>
+                <span className="mtrack-dot" aria-hidden="true">
                   <Icon name={ic} size={18} />
                 </span>
-                <span className="sieve-txt">
+                <span className="mtrack-card">
+                  <span className="mtrack-no" aria-hidden="true">
+                    Step {i + 1}
+                  </span>
                   <strong>{t}</strong>
                   <small>{d}</small>
                 </span>
-              </div>
+              </li>
             ))}
+            </ol>
           </div>
         </div>
       </section>

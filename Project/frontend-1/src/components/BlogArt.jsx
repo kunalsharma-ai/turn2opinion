@@ -17,6 +17,7 @@
 // The whole cover is decorative (aria-hidden) and every animation stops under reduced motion.
 import { useEffect, useId, useRef, useState } from 'react';
 import { SCENES } from './blogScenes.jsx';
+import { SCENES2 } from './blogScenes2.jsx';
 
 function rng(seedStr = '') {
   let h = 1779033703 ^ seedStr.length;
@@ -335,7 +336,7 @@ const PIECES = { orbit: Orbit, chorus: Chorus, dusk: Dusk, skyline: Skyline, neb
 export default function BlogArt({ seed = '', hue = 220, kind = 'Earn online', className = '', stars = true }) {
   const id = 'ba' + useId().replace(/[^a-zA-Z0-9]/g, '');
   // Round 9: a post with its own one-off scene (blogScenes.jsx) uses it instead of its category world.
-  const Scene = SCENES[seed];
+  const Scene = SCENES[seed] || SCENES2[seed];
   if (Scene) {
     return (
       <svg className={`ba ba-scene ${className}`} viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">

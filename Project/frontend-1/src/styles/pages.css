@@ -4,9 +4,11 @@
 /* About v4 + the social network hub (About, Scan & Connect). */
 @import './about.css';
 @import './about-v5.css';
+@import './reviews-v5.css';
 /* The QR hub is the footer's (late bundle), but on Scan & Connect it is the first screen, so the
    inner pages carry it in their blocking bundle as well. */
 @import './qr.css';
+@import './social-v5.css';
 @import './scanconnect.css';
 /* ================= Hero art pieces (one per page) ================= */
 .road {
@@ -8364,3 +8366,54 @@ html[data-mode='dark'] .ssel-list li { color: #e7ecff; }
 main :is(.wq-q, .wq-blurb, .wq-save-note, .wq-kicker, .rv-head, .done-next, .wq-count) { text-align: left; hyphens: manual; }
 .wq-cards.is-few { grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr)); }
 .wq-lab { overflow-wrap: break-word; hyphens: manual; }
+
+/* Login: keep the floating tokens clear of the Consumer / Professional / Teen switch (Round 12). */
+.login .aa-token.t-coin {
+  left: 41%;
+  top: auto;
+  bottom: 22%;
+}
+.auth-switch button .icon,
+.auth-switch button svg {
+  flex-shrink: 0;
+}
+@media (max-width: 860px) {
+  .login .aa-token.t-coin {
+    display: none;
+  }
+  .login .aa-token.t-gift {
+    top: 48%;
+  }
+  .wportal .wp-chip.k0 {
+    left: -2%;
+    top: 64%;
+  }
+}
+/* The animated top bar used to be a 200%-wide strip that slid sideways; with the card's overflow
+   visible (for the padlock) it ran across the page and through the Teen tab. Keep it inside the
+   card and animate the gradient instead. */
+.login-card::before {
+  width: auto;
+  background-size: 200% 100%;
+  animation: barSlideBg 4s linear infinite alternate;
+}
+@keyframes barSlideBg {
+  to {
+    background-position: 100% 0;
+  }
+}
+.login .login-card::before {
+  left: 26px;
+  right: 26px;
+  border-radius: 0 0 6px 6px;
+}
+.wportal.is-minor .wp-chip.k0 {
+  left: -12%;
+  top: 66%;
+}
+@media (max-width: 860px) {
+  .wportal.is-minor .wp-chip.k0 {
+    left: -2%;
+    top: 70%;
+  }
+}

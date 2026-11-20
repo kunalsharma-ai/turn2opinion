@@ -103,7 +103,7 @@ export default function Blog() {
               </button>
             ))}
           </div>
-          <div className="blog-grid">
+          <div className="blog-grid bg5">
             {list.map((p) => (
               <BlogCard key={p.slug} post={p} />
             ))}

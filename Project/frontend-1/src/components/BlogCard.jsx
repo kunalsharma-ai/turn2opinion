@@ -16,7 +16,7 @@ export function BlogCover({ post, big = false }) {
 
 export default function BlogCard({ post, variant = 'card' }) {
   return (
-    <article className={`blog-card bc-${variant}`} data-reveal>
+    <article className={`blog-card bc-${variant}`} data-reveal style={{ '--h': post.hue || 220 }}>
       <Link to={`/blog/${post.slug}/`} className="blog-card-link">
         <BlogCover post={post} big={variant === 'feature'} />
         <div className="blog-card-body">

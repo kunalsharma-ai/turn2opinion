@@ -12,7 +12,7 @@ import HomeHero from '../components/sections/HeroStage.jsx';
 import { ClaimJourney, InvitationChannels, RewardRoutes, RewardWallet } from '../components/sections/Rewards.jsx';
 import { PrivacyVault, SecurityHive, TeenSafeguards, VerificationStack } from '../components/sections/Security.jsx';
 import MemberVoices from '../components/sections/MemberVoices.jsx';
-import BlogCard from '../components/BlogCard.jsx';
+import BlogStand from '../components/blog/BlogStand.jsx';
 import { BLOG_POSTS } from '../data/blog/index.js';
 import { FAQ_GROUPS } from '../data/faqs.js';
 
@@ -229,10 +229,8 @@ export default function Home() {
             All blogs
           </Link>
         </div>
-        <div className="wrap blog-mag">
-          {trending.map((p, i) => (
-            <BlogCard key={p.slug} post={p} variant={i === 0 ? 'feature' : 'mini'} />
-          ))}
+        <div className="wrap">
+          <BlogStand posts={trending} />
         </div>
       </section>
 

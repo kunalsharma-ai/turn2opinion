@@ -18,7 +18,7 @@ import { useReveal } from '../hooks/useMounted.js';
 import Icon from '../components/Icon.jsx';
 import { SectionHead } from '../components/Common.jsx';
 import Gem from '../components/rating/Gem.jsx';
-import FacetDials from '../components/rating/FacetDials.jsx';
+import FacetTowers from '../components/rating/FacetTowers.jsx';
 import { countryName } from '../components/rating/VoiceCard.jsx';
 import { ConsumerPanel, ProPanel, TeenPanel, ReviewsHero } from '../components/rating/ReviewPanels.jsx';
 
@@ -103,9 +103,7 @@ export default function Reviews() {
             lead="An overall number hides too much. These are scored separately, so a weak spot cannot hide behind a strong one."
             align="center"
           />
-          <div data-reveal>
-            <FacetDials values={stats.facets} readOnly idPrefix="rv-f" />
-          </div>
+          <FacetTowers values={stats.facets} />
           <p className="gv-note" data-reveal>
             <Icon name="signal" size={15} /> Facet scores come from reviews posted through the rating studio. Older reviews on record carry an overall score only, so these averages grow
             as more members take part.

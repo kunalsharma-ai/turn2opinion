@@ -515,3 +515,17 @@
     transition: none;
   }
 }
+
+/* Vending slots: let long names ("Shopping", "Gift cards") fit narrow machines at tablet widths. */
+.ec-slot {
+  grid-template-columns: 34px minmax(0, 1fr);
+  min-width: 0;
+}
+.ec-slot-item {
+  width: 34px;
+  height: 34px;
+}
+.ec-slot b {
+  overflow-wrap: anywhere;
+  font-size: 0.82rem;
+}

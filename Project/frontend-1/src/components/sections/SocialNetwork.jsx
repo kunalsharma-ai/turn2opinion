@@ -5,6 +5,10 @@
 // platform face; hover, focus or tap flips it to that channel's QR code. Every card is also a
 // plain link, so scanning is the shortcut and never the only way in.
 //
+// Round 12 skin (.sn5): the brands sit across the top like stations on a radio dial, the selected
+// brand's website QR broadcasts from a tower card on the left, and its channels fill the space on
+// the right without leaving a lonely card on a row of its own.
+//
 // All brands are rendered on the server (inactive ones `hidden`), so every link is in the HTML.
 import { useState } from 'react';
 import { asset } from '../../config/env.js';
@@ -65,7 +69,7 @@ function Channel({ l, brand, i }) {
 export default function SocialNetwork() {
   const [cur, setCur] = useState(NETWORK[0].id);
   return (
-    <div className="sn">
+    <div className="sn sn5">
       <div className="sn-rail" role="tablist" aria-label="Choose a brand">
         {NETWORK.map((b) => (
           <button
@@ -79,6 +83,11 @@ export default function SocialNetwork() {
             style={{ '--b1': b.c1, '--b2': b.c2 }}
             onClick={() => setCur(b.id)}
           >
+            <span className="sn-freq" aria-hidden="true">
+              {Array.from({ length: 9 }).map((_, k) => (
+                <i key={k} style={{ '--k': k }} />
+              ))}
+            </span>
             <span className="sn-planet" aria-hidden="true">
               {b.name
                 .replace(/[a-z\s]/g, '')
@@ -117,6 +126,11 @@ export default function SocialNetwork() {
                 {b.siteLabel || host(b.site)} <Icon name="external" size={14} />
               </a>
             </div>
+            <span className="sn-waves" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </span>
             <a className="sn-ticket" href={b.site} target="_blank" rel="noopener noreferrer" aria-label={`Open ${b.siteLabel || b.name} (opens in a new tab)`}>
               <span className="sn-scan" aria-hidden="true" />
               <img src={asset(b.siteQr)} alt={`QR code that opens ${host(b.site)}`} width="132" height="132" loading="lazy" decoding="async" />
