@@ -2,6 +2,7 @@
 // after the visitor allows analytics or marketing cookies. Google Consent Mode v2 defaults to "denied".
 import { ENV } from '../config/env.js';
 import { store } from './storage.js';
+import { isTeenPath } from '../seo/teen.js';
 
 export const CONSENT_KEY = 't2o_consent_v1';
 let gtmLoaded = false;
@@ -104,11 +105,29 @@ export function track(event, params = {}) {
   dl().push({ event, ...params });
 }
 
+// Loads the Meta Pixel base code when a visit started on a Teen page (which never gets it) and then
+// moves to an adult page. Same settings as the head snippet in src/seo/seo.js.
+function ensurePixel() {
+  if (typeof window.fbq === 'function' || !ENV.META_PIXEL_ID) return;
+  /* eslint-disable */
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  /* eslint-enable */
+  window.fbq.disablePushState = true;
+  metaConsent(getConsent());
+  window.fbq('set', 'autoConfig', false, ENV.META_PIXEL_ID);
+  window.fbq('init', ENV.META_PIXEL_ID);
+}
+
 let firstView = true;
 export function trackPageView(path, title) {
-  track('page_view', { page_path: path, page_title: title });
+  track('page_view', { page_path: path, page_title: title, teen_page: isTeenPath(path) });
   // The pixel base code in the page head already counts the first page; count each in-app
-  // navigation after it (held back by fbq until marketing consent is granted).
-  if (firstView) firstView = false;
-  else if (typeof window.fbq === 'function') window.fbq('track', 'PageView');
+  // navigation after it (held back by fbq until marketing consent is granted). Teen (13–17)
+  // pages are never sent to Meta.
+  const first = firstView;
+  firstView = false;
+  if (isTeenPath(path)) return;
+  if (first && typeof window.fbq === 'function') return;
+  ensurePixel();
+  if (typeof window.fbq === 'function') window.fbq('track', 'PageView');
 }
