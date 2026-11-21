@@ -105,9 +105,12 @@ const setMe = (next) => {
 export function refreshMe() {
   mePromise = api.get('/api/v1/me')
     .then((d) => {
-      const u = d && d.data ? d.data : d; // {data:{...}} ya seedha {...}
-      console.log('ME RESPONSE', d);
-      setMe({ user: u && typeof u === 'object' && (u.id || u.email) ? u : null, loading: false });
+      const raw = d && d.data ? d.data : d; // {data:{...}} or the user itself
+      // The API sends _id / mail / name.first; widgets read id / email / firstName.
+      const u = raw && typeof raw === 'object' && (raw._id || raw.id || raw.mail || raw.email)
+        ? { ...raw, id: raw.id || raw._id, email: raw.email || raw.mail, firstName: raw.firstName || raw.name?.first }
+        : null;
+      setMe({ user: u, loading: false });
     })
     .catch(() => setMe({ user: null, loading: false })); // 401 / error = logged-out
   return mePromise;

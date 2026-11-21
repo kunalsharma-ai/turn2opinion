@@ -11,10 +11,9 @@ class OTPController extends CrudController {
     const otp = await otpModel.findOne({ user, channel, origin, code });
     if (!otp) return null;
 
-    // optional check: expired
-    if (otp.expiresAt < new Date()) {
-      return { expired: true };
-    }
+    // An expired link is treated like a missing one. (It used to return { expired: true }, which is
+    // truthy, so callers that check `if (!otp)` accepted expired links.)
+    if (otp.expiresAt < new Date()) return null;
     return otp;
   }
 }

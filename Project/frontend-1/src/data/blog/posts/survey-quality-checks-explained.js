@@ -58,7 +58,7 @@ When you register, you verify both your email (with a link) and your phone (with
 
 ### CAPTCHA and BOT validation
 
-CAPTCHA challenges and bot-detection technology stop automated scripts at registration, login and survey entry. Turn2Opinion uses Google reCAPTCHA at registration, plus attention checks and open-end validation for new members.
+CAPTCHA challenges and bot-detection technology stop automated scripts at registration, login and survey entry. Turn2Opinion checks a CAPTCHA on its own servers at registration and login, plus attention checks and open-end validation for new members.
 
 ### Browser fingerprinting and duplicate detection
 

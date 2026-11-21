@@ -15,9 +15,10 @@ import { levelOf } from '../../data/reviewFacets.js';
 import { useRouter } from '../../router/Router.jsx';
 import Icon from '../Icon.jsx';
 import Gem from '../rating/Gem.jsx';
-import { ConsumerPanel, ProPanel } from '../rating/ReviewPanels.jsx';
+import { ConsumerPanel, ProPanel, TeenPanel } from '../rating/ReviewPanels.jsx';
 
 const isPro = (r) => r.audience === 'professional';
+const isTeen = (r) => r.audience === 'teen';
 const dateOf = (r) => {
   const t = Date.parse(r.date);
   return isNaN(t) ? 0 : t;
@@ -46,7 +47,7 @@ export default function MemberVoices() {
     merge(getMyReviews());
     return onReview((r) => {
       merge([r]);
-      setSide(isPro(r) ? 'pro' : 'consumer');
+      setSide(isPro(r) ? 'pro' : isTeen(r) ? 'teen' : 'consumer');
     });
   }, [merge]);
 
@@ -64,8 +65,8 @@ export default function MemberVoices() {
 
   const stats = summarise(list);
   const L = levelOf(stats.avg || 4);
-  const counts = { consumer: list.filter((r) => !isPro(r) && r.text).length, pro: list.filter((r) => isPro(r) && r.text).length };
-  const readAll = () => navigate(side === 'pro' ? '/about/reviews/#panel-pro' : '/about/reviews/#panel-consumer');
+  const counts = { consumer: list.filter((r) => !isPro(r) && !isTeen(r) && r.text).length, pro: list.filter((r) => isPro(r) && r.text).length, teen: list.filter((r) => isTeen(r) && r.text).length };
+  const readAll = () => navigate(side === 'pro' ? '/about/reviews/#panel-pro' : side === 'teen' ? '/about/reviews/#panel-teen' : '/about/reviews/#panel-consumer');
   const panelProps = { list, stats, onReadAll: readAll, compact: true, readAllLabel: 'Every rating & review' };
 
   return (
@@ -95,7 +96,8 @@ export default function MemberVoices() {
           <span className="mvx-knob" aria-hidden="true" />
           {[
             ['consumer', 'Consumers', 'bag'],
-            ['pro', 'Professionals', 'briefcase']
+            ['pro', 'Professionals', 'briefcase'],
+            ['teen', 'Teens', 'sparkles']
           ].map(([k, l, ic]) => (
             <button key={k} type="button" aria-pressed={side === k} className={side === k ? 'is-on' : ''} onClick={() => setSide(k)}>
               <Icon name={ic} size={15} /> {l} <small>{counts[k]}</small>
@@ -105,7 +107,7 @@ export default function MemberVoices() {
       </div>
 
       <div className="mvx-stage" key={side}>
-        {side === 'pro' ? <ProPanel {...panelProps} /> : <ConsumerPanel {...panelProps} />}
+        {side === 'pro' ? <ProPanel {...panelProps} /> : side === 'teen' ? <TeenPanel {...panelProps} /> : <ConsumerPanel {...panelProps} />}
       </div>
 
       <button type="button" className="mvx-add" onClick={() => window.dispatchEvent(new CustomEvent('t2o:open-review'))}>
@@ -115,7 +117,7 @@ export default function MemberVoices() {
           ))}
         </span>
         <span className="mvx-add-copy">
-          <strong>Add your gem to the wall</strong>
+          <strong>Add your gem to the reviews</strong>
           <small>Pick Pebble to Diamond and say why. Your review lands here the moment you post it.</small>
         </span>
         <span className="mvx-add-go" aria-hidden="true">

@@ -240,7 +240,7 @@ function OpinionStudio({ open, initialRating, onClose, onDone, user }) {
                 <Gem level={rating} size={110} motion="spin" />
               </div>
               <p className="gd-kicker">
-                <Icon name="check" size={14} strokeWidth={3} /> Delivered to the wall
+                <Icon name="check" size={14} strokeWidth={3} /> Delivered to our reviews
               </p>
               <h2 id="studio-title">Thank you, {profile.name.split(' ')[0] || 'friend'}!</h2>
               <p className="gd-text">

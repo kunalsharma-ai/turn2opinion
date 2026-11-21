@@ -214,6 +214,12 @@
 :where(html[data-mode='dark']) .captcha-switch {
     color: #8cabff
 }
+:where(html[data-mode='dark']) .captcha-loading {
+    background: linear-gradient(90deg, #0c142e 0%, #170b2d 50%, #0c142e 100%) 0 0 / 200% 100%
+}
+:where(html[data-mode='dark']) .captcha-note {
+    color: #b7bed8
+}
 :where(html[data-mode='dark']) .cf-qs button {
     border: 1.5px solid #263253;
     background-color: #0b1128;
@@ -348,9 +354,6 @@
 }
 :where(html[data-mode='dark']) .footer-bottom {
     border-top: 1px solid rgba(23, 33, 79, 0.14)
-}
-:where(html[data-mode='dark']) .ts-card {
-    background-color: #0b1128
 }
 :where(html[data-mode='dark']) .social-divider {
     color: #b5bbd7
@@ -915,6 +918,15 @@
 :where(html[data-mode='dark']) .gem-sparks i {
     background-color: #0b1128
 }
+:where(html[data-mode='dark']) .aud-switch button.is-on .aud-new {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .mode-teen .sr-person {
+    background-image: radial-gradient(circle at 40% 30%, #0b1128, #370e26 60%, #0f333a)
+}
+:where(html[data-mode='dark']) .mode-teen .rail-track .icon {
+    color: #ff92c9
+}
 :where(html[data-mode='dark']) .rw-track span {
     background-image: linear-gradient(90deg, #ffd68c, #ff5c7a)
 }
@@ -1032,6 +1044,9 @@
 }
 :where(html[data-mode='dark']) .abm li > span {
     color: #b7bed8
+}
+:where(html[data-mode='dark']) .abn-legend .t {
+    color: #ee8cc0
 }
 :where(html[data-mode='dark']) .stack-card {
     background-color: #0b1128;
@@ -1703,6 +1718,127 @@
 }
 :where(html[data-mode='dark']) .gvf-flag {
     border: 1px solid rgba(23, 33, 79, 0.1)
+}
+:where(html[data-mode='dark']) .join-progress-note {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .preview-links {
+    border: 1px dashed #311e76;
+    background-color: #160b2d;
+    color: #9d8dd8
+}
+:where(html[data-mode='dark']) .jf-group > legend {
+    color: var(--wq-acc, #8cabff)
+}
+:where(html[data-mode='dark']) .ssel-box > svg {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .ssel-clear {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .ssel-list {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .ssel-list li {
+    color: #d9ddec
+}
+:where(html[data-mode='dark']) .ssel-list li.is-sel {
+    color: var(--wq-acc, #8cabff)
+}
+:where(html[data-mode='dark']) .ssel-list .ssel-free {
+    color: var(--wq-acc, #8cabff)
+}
+:where(html[data-mode='dark']) .ssel-list .ssel-empty {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .wq-ring b {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .wq-title {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .wq-blurb {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .wq-tab {
+    background-color: #0b1128;
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .wq-tab.is-on {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .wq {
+    background-image: linear-gradient(180deg, #0b1128, #0b122a)
+}
+:where(html[data-mode='dark']) .wq-q {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .wq-multi {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .wq-card {
+    background-color: #0b1128;
+    color: #d9ddec
+}
+:where(html[data-mode='dark']) .wq-key {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .wq-card.is-on {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .wq-chip {
+    background-color: #0b1128;
+    color: #d9ddec
+}
+:where(html[data-mode='dark']) .wq-filter svg {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .wq-loading {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .wq-save-note {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .rv-block {
+    background-color: #0b142d
+}
+:where(html[data-mode='dark']) .rv-head {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .rv-dl dt {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .rv-dl dd {
+    color: #d9ddec
+}
+:where(html[data-mode='dark']) .rv-answers li span {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .rv-answers li b {
+    color: #d9ddec
+}
+:where(html[data-mode='dark']) .done-next li {
+    background-color: rgba(11, 17, 40, 0.7);
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .done-next li.is-done {
+    color: #72f3d3
+}
+:where(html[data-mode='dark']) .done-next li.is-now {
+    color: #d9deef
+}
+html:where([data-mode='dark'])[data-mode='dark'] .wq,
+html:where([data-mode='dark'])[data-mode='dark'] .wq-card,
+html:where([data-mode='dark'])[data-mode='dark'] .wq-chip:not(.is-on),
+html:where([data-mode='dark'])[data-mode='dark'] .wq-tab,
+html:where([data-mode='dark'])[data-mode='dark'] .ssel-list {
+    border-color: rgba(23, 33, 79, 0.12)
+}
+:where(html[data-mode='dark']) .wl-next li {
+    border: 1px solid rgba(23, 33, 79, 0.12)
+}
+:where(html[data-mode='dark']) .wl-next li.is-now {
+    border-color: rgba(23, 33, 79, 0.4)
 }
 :where(html[data-mode='dark']) #t2o {
     color: #d9deef
@@ -2413,6 +2549,40 @@
 :where(html[data-mode='dark']) .vfab-msg__body strong em {
     color: #ff7373
 }
+:where(html[data-mode='dark']) .vs--sunrise .vs-word {
+    -webkit-text-stroke-color: rgba(146, 178, 255, 0.1)
+}
+:where(html[data-mode='dark']) .sc-float em {
+    background-color: rgba(11, 17, 40, 0.85)
+}
+:where(html[data-mode='dark']) .sc-cloud {
+    background-color: rgba(11, 17, 40, 0.9)
+}
+:where(html[data-mode='dark']) .vs--sticker .vs-word {
+    -webkit-text-stroke-color: rgba(255, 146, 201, 0.22)
+}
+:where(html[data-mode='dark']) .sc-stk {
+    background-color: #0b1128;
+    border: 3px solid #17214f
+}
+:where(html[data-mode='dark']) .sc-xp {
+    background-color: #190c31
+}
+:where(html[data-mode='dark']) .sc-xp b {
+    color: #e1d8ed
+}
+:where(html[data-mode='dark']) .vs--passport .vs-h em {
+    color: #eaa19b
+}
+:where(html[data-mode='dark']) .sc-pass .pg {
+    background-image: repeating-linear-gradient(180deg, #2e2611 0 15px, #342c1a 15px 16px)
+}
+:where(html[data-mode='dark']) .sc-pass .pg.l s:first-child {
+    background-color: #131c42
+}
+:where(html[data-mode='dark']) .sc-pass .stamp {
+    color: var(--sc, #eaa19b)
+}
 :where(html[data-mode='dark']) .lang-btn {
     color: #d9deef;
     background-color: #0b1128
@@ -2468,6 +2638,428 @@
 :where(html[data-mode='dark']) .mode-tw {
     background-color: #0b1128
 }
+:where(html[data-mode='dark']) .apz-beam {
+    background-image: linear-gradient(90deg, rgba(255, 255, 255, 0), #0b1128 60%)
+}
+:where(html[data-mode='dark']) .apz-ray b {
+    color: #e3e7f3
+}
+:where(html[data-mode='dark']) .apz-sparks i {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .aat-side b {
+    color: #e1e2ef
+}
+:where(html[data-mode='dark']) .aat-side p {
+    color: #bec4dc
+}
+:where(html[data-mode='dark']) .aat-side li {
+    background-color: #0b1128;
+    border: 1px solid #283350
+}
+:where(html[data-mode='dark']) .aat-side.is-say li svg {
+    color: #8cabff
+}
+:where(html[data-mode='dark']) .aat-phone {
+    background-image: linear-gradient(180deg, #0b122c, #0c142e)
+}
+:where(html[data-mode='dark']) .aat-top {
+    color: #a9b0d1
+}
+:where(html[data-mode='dark']) .aat-who {
+    color: #a9b0d1
+}
+:where(html[data-mode='dark']) .aat-bubble {
+    color: #dbdeec;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .aat-typing {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .aat-typing i {
+    background-color: #303443
+}
+:where(html[data-mode='dark']) .aat .aat-note {
+    color: #a9b0d1
+}
+:where(html[data-mode='dark']) .ab-river {
+    background-image: linear-gradient(180deg, #0b182d 0%, #0b1128 100%)
+}
+:where(html[data-mode='dark']) .arv-bed {
+    background-color: #141c2e
+}
+:where(html[data-mode='dark']) .arv-dot {
+    background-color: #0b1128;
+    border: 2px solid #243355
+}
+:where(html[data-mode='dark']) .arv-card {
+    background-color: #0b1128;
+    border: 1px solid #29344f
+}
+:where(html[data-mode='dark']) .arv li.is-on .arv-card {
+    border-color: color-mix(in srgb, var(--c) 45%, #17214f)
+}
+:where(html[data-mode='dark']) .arv-card b {
+    color: #e1e2ef
+}
+:where(html[data-mode='dark']) .arv-card p {
+    color: #bec4dc
+}
+:where(html[data-mode='dark']) .agb > * {
+    border: 1px solid rgba(23, 33, 79, 0.1)
+}
+:where(html[data-mode='dark']) .agb-needle {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .acf-paper {
+    background-color: #2c240b;
+    border: 1px solid #5e5133
+}
+:where(html[data-mode='dark']) .acf-paper::before {
+    border: 1px dashed #6e603a
+}
+:where(html[data-mode='dark']) .acf-paper small {
+    color: #d6cdb4
+}
+:where(html[data-mode='dark']) .acf-paper b {
+    color: #d9d6e9
+}
+:where(html[data-mode='dark']) .acf-paper span {
+    color: #c2bddb
+}
+:where(html[data-mode='dark']) .acf-sign {
+    border-bottom: 1px solid #7a6f52
+}
+:where(html[data-mode='dark']) .arg-btn {
+    background-color: #0b1128;
+    color: #d3cbea
+}
+:where(html[data-mode='dark']) .arg-q {
+    border: 1px solid rgba(23, 33, 79, 0.12)
+}
+:where(html[data-mode='dark']) .ars-flag {
+    border: 1px solid rgba(23, 33, 79, 0.14)
+}
+:where(html[data-mode='dark']) .bstand-cap {
+    border: 1px solid rgba(23, 33, 79, 0.16)
+}
+:where(html[data-mode='dark']) .bstand-go {
+    color: #dee1f2;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .bstand-item {
+    color: #d9deef;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .bstand-txt .bstand-cat {
+    color: #92b2ff
+}
+:where(html[data-mode='dark']) .bstand-txt strong {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .bstand-txt .bstand-meta {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .bstand-arrow {
+    background: color-mix(in srgb, #2f6bff 10%, #0b1128)
+}
+:where(html[data-mode='dark']) .ecp-note {
+    background-color: rgba(11, 17, 40, 0.78)
+}
+:where(html[data-mode='dark']) .ecp-txt b {
+    color: #dbdeec
+}
+:where(html[data-mode='dark']) .ecp-txt em {
+    color: #a9b0d1
+}
+:where(html[data-mode='dark']) .ecp-txt small {
+    color: #d2d5e7
+}
+:where(html[data-mode='dark']) .ecp-home {
+    background-color: rgba(11, 17, 40, 0.8)
+}
+:where(html[data-mode='dark']) .ecp-chip {
+    color: #e1e2ef;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .ecp-chip svg {
+    color: #8cabff
+}
+:where(html[data-mode='dark']) .ecw-front {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .ecw-cap {
+    color: #dbdeec
+}
+:where(html[data-mode='dark']) .ecj-glass {
+    border: 4px solid rgba(23, 33, 79, 0.7)
+}
+:where(html[data-mode='dark']) .ecq-plus {
+    color: #8cabff;
+    background-color: #0c1930
+}
+:where(html[data-mode='dark']) .ecq-bubble {
+    background-color: #0b1128;
+    border: 1px solid #283350;
+    color: #d6dce9
+}
+:where(html[data-mode='dark']) .ecx-card {
+    border: 1px solid rgba(23, 33, 79, 0.22)
+}
+:where(html[data-mode='dark']) .ecx-tag {
+    color: #dee1f2;
+    background: color-mix(in srgb, var(--c) 55%, #0b1128)
+}
+:where(html[data-mode='dark']) .ecx-vis {
+    border: 1px solid rgba(23, 33, 79, 0.1)
+}
+:where(html[data-mode='dark']) .ecx-op {
+    color: #dee1f2;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .ecx-tick {
+    border: 2px solid rgba(23, 33, 79, 0.4)
+}
+:where(html[data-mode='dark']) .ecx-ticket {
+    border-left: 4px solid #20597e
+}
+:where(html[data-mode='dark']) .ecx-glass {
+    border: 3px solid rgba(23, 33, 79, 0.7)
+}
+:where(html[data-mode='dark']) .ecx-line {
+    border-top: 2px dashed rgba(23, 33, 79, 0.9)
+}
+:where(html[data-mode='dark']) .ecx-outs i {
+    color: #dee1f2;
+    background-color: rgba(11, 17, 40, 0.92)
+}
+:where(html[data-mode='dark']) .eca-lead {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .eca-q {
+    color: #d9deef;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .eca-q svg {
+    color: #92b2ff
+}
+:where(html[data-mode='dark']) .eca-no {
+    color: #f8a96d;
+    background-color: #34280d
+}
+:where(html[data-mode='dark']) .eca-av {
+    color: #8cabff;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .eca-them {
+    color: #dee1f2;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .eca-them.is-typing i {
+    background-color: #353c45
+}
+:where(html[data-mode='dark']) .xm-head p {
+    color: #bec4dc
+}
+:where(html[data-mode='dark']) .xm-kicker {
+    background: color-mix(in srgb, var(--xk, #1f5bff) 10%, #0b1128);
+    border: 1px solid color-mix(in srgb, var(--xk, #1f5bff) 25%, #17214f)
+}
+:where(html[data-mode='dark']) .xm-binder-sec {
+    background-image: linear-gradient(180deg, #2f220c 0%, #0b1128 100%)
+}
+:where(html[data-mode='dark']) .xm-rings i {
+    border: 4px solid #393f4d;
+    border-left-color: #2b3043
+}
+:where(html[data-mode='dark']) .xm-page {
+    background-color: #2b230b;
+    color: #dbdeec
+}
+:where(html[data-mode='dark']) .xm-page::before {
+    background-color: #411010
+}
+:where(html[data-mode='dark']) .xm-page-no {
+    color: #a9b0d1
+}
+:where(html[data-mode='dark']) .xm-page h3 {
+    color: #e1e2ef
+}
+:where(html[data-mode='dark']) .xm-page-n {
+    color: #bec4dc
+}
+:where(html[data-mode='dark']) .xm-page dd {
+    color: #d2d5e7
+}
+:where(html[data-mode='dark']) .xm-tabs button {
+    border: 1px solid #534833;
+    background-color: #0b1128;
+    color: #dbdeec
+}
+:where(html[data-mode='dark']) .xm-tabs button small {
+    color: #a9b0d1
+}
+:where(html[data-mode='dark']) .xm-tabs button:hover,
+:where(html[data-mode='dark']) .xm-tabs button.is-on {
+    background: color-mix(in srgb, var(--c) 9%, #0b1128)
+}
+:where(html[data-mode='dark']) .xm-binder-foot {
+    color: #bec4dc
+}
+:where(html[data-mode='dark']) .xm-steps li {
+    border: 1px solid rgba(23, 33, 79, 0.1)
+}
+:where(html[data-mode='dark']) .xm-talk-sec {
+    background-color: #0b142c
+}
+:where(html[data-mode='dark']) .xm-talk-yes {
+    background-color: #0b1128;
+    border: 1px solid #18295e
+}
+:where(html[data-mode='dark']) .xm-talk-yes h3 {
+    color: #c9ece5
+}
+:where(html[data-mode='dark']) .xm-talk-yes li > span {
+    color: #c9ece5;
+    background-color: #152d25
+}
+:where(html[data-mode='dark']) .xm-talk-yes p {
+    color: #bec4dc
+}
+:where(html[data-mode='dark']) .xm-org-col {
+    border: 1px solid rgba(23, 33, 79, 0.12)
+}
+:where(html[data-mode='dark']) .xm-org-col li {
+    border: 1px solid rgba(23, 33, 79, 0.12)
+}
+:where(html[data-mode='dark']) .xm-checks-sec {
+    background-color: #2a2317
+}
+:where(html[data-mode='dark']) .xm-checks li {
+    background-color: #2b220b
+}
+:where(html[data-mode='dark']) .xm-checks b {
+    color: #d1d1e6
+}
+:where(html[data-mode='dark']) .xm-checks p {
+    color: #bcbbda
+}
+:where(html[data-mode='dark']) .xm-stamp {
+    color: #e69890
+}
+:where(html[data-mode='dark']) .xm-compare-sec {
+    background-color: #2e220b
+}
+:where(html[data-mode='dark']) .xm-cmp-label {
+    color: #e0f0f0
+}
+:where(html[data-mode='dark']) .xm-cmp-cell {
+    background-color: #0b1128;
+    border-top: 3px solid color-mix(in srgb, var(--c) 40%, #17214f);
+    color: #d6dce9
+}
+:where(html[data-mode='dark']) .xm-metro-sec {
+    background-color: #171d24
+}
+:where(html[data-mode='dark']) .xm-metro {
+    background-color: #0b1128;
+    background-image: radial-gradient(#1c222a 1px, transparent 1px);
+    border: 1px solid #323b4b
+}
+:where(html[data-mode='dark']) .xm-line li {
+    color: #d6dce9
+}
+:where(html[data-mode='dark']) .xm-line li i {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .xm-metro-note {
+    color: #bcc2db
+}
+:where(html[data-mode='dark']) .xm-ready-sec {
+    background-image: linear-gradient(180deg, #162926 0%, #2e220b 100%)
+}
+:where(html[data-mode='dark']) .xm-ready-item {
+    background-color: #0b1128;
+    border: 1px solid #33514b
+}
+:where(html[data-mode='dark']) .xm-ready-item > svg {
+    color: #ceebe9
+}
+:where(html[data-mode='dark']) .xm-ready-item b {
+    color: #e0f0f0
+}
+:where(html[data-mode='dark']) .xm-ready-item small {
+    color: #c2dedc
+}
+:where(html[data-mode='dark']) .xm-ready-box {
+    border: 2px solid #486a66
+}
+:where(html[data-mode='dark']) .xm-ready-item.is-on {
+    background-color: #132823
+}
+:where(html[data-mode='dark']) .mtrack-ticket {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .mtrack-card {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .mtrack-card strong {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .mtrack-card small {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .sb-card {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .sb-no {
+    color: color-mix(in srgb, var(--k) 80%, #dee1f2)
+}
+:where(html[data-mode='dark']) .sb-card h3 {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .sb-card p {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .sb-pay-chip {
+    color: #dee1f2;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .sb-clock {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .sb-slots b {
+    color: #dee1f2;
+    background-color: #13364d
+}
+:where(html[data-mode='dark']) .sb-step i {
+    color: #dee1f2;
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .ftw-scale {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .ftw-bub {
+    background-color: rgba(11, 17, 40, 0.75)
+}
+:where(html[data-mode='dark']) .ftw-t.has .ftw-cap {
+    background-color: #0b1128
+}
+:where(html[data-mode='dark']) .ftw-score strong {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .ftw-score small {
+    color: #b7bed8
+}
+:where(html[data-mode='dark']) .ftw-t.empty .ftw-score strong {
+    color: color-mix(in srgb, var(--c1) 70%, #b7bed8)
+}
+:where(html[data-mode='dark']) .ftw-t h3 {
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .ftw-t p {
+    color: #b7bed8
+}
 :where(html[data-mode='dark']) .scn-code {
     background-color: #0b1128
 }
@@ -2497,4 +3089,10 @@
     border: 1px solid #74571d;
     background-color: #31250c;
     color: #f0e7d2
+}
+:where(html[data-mode='dark']) .sn.sn5 .sn-rail {
+    border: 1px solid rgba(23, 33, 79, 0.1)
+}
+:where(html[data-mode='dark']) .sn.sn5 .sn-waves i {
+    border: 2px solid rgba(23, 33, 79, 0.35)
 }

@@ -194,6 +194,22 @@ export const B2C = {
   ]
 };
 
+/** Teen panel (13–17, with a parent's permission): what teens are into, by age and profile channel. */
+export const TEEN = {
+  passions: [
+    { name: 'Gamers', icon: 'game', items: ['Mobile gamers', 'Console gamers', 'PC gamers', 'Esports fans'] },
+    { name: 'Creators', icon: 'pen', items: ['Short-video creators', 'Streamers', 'Artists', 'Photographers'] },
+    { name: 'Music lovers', icon: 'volume', items: ['Playlist builders', 'K-pop fans', 'Musicians', 'Concert goers'] },
+    { name: 'Athletes', icon: 'ball', items: ['Football players', 'Cricket players', 'Swimmers', 'Skaters'] },
+    { name: 'Coders', icon: 'chip', items: ['App builders', 'Robotics fans', 'AI explorers', 'Hackathon teams'] },
+    { name: 'Style setters', icon: 'spark', items: ['Sneakerheads', 'Thrift shoppers', 'Skincare starters', 'Streetwear fans'] },
+    { name: 'Bookworms', icon: 'cap', items: ['Fantasy readers', 'Manga readers', 'Debaters', 'Quiz champions'] },
+    { name: 'Changemakers', icon: 'leaf', items: ['Volunteers', 'Climate campaigners', 'Student council members', 'Animal lovers'] }
+  ],
+  ages: ['13', '14', '15', '16', '17'],
+  channels: ['School & learning', 'Home & family', 'Devices & internet', 'Social & creating', 'Gaming & entertainment', 'Shopping & brands', 'Food & drink', 'Fashion & style', 'Sports & hobbies', 'Tech & AI']
+};
+
 /** Count of distinct profile types we list (used as "N+ profile types"). */
 export const PROFILE_TYPE_COUNT =
   B2B.industries.length +

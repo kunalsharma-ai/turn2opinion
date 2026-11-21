@@ -43,5 +43,21 @@ export const SURVEYS = {
     { id: 'hosp', cat: 'Hospitality', title: 'Hospitality & Retail Managers', desc: 'Store, hotel and restaurant managers on staffing, POS systems and suppliers.', reward: 9, mins: 14, icon: 'key', c: '#E11D48' },
     { id: 'edu', cat: 'Education', title: 'Teachers & Educators', desc: 'Classroom tools, ed-tech and the way learning is changing.', reward: 8, mins: 12, icon: 'cap', c: '#4F46E5' },
     { id: 'agri', cat: 'Agriculture', title: 'Agriculture & Agri-business', desc: 'Farmers and agri-business professionals on seeds, equipment and crop protection.', reward: 8, mins: 14, icon: 'leaf', c: '#15803D' }
+  ],
+  // Round 10d (Kunal, 20 Nov 2026): Teen panel (13-17), with a parent or guardian's permission.
+  // SUGGESTED examples: rewards are smaller and every study is reviewed for age-appropriate content.
+  teen: [
+    { id: 't-games', cat: 'Gaming', title: 'Games & Esports', desc: 'The games you play, why you keep playing and what makes you quit.', reward: 2, mins: 8, icon: 'game', c: '#FF2E97' },
+    { id: 't-music', cat: 'Music', title: 'Music & Playlists', desc: 'Where you find new songs, artists you follow and how you listen.', reward: 2, mins: 7, icon: 'volume', c: '#8A5CFF' },
+    { id: 't-snacks', cat: 'Food', title: 'Snacks & Drinks', desc: 'Taste-test packs and flavours before they reach the shelves.', reward: 2, mins: 8, icon: 'cookie', c: '#F59E0B' },
+    { id: 't-study', cat: 'School', title: 'Study Apps & School Life', desc: 'Which study tools help, which waste time and what would make school easier.', reward: 3, mins: 10, icon: 'cap', c: '#22E4FF' },
+    { id: 't-trainers', cat: 'Fashion', title: 'Trainers & Style', desc: 'Look, comfort or price? Help brands design what you actually want to wear.', reward: 2, mins: 8, icon: 'bag', c: '#C8FF3A' },
+    { id: 't-creators', cat: 'Creators', title: 'Creators & Short Video', desc: 'The creators you watch and how you feel about ads and sponsored posts.', reward: 2, mins: 7, icon: 'play', c: '#FF5E3A' },
+    { id: 't-phone', cat: 'Tech', title: 'Phones & Apps', desc: 'Your phone, your favourite apps and the features that make them feel safe.', reward: 3, mins: 9, icon: 'phone', c: '#3B82F6' },
+    { id: 't-sport', cat: 'Sport', title: 'Sport & Active Life', desc: 'The sports you play or follow and the kit you would like to own.', reward: 2, mins: 8, icon: 'ball', c: '#16A34A' },
+    { id: 't-planet', cat: 'Planet', title: 'Planet & Fairness', desc: 'What you expect from brands on the environment and treating people fairly.', reward: 2, mins: 8, icon: 'leaf', c: '#10B981' },
+    { id: 't-money', cat: 'Money', title: 'Pocket Money & Saving', desc: 'How you save, what you spend on and which rewards feel worth it.', reward: 2, mins: 7, icon: 'coin', c: '#EAB308' },
+    { id: 't-film', cat: 'Screen', title: 'Films & Series', desc: 'What you binge, what you skip and how you choose what to watch next.', reward: 2, mins: 8, icon: 'eye', c: '#E11D74' },
+    { id: 't-future', cat: 'Future', title: 'Jobs & the Future', desc: 'The careers you are curious about and the skills you want to learn.', reward: 3, mins: 10, icon: 'spark', c: '#6366F1' }
   ]
 };

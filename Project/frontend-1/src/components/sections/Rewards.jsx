@@ -7,10 +7,10 @@ import Icon from '../Icon.jsx';
 import RewardObject from './RewardObjects.jsx';
 import { METHOD_META, methodsFor, REWARDS, REWARD_KINDS } from '../../data/payouts.js';
 
-// The eight reward options (shared with MyFrequentRewards): data/payouts.js.
+// The seven reward options (shared with MyFrequentRewards): data/payouts.js.
 export const METHODS = REWARDS;
 
-/** One reward card. Each option has its own little animated scene (cash notes, a spinning globe, a rolling cart...). */
+/** One reward card. Each option has its own little animated scene (a sky wallet, a spinning globe, a rolling cart...). */
 function RewardCard({ m, i, n }) {
   return (
     <article className={`pcard pc-${m.id} pc-${m.kind}`} style={{ '--i': i, '--n': n, '--c1': m.c1, '--c2': m.c2 }}>
@@ -46,7 +46,7 @@ function RewardCard({ m, i, n }) {
   );
 }
 
-/** Country switch deals the reward cards that apply there: eight in India (with UPI), seven everywhere else. */
+/** Country switch deals the reward cards that apply there: seven in India (with UPI), six everywhere else. */
 export function RewardWallet() {
   const [where, setWhere] = useState('IN');
   const [deal, setDeal] = useState(0);
@@ -163,7 +163,7 @@ export function RewardRoutes() {
         })}
       </div>
       <p className="metro-cap" aria-live="polite">
-        <Flag code={r.country} size={16} /> <strong>{r.who}</strong> can cash out via {methodsFor(r.country).length} options: {methodsFor(r.country).join(', ')}
+        <Flag code={r.country} size={16} /> <strong>{r.who}</strong> can redeem via {methodsFor(r.country).length} options: {methodsFor(r.country).join(', ')}
       </p>
     </div>
   );
@@ -173,7 +173,7 @@ const JOURNEY = [
   { t: 'Earn rewards', d: 'Complete eligible surveys and studies.', icon: 'chat' },
   { t: 'Check your balance', d: 'Watch points grow in your dashboard.', icon: 'dashboard' },
   { t: 'Reach the threshold', d: 'Hit the redemption minimum for your country.', icon: 'target' },
-  { t: 'Submit a claim', d: 'Pick PayPal, cash, bank or wire, a voucher or a gift card, or UPI in India.', icon: 'send' },
+  { t: 'Submit a claim', d: 'Pick PayPal, bank or wire, a voucher or a gift card, or UPI in India.', icon: 'send' },
   { t: 'Receive your reward', d: 'Verified claims are paid in batches.', icon: 'gift' }
 ];
 

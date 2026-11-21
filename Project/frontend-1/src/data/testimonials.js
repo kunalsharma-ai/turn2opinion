@@ -491,10 +491,30 @@ const REVIEW_EXTRAS = {
   },
 };
 
+// Teen panel (13–17) SAMPLE reviews, added at Kunal's request (20 Nov 2026) while the teen panel is new.
+// They are placeholders with the same fields as the consumer and professional reviews, shown with a
+// "Sample review" label. Teens are shown by first name and initial only. Replace them with real,
+// consented teen reviews (with a parent's permission on record) as they come in.
+const TEEN_SAMPLES = [
+  { id: "teen-aarav-in", name: "Aarav K.", country: "IN", role: "Year 10 student · gamer", text: "The gaming channel took me two minutes and the first survey was literally about a game I play every evening. My mum set up her side first and it was all super clear.", rating: 5, detailrating: [5, 5, 4, 5], tags: ["Interesting topics", "Easy to use", "Great on mobile"] },
+  { id: "teen-mia-gb", name: "Mia T.", country: "GB", role: "Sixth-form student · bookworm", text: "I like that I can skip any question. I skipped one about money and nothing happened, the survey just carried on. The points add up faster than I thought.", rating: 5, detailrating: [5, 4, 5, 5], tags: ["Honest screening", "Clear points", "Easy to use"] },
+  { id: "teen-lucas-br", name: "Lucas M.", country: "BR", role: "High school student · footballer", text: "Surveys are short and about stuff I actually care about, like trainers and sports apps. Would love a few more each week.", rating: 4, detailrating: [4, 4, 5, 5], tags: ["Interesting topics", "Great on mobile", "More surveys"] },
+  { id: "teen-sofia-es", name: "Sofía R.", country: "ES", role: "Secondary student · artist", text: "My dad was worried at first, but the parent page explained everything and he could see what I agreed to. Now I do a survey most weekends.", rating: 5, detailrating: [5, 5, 5, 4], tags: ["Helpful support", "Clear points", "Fair rewards"] },
+  { id: "teen-ethan-us", name: "Ethan W.", country: "US", role: "9th grader · coder", text: "Tech and AI is my favourite channel. One study asked what I'd change in a homework app and I wrote a whole paragraph. Felt like someone was actually listening.", rating: 5, detailrating: [5, 5, 4, 5], tags: ["Interesting topics", "Easy to use", "Fair rewards"] },
+  { id: "teen-hana-jp", name: "Hana S.", country: "JP", role: "High school student · music lover", text: "Very easy on my phone. The invitations say how long it takes before I start, so I only open them when I have time between classes.", rating: 4, detailrating: [4, 4, 4, 5], tags: ["Great on mobile", "Clear invites", "Easy to use"] },
+  { id: "teen-zara-ae", name: "Zara H.", country: "AE", role: "Grade 11 student · debater", text: "I like that it never asks for my school name. The questions about snacks and fashion were fun and my rewards go to my mum, which she set up.", rating: 5, detailrating: [5, 5, 5, 5], tags: ["Honest screening", "Fair rewards", "Interesting topics"] },
+  { id: "teen-noah-au", name: "Noah P.", country: "AU", role: "Year 9 student · skater", text: "Took a bit to get going because my parent had to say yes first, but after that it was quick. Some surveys screen me out, which is fair because they are for other ages.", rating: 4, detailrating: [4, 4, 4, 4], tags: ["Fewer screen-outs", "Easy to use", "Clear points"] },
+  { id: "teen-ananya-in", name: "Ananya G.", country: "IN", role: "Class 11 student · creator", text: "The Social & creating channel was so me. I've done surveys on short videos and a new camera app, and every one told me the reward up front.", rating: 5, detailrating: [5, 5, 4, 5], tags: ["Interesting topics", "Clear points", "Great on mobile"] },
+  { id: "teen-leon-de", name: "Leon B.", country: "DE", role: "Gymnasium student · athlete", text: "Simple, safe and no spam. I get a few invites a week, which is the right amount for me with school and training.", rating: 4, detailrating: [4, 5, 5, 4], tags: ["Calm inbox", "Easy to use", "Fair rewards"] }
+].map((r) => ({ company: "", audience: "teen", date: "", sample: true, ...r }));
+
 // Merge the extra fields into your existing testimonials.
-const TESTIMONIALS_WITH_EXTRAS = REVIEWS.map((review) => ({
-  ...review,
-  ...(REVIEW_EXTRAS[review.id] || {}),
-}));
+const TESTIMONIALS_WITH_EXTRAS = [
+  ...REVIEWS.map((review) => ({
+    ...review,
+    ...(REVIEW_EXTRAS[review.id] || {}),
+  })),
+  ...TEEN_SAMPLES,
+];
 
 export { TESTIMONIALS_WITH_EXTRAS as TESTIMONIALS };

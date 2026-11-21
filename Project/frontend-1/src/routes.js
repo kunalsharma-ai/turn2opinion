@@ -11,9 +11,9 @@ export const ROUTES = [
     path: '/',
     load: page(() => import('./pages/Home.jsx')),
     seo: {
-      title: 'Paid Online Surveys for Cash & Rewards | Turn2Opinion',
+      title: 'Paid Online Surveys for Money & Rewards | Turn2Opinion',
       description:
-        'Earn money online without investment. Take paid surveys for cash as a consumer or professional, join Turn2Opinion free and redeem PayPal, UPI or gift cards.',
+        'Earn money online without investment. Take paid surveys for money as a consumer or professional, join Turn2Opinion free and redeem PayPal, UPI or gift cards.',
       schema: ['website', 'organization', 'localBusiness']
     },
     sitemap: { priority: '1.0', changefreq: 'weekly' }
@@ -39,6 +39,55 @@ export const ROUTES = [
       crumb: 'Paid Surveys'
     },
     sitemap: { priority: '0.9', changefreq: 'weekly' }
+  },
+  // Round 10 (Kunal, 20 Nov 2026): the Earn menu, one page per audience plus the eligibility guide.
+  {
+    path: '/earn/consumers/',
+    load: page(() => import('./pages/EarnConsumers.jsx')),
+    seo: {
+      title: 'Paid Surveys for Consumers – Earn From Everyday Life | Turn2Opinion',
+      description:
+        'Shoppers, students, parents, gamers and travellers: turn the opinions you already have into PayPal, UPI, voucher and gift card rewards. Free to join.',
+      crumb: 'Consumers',
+      parent: { path: '/paid-surveys/', name: 'Earn' }
+    },
+    sitemap: { priority: '0.9', changefreq: 'monthly' }
+  },
+  {
+    path: '/earn/business-professionals/',
+    load: page(() => import('./pages/EarnProfessionals.jsx')),
+    seo: {
+      title: 'Paid B2B Surveys for Business Professionals | Turn2Opinion',
+      description:
+        'Managers, IT buyers, finance leads, engineers and founders: get paid for B2B surveys matched to your role, seniority and industry. Verified, private, free.',
+      crumb: 'Business Professionals',
+      parent: { path: '/paid-surveys/', name: 'Earn' }
+    },
+    sitemap: { priority: '0.9', changefreq: 'monthly' }
+  },
+  {
+    path: '/earn/teens/',
+    load: page(() => import('./pages/EarnMinors.jsx')),
+    seo: {
+      title: 'Teen Survey Panel for Ages 13–17 With Parent Permission | Turn2Opinion',
+      description:
+        'Our new teen panel lets 13 to 17 year olds share their views safely: a parent or guardian gives permission, the teen decides, and every study is age-checked.',
+      crumb: 'Teens (13–17)',
+      parent: { path: '/paid-surveys/', name: 'Earn' }
+    },
+    sitemap: { priority: '0.8', changefreq: 'monthly' }
+  },
+  {
+    path: '/earn/who-can-join/',
+    load: page(() => import('./pages/EarnWhoCanJoin.jsx')),
+    seo: {
+      title: 'Who Can Join Turn2Opinion? Age, Country & Role Guide',
+      description:
+        'Check if you can join Turn2Opinion: adults 18+, business professionals and teens aged 13–17 with parent permission, across 55 countries. One honest account each.',
+      crumb: 'Who can join',
+      parent: { path: '/paid-surveys/', name: 'Earn' }
+    },
+    sitemap: { priority: '0.8', changefreq: 'monthly' }
   },
   {
     path: '/profiling/',
@@ -121,7 +170,7 @@ export const ROUTES = [
     seo: {
       title: 'Blogs: Earn Money Online & Paid Survey Guides | Turn2Opinion',
       description:
-        'Practical blogs on earning money online without investment, paid surveys for cash, online work from home, survey rewards and staying safe from scams.',
+        'Practical blogs on earning money online without investment, paid surveys for money, online work from home, survey rewards and staying safe from scams.',
       crumb: 'Blogs'
     },
     sitemap: { priority: '0.8', changefreq: 'weekly' }
@@ -181,6 +230,44 @@ export const ROUTES = [
       crumb: 'Join free',
       canonical: '/join/',
       robots: 'noindex,follow'
+    },
+    sitemap: false
+  },
+  {
+    // Teen (13–17) sign-up: same page as /join/ with the Teen option preselected.
+    path: '/join/teen/',
+    load: page(() => import('./pages/Join.jsx')),
+    seo: {
+      title: 'Join the Teen Panel (13–17) | Turn2Opinion',
+      description:
+        'Teens aged 13 to 17 can join the Turn2Opinion teen panel. Sign up, then a parent or guardian gives permission before any survey starts.',
+      crumb: 'Join free',
+      canonical: '/join/',
+      robots: 'noindex,follow'
+    },
+    sitemap: false
+  },
+  {
+    // Parent/guardian onboarding and consent form for a Teen sign-up (link from the parent's email).
+    path: '/parent-consent/',
+    load: page(() => import('./pages/ParentConsent.jsx')),
+    seo: {
+      title: 'Parent or Guardian Consent – Teen Panel | Turn2Opinion',
+      description: 'Complete the parent or guardian onboarding form and consent for a Turn2Opinion Teen panel sign-up.',
+      crumb: 'Parent consent',
+      robots: 'noindex,nofollow'
+    },
+    sitemap: false
+  },
+  {
+    // A few welcome questions, asked once after the first login (Consumers, Professionals and Teens).
+    path: '/welcome/',
+    load: page(() => import('./pages/Welcome.jsx')),
+    seo: {
+      title: 'Welcome | Turn2Opinion',
+      description: 'A few quick welcome questions so your first surveys fit you.',
+      crumb: 'Welcome',
+      robots: 'noindex,nofollow'
     },
     sitemap: false
   },

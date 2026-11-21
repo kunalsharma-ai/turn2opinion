@@ -10,11 +10,14 @@
 //   Professionals      Skyline    towers with twinkling windows, a sweeping searchlight, a prism
 //   Rewards & payouts  Nebula     a gift box in a burst of turning rays and falling confetti
 //   Safety & privacy   Vault      a shield on a hex lattice, a scan line and a drawing check mark
+//   Teens & family     Stage      neon equaliser bars on a grid floor, a speaker ring, floating shapes
+//   Trends & tech      Circuit    a glowing chip with data pulses running out to a ring of nodes
 //
 // Shared layers: a deep base, three drifting colour fields, a starfield and a sweeping glass sheen.
 // The whole cover is decorative (aria-hidden) and every animation stops under reduced motion.
 import { useEffect, useId, useRef, useState } from 'react';
 import { SCENES } from './blogScenes.jsx';
+import { SCENES2 } from './blogScenes2.jsx';
 
 function rng(seedStr = '') {
   let h = 1779033703 ^ seedStr.length;
@@ -38,7 +41,9 @@ const KIND = {
   'Work from home': 'dusk',
   Professionals: 'skyline',
   'Rewards & payouts': 'nebula',
-  'Safety & privacy': 'vault'
+  'Safety & privacy': 'vault',
+  'Teens & family': 'stage',
+  'Trends & tech': 'circuit'
 };
 
 /* ------------------------------ centrepieces ------------------------------ */
@@ -236,13 +241,102 @@ function Vault({ id, r, c }) {
   );
 }
 
-const PIECES = { orbit: Orbit, chorus: Chorus, dusk: Dusk, skyline: Skyline, nebula: Nebula, vault: Vault };
+
+// Round 10c: Teens & family. A neon stage: equaliser bars over a grid floor, a glowing speaker ring
+// and floating shapes (triangle, ring, plus) like the teen hero.
+function Stage({ id, r, c }) {
+  const n = 9;
+  const x0 = 96 + (r() - 0.5) * 30;
+  const ring = { x: 200 + (r() - 0.5) * 50, y: 96 + r() * 16 };
+  const shapes = Array.from({ length: 5 }).map((_, k) => ({ x: 60 + r() * 280, y: 24 + r() * 120, k, s: 0.7 + r() * 0.6 }));
+  return (
+    <g>
+      {Array.from({ length: 7 }).map((_, k) => (
+        <line key={`h${k}`} x1="0" x2="400" y1={190 + k * k * 1.6} y2={190 + k * k * 1.6} stroke={c.c3} strokeOpacity={0.15 + k * 0.05} />
+      ))}
+      {Array.from({ length: 11 }).map((_, k) => (
+        <line key={`v${k}`} x1={200 + (k - 5) * 18} y1="190" x2={200 + (k - 5) * 70} y2="240" stroke={c.c1} strokeOpacity=".25" />
+      ))}
+      <circle cx={ring.x} cy={ring.y} r="70" fill={`url(#${id}-halo)`} className="ba-pulse" />
+      <circle cx={ring.x} cy={ring.y} r="40" fill="none" stroke="#fff" strokeOpacity=".85" strokeWidth="3" />
+      <circle cx={ring.x} cy={ring.y} r="28" fill="none" stroke={c.c3} strokeWidth="6" strokeDasharray="10 7" className="ba-spin" style={{ '--t': '9s', transformOrigin: `${ring.x}px ${ring.y}px` }} />
+      <circle cx={ring.x} cy={ring.y} r="12" fill="#fff" />
+      {Array.from({ length: n }).map((_, k) => {
+        const h = 30 + r() * 46;
+        return (
+          <rect
+            key={k}
+            x={x0 + k * 24}
+            y={186 - h}
+            width="14"
+            height={h}
+            rx="7"
+            fill={k % 3 === 0 ? c.c3 : k % 3 === 1 ? c.c1 : c.c2}
+            className="ba-grow"
+            style={{ '--d': `${-k * 0.37}s`, transformBox: 'fill-box' }}
+          />
+        );
+      })}
+      {shapes.map((sh) => (
+        <g key={sh.k} transform={`translate(${sh.x} ${sh.y}) scale(${sh.s})`}>
+          <g className="ba-bob" style={{ '--d': `${-sh.k * 0.8}s` }}>
+          {sh.k % 3 === 0 ? (
+            <path d="M0 -10 L10 8 L-10 8 Z" fill="none" stroke={c.c3} strokeWidth="2.6" strokeLinejoin="round" />
+          ) : sh.k % 3 === 1 ? (
+            <circle r="8" fill="none" stroke="#fff" strokeWidth="2.6" />
+          ) : (
+            <path d="M-8 0 H8 M0 -8 V8" stroke={c.c2} strokeWidth="3" strokeLinecap="round" />
+          )}
+          </g>
+        </g>
+      ))}
+    </g>
+  );
+}
+
+// Round 10c: Trends & tech. A glowing chip in a network of nodes, with data pulses running the traces.
+function Circuit({ id, r, c }) {
+  const cx = 200 + (r() - 0.5) * 40;
+  const cy = 118;
+  const nodes = Array.from({ length: 7 }).map((_, k) => {
+    const a = (k / 7) * Math.PI * 2 + r() * 0.5;
+    const d = 92 + r() * 40;
+    return { x: cx + Math.cos(a) * d * 1.3, y: cy + Math.sin(a) * d * 0.62, k };
+  });
+  return (
+    <g>
+      <circle cx={cx} cy={cy} r="96" fill={`url(#${id}-halo)`} className="ba-pulse" />
+      {nodes.map((n) => (
+        <g key={n.k}>
+          <path d={`M ${cx} ${cy} L ${n.x} ${cy} L ${n.x} ${n.y}`} fill="none" stroke="#fff" strokeOpacity=".35" strokeWidth="2" />
+          <path d={`M ${cx} ${cy} L ${n.x} ${cy} L ${n.x} ${n.y}`} fill="none" stroke={c.c3} strokeWidth="2.4" strokeDasharray="6 40" className="ba-dash" style={{ '--d': `${-n.k * 0.5}s` }} />
+          <circle cx={n.x} cy={n.y} r="9" fill={c.deep} stroke={n.k % 2 ? c.c3 : c.c1} strokeWidth="2.6" />
+          <circle cx={n.x} cy={n.y} r="3.5" fill="#fff" className="ba-pulse" style={{ '--d': `${-n.k * 0.4}s` }} />
+        </g>
+      ))}
+      <g className="ba-bob">
+        <rect x={cx - 34} y={cy - 34} width="68" height="68" rx="14" fill={`url(#${id}-glass2)`} stroke="#fff" strokeOpacity=".8" strokeWidth="2" />
+        {[-20, -7, 7, 20].map((o) => (
+          <g key={o}>
+            <line x1={cx + o} x2={cx + o} y1={cy - 44} y2={cy - 34} stroke="#fff" strokeOpacity=".7" strokeWidth="2.4" />
+            <line x1={cx + o} x2={cx + o} y1={cy + 34} y2={cy + 44} stroke="#fff" strokeOpacity=".7" strokeWidth="2.4" />
+            <line y1={cy + o} y2={cy + o} x1={cx - 44} x2={cx - 34} stroke="#fff" strokeOpacity=".7" strokeWidth="2.4" />
+            <line y1={cy + o} y2={cy + o} x1={cx + 34} x2={cx + 44} stroke="#fff" strokeOpacity=".7" strokeWidth="2.4" />
+          </g>
+        ))}
+        <path d={`M ${cx - 14} ${cy + 2} l 8 -12 l 8 16 l 8 -20 l 6 10`} fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      </g>
+    </g>
+  );
+}
+
+const PIECES = { orbit: Orbit, chorus: Chorus, dusk: Dusk, skyline: Skyline, nebula: Nebula, vault: Vault, stage: Stage, circuit: Circuit };
 
 /** The cover itself. `seed` makes it unique, `hue` grades it, `kind` (a blog category) picks its world. */
 export default function BlogArt({ seed = '', hue = 220, kind = 'Earn online', className = '', stars = true }) {
   const id = 'ba' + useId().replace(/[^a-zA-Z0-9]/g, '');
   // Round 9: a post with its own one-off scene (blogScenes.jsx) uses it instead of its category world.
-  const Scene = SCENES[seed];
+  const Scene = SCENES[seed] || SCENES2[seed];
   if (Scene) {
     return (
       <svg className={`ba ba-scene ${className}`} viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">

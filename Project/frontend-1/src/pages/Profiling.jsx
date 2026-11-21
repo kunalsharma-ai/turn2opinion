@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useInView, useReveal, prefersReducedMotion } from '../hooks/useMounted.js';
 import { asset } from '../config/env.js';
 import { CtaBand, PageHero, SectionHead } from '../components/Common.jsx';
-import { PrivacyVault, SecurityHive, VerificationStack } from '../components/sections/Security.jsx';
+import { PrivacyVault, SecurityHive, TeenSafeguards, VerificationStack } from '../components/sections/Security.jsx';
 import Icon from '../components/Icon.jsx';
 import { SITE } from '../config/site.js';
 
@@ -177,7 +177,7 @@ export default function Profiling() {
                   <Icon name="bot" size={24} />
                 </span>
                 <h3>BOT validation</h3>
-                <p>Google reCAPTCHA at registration, randomised attention checks and open-answer checks (no copy-paste) stop bots before they reach a survey.</p>
+                <p>A server-checked CAPTCHA at registration and login, randomised attention checks and open-answer checks (no copy-paste) stop bots before they reach a survey.</p>
               </div>
               <div className="gw-card" style={{ '--i': 1 }} data-reveal>
                 <span className="gw-ico">
@@ -202,6 +202,7 @@ export default function Profiling() {
         <div className="wrap">
           <SectionHead id="checks-h" title="Quality & security checks" lead="Eighteen controls, grouped by what they protect." align="center" />
           <SecurityHive />
+          <TeenSafeguards />
         </div>
       </section>
 

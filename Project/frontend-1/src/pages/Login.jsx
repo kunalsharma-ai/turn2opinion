@@ -4,7 +4,8 @@ import { ENV, asset } from '../config/env.js';
 import { SITE } from '../config/site.js';
 import { postJSON, failureMessage,api } from '../utils/api.js';
 import { track } from '../utils/analytics.js';
-import Captcha from '../components/Captcha.jsx';
+import Captcha, { captchaLocalOk, captchaPayload, captchaReady, isCaptchaError } from '../components/Captcha.jsx';
+import { redirectIfLoggedIn, afterLogin } from '../utils/session.js';
 import { Breadcrumbs } from '../components/Common.jsx';
 import { EMAIL_RE, Field } from '../components/FormFields.jsx';
 import Icon from '../components/Icon.jsx';
@@ -32,6 +33,15 @@ const PORTAL = {
       ['briefcase', 'B2B studies', 'Matched to your role', '#7B3FE4'],
       ['gift', 'Premium rewards', 'Paid like the expert you are', '#F5B83D'],
       ['shield', 'Private & secure', 'Your answers stay anonymous', '#12C29B']
+    ]
+  },
+  minor: {
+    img: 'gamer',
+    hi: 'Mic check… you’re back! 🎙️',
+    chips: [
+      ['sparkles', 'Channels on the desk', '+100 points each', '#FF2E97'],
+      ['shield', 'Age-checked studies', 'Skip anything, any time', '#22E4FF'],
+      ['users', 'Two keys turned', 'Parent connected', '#C8FF3A']
     ]
   }
 };
@@ -76,6 +86,8 @@ export default function Login() {
   const [msg, setMsg] = useState('');
   const [unverified, setUnverified] = useState(false);
   const [incomplete, setIncomplete] = useState(null);
+  const [teenPending, setTeenPending] = useState('');
+  const [resendNote, setResendNote] = useState('');
   const onCaptcha = useCallback((t) => setCaptcha(t), []);
   const [aud, setAudState] = useState('consumer');
   useEffect(() => setAudState(readAud()), []);
@@ -86,6 +98,8 @@ export default function Login() {
 
   useEffect(() => {
   const q = new URLSearchParams(window.location.search);
+  // Already signed in: the login page has nothing to offer.
+  if (!q.get('verifyemail')) redirectIfLoggedIn();
   const vm = q.get('verifyemail');
   if (vm) {
     setEmail(vm);
@@ -100,9 +114,14 @@ export default function Login() {
     const er = {};
     if (!EMAIL_RE.test(email.trim())) er.email = 'Enter the email address you registered with.';
     if (!pw) er.pw = 'Enter your password.';
-    if (!captcha) er.captcha = 'Complete the human check.';
+    if (!captchaReady(captcha)) er.captcha = 'Type the code from the picture (or answer the question) to show you’re human.';
+    else if (captcha.provider === 'local' && !captchaLocalOk(captcha)) {
+      er.captcha = 'That code didn’t match. Here’s a new one.';
+      setResetKey((k) => k + 1);
+    }
     setErrors(er);
     if (Object.keys(er).length) return;
+    setTeenPending('');
     setState('sending');
     setMsg('');
     setUnverified(false);
@@ -111,6 +130,8 @@ export default function Login() {
         mail: email.trim().toLowerCase(),
         password: pw,
         remember,
+        panel: aud === 'minor' ? 'teen' : aud,
+        captcha: captchaPayload(captcha),
       });
 
       console.log('Login response:', res);
@@ -134,17 +155,37 @@ export default function Login() {
         }
 
         setState('ok');
-        if (!res.demo) window.location.assign('/member/dashboard');
+        // first login: a few welcome questions before the dashboard (asked once)
+        if (!res.demo) window.location.assign(await afterLogin());
         return;
       }
 
-      // login fail: server ka message dikhao
-      const m = failureMessage(res) || 'Invalid email or password.';
+      // Failed: every challenge is single-use on the server, so show a fresh one.
+      setCaptcha(null);
+      setResetKey((k) => k + 1);
+      const m = res?.message || failureMessage(res) || 'Invalid email or password.';
+      if (isCaptchaError(m)) {
+        setErrors({ captcha: m });
+        setState('idle');
+        return;
+      }
+      if (/parent or guardian/i.test(m)) {
+        setTeenPending(m);
+        setState('idle');
+        return;
+      }
       setState('error');
-      setMsg(m);
+      setMsg(
+        /inactive/i.test(m)
+          ? aud === 'minor'
+            ? 'Your Teen account isn’t switched on yet. After your parent or guardian consents, we email you a link to create your password: use that link first.'
+            : 'This account has no password yet. Use the link in your verification email to create one, or reset your password.'
+          : m
+      );
       if (/verif/i.test(m)) setUnverified(true);
     } catch (err) {
       console.error('Login failed:', err);
+      setResetKey((k) => k + 1);
       setState('error');
       setMsg(err?.message || 'Unable to log in. Please try again.');
     }
@@ -259,9 +300,13 @@ if (incomplete) {
         <div className="login-art">
           <Breadcrumbs items={[{ label: 'Login' }]} />
           <AudSwitch value={aud} onChange={setAud} label="I log in as a" />
-          <h1>{aud === 'pro' ? 'Your expertise is in demand' : 'Your rewards are waiting'}</h1>
+          <h1>{aud === 'pro' ? 'Your expertise is in demand' : aud === 'minor' ? 'Back on the mic' : 'Your rewards are waiting'}</h1>
           <p className="login-tag" key={aud}>
-            {aud === 'pro' ? 'New B2B studies, your points and your next payout – all one login away.' : 'New surveys, your points and your next payout – all one login away.'}
+            {aud === 'pro'
+              ? 'New B2B studies, your points and your next payout – all one login away.'
+              : aud === 'minor'
+                ? 'Teen panel, ages 13–17: your channels, your points and the next age-checked survey, right where you left them.'
+                : 'New surveys, your points and your next payout – all one login away.'}
           </p>
           <WelcomePortal aud={aud} />
           <AuthVoice aud={aud} />
@@ -317,6 +362,24 @@ if (incomplete) {
               </div>
               <Captcha onChange={onCaptcha} resetKey={resetKey} error={errors.captcha} />
               {errors.captcha && <p className="field-error">{errors.captcha}</p>}
+              {teenPending && (
+                <div className="teen-pending" role="alert">
+                  <p>
+                    <strong>Waiting for your parent or guardian.</strong> {teenPending}
+                  </p>
+                  <button
+                    type="button"
+                    className="btn btn-ghost btn-sm"
+                    onClick={async () => {
+                      const r = await api.post('/api/v1/user/parent-consent-resend', { mail: email.trim().toLowerCase() });
+                      setResendNote(r?.message || 'Done.');
+                    }}
+                  >
+                    <Icon name="mail" size={16} /> Send the form to them again
+                  </button>
+                  {resendNote && <p className="muted">{resendNote}</p>}
+                </div>
+              )}
               {state === 'error' && !unverified && (
                 <p className="form-alert" role="alert">
                   {msg}
@@ -330,7 +393,7 @@ if (incomplete) {
               <SocialAuth />
 
               <p className="join-alt">
-                New here? <Link to={aud === 'pro' ? '/join/professional/' : '/join/'}>Create a free account</Link>
+                New here? <Link to={aud === 'pro' ? '/join/professional/' : aud === 'minor' ? '/join/teen/' : '/join/'}>Create a free account</Link>
               </p>
 
               <FollowUs />

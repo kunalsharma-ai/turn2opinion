@@ -25,14 +25,23 @@ import { levelOf } from '../data/reviewFacets.js';
 
 export const ABOUT_MENU = [
   { to: '/about/', label: 'About Turn2Opinion', sub: 'Who we are, our certifications and reach', icon: 'building', tone: 'about' },
-  { to: '/about/reviews/', label: 'Our Ratings & Reviews', sub: 'Real scores from consumers and professionals', icon: 'quote', tone: 'reviews' },
+  { to: '/about/reviews/', label: 'Our Ratings & Reviews', sub: 'Real scores from consumers, professionals and teens', icon: 'quote', tone: 'reviews' },
   { to: '/about/scan-connect/', label: 'Scan & Connect', sub: 'QR codes for our panels and social channels', icon: 'qr', tone: 'scan' }
+];
+
+// Round 10 (Kunal, 20 Nov 2026): "Earn" becomes a dropdown with one page per audience plus the
+// eligibility guide. Each page has its own world (see styles/earn.css); Minors carries a "new" tag.
+export const EARN_MENU = [
+  { to: '/earn/consumers/', label: 'Consumers', sub: 'Everyday opinions, everyday rewards', icon: 'bag', tone: 'consumer' },
+  { to: '/earn/business-professionals/', label: 'Business Professionals', sub: 'B2B studies matched to your role', icon: 'briefcase', tone: 'pro' },
+  { to: '/earn/teens/', label: 'Teens (13–17)', sub: 'Teen panel with parent permission', icon: 'sparkles', tone: 'minor', tag: 'Recently introduced' },
+  { to: '/earn/who-can-join/', label: 'Who can join our panel', sub: 'Ages, countries and roles explained', icon: 'globe', tone: 'join' }
 ];
 
 export const NAV = [
   { to: '/', label: 'Home', icon: 'home' },
   { to: '/about/', label: 'About Us', icon: 'users', children: ABOUT_MENU },
-  { to: '/paid-surveys/', label: 'Earn', icon: 'coin' },
+  { to: '/earn/', label: 'Earn', icon: 'coin', children: EARN_MENU },
   { to: '/how-it-works/', label: 'How It Works', icon: 'route' },
   { to: '/rewards/', label: 'Rewards', icon: 'gift' },
   { to: '/profiling/', label: 'Trust & Safety', icon: 'shield' },
@@ -90,7 +99,8 @@ const renderNavbarIcon = (icon, size = 17) => {
 
 
 /* ------------------------------------------------------------------ desktop dropdown */
-function AboutDropdown({ item, i, path, movePill }) {
+function NavDropdown({ item, i, path, movePill }) {
+  const menuId = `${item.label.toLowerCase().replace(/[^a-z]+/g, '-')}-menu`;
   const [open, setOpen] = useState(false);
   const wrap = useRef(null);
   const closeT = useRef(0);
@@ -137,7 +147,7 @@ function AboutDropdown({ item, i, path, movePill }) {
         className={`nav-link nav-drop-btn ${active ? 'is-active' : ''}`}
         style={{ '--i': i }}
         aria-expanded={open}
-        aria-controls="about-menu"
+        aria-controls={menuId}
         aria-haspopup="true"
         onClick={() => setOpen((o) => !o)}
         onMouseEnter={(e) => movePill(e.currentTarget)}
@@ -154,7 +164,7 @@ function AboutDropdown({ item, i, path, movePill }) {
         <Icon name="chevron" size={14} className="nav-chev" />
       </button>
 
-      <div className="drop-panel" id="about-menu" role="menu" aria-label="About Us">
+      <div className={`drop-panel is-${item.icon}`} id={menuId} role="menu" aria-label={item.label}>
         <span className="drop-beam" aria-hidden="true" />
         {item.children.map((c, k) => (
           <Link
@@ -182,19 +192,18 @@ function AboutDropdown({ item, i, path, movePill }) {
               {c.tone === 'scan' && <i className="drop-scan" />}
             </span>
             <span className="drop-copy">
-              <strong>{c.label}</strong>
+              <strong>
+                {c.label}
+                {c.tag && <em className="drop-tag">{c.tag}</em>}
+              </strong>
               <small>{c.sub}</small>
+              {c.tone === 'reviews' && stats.avg > 0 && (
+                <span className="drop-score" aria-label={`Average gem ${levelOf(stats.avg).gem} from ${stats.count} reviews`}>
+                  <Gem level={Math.round(stats.avg)} size={14} motion="still" /> <b>{levelOf(stats.avg).gem}</b> <small>· {stats.count} reviews</small>
+                </span>
+              )}
             </span>
-            {c.tone === 'reviews' && stats.avg > 0 ? (
-              <span className="drop-score" aria-label={`Average gem ${levelOf(stats.avg).gem} from ${stats.count} reviews`}>
-                <b>
-                  <Gem level={Math.round(stats.avg)} size={18} motion="still" /> {levelOf(stats.avg).gem}
-                </b>
-                <small>{stats.count} reviews</small>
-              </span>
-            ) : (
-              <Icon name="arrow" size={16} className="drop-go" />
-            )}
+            <Icon name="arrow" size={16} className="drop-go" />
           </Link>
         ))}
       </div>
@@ -303,7 +312,7 @@ useEffect(()=>{
           <span className="nav-pill" aria-hidden="true" />
           {NAV.map((n, i) =>
             n.children ? (
-              <AboutDropdown key={n.to} item={n} i={i} path={path} movePill={movePill} />
+              <NavDropdown key={n.to} item={n} i={i} path={path} movePill={movePill} />
             ) : (
               <Link
                 key={n.to}
@@ -420,8 +429,8 @@ useEffect(()=>{
         <nav aria-label="Mobile">
           {NAV.map((n, i) =>
             n.children ? (
-              <div key={n.to} className={`mobile-group ${isActive(path, n.to) ? 'is-active' : ''}`} style={{ '--i': i }} role="group" aria-labelledby="mg-about">
-                <p className="mobile-group-title" id="mg-about">
+              <div key={n.to} className={`mobile-group ${isActive(path, n.to) ? 'is-active' : ''}`} style={{ '--i': i }} role="group" aria-labelledby={`mg-${n.icon}`}>
+                <p className="mobile-group-title" id={`mg-${n.icon}`}>
                   <span className="mobile-link-icon">
                     <Icon name={n.icon} size={18} />
                   </span>
@@ -434,7 +443,10 @@ useEffect(()=>{
                         {c.tone === 'reviews' ? <Gem level={5} size={24} motion="still" /> : <Icon name={c.icon} size={18} />}
                       </span>
                       <span className="msl-copy">
-                        <strong>{c.label}</strong>
+                        <strong>
+                          {c.label}
+                          {c.tag && <em className="drop-tag">{c.tag}</em>}
+                        </strong>
                         <small>{c.sub}</small>
                       </span>
                       <Icon name="arrow" size={16} />

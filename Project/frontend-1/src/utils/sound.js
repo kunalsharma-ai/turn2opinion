@@ -354,6 +354,12 @@ export function playSoundOn() {
 export function playAudience(aud = 'consumer') {
   if (quiet() || !ensure() || !gate(200)) return;
   const t = ctx.currentTime + 0.01;
+  if (aud === 'minor') {
+    // Teen panel: a bouncy, arcade-like "level up" arpeggio.
+    [659.25, 783.99, 987.77, 1318.51].forEach((f, i) => sweep(t + i * 0.07, f * 0.9, f, { dur: 0.14, vol: 0.055, type: 'square' }));
+    bell(t + 0.3, 1567.98, { vol: 0.04, dur: 0.8 });
+    return;
+  }
   if (aud === 'pro' || aud === 'professional') {
     voice(t, 196.0, { dur: 1.1, vol: 0.07, type: 'triangle' });
     bell(t + 0.02, 392.0, { vol: 0.08, dur: 1.4 });

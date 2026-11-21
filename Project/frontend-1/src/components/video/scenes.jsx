@@ -323,6 +323,80 @@ export const SCENES = {
       <b className="quill" />
     </span>
   ),
+  /* Earn · Consumers — a sun rises over a day of small purchases that float up as coins. */
+  sunrise: () => (
+    <>
+      <span className="sc-sun">
+        {n(12).map((i) => (
+          <i key={i} style={{ '--i': i }} />
+        ))}
+      </span>
+      <span className="sc-hills" />
+      {['🛒', '☕', '📱', '🍿', '✈️', '👟'].map((e, i) => (
+        <span key={i} className="sc-float" style={{ '--i': i }}>
+          <em>{e}</em>
+          <b>+pts</b>
+        </span>
+      ))}
+      {n(3).map((i) => (
+        <span key={i} className="sc-cloud" style={{ '--i': i }} />
+      ))}
+    </>
+  ),
+  /* Earn · Business professionals — a gold market board: bars climb, a ticker tape runs. */
+  ticker: () => (
+    <>
+      <span className="sc-bars">
+        {[38, 62, 48, 80, 66, 92].map((h, i) => (
+          <i key={i} style={{ '--i': i, '--h': `${h}%` }} />
+        ))}
+      </span>
+      <svg className="sc-trend" viewBox="0 0 400 225" preserveAspectRatio="none">
+        <path d="M30 175 L95 130 L160 150 L225 90 L290 110 L370 40" pathLength="100" />
+      </svg>
+      <span className="sc-tape">
+        <b>
+          {['IT ▲', 'FINANCE ▲', 'HR ▲', 'MARKETING ▲', 'HEALTH-TECH ▲', 'LOGISTICS ▲', 'LEGAL ▲', 'RETAIL ▲'].map((t) => (
+            <em key={t}>{t}</em>
+          ))}
+        </b>
+      </span>
+    </>
+  ),
+  /* Earn · Minors — a sticker album: stickers slap on, wobble, and an XP bar fills. */
+  sticker: () => (
+    <>
+      {['🎮', '🎧', '⭐', '🛹', '📚', '🍕', '🎨', '🚀'].map((e, i) => (
+        <span key={i} className="sc-stk" style={{ '--i': i }}>
+          {e}
+        </span>
+      ))}
+      <span className="sc-xp">
+        <b>LVL 3</b>
+        <i />
+      </span>
+      {n(14).map((i) => (
+        <s key={i} className="sc-dot" style={{ '--i': i }} />
+      ))}
+    </>
+  ),
+  /* Earn · Who can join — an open passport; three stamps thump down one after another. */
+  passport: () => (
+    <span className="sc-pass">
+      <i className="pg l">
+        <s />
+        <s />
+        <s />
+        <s />
+      </i>
+      <i className="pg r" />
+      {['CONSUMER 18+', 'PRO B2B', 'TEEN 13–17'].map((t, i) => (
+        <b key={t} className="stamp" style={{ '--i': i }}>
+          {t}
+        </b>
+      ))}
+    </span>
+  ),
   atlas: () => (
     <>
       <svg className="sc-map" viewBox="0 0 400 225">

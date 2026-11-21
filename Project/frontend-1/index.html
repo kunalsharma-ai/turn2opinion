@@ -52,7 +52,24 @@
         ev.forEach(function (e) { w.addEventListener(e, run, { passive: true }); });
         w.addEventListener("load", function () { setTimeout(run, 4000); });
       })(window);
+      // Cookie consent first: Consent Mode starts "denied", and Google Tag Manager (which sets
+      // analytics and marketing cookies) loads only after the visitor allowed analytics or
+      // marketing. Before that choice, no tag manager runs. The app loads GTM later if they accept.
+      (function (w) {
+        w.dataLayer = w.dataLayer || [];
+        function g() { w.dataLayer.push(arguments); }
+        g("consent", "default", { analytics_storage: "denied", ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied", functionality_storage: "denied", personalization_storage: "denied", security_storage: "granted", wait_for_update: 500 });
+        var c = null;
+        try { c = JSON.parse(w.localStorage.getItem("t2o_consent_v1")); } catch (e) {}
+        if (!c) {
+          var m = document.cookie.match(/(?:^|; )t2o_consent=([^;]*)/);
+          if (m) { try { c = JSON.parse(decodeURIComponent(m[1])); } catch (e) {} }
+        }
+        w.t2oConsentAllowsTags = !!(c && (c.analytics || c.marketing));
+      })(window);
       (function (w, d, s, l, i) {
+        if (!w.t2oConsentAllowsTags) return;
+        w.__t2oGtmLoaded = 1;
         w[l] = w[l] || [];
         w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
         w.t2oLate(function () {
@@ -68,15 +85,6 @@
     <!--app-head-->
   </head>
   <body>
-    <noscript>
-      <iframe
-        src="https://www.googletagmanager.com/ns.html?id=GTM-MF5D955"
-        height="0"
-        width="0"
-        style="display: none; visibility: hidden"
-      >
-      </iframe>
-    </noscript>
     <noscript
       ><style>
         .reveal {

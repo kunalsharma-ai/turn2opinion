@@ -96,14 +96,14 @@ export default function Blog() {
                   {c === 'All' ? (
                     <Icon name="layers" size={22} />
                   ) : (
-                    <BlogArt seed={`tile-${c}`} hue={[220, 262, 18, 280, 330, 170][i - 1] || 220} kind={c} stars={false} />
+                    <BlogArt seed={`tile-${c}`} hue={[220, 262, 18, 280, 330, 170, 320, 190][i - 1] || 220} kind={c} stars={false} />
                   )}
                 </span>
                 <span className="topic-name">{c}</span>
               </button>
             ))}
           </div>
-          <div className="blog-grid">
+          <div className="blog-grid bg5">
             {list.map((p) => (
               <BlogCard key={p.slug} post={p} />
             ))}

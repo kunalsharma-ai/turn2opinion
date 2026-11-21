@@ -41,9 +41,9 @@ const COLS = [
   }
 ];
 
-// Faces of the rotating 3D reward cube: the eight reward options in pairs (UPI is India-only, see src/data/payouts.js).
+// Faces of the rotating 3D reward cube: the reward options in pairs (UPI is India-only, see src/data/payouts.js).
 const CUBE = [
-  { face: 'front', icon: 'wallet', label: 'PayPal · Cash', c1: '#003087', c2: '#009CDE' },
+  { face: 'front', icon: 'wallet', label: 'PayPal · Worldwide', c1: '#003087', c2: '#009CDE' },
   { face: 'right', icon: 'bank', label: 'Bank · Wire', c1: '#0E7C66', c2: '#2F6BFF' },
   { face: 'back', icon: 'cart', label: 'Shopping · Grocery vouchers', c1: '#E8590C', c2: '#FFB347' },
   { face: 'left', icon: 'card', label: 'Gift cards · UPI India', c1: '#7048E8', c2: '#C084FC' }
@@ -232,7 +232,7 @@ export default function Footer() {
           <div className="fs-copy">
             <h2 id="footer-cta-title">Your opinion already has value. Start collecting it.</h2>
             <p>
-              Consumers and professionals earn rewards for honest answers – redeemed through PayPal, cash rewards, bank or wire transfer,
+              Consumers, professionals and teens (13–17, with a parent’s permission) earn rewards for honest answers – redeemed through PayPal, bank or wire transfer,
               shopping and grocery vouchers and digital gift cards worldwide, plus UPI for members in India.
             </p>
             <div className="fs-actions">

@@ -11,14 +11,15 @@ import { playAudience } from '../utils/sound.js';
 const KEY = 't2o_aud';
 export function readAud() {
   try {
-    return localStorage.getItem(KEY) === 'pro' ? 'pro' : 'consumer';
+    const v = localStorage.getItem(KEY);
+    return v === 'pro' || v === 'minor' ? v : 'consumer';
   } catch {
     return 'consumer';
   }
 }
 export function saveAud(v) {
   try {
-    localStorage.setItem(KEY, v === 'pro' ? 'pro' : 'consumer');
+    localStorage.setItem(KEY, v === 'pro' || v === 'minor' ? v : 'consumer');
   } catch {
     /* private mode */
   }
@@ -47,18 +48,27 @@ export function AuthAura({ aud }) {
         <Icon name="gift" size={20} />
       </span>
       <span className="aa-token t-gem" />
+      {aud === 'minor' && (
+        <span className="aa-neon">
+          <span className="aa-floor" />
+          {['tri', 'ring', 'plus', 'zig', 'tri', 'ring', 'plus', 'zig'].map((s, k) => (
+            <i key={k} className={`n-${s}`} style={{ '--k': k }} />
+          ))}
+        </span>
+      )}
     </div>
   );
 }
 
-/** Consumer / Professional switch. It recolours the page and is remembered for next time. */
+/** Consumer / Professional / Teen switch. It recolours the page and is remembered for next time. */
 export function AudSwitch({ value, onChange, label = 'I am a' }) {
   return (
     <div className={`auth-switch is-${value}`} role="radiogroup" aria-label={label}>
       <span className="as-knob" aria-hidden="true" />
       {[
         ['consumer', 'Consumer', 'users'],
-        ['pro', 'Professional', 'briefcase']
+        ['pro', 'Professional', 'briefcase'],
+        ['minor', 'Teen', 'sparkles']
       ].map(([k, l, ic]) => (
         <button key={k} type="button" role="radio" aria-checked={value === k} className={value === k ? 'is-on' : ''} onClick={() => {
             if (k !== value) playAudience(k);
@@ -80,8 +90,47 @@ const firstSentence = (t = '') => {
   return (m ? m[0] : t).trim();
 };
 
+// The teen panel is new, so there are no teen reviews yet: the Minor side shows our promises instead.
+const TEEN_PROMISES = [
+  ['A parent’s yes never replaces yours.', 'Teen panel promise'],
+  ['Skip any question. Leave any survey. No penalty, ever.', 'Teen panel promise'],
+  ['Every study is checked for your age before it reaches you.', 'Teen panel promise']
+];
+
+function TeenPromise() {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    if (typeof window === 'undefined' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const t = setInterval(() => setI((n) => (n + 1) % TEEN_PROMISES.length), 5200);
+    return () => clearInterval(t);
+  }, []);
+  const [line, who] = TEEN_PROMISES[i];
+  return (
+    <figure className="auth-voice is-minor" key={`teen-${i}`}>
+      <span className="av-q" aria-hidden="true">
+        ✦
+      </span>
+      <blockquote>{line}</blockquote>
+      <figcaption>
+        <Icon name="shield" size={15} /> <b>{who}</b>
+        <span>Ages 13–17</span>
+      </figcaption>
+      <span className="av-dots" aria-hidden="true">
+        {TEEN_PROMISES.map((_, k) => (
+          <i key={k} className={k === i ? 'is-on' : ''} />
+        ))}
+      </span>
+    </figure>
+  );
+}
+
 /** One genuine member review at a time, matched to the chosen side. */
 export function AuthVoice({ aud }) {
+  if (aud === 'minor') return <TeenPromise />;
+  return <MemberVoice aud={aud} />;
+}
+
+function MemberVoice({ aud }) {
   const ids = VOICES[aud] || VOICES.consumer;
   const [i, setI] = useState(0);
   useEffect(() => {

@@ -10,13 +10,13 @@ import FlagCarousel from '../components/sections/FlagCarousel.jsx';
 import CredentialScanner from '../components/sections/CredentialScanner.jsx';
 import HomeHero from '../components/sections/HeroStage.jsx';
 import { ClaimJourney, InvitationChannels, RewardRoutes, RewardWallet } from '../components/sections/Rewards.jsx';
-import { PrivacyVault, SecurityHive, VerificationStack } from '../components/sections/Security.jsx';
+import { PrivacyVault, SecurityHive, TeenSafeguards, VerificationStack } from '../components/sections/Security.jsx';
 import MemberVoices from '../components/sections/MemberVoices.jsx';
-import BlogCard from '../components/BlogCard.jsx';
+import BlogStand from '../components/blog/BlogStand.jsx';
 import { BLOG_POSTS } from '../data/blog/index.js';
 import { FAQ_GROUPS } from '../data/faqs.js';
 
-const MARQUEE = ['Paid online surveys', 'Earn money online without investment', 'Online work from home', 'Paid surveys for cash', 'B2B surveys for professionals', 'PayPal · Cash · Bank · Wire · Vouchers · Gift cards · UPI in India', 'Free to join', 'Get paid to do surveys'];
+const MARQUEE = ['Paid online surveys', 'Earn money online without investment', 'Online work from home', 'Paid surveys for real rewards', 'B2B surveys for professionals', 'Teen surveys (13–17) with a parent’s permission', 'PayPal · Bank · Wire · Vouchers · Gift cards · UPI in India', 'Free to join', 'Get paid to do surveys'];
 
 export default function Home() {
   const ref = useReveal();
@@ -98,7 +98,7 @@ export default function Home() {
       {/* REWARDS */}
       <section className="section s-gold" aria-labelledby="rw-title">
         <div className="wrap">
-          <SectionHead kicker="Rewards" id="rw-title" title="Get paid the way that suits you" lead="Eight ways to get paid: PayPal, cash rewards, bank or wire transfer, shopping and grocery vouchers, digital gift cards – and UPI if you live in India. You choose when you cash out." />
+          <SectionHead kicker="Rewards" id="rw-title" title="Get paid the way that suits you" lead="Seven ways to get paid: PayPal, bank or wire transfer, shopping and grocery vouchers, digital gift cards – and UPI if you live in India. You choose when you redeem." />
           <RewardWallet />
           <div className="routes-block" data-reveal>
             <h3 className="sub-h">Every profile has a way to earn</h3>
@@ -124,6 +124,7 @@ export default function Home() {
             </div>
             <PrivacyVault />
           </div>
+          <TeenSafeguards />
         </div>
       </section>
 
@@ -164,7 +165,7 @@ export default function Home() {
       </section>
 
       {/* EARN ONLINE — the plain-language summary of what Turn2Opinion is, written around the
-          searches people actually make (paid surveys for cash, earn money online without
+          searches people actually make (paid surveys for money, earn money online without
           investment, online work from home). Crawlers and AI assistants read this block first. */}
       <section className="section s-mist seo-intro" aria-labelledby="earn-title">
         <div className="wrap">
@@ -172,40 +173,128 @@ export default function Home() {
             id="earn-title"
             kicker="Paid online surveys"
             title="Earn money online without investment, one survey at a time"
-            lead="Turn2Opinion pays real people for honest opinions. There is no joining fee, nothing to buy and nothing to sell – you answer paid online surveys, collect points and cash them out."
+            lead="Turn2Opinion pays real people for honest opinions. There is no joining fee, nothing to buy and nothing to sell – you answer paid online surveys, collect points and redeem them."
           />
-          <div className="seo-intro-grid">
-            <article data-reveal>
-              <h3>Paid surveys for cash, vouchers and gift cards</h3>
+          <div className="seo-bento">
+            <article className="sb-card sb-pay" data-reveal>
+              <div className="sb-vis" aria-hidden="true">
+                <span className="sb-pay-core">
+                  <Icon name="coin" size={30} />
+                </span>
+                {[0, 1].map((row) => (
+                  <span key={row} className={`sb-belt r${row}`}>
+                    {[0, 1].map((copy) =>
+                      (row
+                        ? [
+                            ['Grocery', 'basket'],
+                            ['Gift card', 'gift'],
+                            ['UPI · India', 'upi'],
+                            ['PayPal', 'card']
+                          ]
+                        : [
+                            ['PayPal', 'card'],
+                            ['Bank', 'bank'],
+                            ['Wire', 'transfer'],
+                            ['Shopping', 'bag']
+                          ]
+                      ).map(([l, ic]) => (
+                        <span key={`${copy}-${l}`} className="sb-pay-chip">
+                          <Icon name={ic} size={14} /> {l}
+                        </span>
+                      ))
+                    )}
+                  </span>
+                ))}
+              </div>
+              <div className="sb-txt">
+                <span className="sb-no">01</span>
+              <h3>Paid surveys for money, vouchers and gift cards</h3>
               <p>
                 Every survey shows its reward and how long it takes before you start. Points add up in your account and you redeem them
-                through PayPal, cash rewards, a bank or wire transfer, shopping or grocery vouchers, a digital gift card or, if you live in India, straight to your UPI ID. You pick the
-                payout and the moment you cash out.
+                through PayPal, a bank or wire transfer, shopping or grocery vouchers, a digital gift card or, if you live in India, straight to your UPI ID. You pick the
+                payout and the moment you redeem.
               </p>
+              </div>
             </article>
-            <article data-reveal>
+            <article className="sb-card sb-time" data-reveal>
+              <div className="sb-vis" aria-hidden="true">
+                <span className="sb-clock">
+                  <i className="sb-hand h1" />
+                  <i className="sb-hand h2" />
+                </span>
+                <span className="sb-slots">
+                  {[
+                    ['Coffee break', 5],
+                    ['On the bus', 10],
+                    ['After dinner', 15]
+                  ].map(([l, m], j) => (
+                    <i key={l} style={{ '--j': j }}>
+                      <b>{m} min</b> {l}
+                    </i>
+                  ))}
+                </span>
+              </div>
+              <div className="sb-txt">
+                <span className="sb-no">02</span>
               <h3>Online work from home that fits around your day</h3>
               <p>
                 Surveys run on your phone, tablet or laptop, so you can answer on a break, on the bus or after the kids are asleep. Each one
                 shows its length up front, so you pick the ones that fit the time you have. Students, homemakers, retirees and full-time workers all use Turn2Opinion as a
                 flexible side income, not a full-time job.
               </p>
+              </div>
             </article>
-            <article data-reveal>
-              <h3>Surveys for consumers and business professionals</h3>
+            <article className="sb-card sb-aud" data-reveal>
+              <div className="sb-vis" aria-hidden="true">
+                {[
+                  ['Consumers', 'users', '#ff4d8d'],
+                  ['Professionals', 'briefcase', '#2f6bff'],
+                  ['Teens 13–17', 'sparkles', '#8b5cf6']
+                ].map(([l, ic, c], j) => (
+                  <span key={l} className="sb-aud-pill" style={{ '--j': j, '--c': c }}>
+                    <i>
+                      <Icon name={ic} size={16} />
+                    </i>
+                    {l}
+                  </span>
+                ))}
+              </div>
+              <div className="sb-txt">
+                <span className="sb-no">03</span>
+              <h3>Surveys for consumers, business professionals and teens</h3>
               <p>
                 Consumers share views on shopping, food, travel, technology, health and finance. Managers, IT decision-makers, doctors and
                 other professionals get B2B surveys about the tools and services they use at work, which usually pay more because fewer
-                people qualify.
+                people qualify. Teens aged 13 to 17 have their own panel: they join with a parent or guardian’s verified permission and
+                their own yes, and every teen study is checked for age-appropriate content first.
               </p>
+              </div>
             </article>
-            <article data-reveal>
+            <article className="sb-card sb-why" data-reveal>
+              <div className="sb-vis" aria-hidden="true">
+                {[
+                  ['megaphone', 'A brand asks'],
+                  ['chat', 'You answer'],
+                  ['target', 'They decide'],
+                  ['gift', 'You get paid']
+                ].map(([ic, l], j) => (
+                  <span key={l} className="sb-step" style={{ '--j': j }}>
+                    <i>
+                      <Icon name={ic} size={18} />
+                    </i>
+                    {l}
+                  </span>
+                ))}
+              </div>
+              <div className="sb-txt">
+                <span className="sb-no">04</span>
               <h3>Why brands pay for your opinion</h3>
               <p>
                 Companies, agencies and public bodies commission market research before they launch a product, change a price or run a
                 campaign. Turn2Opinion is run by Frequent Research, an ISO-certified research company in New Delhi, so the studies you
                 take are real projects and every answer is protected by our privacy policy.
               </p>
+              </div>
             </article>
           </div>
           <p className="center-link seo-intro-links" data-reveal>
@@ -222,15 +311,13 @@ export default function Home() {
       {/* BLOGS */}
       <section className="section s-mist" aria-labelledby="blog-title">
         <div className="wrap split-head">
-          <SectionHead id="blog-title" title="Earn money online: trending guides on the blog" lead="Plain-talking guides on earning money online, paid surveys for cash and working from home without investment." />
+          <SectionHead id="blog-title" title="Earn money online: trending guides on the blog" lead="Plain-talking guides on earning money online, paid surveys for money and working from home without investment." />
           <Link to="/blog/" className="btn btn-ink" data-reveal>
             All blogs
           </Link>
         </div>
-        <div className="wrap blog-mag">
-          {trending.map((p, i) => (
-            <BlogCard key={p.slug} post={p} variant={i === 0 ? 'feature' : 'mini'} />
-          ))}
+        <div className="wrap">
+          <BlogStand posts={trending} />
         </div>
       </section>
 
@@ -239,7 +326,7 @@ export default function Home() {
         <div className="wrap">
           <div className="qa-head" data-reveal>
             <div>
-              <h2 id="faq-title">Paid surveys for cash: quick answers</h2>
+              <h2 id="faq-title">Paid surveys for money: quick answers</h2>
               <p className="sh-lead">Pick a question and get a straight answer. Live help answers 24/7.</p>
             </div>
             <Link to="/faq/" className="btn btn-ink">

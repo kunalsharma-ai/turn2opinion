@@ -3,7 +3,7 @@
 // endless rails underneath show the full breadth of industries, roles and lifestyles. A plain list of every
 // profile type sits in a disclosure for screen readers and search engines.
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { B2B, B2C, PROFILE_TYPE_COUNT } from '../../data/profiles.js';
+import { B2B, B2C, TEEN, PROFILE_TYPE_COUNT } from '../../data/profiles.js';
 import { useInView, prefersReducedMotion } from '../../hooks/useMounted.js';
 import { asset } from '../../config/env.js';
 import Icon from '../Icon.jsx';
@@ -11,7 +11,7 @@ import { isSoundEnabled } from '../../i18n/soundPrefs.js';
 import { peopleAlt } from '../../data/illustrations.js';
 
 const ITEM_H = 46;
-const PEOPLE = { pro: ['business', 'finance', 'tech-user', 'pro-pointing'], con: ['shopper', 'gamer', 'foodie', 'traveller', 'health', 'retiree'] };
+const PEOPLE = { pro: ['business', 'finance', 'tech-user', 'pro-pointing'], con: ['shopper', 'gamer', 'foodie', 'traveller', 'health', 'retiree'], teen: ['gamer', 'tech-user', 'shopper', 'traveller'] };
 
 function reelsFor(mode) {
   if (mode === 'pro') {
@@ -19,6 +19,13 @@ function reelsFor(mode) {
       { label: 'Role', items: B2B.roles.flatMap((r) => r.titles) },
       { label: 'Industry', items: B2B.industries.map((d) => d.name) },
       { label: 'Company', items: B2B.firmographics }
+    ];
+  }
+  if (mode === 'teen') {
+    return [
+      { label: 'Into', items: TEEN.passions.flatMap((p) => p.items) },
+      { label: 'Age', items: TEEN.ages },
+      { label: 'Channel', items: TEEN.channels }
     ];
   }
   return [
@@ -139,7 +146,9 @@ export default function ProfilesExplorer() {
   const sentence =
     mode === 'pro'
       ? `${an(words[0])} ${words[0]} in ${words[1]}, working at ${COMPANY[words[2]] || words[2]}`
-      : `${words[0]} · ${words[1]} · ${words[2]}`;
+      : mode === 'teen'
+        ? `${words[0].replace(/s$/, '')}, aged ${words[1]}, with a say on ${words[2]}`
+        : `${words[0]} · ${words[1]} · ${words[2]}`;
 
   const rails =
     mode === 'pro'
@@ -148,6 +157,12 @@ export default function ProfilesExplorer() {
           { items: B2B.roles.flatMap((r) => r.titles), dir: 'rtl' },
           { items: [...B2B.departments, ...B2B.firmographics], dir: 'ltr' }
         ]
+      : mode === 'teen'
+        ? [
+            { items: TEEN.passions.map((p) => p.name), icons: TEEN.passions.map((p) => p.icon), dir: 'ltr' },
+            { items: TEEN.passions.flatMap((p) => p.items), dir: 'rtl' },
+            { items: TEEN.channels, dir: 'ltr' }
+          ]
       : [
           { items: B2C.lifestyles.map((l) => l.name), icons: B2C.lifestyles.map((l) => l.icon), dir: 'ltr' },
           { items: B2C.lifestyles.flatMap((l) => l.items), dir: 'rtl' },
@@ -160,17 +175,20 @@ export default function ProfilesExplorer() {
         <div className="mode-switch" role="group" aria-label="Audience">
           <span className={`mode-thumb ${mode}`} aria-hidden="true" />
           <button type="button" aria-pressed={mode === 'pro'} onClick={() => setMode('pro')}>
-            <Icon name="briefcase" size={18} /> Business professionals
+            <Icon name="briefcase" size={18} /> Professionals
           </button>
           <button type="button" aria-pressed={mode === 'con'} onClick={() => setMode('con')}>
             <Icon name="users" size={18} /> Consumers
+          </button>
+          <button type="button" aria-pressed={mode === 'teen'} onClick={() => setMode('teen')}>
+            <Icon name="sparkles" size={18} /> Teens
           </button>
         </div>
         <p className="slots-count">
           <strong>
             <CountUp to={PROFILE_TYPE_COUNT} run={inView} />+
           </strong>
-          <span>profile types, from the boardroom to the living room</span>
+          <span>profile types, from the boardroom to the living room to the classroom</span>
         </p>
       </div>
 
@@ -233,7 +251,20 @@ export default function ProfilesExplorer() {
         <summary>
           <Icon name="layers" size={16} /> See every profile type we recruit
         </summary>
-        {!listOpen ? null : mode === 'pro' ? (
+        {!listOpen ? null : mode === 'teen' ? (
+          <div className="slots-all-cols">
+            {TEEN.passions.map((p) => (
+              <div key={p.name}>
+                <h3>{p.name}</h3>
+                <p>{p.items.join(', ')}.</p>
+              </div>
+            ))}
+            <div>
+              <h3>Teen profile channels</h3>
+              <p>{TEEN.channels.join(', ')}.</p>
+            </div>
+          </div>
+        ) : mode === 'pro' ? (
           <div className="slots-all-cols">
             <div>
               <h3>Industries</h3>

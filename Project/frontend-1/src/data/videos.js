@@ -49,6 +49,50 @@ export const PAGE_VIDEOS = [
     cta: { label: 'See all surveys', to: '/paid-surveys/' }
   },
   {
+    path: '/earn/consumers/',
+    template: 'sunrise',
+    yt: '',
+    eyebrow: 'Everyday earning',
+    title: 'Small opinions,',
+    em: 'a jar that fills up',
+    lede: 'How shopping trips, streaming nights and app habits turn into points you can redeem.',
+    points: ['Live · your everyday life', 'Answer · surveys that fit it', 'Redeem · seven ways to get paid'],
+    cta: { label: 'Join as a consumer', to: '/join/' }
+  },
+  {
+    path: '/earn/business-professionals/',
+    template: 'ticker',
+    yt: '',
+    eyebrow: 'Expert briefing',
+    title: 'Your expertise,',
+    em: 'on the record',
+    lede: 'Why companies pay to hear from verified professionals, and how a B2B study works.',
+    points: ['Verify · your role', 'Match · studies for your field', 'Earn · rewards sized to your time'],
+    cta: { label: 'Join as a professional', to: '/join/professional/' }
+  },
+  {
+    path: '/earn/teens/',
+    template: 'sticker',
+    yt: '',
+    eyebrow: 'New · Teen panel',
+    title: 'Two keys,',
+    em: 'one teen voice',
+    lede: 'How a parent says yes, a teen says yes, and the account switches on.',
+    points: ['Ask · your parent or guardian', 'Agree · in your own words', 'Tune in · your profile channels'],
+    cta: { label: 'Start as a teen', to: '/join/teen/' }
+  },
+  {
+    path: '/earn/who-can-join/',
+    template: 'passport',
+    yt: '',
+    eyebrow: 'Eligibility',
+    title: 'Is there a seat',
+    em: 'for you?',
+    lede: 'Ages, countries, roles and the one-account rule, explained in under two minutes.',
+    points: ['Age · 13+ (teens with permission)', 'Place · 55 countries', 'Rule · one honest account each'],
+    cta: { label: 'Check and join', to: '/join/' }
+  },
+  {
     path: '/profiling/',
     template: 'lab',
     yt: '',

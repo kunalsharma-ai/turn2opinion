@@ -3,6 +3,7 @@ import { useReveal } from '../hooks/useMounted.js';
 import { asset } from '../config/env.js';
 import { CtaBand, FlipFaq, PageHero, SectionHead } from '../components/Common.jsx';
 import SurveyMachine from '../components/sections/SurveyMachine.jsx';
+import TeenBand from '../components/sections/TeenBand.jsx';
 import Icon from '../components/Icon.jsx';
 import { PAID_SURVEY_FAQS as FAQS } from '../data/page-faqs.js';
 import { peopleAlt } from '../data/illustrations.js';
@@ -83,7 +84,7 @@ export default function PaidSurveys() {
             <p>
               Paid online surveys are questionnaires that companies, researchers and public bodies use to understand what real people
               think. Because honest opinions are valuable, research companies like Turn2Opinion reward members with points that turn into
-              cash or gift cards.
+              PayPal, bank transfers, vouchers or gift cards.
             </p>
             <p>
               It’s one of the simplest ways to earn money online without investment: no special skills, no equipment beyond your phone, and
@@ -97,7 +98,7 @@ export default function PaidSurveys() {
             {[
               ['megaphone', 'Who pays?', 'Brands, agencies, governments and institutions running research.', '#7B5CFF'],
               ['chat', 'What do you do?', 'Answer questions honestly – usually in a few minutes.', '#1F5BFF'],
-              ['gift', 'What do you get?', 'Points you redeem via PayPal, cash, bank or wire transfer, vouchers or gift cards – plus UPI in India.', '#C76A00']
+              ['gift', 'What do you get?', 'Points you redeem via PayPal, bank or wire transfer, vouchers or gift cards – plus UPI in India.', '#C76A00']
             ].map(([ic, t, d, c], i) => (
               <div key={t} className="relay-st" style={{ '--c': c, '--i': i }}>
                 <span className="relay-ico">
@@ -115,7 +116,7 @@ export default function PaidSurveys() {
 
       <section className="section s-mist" aria-labelledby="types-h">
         <div className="wrap">
-          <SectionHead id="types-h" title="Surveys for consumers and professionals" lead="Two moving worlds of research. Hover to pause – most members end up in both." />
+          <SectionHead id="types-h" title="Surveys for consumers, professionals and teens" lead="Two moving worlds of research, plus a teen panel for ages 13 to 17. Hover to pause. You join one panel: Consumer or Business professional, by your own situation." />
           <div className="escal">
             {['consumer', 'business'].map((k) => (
               <div key={k} className={`esc esc-${k}`}>
@@ -152,10 +153,11 @@ export default function PaidSurveys() {
               </div>
             ))}
             <span className="esc-and" aria-hidden="true">
-              <b>+</b>
-              <small>join both</small>
+              <b>or</b>
+              <small>one panel each</small>
             </span>
           </div>
+          <TeenBand variant="surveys" />
         </div>
       </section>
 
@@ -172,36 +174,40 @@ export default function PaidSurveys() {
               <Link to="/profiling/">survey profile</Link> complete is the best way to qualify more often.
             </p>
           </div>
-          <div className="sieve" data-reveal>
-            <div className="sieve-drops" aria-hidden="true">
-              {Array.from({ length: 14 }).map((_, i) => (
-                <i key={i} className={`drop lv${[4, 1, 3, 2, 4, 1, 3, 4, 2, 4, 1, 3, 4, 2][i]}`} style={{ '--x': `${8 + ((i * 37) % 84)}%`, '--i': i }} />
-              ))}
-            </div>
+          {/* Round 12: the four stages as a track a survey ticket travels down. Each stage lights up
+              as the ticket reaches it, and the cards sit either side of the track. */}
+          <div className="mtrack" data-reveal>
+            <span className="mtrack-rail" aria-hidden="true">
+              <i className="mtrack-ticket" />
+            </span>
+            <ol className="mtrack-list">
             {[
-              ['Profile matched', 'Your profile fits the study brief', 'id'],
-              ['Invitation sent', 'Dashboard, SMS, WhatsApp or email', 'bell'],
-              ['Screening questions', 'A few quick checks confirm the fit', 'filter'],
-              ['Survey completed', 'Points added to your balance', 'coin']
-            ].map(([t, d, ic], i) => (
-              <div key={t} className="sieve-layer" style={{ '--i': i }}>
-                <span className="sieve-mesh" aria-hidden="true" />
-                <span className="sieve-ico">
+              ['Profile matched', 'Your profile fits the study brief', 'id', '#2f6bff'],
+              ['Invitation sent', 'Dashboard, SMS, WhatsApp or email', 'bell', '#7c4dff'],
+              ['Screening questions', 'A few quick checks confirm the fit', 'filter', '#e040a0'],
+              ['Survey completed', 'Points added to your balance', 'coin', '#ff7a1a']
+            ].map(([t, d, ic, c], i) => (
+              <li key={t} className="mtrack-stop" style={{ '--i': i, '--c': c }}>
+                <span className="mtrack-dot" aria-hidden="true">
                   <Icon name={ic} size={18} />
                 </span>
-                <span className="sieve-txt">
+                <span className="mtrack-card">
+                  <span className="mtrack-no" aria-hidden="true">
+                    Step {i + 1}
+                  </span>
                   <strong>{t}</strong>
                   <small>{d}</small>
                 </span>
-              </div>
+              </li>
             ))}
+            </ol>
           </div>
         </div>
       </section>
 
       <section className="section s-gold" aria-labelledby="top-h">
         <div className="wrap">
-          <SectionHead id="top-h" title="Browse a few of our paid surveys" lead="Consumer and professional surveys with their typical reward and length. Press a slot to see the details." />
+          <SectionHead id="top-h" title="Browse a few of our paid surveys" lead="Consumer, professional and teen surveys with their typical reward and length. Press a slot to see the details." />
           <SurveyMachine />
         </div>
       </section>
@@ -216,7 +222,7 @@ export default function PaidSurveys() {
             </p>
           </div>
           <ul className="method-pills">
-            {['PayPal', 'Cash Rewards', 'Bank Transfer', 'Wire Transfer', 'Shopping Vouchers', 'Grocery Vouchers', 'Digital Gift Cards', 'UPI (India only)'].map((m) => (
+            {['PayPal', 'Bank Transfer', 'Wire Transfer', 'Shopping Vouchers', 'Grocery Vouchers', 'Digital Gift Cards', 'UPI (India only)'].map((m) => (
               <li key={m}>
                 <Icon name="gift" size={16} /> {m}
               </li>

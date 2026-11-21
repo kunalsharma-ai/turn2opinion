@@ -209,7 +209,10 @@ router
     .patch("/parent-details",
         expressRoute(
             async req => {
-                await userController.update(req.user._id, { ...req.body, category: "minor" });
+                const body = { ...req.body, category: "minor" };
+                if (body.parent && typeof body.parent === "object")
+                    body.parent = { ...body.parent, consent: null, consentStatus: "pending", submittedAt: new Date() };
+                await userController.update(req.user._id, body);
                 let user = Mutate(await userController.read(req.user._id))
                 let otp=await otpController.generate(
                     user._id,

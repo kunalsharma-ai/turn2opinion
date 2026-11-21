@@ -15,6 +15,7 @@ import { levelOf } from '../../data/reviewFacets.js';
 import { useMounted } from '../../hooks/useMounted.js';
 
 const isPro = (r) => r.audience === 'professional';
+const isTeen = (r) => r.audience === 'teen';
 const firstSentence = (t = '', max = 90) => {
   const m = t.match(/^.*?[.!?](\s|$)/);
   const s = (m ? m[0] : t).trim();
@@ -84,8 +85,8 @@ export function ReviewsHero({ list, stats, countries, onRate }) {
   const high = stats.count ? Math.round(((stats.dist[0] + stats.dist[1]) / stats.count) * 100) : 0;
   // Two rings of real reviews, the strongest first, mixing both panels.
   const picks = useMemo(() => {
-    const good = list.filter((r) => r.rating >= 4 && r.text);
-    const c = good.filter((r) => !isPro(r));
+    const good = list.filter((r) => r.rating >= 4 && r.text && !r.sample);
+    const c = good.filter((r) => !isPro(r) && !isTeen(r) && !r.sample);
     const p = good.filter(isPro);
     const out = [];
     for (let k = 0; out.length < 16 && (k < c.length || k < p.length); k++) {
@@ -132,7 +133,7 @@ export function ReviewsHero({ list, stats, countries, onRate }) {
             Heard from <Rotor /> all over the world
           </p>
           <p className="rvx-lead">
-            Every score here comes from a member, consumers and business professionals alike. Nothing is bought, and low scores stay up exactly as they were written.
+            Every score here comes from a member: consumers, business professionals and, new this season, teens. Nothing is bought, and low scores stay up exactly as they were written.
           </p>
           <div className="rvx-actions">
             <button type="button" className="btn btn-primary btn-lg btn-shimmer rvx-rate" onClick={onRate}>
@@ -143,6 +144,9 @@ export function ReviewsHero({ list, stats, countries, onRate }) {
             </a>
             <a href="#panel-pro" className="rvx-jump is-p">
               <Icon name="briefcase" size={16} /> Professional panel
+            </a>
+            <a href="#panel-teen" className="rvx-jump is-t">
+              <Icon name="sparkles" size={16} /> Teen panel
             </a>
           </div>
           <ul className="rvx-stats">
@@ -237,7 +241,7 @@ const CON_TINTS = [
 // `compact` is the home page's Member voices version: one washing line of four that turns over to
 // the next four on its own, and a lighter header (the section already has its own title).
 export function ConsumerPanel({ list, stats, onReadAll, compact = false, readAllLabel }) {
-  const items = useMemo(() => list.filter((r) => !isPro(r) && r.text), [list]);
+  const items = useMemo(() => list.filter((r) => !isPro(r) && !isTeen(r) && r.text), [list]);
   const s = stats.byAudience.consumer;
   const L = levelOf(s.avg || 4);
   const [page, setPage] = useState(0);
@@ -326,9 +330,11 @@ export function ConsumerPanel({ list, stats, onReadAll, compact = false, readAll
               ))}
             </span>
           )}
-          <button type="button" className="rvx-pbtn" onClick={onReadAll}>
-            {readAllLabel || 'Filter consumer reviews on the wall'} <Icon name="arrow" size={16} />
-          </button>
+          {onReadAll && (
+            <button type="button" className="rvx-pbtn" onClick={onReadAll}>
+              {readAllLabel || 'Read every consumer review'} <Icon name="arrow" size={16} />
+            </button>
+          )}
         </p>
       </div>
       <svg className="rc-waves" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
@@ -479,9 +485,117 @@ export function ProPanel({ list, stats, onReadAll, compact = false, readAllLabel
               {more ? 'Show fewer passes' : `Show all ${shown.length} passes`}
             </button>
           )}
-          <button type="button" className="rvx-pbtn" onClick={onReadAll}>
-            {readAllLabel || 'Filter professional reviews on the wall'} <Icon name="arrow" size={16} />
-          </button>
+          {onReadAll && (
+            <button type="button" className="rvx-pbtn" onClick={onReadAll}>
+              {readAllLabel || 'Read every professional review'} <Icon name="arrow" size={16} />
+            </button>
+          )}
+        </p>
+      </div>
+    </Tag>
+  );
+}
+
+/* ================================ TEEN PANEL ================================ */
+// Round 10c (Kunal, 20 Nov 2026): "After hours", the neon teen grade. Reviews arrive as voice notes:
+// each card has a live waveform, a flag avatar, the gem score, the quote, name, role, country and tags.
+// The teen reviews are samples for now and say so on every card.
+const TEEN_TINTS = ['#ff2e97', '#22e4ff', '#c8ff3a', '#8a5cff', '#ffb347'];
+
+export function TeenPanel({ list, stats, onReadAll, compact = false, readAllLabel }) {
+  const items = useMemo(() => list.filter((r) => isTeen(r) && r.text), [list]);
+  const s = stats.byAudience.teen || { count: 0, avg: 0 };
+  const L = levelOf(s.avg || 4);
+  const [page, setPage] = useState(0);
+  const per = compact ? 3 : items.length;
+  const pages = Math.max(1, Math.ceil(items.length / (compact ? 3 : items.length || 1)));
+  useEffect(() => {
+    if (!compact || reduced() || pages < 2) return undefined;
+    const t = setInterval(() => setPage((n) => (n + 1) % pages), 9000);
+    return () => clearInterval(t);
+  }, [compact, pages]);
+  const shown = compact ? items.slice((page % pages) * per, (page % pages) * per + per) : items;
+  const Tag = compact ? 'div' : 'section';
+  return (
+    <Tag id={compact ? undefined : 'panel-teen'} className={`rvx-panel rvx-teen ${compact ? 'is-compact' : ''}`} aria-labelledby={compact ? undefined : 'rv-teen-h'}>
+      <div className="rt-night" aria-hidden="true">
+        <i className="rt-glow g1" />
+        <i className="rt-glow g2" />
+        <span className="rt-floor" />
+      </div>
+      <div className="wrap">
+        <header className="rvx-phead">
+          <p className="rvx-pkicker">
+            <Icon name="sparkles" size={15} /> Teen panel · 13–17
+          </p>
+          {compact ? (
+            <p className="rvx-ptitle">
+              Voice notes from <span>the next generation</span>
+            </p>
+          ) : (
+            <h2 id="rv-teen-h">
+              Voice notes from <span>the next generation</span>
+            </h2>
+          )}
+          {!compact && <p className="rvx-psub">Gamers, creators, athletes and bookworms on the teen panel, every one with a parent’s permission.</p>}
+          <div className="rvx-pscore">
+            <Gem level={L.v} size={58} motion="float" />
+            <p>
+              <b>{L.gem}</b>
+              <span>
+                {L.word} · {s.count} {s.count === 1 ? 'gem' : 'gems'} given
+              </span>
+            </p>
+          </div>
+        </header>
+
+        <ul className="rt-notes" key={compact ? `p${page}` : 'all'}>
+          {shown.map((r, k) => (
+            <li key={r.id} style={{ '--k': k, '--tc': TEEN_TINTS[(k + page) % TEEN_TINTS.length] }}>
+              <figure className="rt-card">
+                <div className="rt-top">
+                  <span className="rt-avatar">
+                    <Flag code={r.country} size={30} />
+                  </span>
+                  <span className="rt-wave" aria-hidden="true">
+                    {Array.from({ length: 22 }).map((_, j) => (
+                      <i key={j} style={{ '--j': j }} />
+                    ))}
+                  </span>
+                  <Stars n={r.rating} className="rt-gem" />
+                </div>
+                <blockquote>{r.text}</blockquote>
+                {r.tags && r.tags.length > 0 && (
+                  <ul className="rt-tags">
+                    {r.tags.slice(0, 3).map((t) => (
+                      <li key={t}>{t}</li>
+                    ))}
+                  </ul>
+                )}
+                <figcaption>
+                  <b>{r.name}</b>
+                  <span>
+                    {roleOf(r)} · {countryName(r.country)}
+                  </span>
+                  {r.sample && <em className="rt-sample">Sample review</em>}
+                </figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
+        <p className="rvx-pmore">
+          {compact && pages > 1 && (
+            <span className="rc-pages" role="group" aria-label="More teen reviews">
+              {Array.from({ length: pages }).map((_, k) => (
+                <button key={k} type="button" className={k === page % pages ? 'is-on' : ''} aria-label={`Show reviews ${k * 3 + 1} to ${Math.min(items.length, k * 3 + 3)}`} aria-pressed={k === page % pages} onClick={() => setPage(k)} />
+              ))}
+            </span>
+          )}
+          {onReadAll && (
+            <button type="button" className="rvx-pbtn" onClick={onReadAll}>
+              {readAllLabel || 'Read every teen review'} <Icon name="arrow" size={16} />
+            </button>
+          )}
         </p>
       </div>
     </Tag>

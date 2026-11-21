@@ -4,7 +4,7 @@ import Icon from './Icon.jsx';
 
 const RESEND_SECONDS = 60;
 
-export default function ResendVerify({ email, message, title = 'Verify your email', children }) {
+export default function ResendVerify({ email, message, title = 'Verify your email', children, compact = false }) {
   const [cooldown, setCooldown] = useState(0);
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState('');
@@ -36,6 +36,20 @@ export default function ResendVerify({ email, message, title = 'Verify your emai
       setBusy(false);
     }
   };
+
+  if (compact)
+    return (
+      <div className="resend-inline">
+        <button type="button" className="btn btn-ghost" onClick={resend} disabled={busy || cooldown > 0}>
+          <Icon name="refresh" size={16} /> {busy ? 'Sending…' : cooldown > 0 ? `Send again in ${cooldown}s` : 'Didn’t get it? Send the email again'}
+        </button>
+        {note && (
+          <p className="muted" role="status">
+            {note}
+          </p>
+        )}
+      </div>
+    );
 
   return (
     <section className="join-done">

@@ -1,4 +1,4 @@
-// "Browse a few of our paid surveys" as a survey vending machine: pick consumer or professional, press a slot
+// "Browse a few of our paid surveys" as a survey vending machine: pick consumer, professional or teen, press a slot
 // (or let it pick for you) and the survey card spirals off its coil into the tray with its reward and length.
 // Data: src/data/surveys.js. All survey titles, rewards and lengths are real text in the HTML.
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -44,6 +44,7 @@ function SoundSwitch() {
   );
 }
 
+const LABEL = { consumer: 'Consumer', professional: 'Professional', teen: 'Teen' };
 const code = (i) => String(i + 1).padStart(2, '0');
 
 export default function SurveyMachine() {
@@ -76,7 +77,7 @@ export default function SurveyMachine() {
     }
   };
   const switchAud = (a) => {
-    if (a !== aud) playSwitch(a === 'professional');
+    if (a !== aud) playSwitch(a !== 'consumer');
     setAud(a);
     setSel(0);
     setDrop((d) => d + 1);
@@ -100,7 +101,8 @@ export default function SurveyMachine() {
         <div className="vm-switch" role="group" aria-label="Show surveys for">
           {[
             ['consumer', 'Consumers', 'bag'],
-            ['professional', 'Professionals', 'briefcase']
+            ['professional', 'Professionals', 'briefcase'],
+            ['teen', 'Teens', 'sparkles']
           ].map(([k, l, ic]) => (
             <button key={k} type="button" aria-pressed={aud === k} className={aud === k ? 'is-on' : ''} onClick={() => switchAud(k)}>
               <Icon name={ic} size={16} /> {l}
@@ -114,7 +116,7 @@ export default function SurveyMachine() {
       <div className="vm-body">
         <div className="vm-glass">
           <span className="vm-shine" aria-hidden="true" />
-          <ul className="vm-grid" key={aud} aria-label={`${aud === 'consumer' ? 'Consumer' : 'Professional'} paid surveys`}>
+          <ul className="vm-grid" key={aud} aria-label={`${LABEL[aud]} paid surveys`}>
             {list.map((x, i) => (
               <li key={x.id} style={{ '--c': x.c, '--i': i }}>
                 <button type="button" className={`vm-slot ${i === sel % list.length ? 'is-on' : ''}`} aria-pressed={i === sel % list.length} onClick={() => vend(i)}>
@@ -155,8 +157,13 @@ export default function SurveyMachine() {
             <i className="vm-coin">$</i>
           </div>
           <p className="vm-range">
-            {aud === 'consumer' ? 'Consumer' : 'Professional'} surveys from <b>${range[0]}</b> to <b>${range[1]}</b>
+            {LABEL[aud]} surveys from <b>${range[0]}</b> to <b>${range[1]}</b>
           </p>
+          {aud === 'teen' && (
+            <p className="vm-teen-note">
+              <span aria-hidden="true">🔑🗝️</span> Ages 13–17 · parent’s permission + your own yes · every study checked for age-appropriate content · a parent picks the payout
+            </p>
+          )}
           <div className="vm-tray" ref={tray}>
             <div className="vm-card" key={`${aud}-${s.id}-${drop}`} style={{ '--c': s.c }}>
               <span className="vc-top">
@@ -178,7 +185,7 @@ export default function SurveyMachine() {
               </span>
             </div>
           </div>
-          <Link to="/join/" className="vm-cta" onClick={() => playCoin()}>
+          <Link to={aud === 'teen' ? '/join/teen/' : aud === 'professional' ? '/join/professional/' : '/join/'} className="vm-cta" onClick={() => playCoin()}>
             Start earning – join free <Icon name="arrow" size={16} />
           </Link>
         </aside>

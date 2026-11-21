@@ -15,7 +15,8 @@ export const ENV = {
   ACTIVITY_FEED_URL: str(env.VITE_ACTIVITY_FEED_URL),
   DASHBOARD_URL: str(env.VITE_DASHBOARD_URL, '/dashboard'),
   RECAPTCHA_SITE_KEY: str(env.VITE_RECAPTCHA_SITE_KEY),
-  GTM_ID: str(env.VITE_GTM_ID),
+  // The site's Tag Manager container (also referenced in index.html). Loaded only after cookie consent.
+  GTM_ID: str(env.VITE_GTM_ID, 'GTM-MF5D955'),
   // Meta (Facebook) Pixel ID (public, not a secret). Override with VITE_META_PIXEL_ID; set it to
   // "none" to turn the pixel off. When set, the pixel loads on every page in consent mode: nothing is
   // tracked or stored until the visitor allows marketing cookies (see src/utils/analytics.js).

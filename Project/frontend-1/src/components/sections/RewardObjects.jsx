@@ -1,5 +1,5 @@
-// The eight reward options as eight different objects (Kunal, 18 Nov 2026): no shared card template.
-// PayPal is a sky wallet, Cash a banknote, Bank a marble vault, Wire a night globe, UPI a tricolour
+// The seven reward options as seven different objects (Kunal, 18 Nov 2026): no shared card template.
+// Cash Rewards was removed (Kunal, 20 Nov 2026). PayPal is a sky wallet, Bank a marble vault, Wire a night globe, UPI a tricolour
 // phone, Shopping a tote bag, Grocery a printed receipt and Gift Cards a holographic card with a bow.
 // Everything is drawn with CSS and small inline SVG: no images to download, and all motion stops
 // under prefers-reduced-motion. Each object carries one genuine member review from data/testimonials.js
@@ -11,7 +11,6 @@ import { TESTIMONIALS } from '../../data/testimonials.js';
 
 const VOICE = {
   paypal: 'maya-us',
-  cash: 'ethan-miller-us',
   bank: 'elif-ylmaz-tr',
   wire: 'katarzyna-nowak-pl',
   upi: 'priya-sharma-in',
@@ -77,19 +76,6 @@ const Stage = {
       <svg className="pp-trail" viewBox="0 0 200 90" preserveAspectRatio="none">
         <path d="M5 80 C 60 10, 120 90, 190 18" fill="none" stroke="rgba(255,255,255,.55)" strokeWidth="2" strokeDasharray="4 7" />
       </svg>
-    </div>
-  ),
-  cash: () => (
-    <div className="rx-stage" aria-hidden="true">
-      <span className="cs-note n3" />
-      <span className="cs-note n2" />
-      <span className="cs-note n1">
-        <i className="cs-seal" />
-        <b className="cs-den">100</b>
-        <i className="cs-strip" />
-      </span>
-      <i className="cs-coin k1" />
-      <i className="cs-coin k2" />
     </div>
   ),
   bank: () => (
@@ -175,7 +161,6 @@ const Stage = {
 
 const KICKER = {
   paypal: 'Wallet · worldwide',
-  cash: 'Cash · spend anywhere',
   bank: 'Bank · straight in',
   wire: 'Wire · across borders',
   upi: 'UPI · India only',

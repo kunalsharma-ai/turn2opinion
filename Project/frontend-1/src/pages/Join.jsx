@@ -1,61 +1,85 @@
-// Free sign-up: 3-step wizard with live member-card preview, full validation, full DOB (calendar),
-// country flags + dial codes, guardian email for under-18s and CAPTCHA.
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { isValidPhoneNumber } from 'libphonenumber-js';
-import { Link } from '../router/Router.jsx';
+// Free sign-up for the three panels.
+//
+// Consumer / Business professional (the previous create-account process, Kunal 20 Nov 2026:
+// details -> CAPTCHA -> email link -> password -> login -> welcome questions -> T&C -> dashboard)
+//   0 Your details       First (required), Middle, Last, email, mobile, date of birth, gender,
+//                        country, state / province, city, postal code, consents, CAPTCHA
+//                        -> PUT /api/v1/user -> account link by email
+//   email link           ?user=…&code=… -> password + CAPTCHA (AccountSetup); login is by email
+//                        -> logged in -> /welcome/ (pages/Welcome.jsx): a few welcome questions
+//                           from the original profile bank, saved with PUT /api/v1/user/welcome
+//                        -> the panel's Terms & Conditions form (/user/terms-b2c|b2b.html)
+//                        -> the member dashboard (Project/frontend, unchanged)
+//
+// Teen (13–17): a 13–17 birthday on the Consumer or Professional form moves the visitor here
+// (the API checks the age again).
+//   0 You · 1 Parent or guardian · 2 Consent & send (welcome questions come after the first login)
+//   -> the parent/guardian gets the onboarding and consent form (/parent-consent/)
+//   -> after consent the teen gets a secure link back here (?user&code&activate=1) to choose a
+//      password. No password is ever emailed.
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Link, hrefFor } from '../router/Router.jsx';
 import { ENV, asset } from '../config/env.js';
+import PreviewLinks from '../components/PreviewLinks.jsx';
 import { SITE } from '../config/site.js';
 import { COUNTRIES } from '../data/countries.js';
-import { B2B } from '../data/profiles.js';
-import { postJSON, putJSON, failureMessage,api } from '../utils/api.js';
+import { api, failureMessage } from '../utils/api.js';
 import { track } from '../utils/analytics.js';
-import Captcha from '../components/Captcha.jsx';
+import Captcha, { captchaLocalOk, captchaPayload, captchaReady, isCaptchaError } from '../components/Captcha.jsx';
 import { Flag } from '../components/Brand.jsx';
 import { Breadcrumbs } from '../components/Common.jsx';
 import Icon from '../components/Icon.jsx';
-import { ageOn, CountryPicker, DateField, EMAIL_RE, Field, formatDate, FREE_MAIL, passwordStrength, PhoneField } from '../components/FormFields.jsx';
+import { ageOn, DateField, EMAIL_RE, Field, formatDate, PhoneField } from '../components/FormFields.jsx';
 import SocialAuth from '../components/SocialAuth.jsx';
 import FollowUs from '../components/FollowUs.jsx';
 import ResendVerify from '../components/ResendVerify.jsx';
 import { AuthAura, AuthVoice, saveAud } from '../components/AuthAura.jsx';
 import { playAudience } from '../utils/sound.js';
+import { relLabel, TeenConsentStep, TeenParentStep, TeenStatus, TEEN_CONSENTS } from '../components/TeenJoin.jsx';
+import { readReferral, clearReferral } from '../utils/referral.js';
+import { DASHBOARD, redirectIfLoggedIn, termsUrl, WELCOME, welcomeChannels } from '../utils/session.js';
+import { fullPhone, NAME_RE, phoneError, validateParent } from '../utils/signup.js';
+import LocationFields, { locationErrors } from '../components/onboarding/LocationFields.jsx';
+import AccountSetup from '../components/onboarding/AccountSetup.jsx';
 
 const emailCheck = {
   validateDomain: async (v) => {
     try {
       const r = await api.post('/api/v1/validator/email', { email: v });
-      return !!r?.valid;
-    } catch { return true; } // network fail pe block mat karo, server baad mein bhi check karta hai
+      return r?.valid === false ? false : true;
+    } catch {
+      return true; // a network failure must not block sign-up: the server checks again
+    }
   },
   checkDuplicate: async (v) => {
     try {
       const { data } = await api.post('/api/v1/user/check', { mail: v });
       return !isNaN(data) && data <= 0;
-    } catch { return true; }
+    } catch {
+      return true;
+    }
   }
 };
 
-const category = { consumer: "b2c", pro: "b2b" };
-const STEPS = ['About you', 'Secure your account', 'Contact & profile'];
-const STEP_ICONS = ['user', 'lock', 'phone'];
-const TYPE_KEY = 't2o_join_type';
-const PENDING_JOIN_KEY = 't2o_pending_registration';
-const RESUME_KEY = 't2o_resume_signup';
-const NAME_RE = /^[\p{L}][\p{L} .'-]{0,48}$/u;
-const GENDERS = [
-  'Female',
-  'Male',
-  'Other',
-  // 'Non-binary',
-  // 'Prefer not to say'
-];
+// The API decides the final panel from the date of birth; under-18s always become "minor".
+const category = { consumer: 'b2c', pro: 'b2b', minor: 'minor' };
+const GENDERS = ['Female', 'Male', 'Other'];
 const GENDER_META = {
   Female: { c: '#FF4F8B', d: ['M12 4.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9z', 'M12 13.5V21', 'M8.8 17.6h6.4'] },
   Male: { c: '#2F7BFF', d: ['M10 9.5a5 5 0 1 1 0 10 5 5 0 0 1 0-10z', 'M13.6 10.9 20 4.5', 'M15 4.5h5v5'] },
-  Other: { c: '#8B5CF6', d: ['M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z', 'M12 3v3', 'M12 18v3', 'M3 12h3', 'M18 12h3'] },
-  'Non-binary': { c: '#8B5CF6', d: ['M12 10a4.6 4.6 0 1 1 0 9.2 4.6 4.6 0 0 1 0-9.2z', 'M12 10V3', 'M9.4 4.4l5.2 3', 'M14.6 4.4l-5.2 3'] },
-  'Prefer not to say': { c: '#0E9F8E', d: ['M4 5.5h16v10H10l-4.5 3.8v-3.8H4z', 'M8 10.5h8', 'M9.5 9v3M12 9v3M14.5 9v3'] }
+  Other: { c: '#8B5CF6', d: ['M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z', 'M12 3v3', 'M12 18v3', 'M3 12h3', 'M18 12h3'] }
 };
+
+/** Message from an API error, falling back to a friendly generic one. */
+const errText = (res, fallback) => (res && typeof res.message === 'string' && res.message ? res.message : fallback || failureMessage({ data: res }));
+
+// Only birthdays for ages 13 to 17 today can be picked on the Teen calendar.
+function teenWindow(now = new Date()) {
+  const max = new Date(now.getFullYear() - SITE.minAge, now.getMonth(), now.getDate());
+  const min = new Date(now.getFullYear() - SITE.adultAge, now.getMonth(), now.getDate() + 1);
+  return { min, max };
+}
+const isTeenAge = (a) => a !== null && a >= SITE.minAge && a < SITE.adultAge;
 
 function GenderGlyph({ g, on }) {
   return (
@@ -67,8 +91,37 @@ function GenderGlyph({ g, on }) {
   );
 }
 
+export function GenderPicker({ id, value, onPick, label = 'Gender', error }) {
+  return (
+    <Field
+      id={id}
+      label={
+        <span className="lbl-ico">
+          <span className="gl-duo" aria-hidden="true">
+            <i />
+            <i />
+          </span>{' '}
+          {label}
+        </span>
+      }
+      error={error}
+    >
+      <div className="gender-pick" role="radiogroup" aria-label={typeof label === 'string' ? label : 'Gender'} id={id}>
+        {GENDERS.map((g, i) => (
+          <button type="button" role="radio" aria-checked={value === g} key={g} className={`gp-opt ${value === g ? 'is-on' : ''}`} style={{ '--gc': GENDER_META[g].c, '--i': i }} onClick={() => onPick(g)}>
+            <span className="gp-badge">
+              <GenderGlyph g={g} on={value === g} />
+            </span>
+            <span className="gp-label">{g}</span>
+          </button>
+        ))}
+      </div>
+    </Field>
+  );
+}
+
 /** Birthday cake with a flickering candle (label icon for date of birth). */
-function CakeIcon() {
+export function CakeIcon() {
   return (
     <svg viewBox="0 0 32 32" className="cake-ico" aria-hidden="true">
       <path className="ck-flame" d="M16 3.2c1.8 2 2.2 3.4 1.2 4.8a1.6 1.6 0 0 1-2.4 0c-1-1.4-.6-2.8 1.2-4.8z" />
@@ -79,7 +132,6 @@ function CakeIcon() {
     </svg>
   );
 }
-
 
 function birthdayInfo(dob) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dob || '');
@@ -92,119 +144,7 @@ function birthdayInfo(dob) {
   return { days, label: next.toLocaleDateString('en-GB', { day: 'numeric', month: 'long' }) };
 }
 
-
-const CHANNELS = [
-  ['email', 'Email', 'mail'],
-  ['sms', 'SMS', 'sms'],
-  ['whatsapp', 'WhatsApp', 'whatsapp']
-];
-const PW_RULES = [
-  ['8+ characters', (p) => p.length >= 8],
-  ['Upper & lower case', (p) => /[a-z]/.test(p) && /[A-Z]/.test(p)],
-  ['A number', (p) => /\d/.test(p)],
-  ['A symbol', (p) => /[^A-Za-z0-9]/.test(p)]
-];
-
-const initial = {
-  type: 'consumer',
-  firstName: '',
-  lastName: '',
-  email: '',
-  dob: '',
-  gender: '',
-  country: '',
-  dial: '',
-  phone: '',
-  jobTitle: '',
-  empstat: '', 
-  industry: '',
-  company: '',
-  workEmail: '',
-  guardianEmail: '',
-  channels: { email: true, sms: false, whatsapp: true },
-  password: '',
-  confirm: '',
-  terms: false,
-  research: false,
-  marketing: false
-};
-
-const WORK_LEVELS = [
-  { key: 'empstat',    name: 'empstat',    label: 'Employment status', api: '/api/v1/option/empstat',    parent: null,         method: 'get'  },
-  { key: 'industry',   name: 'industry',   label: 'Industry',          api: '/api/v1/option/industry',   parent: 'empstat',    method: 'post' },
-  { key: 'sector',     name: 'sector',     label: 'Specialization',    api: '/api/v1/option/sector',     parent: 'industry',   method: 'post' },
-  { key: 'department', name: 'department', label: 'Department',        api: '/api/v1/option/department', parent: 'sector',     method: 'post' },
-  { key: 'jobTitle',   name: 'jobrole',    label: 'Job title',         api: '/api/v1/option/jobrole',    parent: 'department', method: 'post' },
-];
-// dropdown ki value aur save hone wali answer dono label hi rakhte hain
-// (survey code mein stored answers ko option ke parentValue se label ke roop mein match kiya jata hai)
-const normOpt = (o) => {
-  const label = typeof o === 'string' ? o : (o.label ?? o.name ?? o.value);
-  return { value: label, label };
-};
-
-// Steps: 0 = About you, 1 = Secure your account (password), 2 = Contact & profile
-function validate(step, f) {
-  const e = {};
-  const age = ageOn(f.dob);
-  if (step === 0) {
-    if (!NAME_RE.test(f.firstName.trim())) e.firstName = 'Enter your first name using letters only.';
-    if (!NAME_RE.test(f.lastName.trim())) e.lastName = 'Enter your last name using letters only.';
-    if (!EMAIL_RE.test(f.email.trim())) e.email = 'Enter a valid email address, like name@example.com.';
-    if (!f.dob) e.dob = 'Pick your full date of birth (day, month and year).';
-    else if (age < 0 || new Date(f.dob) > new Date()) e.dob = 'Date of birth can’t be in the future.';
-    else if (age < SITE.minAge) e.dob = `You must be at least ${SITE.minAge} years old to join.`;
-    else if (age > 100) e.dob = 'Check the year – that makes you over 100.';
-    if (!f.gender) e.gender = 'Select your gender.';
-  }
-
-  if (step === 1) {
-    if (PW_RULES.some(([, fn]) => !fn(f.password))) e.password = 'Your password needs all four ingredients below.';
-    else if (f.password.toLowerCase().includes(f.firstName.trim().toLowerCase()) && f.firstName.trim().length > 2) e.password = 'Don’t include your name in your password.';
-    if (!f.confirm) e.confirm = 'Type your password again.';
-    else if (f.confirm !== f.password) e.confirm = 'Passwords don’t match.';
-    if (!f.terms) e.terms = 'You need to accept the Terms and Privacy Policy to activate your account.';
-    if (!f.research) e.research = 'Consent to take part in research is needed to receive surveys.';
-  }
-
-  if (step === 2) {
-    if (!f.country) {
-      e.country = 'Select the country you live in.';
-    }
-
-    const digits = f.phone.replace(/\D/g, '');
-
-    const dialDigits = (
-      COUNTRIES.find((c) => c.c === f.dial) || { d: '' }
-    ).d.replace(/\D/g, '');
-
-    if (!f.dial) {
-      e.phone = 'Choose your country code.';
-    } 
-    else if (!isValidPhoneNumber(`+${dialDigits}${digits}`)) {
-      e.phone = 'Enter a valid mobile number for the selected country.';
-    }
-     else if (/^(\d)\1+$/.test(digits)) {
-      e.phone = 'That number doesn’t look real.';
-    }
-    if (f.type === 'pro') {
-      // if (f.jobTitle.trim().length < 2) e.jobTitle = 'Enter your job title.';
-      // if (!f.industry) e.industry = 'Select your industry.';
-      WORK_LEVELS.forEach((l) => {
-        if (!f[l.key]) e[l.key] = `Select your ${l.label.toLowerCase()}.`;
-      });
-
-      if (f.workEmail && !EMAIL_RE.test(f.workEmail.trim())) e.workEmail = 'Enter a valid work email or leave it empty.';
-      else if (f.workEmail && FREE_MAIL.includes(f.workEmail.split('@')[1]?.toLowerCase())) e.workEmail = 'Use your company email domain (not Gmail, Yahoo, etc.).';
-    }
-    if (age !== null && age < SITE.adultAge) {
-      if (!EMAIL_RE.test(f.guardianEmail.trim())) e.guardianEmail = 'Members under 18 need a parent or guardian email.';
-      else if (f.guardianEmail.trim().toLowerCase() === f.email.trim().toLowerCase()) e.guardianEmail = 'Use your parent or guardian’s own email, not yours.';
-    }
-  }
-  return e;
-}
-
+// SMS and WhatsApp start unticked: members opt in (feedback, 20 Nov 2026).
 function MemberCard({ f, step }) {
   const card = useRef(null);
   const onMove = (e) => {
@@ -221,36 +161,45 @@ function MemberCard({ f, step }) {
     card.current.style.setProperty('--rx', '0deg');
     card.current.style.setProperty('--ry', '0deg');
   };
-  const name = `${f.firstName} ${f.lastName}`.trim();
-  const c = COUNTRIES.find((x) => x.c === f.country);
+  const name = [f.firstName, f.middleName, f.lastName].map((s) => s.trim()).filter(Boolean).join(' ');
+  const c = COUNTRIES.find((x) => x.c === (f.country || f.dial));
+  const teen = f.type === 'minor';
+  const unlocks = teen
+    ? [
+        ['user', 'You & your parent', 'Your details and theirs'],
+        ['users', 'Parent consent', 'They get an onboarding form by email'],
+        ['key', 'Your password', 'Link sent once they consent'],
+        ['sparkles', 'Welcome questions', 'A few, after your first login']
+      ]
+    : [
+        ['user', 'Account', 'Free, no investment'],
+        ['bell', 'Matched surveys', 'Invites that fit you'],
+        ['gift', 'Rewards', 'PayPal, bank, wire, vouchers, gift cards · UPI in India']
+      ];
   return (
     <div className="mcard-scene" onMouseMove={onMove} onMouseLeave={reset} aria-hidden="true">
-      <div className={`mcard ${f.type === 'pro' ? 'is-pro' : ''}`} ref={card}>
+      <div className={`mcard ${f.type === 'pro' ? 'is-pro' : teen ? 'is-minor' : ''}`} ref={card}>
         <div className="mcard-holo" />
         <div className="mcard-top">
           <span className="mcard-brand">Turn2Opinion</span>
-          <span className="mcard-type">{f.type === 'pro' ? 'Professional' : 'Consumer'} member</span>
+          <span className="mcard-type">{f.type === 'pro' ? 'Professional' : teen ? 'Teen panel' : 'Consumer'} member</span>
         </div>
         <div className="mcard-chip" />
         <p className="mcard-name">{name || 'Your name here'}</p>
-        <p className="mcard-sub">{f.type === 'pro' && f.jobTitle ? f.jobTitle : f.email || 'you@example.com'}</p>
+        <p className="mcard-sub">{f.email || 'you@example.com'}</p>
         <div className="mcard-foot">
           <span>{c ? <Flag code={c.c} size={14} /> : <Icon name="globe" size={14} />} {c ? c.n : 'Your country'}</span>
           <span>{f.dob ? `Born ${formatDate(f.dob)}` : 'Member since today'}</span>
         </div>
       </div>
-      <img className="mcard-peep" src={asset(`/images/people/${f.type === 'pro' ? 'business' : 'shopper'}.svg`)} alt={f.type === 'pro' ? 'Business professional taking paid surveys' : 'Consumer taking paid surveys'} width="160" height="190" key={f.type} />
-      {['₹', '$', '€', '£'].map((c, i) => (
-        <span key={c} className={`mc-coin k${i}`}>
-          {c}
+      <img className="mcard-peep" src={asset(`/images/people/${f.type === 'pro' ? 'business' : teen ? 'gamer' : 'shopper'}.svg`)} alt="" width="160" height="190" key={f.type} />
+      {['₹', '$', '€', '£'].map((cur, i) => (
+        <span key={cur} className={`mc-coin k${i}`}>
+          {cur}
         </span>
       ))}
       <ol className="unlocks">
-        {[
-          ['user', 'Account', 'Free, no investment'],
-          ['bell', 'Matched surveys', 'Invites that fit you'],
-          ['gift', 'Rewards', 'PayPal, cash, bank, wire, vouchers, gift cards · UPI in India']
-        ].map(([ic, t, d], i) => (
+        {unlocks.map(([ic, t, d], i) => (
           <li key={t} className={i < step ? 'is-open' : i === step ? 'is-now' : ''} style={{ '--i': i }}>
             <span className="ul-ico">
               <Icon name={i < step ? 'check' : i === step ? ic : 'lock'} size={18} />
@@ -266,580 +215,613 @@ function MemberCard({ f, step }) {
   );
 }
 
+function Consent({ k, f, set, errOf, children }) {
+  return (
+    <div>
+      <label className={`check ${errOf(k) ? 'has-error' : ''}`} data-k={k}>
+        <input type="checkbox" checked={!!f[k]} onChange={(e) => set(k, e.target.checked)} />
+        <span className="check-ui" />
+        <span>{children}</span>
+      </label>
+      {errOf(k) && (
+        <p className="field-error" role="alert">
+          {errOf(k)}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function Done({ icon = 'mail', title, children }) {
+  return (
+    <section className="join-done">
+      <div className="wrap join-done-inner">
+        <div className="inbox-anim" aria-hidden="true">
+          <span className="inbox-env">
+            <Icon name={icon} size={56} />
+          </span>
+          <span className="inbox-spark s1" />
+          <span className="inbox-spark s2" />
+          <span className="inbox-spark s3" />
+        </div>
+        <h1>{title}</h1>
+        {children}
+      </div>
+    </section>
+  );
+}
+
+const TYPE_KEY = 't2o_join_type';
+const DRAFT_KEY = 't2o_join_draft_v2';
+// Adults fill in one page; the other stages happen after the email link and are shown for orientation.
+const STEPS = ['Your details', 'Secure your account', 'Welcome questions after login'];
+const STEP_ICONS = ['user', 'lock', 'sparkles'];
+// Welcome questions are asked after the first login (pages/Welcome.jsx), for every audience.
+const TEEN_STEPS = ['You', 'Parent or guardian', 'Consent & send'];
+const TEEN_ICONS = ['user', 'users', 'shield'];
+const CHANNELS = [
+  ['email', 'Email', 'mail'],
+  ['sms', 'SMS', 'sms'],
+  ['whatsapp', 'WhatsApp', 'whatsapp']
+];
+export const EMPTY_PARENT = { rel: '', first: '', middle: '', last: '', email: '', dial: '', phone: '', dob: '', gender: '' };
+
+const initial = {
+  type: 'consumer',
+  firstName: '',
+  middleName: '',
+  lastName: '',
+  email: '',
+  dob: '',
+  gender: '',
+  dial: '',
+  phone: '',
+  country: '',
+  state: '',
+  city: '',
+  zipcode: '',
+  hasStates: false,
+  parent: EMPTY_PARENT,
+  parentConfirm: false,
+  ...Object.fromEntries(TEEN_CONSENTS.map(([k]) => [k, false])),
+  channels: { email: true, sms: false, whatsapp: false },
+  terms: false,
+  privacy: false,
+  research: false,
+  marketing: false
+};
+
+function dobError(dob, type) {
+  const age = ageOn(dob);
+  if (!dob) return 'Pick your full date of birth (day, month and year).';
+  if (age === null || age < 0 || new Date(dob) > new Date()) return 'Date of birth can’t be in the future.';
+  if (age < SITE.minAge) return `You must be at least ${SITE.minAge} years old to join Turn2Opinion.`;
+  if (age > 100) return 'Check the year – that makes you over 100.';
+  if (type === 'minor' && age >= SITE.adultAge) return 'The Teen panel is for ages 13 to 17. Pick Consumer or Business professional instead.';
+  return '';
+}
+
+// Steps. Adults: 0 details (with consents and CAPTCHA). Teens: 0 you, 1 parent, 2 consent.
+function validate(step, f) {
+  const e = {};
+  const teen = f.type === 'minor';
+  if (step === 0) {
+    // Only the first name is required; middle and last are checked only when filled in.
+    if (!f.firstName.trim()) e.firstName = 'Enter your first name.';
+    else if (!NAME_RE.test(f.firstName.trim())) e.firstName = 'Use letters only for your first name.';
+    if (f.middleName.trim() && !NAME_RE.test(f.middleName.trim())) e.middleName = 'Use letters only.';
+    if (f.lastName.trim() && !NAME_RE.test(f.lastName.trim())) e.lastName = 'Use letters only.';
+    if (!EMAIL_RE.test(f.email.trim())) e.email = 'Enter a valid email address, like name@example.com.';
+    const de = dobError(f.dob, f.type);
+    if (de) e.dob = de;
+    if (!f.gender) e.gender = 'Select your gender.';
+    if (!teen || f.phone.trim()) {
+      const pe = phoneError(f.dial, f.phone);
+      if (pe) e.phone = pe;
+    }
+    if (teen) Object.assign(e, locationErrors(f));
+  }
+  if (teen && step === 1) {
+    Object.assign(e, validateParent(f.parent, f.email));
+    if (!f.parentConfirm) e.parentConfirm = 'Please confirm these are your parent or guardian’s real details.';
+  }
+  if (!teen && step === 0) {
+    if (!f.terms) e.terms = 'Please accept the Terms & Conditions to create your account.';
+    if (!f.privacy) e.privacy = 'Please accept the Privacy Policy to create your account.';
+    if (!f.research) e.research = 'Consent to take part in research is needed to receive surveys.';
+  }
+  if (teen && step === 2) {
+    TEEN_CONSENTS.forEach(([k, , msg]) => {
+      if (!f[k]) e[k] = msg;
+    });
+  }
+  return e;
+}
+
+const readDraft = () => {
+  try {
+    return JSON.parse(sessionStorage.getItem(DRAFT_KEY)) || null;
+  } catch {
+    return null;
+  }
+};
+
+/** Read-only summary of what will be sent (adult confirm step and Teen consent step). */
+function ReviewCard({ f, journey, onEdit }) {
+  const teen = journey === 'teen';
+  const c = COUNTRIES.find((x) => x.c === f.country);
+  const name = [f.firstName, f.middleName, f.lastName].map((s) => s.trim()).filter(Boolean).join(' ');
+  return (
+    <div className="review-card">
+      <div className="rv-block">
+        <p className="rv-head">
+          <Icon name="user" size={16} /> Your details
+          <button type="button" className="link-soft" onClick={() => onEdit(0)}>
+            Edit
+          </button>
+        </p>
+        <dl className="rv-dl">
+          <dt>Name</dt>
+          <dd>{name}</dd>
+          <dt>Email</dt>
+          <dd>{f.email}</dd>
+          {f.phone && (
+            <>
+              <dt>Mobile</dt>
+              <dd>
+                +{fullPhone(f.dial, f.phone)}
+              </dd>
+            </>
+          )}
+          <dt>Born</dt>
+          <dd>{formatDate(f.dob)}</dd>
+          <dt>Gender</dt>
+          <dd>{f.gender}</dd>
+          <dt>Lives in</dt>
+          <dd>
+            {c && <Flag code={c.c} size={14} />} {[f.city, f.zipcode, c?.n].filter(Boolean).join(', ')}
+          </dd>
+        </dl>
+      </div>
+      {teen && f.parent.email && (
+        <div className="rv-block">
+          <p className="rv-head">
+            <Icon name="users" size={16} /> Parent or guardian
+            <button type="button" className="link-soft" onClick={() => onEdit(1)}>
+              Edit
+            </button>
+          </p>
+          <dl className="rv-dl">
+            <dt>{relLabel(f.parent.rel)}</dt>
+            <dd>{[f.parent.first, f.parent.middle, f.parent.last].filter((s) => s.trim()).join(' ')}</dd>
+            <dt>Email</dt>
+            <dd>{f.parent.email}</dd>
+          </dl>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Join() {
   const [f, setF] = useState(initial);
-  // Remember the chosen side so Log in opens in the same colours next time.
+  const [answers, setAnswers] = useState({});
   useEffect(() => saveAud(f.type), [f.type]);
   const [step, setStep] = useState(0);
+  const [link, setLink] = useState(null); // { user, code, teen } from the email link
   const [submitted, setSubmitted] = useState(false);
   const [touched, setTouched] = useState({});
   const [captcha, setCaptcha] = useState(null);
   const [captchaErr, setCaptchaErr] = useState('');
   const [resetKey, setResetKey] = useState(0);
-  const [showPw, setShowPw] = useState(false);
   const [state, setState] = useState('idle');
-  const [pendingSignup, setPendingSignup] = useState(false);
   const [msg, setMsg] = useState('');
-  const formRef = useRef(null);
-  const [queryParams, setQueryParams] = useState({});
-  const [workOpts, setWorkOpts] = useState({});
-  const [workLoading, setWorkLoading] = useState({});
+  const [ageNotice, setAgeNotice] = useState('');
   const [duplicate, setDuplicate] = useState(false);
   const [emailErr, setEmailErr] = useState('');
-  // password set hone ke baad login + consents ka status (retry-safe)
-  const session = useRef({ loggedIn: false, consentSaved: false });
+  const formRef = useRef(null);
+  const restored = useRef(false);
 
+  const teen = f.type === 'minor';
+  const journey = teen ? 'teen' : f.type === 'pro' ? 'pro' : 'consumer';
+  const lastStep = teen ? 2 : 0;
   const age = ageOn(f.dob);
-  const minor = age !== null && age < SITE.adultAge;
+  const teenDates = useMemo(() => teenWindow(), []);
   const live = validate(step, f);
-  // const errOf = (k) => (touched[k] || submitted ? live[k] || '' : '');
-  // const okOf = (k) => touched[k] && !live[k];
   const errOf = (k) => (touched[k] || submitted ? live[k] || (k === 'email' ? emailErr : '') || '' : '');
   const okOf = (k) => touched[k] && !live[k] && !(k === 'email' && emailErr);
 
   const set = (k, v) => setF((p) => ({ ...p, [k]: v }));
+  const setParent = (k, v) => setF((p) => ({ ...p, parent: { ...p.parent, [k]: v } }));
   const touch = (k) => () => setTouched((t) => ({ ...t, [k]: true }));
   const onCaptcha = useCallback((t) => {
     setCaptcha(t);
     if (t) setCaptchaErr('');
   }, []);
 
-const loadWorkOptions = async (lvl, parentVal) => {
-  setWorkLoading((l) => ({ ...l, [lvl.key]: true }));
-  try {
-    const parentName = WORK_LEVELS.find((x) => x.key === lvl.parent)?.name;
-    const body = parentName ? { parentValue: parentVal } : {};
-    const resp = lvl.method === 'get'
-            ? await api.get(lvl.api)
-            : await api.post(lvl.api, body);
-    setWorkOpts((o) => ({ ...o, [lvl.key]: (resp.data || []).map(normOpt) }));
-  } catch (e) {
-    setWorkOpts((o) => ({ ...o, [lvl.key]: [] }));
-  } finally {
-    setWorkLoading((l) => ({ ...l, [lvl.key]: false }));
-  }
-};
 
-useEffect(() => {
-  if (f.type === 'pro' && step === 2) loadWorkOptions(WORK_LEVELS[0]);
-}, [f.type, step]); // eslint-disable-line react-hooks/exhaustive-deps // eslint-disable-line react-hooks/exhaustive-deps
-
-
-useEffect(() => {
-  const params = new URLSearchParams(window.location.search);
-  const queries = Object.fromEntries(params.entries());
-  // /join/professional/ is the clean URL; ?category= still works for old links.
-  if (/\/join\/professional\/?$/.test(window.location.pathname)) queries.category = 'professional';
-
-  if (!(queries.category)) return;
-
-  setF(prev => ({
-    ...prev,
-    type: queries?.category==="professional"?"pro":"consumer"
-  }));
-},[])
-
-
-useEffect(() => {
-  const params = new URLSearchParams(window.location.search);
-  const queries = Object.fromEntries(params.entries());
-
-  if (!(queries.user && queries.code)) return;
-
-  setState('checking');
-
-  (async () => {
+  // Keep the unfinished form for this tab, so a refresh or Back never loses it.
+  useEffect(() => {
+    if (!restored.current || link || ['done', 'teen-submitted'].includes(state)) return;
     try {
-      const resp = await api.post(`/api/v1/user/${queries.user}`, {
-        channel: 'email',
-        code: queries.code,
-      });
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify({ f, answers, step }));
+    } catch {
+      /* ignore */
+    }
+  }, [f, answers, step, link, state]);
 
-      if (resp.status !== 'success') {
-        setState('link-used');
-        return;
-      }
-      const u = resp.data;
-      if (u && typeof u === 'object') {
-        let savedType = null;
-        try { savedType = localStorage.getItem(TYPE_KEY); } catch (e) { /* ignore */ }
+  // ---------- panel choice + age-based classification ----------
+  const chooseType = (v) => {
+    const a = ageOn(f.dob);
+    if (v !== 'minor' && isTeenAge(a)) {
+      setAgeNotice(`You’re ${a}, so you join the Teen panel. Teen accounts need a parent or guardian’s consent, and you can’t switch to an adult panel until you turn 18.`);
+      return;
+    }
+    setAgeNotice('');
+    if (f.type !== v) {
+      playAudience(v);
+      setAnswers({});
+    }
+    setF((p) => ({ ...p, type: v, dob: v === 'minor' && a !== null && a >= SITE.adultAge ? '' : p.dob }));
+  };
+  const onDob = (v) => {
+    const a = ageOn(v);
+    setTouched((t) => ({ ...t, dob: true }));
+    if (f.type !== 'minor' && isTeenAge(a)) {
+      setF((p) => ({ ...p, dob: v, type: 'minor' }));
+      setAnswers({});
+      setAgeNotice(`You’re ${a}, so we’ve moved you to the Teen panel. Everything you typed is kept. Next, we’ll ask for your parent or legal guardian, who must give consent before your account switches on.`);
+      playAudience('minor');
+      return;
+    }
+    set('dob', v);
+  };
+
+  // ---------- URL entry points ----------
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const path = window.location.pathname + window.location.hash;
+    let type = null;
+    if (/\/join\/professional\/?/.test(path) || q.get('category') === 'professional') type = 'pro';
+    if (/\/join\/teen\/?/.test(path) || q.get('category') === 'minor' || q.get('category') === 'teen') type = 'minor';
+    const d = !q.get('user') ? readDraft() : null;
+    if (d && d.f) {
+      setF({ ...initial, ...d.f, parent: { ...EMPTY_PARENT, ...(d.f.parent || {}) }, ...(type && type !== d.f.type && !isTeenAge(ageOn(d.f.dob)) ? { type } : {}) });
+      setAnswers(d.answers || {});
+      setStep(d.f.type === 'minor' ? Math.min(d.step || 0, 1) : 0);
+    } else if (type) setF((p) => ({ ...p, type }));
+    const parts = (q.get('name') || '').trim().split(/\s+/).filter(Boolean);
+    const email = q.get('email');
+    if (parts.length || email)
+      setF((p) => ({ ...p, firstName: parts[0] ?? p.firstName, lastName: parts.length > 1 ? parts.slice(1).join(' ') : p.lastName, email: email ?? p.email }));
+    restored.current = true;
+    if (!q.get('user')) redirectIfLoggedIn();
+  }, []);
+
+  // Email link: ?user=<id>&code=<code>[&activate=1 for a Teen after parent consent] -> account setup
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search);
+    const user = q.get('user');
+    const code = q.get('code');
+    if (!(user && code)) return;
+    setState('checking');
+    (async () => {
+      try {
+        const resp = await api.post(`/api/v1/user/${user}`, { channel: 'email', code });
+        if (resp?.status !== 'success') return setState('link-used');
+        const u = resp.data || {};
+        const isTeenAccount = u.category === 'minor' || isTeenAge(ageOn(String(u.dob || '').slice(0, 10)));
         setF((p) => ({
           ...p,
           firstName: u.name?.first ?? p.firstName,
+          middleName: u.name?.middle ?? p.middleName,
           lastName: u.name?.last ?? p.lastName,
           email: u.mail ?? p.email,
           dob: u.dob ? String(u.dob).slice(0, 10) : p.dob,
           gender: u.gender ?? p.gender,
-          type: savedType || (u.category === 'b2b' ? 'pro' : 'consumer'),
+          type: isTeenAccount ? 'minor' : u.category === 'b2b' ? 'pro' : 'consumer',
+          parent: u.parent ? { ...p.parent, email: u.parent.email || '', first: u.parent.name?.first || '' } : p.parent
         }));
+        if (isTeenAccount) {
+          const approved = u.parent?.consent === true || u.parent?.consentStatus === 'approved';
+          if (u.parent?.email && !approved) return setState('teen-waiting');
+        }
+        setLink({ user, code, teen: isTeenAccount, category: u.category });
+        setState('idle');
+      } catch {
+        setState('link-used');
       }
-
-      setQueryParams(queries);
-      setStep(1); // Secure your account
-      setPendingSignup(true);
-      setState('idle');
-    } catch (error) {
-      setState('link-used');
-    }
-  })();
-}, []);
-
-
-// Login se aaya incomplete user: ?user=<id>&resume=1 -> seedha step 2
-useEffect(() => {
-  const q = new URLSearchParams(window.location.search);
-  if (q.get('resume') !== '1' || !q.get('user')) return;
-
-  let saved = null;
-  try { saved = JSON.parse(sessionStorage.getItem(RESUME_KEY)); } catch (e) { /* ignore */ }
-
-  // data nahi mila (direct URL khola) -> wapas login
-  if (!saved || String(saved.user) !== q.get('user')) {
-    window.location.replace('/login/');
-    return;
-  }
-
-  setF((p) => ({
-    ...p,
-    firstName: saved.firstName ?? p.firstName,
-    lastName: saved.lastName ?? p.lastName,
-    email: saved.email ?? p.email,
-    dob: saved.dob ?? p.dob,
-    gender: saved.gender ?? p.gender,
-    type: saved.type ?? p.type,
-  }));
-  setQueryParams({ user: q.get('user') });
-
-  // user pehle hi login ho chuka hai aur consents step 1 mein save ho chuki hain
-  session.current = { loggedIn: true, consentSaved: true };
-
-  setPendingSignup(true);
-  setStep(2);
-}, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (f.country && !f.dial) set('dial', f.country);
-  }, [f.country]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    track('sign_up_start');
+    })();
   }, []);
 
-useEffect(() => {
-  const fetchCountry = async () => {
-    try {
-      const response = await fetch("/api/v1/get-country");
-      const info = await response.json();
-
-      console.log("Country response:", info);
-
-      const country = info?.country;
-
-      if (country) {
-        set("country", country);
-        set("dial", country);
+  useEffect(() => {
+    track('sign_up_start');
+    (async () => {
+      try {
+        const info = await api.get('/api/v1/get-country');
+        const country = info?.country;
+        if (country)
+          setF((p) => ({ ...p, country: p.country || country, dial: p.dial || country, parent: { ...p.parent, dial: p.parent.dial || country } }));
+      } catch {
+        /* the member picks it */
       }
-    } catch (error) {
-      console.error("Failed to fetch country:", error);
-    }
-  };
-
-  fetchCountry();
-}, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-
-const onWorkChange = (idx, val) => {
-  const lvl = WORK_LEVELS[idx];
-  const below = WORK_LEVELS.slice(idx + 1);
-
-  setF((p) => {
-    const n = { ...p, [lvl.key]: val };
-    below.forEach((l) => { n[l.key] = ''; });  
-    return n;
-  });
-  setWorkOpts((o) => {
-    const n = { ...o };
-    below.forEach((l) => { delete n[l.key]; }); 
-    return n;
-  });
-  setTouched((t) => ({ ...t, [lvl.key]: true }));
-
-  if (val && below[0]) loadWorkOptions(below[0], val); 
-};
+    })();
+  }, []);
 
   const focusFirstError = (e) => {
     const k = Object.keys(e)[0];
     if (!k || !formRef.current) return;
     setTimeout(() => {
-      const el = formRef.current.querySelector(`[data-k="${k}"] input, [data-k="${k}"] button, [data-k="${k}"] textarea`);
-      el && el.focus();
+      const box = formRef.current.querySelector(`[data-k="${k}"]`);
+      box?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const el = box?.querySelector('input, button, textarea, select');
+      el && el.focus({ preventScroll: true });
     }, 30);
   };
-
-  // ---------- STEP 0: About you -> create user + send verification mail ----------
-  const checkEmail = async () => {
-  const v = f.email.trim().toLowerCase();
-  if (!EMAIL_RE.test(v)) return true; // format error validate() already dikha raha hai
-  if (!(await emailCheck.validateDomain(v))) {
-    setEmailErr('This email domain looks invalid or can’t receive mail.');
-    return false;
-  }
-  if (!(await emailCheck.checkDuplicate(v))) {
-    setDuplicate(true); // tumhara existing "Email already registered" + ResendVerify UI khulega
-    setMsg('This email is already registered.');
-    setState('error');
-    return false;
-  }
-  setEmailErr('');
-  return true;
-};
-  const next = async (e) => {
-    e?.preventDefault();
-    const v = validate(0, f);
-    if (Object.keys(v).length) {
-      setSubmitted(true);
-      focusFirstError(v);
-      return;
+  const resetCaptcha = () => {
+    setCaptcha(null);
+    setResetKey((k) => k + 1);
+  };
+  const captchaOk = () => {
+    if (!captchaReady(captcha)) {
+      setCaptchaErr('Type the code from the picture (or answer the question) to show you’re human.');
+      return false;
     }
-    setState('sending');
-    if (!(await checkEmail())) { setSubmitted(true); if (state !== 'error') setState('idle'); return; }
-    await submitSignup();
+    if (captcha.provider === 'local' && !captchaLocalOk(captcha)) {
+      setCaptchaErr('That code didn’t match. Here’s a new one.');
+      resetCaptcha();
+      return false;
+    }
+    return true;
   };
 
-const submitSignup = async () => {
-  setState('sending');
-  setMsg('');
+  const checkEmail = async ({ submit = false } = {}) => {
+    const v = f.email.trim().toLowerCase();
+    if (!EMAIL_RE.test(v)) return true;
+    if (!(await emailCheck.validateDomain(v))) {
+      setEmailErr('This email domain looks invalid or can’t receive mail.');
+      return false;
+    }
+    if (!(await emailCheck.checkDuplicate(v))) {
+      if (submit) {
+        setDuplicate(true);
+        setMsg('This email is already registered.');
+      } else setEmailErr('This email is already registered. Log in instead, or use a different email.');
+      return false;
+    }
+    setEmailErr('');
+    return true;
+  };
 
-  try {
-    console.log('signup payload category:', category[f.type], 'type:', f.type);
-    let res = await api.put(`/api/v1/user`,{
+  const goStep = (n) => {
+    setSubmitted(false);
+    setTouched({});
+    setStep(n);
+    setTimeout(() => formRef.current?.closest('.join-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 20);
+  };
+
+  // Steps before the questionnaire: checks only, nothing is sent yet.
+  const next = async () => {
+    const v = validate(step, f);
+    setSubmitted(true);
+    if (Object.keys(v).length) return focusFirstError(v);
+    if (step === 0) {
+      setState('sending');
+      const ok = await checkEmail({ submit: true });
+      setState('idle');
+      if (!ok) return;
+    }
+    goStep(step + 1);
+  };
+
+  // ---------- last step: send everything, then the email goes out ----------
+  const submitAll = async () => {
+    const v = validate(lastStep, f);
+    setSubmitted(true);
+    const capOk = captchaOk();
+    if (Object.keys(v).length || !capOk) return focusFirstError(v);
+    for (const s of teen ? [0, 1] : [0]) {
+      if (Object.keys(validate(s, f)).length) return goStep(s);
+    }
+    if (isTeenAge(age) && !teen) return onDob(f.dob);
+    setState('sending');
+    setMsg('');
+    // Only the sign-up details go with the request; the welcome questions are asked after login.
+    const welcome = {
+      country: f.country,
+      ...(f.state ? { state: f.state } : {}),
+      city: f.city.trim(),
+      ...(f.zipcode.trim() ? { zipcode: f.zipcode.trim() } : {}),
+      'communication-methods': Object.keys(f.channels)
+        .filter((k) => f.channels[k] && !(teen && k !== 'email'))
+        .concat('dashboard')
+    };
+    const ref = readReferral();
+    const p = f.parent;
+    const body = {
       category: category[f.type],
       name: {
-        salutation:
-          f.gender === 'Male'
-            ? 'Mr.'
-            : f.gender === 'Female'
-              ? 'Ms.'
-              : 'Mx.',
+        salutation: f.gender === 'Male' ? 'Mr.' : f.gender === 'Female' ? 'Ms.' : 'Mx.',
         first: f.firstName.trim(),
-        last: f.lastName.trim(),
+        middle: f.middleName.trim(),
+        last: f.lastName.trim()
       },
-
       mail: f.email.trim().toLowerCase(),
+      ...(f.phone.trim() ? { phone: fullPhone(f.dial, f.phone) } : {}),
       dob: f.dob,
       gender: f.gender,
-
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    })
-  console.log({res});
-    if (res.status === "success") {
-      try { localStorage.setItem(TYPE_KEY, f.type); } catch (e) { /* ignore */ }
-      setPendingSignup(true);
-      setState('done');
-
-      track('sign_up_start', {
-        category: f.type,
-        country: f.country,
-      });
-    } else {
-      setState('error');
-      setMsg(failureMessage(res));
-      setDuplicate(/duplicate|already/i.test(JSON.stringify(res)));
-    }
-  } catch (error) {
-    setState('error');
-    setMsg('Unable to submit your details. Please try again.');
-  }
-};
-
-  // ---------- login (token) + consents; password set hone ke baad ----------
-  const startSession = async () => {
-
-    if (!session.current.loggedIn) {
-      const res = await api.post('/api/v1/user/login', {
-        mail: f.email.trim().toLowerCase(),
-        password: f.password,
-      });
-      if (res?.status !== 'success') {
-        session.current.lastError = res?.message;
-        return false;
-      }
-
-      session.current.loggedIn = true;
-    }
-    if (!session.current.consentSaved) {
-      try {
-        const r = await api.put(`/api/v1/user/${queryParams.user}`, {
-          // consents: {
-          //   terms: f.terms,
-          //   research: f.research,
-          //   marketing: f.marketing,
-          // },
-          joiningTerms: [
-            f.terms && 'privacy-policy',
-            f.marketing && 'newsletter',
-            f.research && 'video-concent',
-          ].filter(Boolean),
-        });
-        session.current.consentSaved = r?.status === 'success';
-        if (!session.current.consentSaved) console.error('Consent save failed:', r);
-      } catch (err) {
-        console.error('Consent save failed:', err);
-      }
-    }
-    return session.current.loggedIn;
-  };
-
-  // ---------- STEP 1: Secure your account -> set password, login, save consents ----------
-  const submitPassword = async (e) => {
-    e.preventDefault();
-
-    const v = validate(1, f);
-    setSubmitted(true);
-
-    if (!captcha) setCaptchaErr('Complete the human check.');
-
-    if (Object.keys(v).length || !captcha) {
-      focusFirstError(v);
-      return;
-    }
-
-    setState('sending');
-    setMsg('');
-
+      ...(teen ? { address: [{ tag: 'Home', country: f.country.toLowerCase(), state: f.state || undefined, city: f.city.trim(), zipcode: f.zipcode.trim() || undefined }] } : {}),
+      terms: teen ? ['privacy-policy', 'video-concent'] : ['privacy-policy', f.research && 'video-concent', f.marketing && 'newsletter'].filter(Boolean),
+      ...(teen ? { welcome } : {}),
+      ...(teen
+        ? {
+            parent: {
+              relation: p.rel,
+              name: { first: p.first.trim(), middle: p.middle.trim(), last: p.last.trim() },
+              email: p.email.trim().toLowerCase(),
+              phone: fullPhone(p.dial, p.phone),
+              dob: p.dob,
+              ...(p.rel === 'guardian' ? { gender: p.gender } : {})
+            }
+          }
+        : {}),
+      ...(ref ? { referredBy: ref } : {}),
+      captcha: captchaPayload(captcha)
+    };
     try {
-      // Set the password using the link's user ID and code
-      const resp = await api.patch('/api/v1/user', {
-        userID: queryParams.user,
-        emailOTP: queryParams.code,
-        password: f.password,
-        confirmPassword: f.confirm,
-      });
-      console.log('set-password response:', resp);
-      if (resp.status != "success") {
-        if (/expired|invalid|used/i.test(JSON.stringify(resp))) {
-          setState('link-used');
-          return;
+      const res = await api.put('/api/v1/user', body);
+      if (res?.status === 'success') {
+        try {
+          localStorage.setItem(TYPE_KEY, f.type);
+          sessionStorage.removeItem(DRAFT_KEY);
+        } catch {
+          /* ignore */
         }
-        setState('error');
-        setMsg(failureMessage(resp));
-        setResetKey((k) => k + 1);
+        clearReferral();
+        setState(teen ? 'teen-submitted' : 'done');
+        track('sign_up_submitted', { category: f.type, welcome_answers: Object.keys(welcome).length });
+        window.scrollTo({ top: 0 });
         return;
       }
-      try {
-        await startSession();
-      } catch (err) {
-        console.error('Auto login failed:', err);
+      const m = errText(res, 'We couldn’t send your details. Please try again.');
+      resetCaptcha();
+      if (isCaptchaError(m)) {
+        setCaptchaErr(m);
+        setState('idle');
+        return;
       }
-
-      // Save incomplete registration details for frontend resume flow
-      try {
-        localStorage.setItem(
-          PENDING_JOIN_KEY,
-          JSON.stringify({
-            user: queryParams.user,
-            email: f.email.trim().toLowerCase(),
-            type: f.type,
-          })
-        );
-      } catch (error) {
-        console.error('Unable to save pending registration:', error);
+      if (/duplicate|already/i.test(m)) {
+        setDuplicate(true);
+        setMsg('This email is already registered.');
+        setState('idle');
+        return;
       }
-
-      setSubmitted(false);
-      setTouched({});
-      setState('idle');
-      setStep(2);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch (error) {
       setState('error');
-      setMsg('Unable to create your account. Please try again.');
-      setResetKey((k) => k + 1);
+      setMsg(m);
+    } catch {
+      resetCaptcha();
+      setState('error');
+      setMsg('Unable to send your details. Please try again.');
     }
   };
 
-  // ---------- STEP 2: Contact & profile -> save phone/country/guardian + pro answers ----------
-  const submitProfile = async (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
-
-    const v = validate(2, f);
-    setSubmitted(true);
-
-    if (Object.keys(v).length) {
-      focusFirstError(v);
-      return;
-    }
-
-    setState('sending');
-    setMsg('');
-
-    try {
-      const ok = await startSession();
-      if (!ok) {
-        setState('error');
-        setMsg('We couldn’t sign you in to save your profile. Please try again.');
-        return;
-      }
-
-      const dial = (COUNTRIES.find((c) => c.c === f.dial) || {}).d || '';
-
-      const upd = await api.put(`/api/v1/user/${queryParams.user}`, {
-        address: [
-          {
-            tag: 'Home',
-            country: f.country,
-          },
-        ],
-        phone: `${dial.replace(/^\+/, '')}${f.phone.replace(/\D/g, '')}`,
-        guardianEmail: minor
-          ? f.guardianEmail.trim().toLowerCase()
-          : undefined,
-      });
-      if (upd.status !== 'success') {
-        setState('error');
-        setMsg(failureMessage({ data: upd }));
-        return;
-      }
-
-      const answerPayload = {
-        'communication-methods': Object.keys(f.channels).filter((k) => f.channels[k]).concat('dashboard'),
-      };
-      if (f.type === 'pro') {
-        WORK_LEVELS.forEach((l) => { answerPayload[l.name] = f[l.key]; });
-        if (f.company.trim()) answerPayload.companyname = f.company.trim();
-        if (f.workEmail.trim()) answerPayload.workemail = f.workEmail.trim().toLowerCase();
-      }
-
-      const ansResp = await api.patch('/api/v1/me/answer', answerPayload);
-      if (ansResp.status !== 'success') {
-        setState('error');
-        setMsg(failureMessage({ data: ansResp }));
-        return;
-      }
-      try {
-        localStorage.removeItem(PENDING_JOIN_KEY);
-        sessionStorage.removeItem(RESUME_KEY);
-      } catch (e) {
-        console.error('Unable to clear pending registration:', e);
-      }
-      window.history.replaceState(null, '', window.location.pathname);
-      setQueryParams({});
-      setState('created');
-
-      track('sign_up_complete', {
-        category: f.type,
-        country: f.country,
-      });
-    } catch (error) {
-      setState('error');
-      setMsg('Unable to save your profile. Please try again.');
-    }
+    if (step === lastStep) return submitAll();
+    return next();
   };
 
-  const strength = passwordStrength(f.password);
-  useEffect(() => {
-    const q = new URLSearchParams(window.location.search);
-    const parts = (q.get('name') || '').trim().split(/\s+/).filter(Boolean);
-    const email = q.get('email');
-    if (!parts.length && !email) return;
-
-    setF((p) => ({
-      ...p,
-      firstName: parts[0] ?? p.firstName,
-      lastName: parts.length > 1 ? parts.slice(1).join(' ') : p.lastName,
-      email: email ?? p.email
-    }));
-  }, []);
-  
-  if (state === 'done') {
+  // ================= result screens =================
+  if (state === 'done')
     return (
-      <section className="join-done">
-        <div className="wrap join-done-inner">
-          <div className="inbox-anim" aria-hidden="true">
-            <span className="inbox-env">
-              <Icon name="mail" size={56} />
-            </span>
-            <span className="inbox-spark s1" />
-            <span className="inbox-spark s2" />
-            <span className="inbox-spark s3" />
-          </div>
-
-          <h1>Check your inbox, {f.firstName.trim()}!</h1>
-
-          <p>
-            We have sent a verification link to{' '}
-            <strong>{f.email}</strong>. Open the email and click
-            the link to continue setting up your account.
-          </p>
-
-          <p className="muted">
-            If you don't see the email, check your spam folder.
-          </p>
-
-          <Link to="/" className="btn btn-primary">
-            Back to home
-          </Link>
-        </div>
-      </section>
+      <Done title={`Check your inbox, ${f.firstName.trim()}!`}>
+        <p>
+          Your details are saved. We’ve sent an account link to <strong>{f.email}</strong>. Open it to create your password. You’ll log in with this email address.
+        </p>
+        <ol className="done-next">
+          <li className="is-done">
+            <Icon name="check" size={14} strokeWidth={3} /> Your details and CAPTCHA
+          </li>
+          <li className="is-now">
+            <Icon name="mail" size={14} /> Open the email link
+          </li>
+          <li>
+            <Icon name="key" size={14} /> Create your password
+          </li>
+          <li>
+            <Icon name="sparkles" size={14} /> Log in: a few welcome questions
+          </li>
+          <li>
+            <Icon name="clipboard" size={14} /> {f.type === 'pro' ? 'Professional' : 'Consumer'} panel Terms &amp; Conditions
+          </li>
+          <li>
+            <Icon name="dashboard" size={14} /> Your dashboard
+          </li>
+        </ol>
+        <p className="muted">The link works for 24 hours. If you can’t see the email, check your spam or promotions folder.</p>
+        <ResendVerify email={f.email} compact />
+        <PreviewLinks links={[['Open the account link', '?user=demo-adult&code=000000', '/join/']]} />
+        <Link to="/" className="btn btn-primary">
+          Back to home
+        </Link>
+      </Done>
     );
-  }
-
-  if (state === 'created') {
+  if (state === 'teen-submitted')
     return (
-      <section className="join-done">
-        <div className="wrap join-done-inner">
-          <div className="inbox-anim" aria-hidden="true">
-            <span className="inbox-env">
-              <Icon name="mail" size={56} />
-            </span>
-            <span className="inbox-spark s1" />
-            <span className="inbox-spark s2" />
-            <span className="inbox-spark s3" />
-          </div>
-      
-          <h1>Your account has been created successfully! 🎉</h1>
-
-            <p>Welcome to our community! You're all set to get started and explore exciting opportunities and rewards.</p>
-            <p>We're glad to have you with us!</p>
-
-          <Link to="/login?new=1" className="btn btn-primary">
-            Login
-          </Link>
-        </div>
-      </section>
+      <Done icon="users" title="Request sent to your parent or guardian">
+        <p>
+          Your details are saved. We have sent a <strong>Parent/Guardian Onboarding Form</strong> to <strong>{f.parent.email}</strong>, and a note to you at <strong>{f.email}</strong>. Please ask them to check
+          their inbox (and spam folder) and complete the onboarding and consent form.
+        </p>
+        <p className="muted">Your Teen account stays switched off until they consent. Then we email you a secure link to create your password.</p>
+        <TeenStatus stage="parent-verification-pending" parentEmail={f.parent.email} />
+        <PreviewLinks links={[['Open the parent’s onboarding form', '?user=demo-teen&code=000000', '/parent-consent/']]} />
+        <Link to="/earn/teens/" className="btn btn-primary">
+          How the Teen panel works
+        </Link>
+      </Done>
     );
-  }
-
-  if (state === 'checking') {
+  if (state === 'teen-waiting')
     return (
-      <section className="join-done">
-        <div className="wrap join-done-inner">
-          <p>Verifying your link…</p>
-        </div>
-      </section>
+      <Done icon="clock" title="Waiting for your parent or guardian">
+        <p>Your parent or guardian hasn’t completed the consent form yet, so this account can’t be activated. We’ll email you as soon as they do.</p>
+        <TeenStatus stage="parent-verification-pending" parentEmail={f.parent.email} />
+        <Link to="/" className="btn btn-primary">
+          Back to home
+        </Link>
+      </Done>
     );
-  }
-
-  if (state === 'link-used') {
+  if (state === 'teen-active')
     return (
-      <section className="join-done">
-        <div className="wrap join-done-inner">
-          <h1>This link is no longer valid</h1>
-          <p>
-            This link has either already been used or has expired. If you have
-            already set your password, please log in.
-          </p>
-          <Link to="/login" className="btn btn-primary">
-            Login
-          </Link>
-        </div>
-      </section>
+      <Done icon="check" title="Your Teen account is active 🎉">
+        <p>Your parent or guardian has consented and your password is set. You log in with your email address. You can change your password any time in your account settings.</p>
+        <TeenStatus stage="account-active" />
+        <a href={hrefFor(WELCOME)} className="btn btn-primary">
+          Continue: a few welcome questions <Icon name="arrow" size={18} />
+        </a>
+      </Done>
     );
-  }
-
-  if (duplicate) {
+  if (state === 'to-welcome')
+    return (
+      <Done icon="check" title="Your account is ready">
+        <p>You are logged in. Next: a few quick welcome questions, then your panel agreement.</p>
+        <a href={hrefFor(WELCOME)} className="btn btn-primary">
+          Continue <Icon name="arrow" size={18} />
+        </a>
+      </Done>
+    );
+  if (state === 'to-terms')
+    return (
+      <Done icon="clipboard" title="Account created. One last step">
+        <p>Read and accept your panel agreement (Terms &amp; Conditions, privacy notice and consent). Then your dashboard opens.</p>
+        <a href={termsUrl(link?.category, f.type)} className="btn btn-primary">
+          Open the Terms &amp; Conditions <Icon name="arrow" size={18} />
+        </a>
+      </Done>
+    );
+  if (state === 'checking')
+    return (
+      <Done icon="refresh" title="Checking your link…">
+        <p>One moment.</p>
+      </Done>
+    );
+  if (state === 'link-used')
+    return (
+      <Done icon="clock" title="This link is no longer valid">
+        <p>It has already been used or it has expired. If you already created your account, log in. Otherwise ask for a new email below.</p>
+        <ResendVerify email={f.email} compact />
+        <Link to="/login/" className="btn btn-primary">
+          Log in
+        </Link>
+      </Done>
+    );
+  if (duplicate)
     return (
       <ResendVerify email={f.email} title="Email already registered" message={msg}>
-        <Link to="/login/" className="btn-outline">Sign in</Link>
+        <Link to="/login/" className="btn-outline">
+          Log in
+        </Link>
         <button
           type="button"
           className="link-soft"
@@ -847,96 +829,348 @@ const submitSignup = async () => {
             setDuplicate(false);
             setState('idle');
             setMsg('');
+            setEmailErr('');
           }}
         >
           Use a different email
         </button>
       </ResendVerify>
     );
-  }
+
+  const aud = f.type === 'pro' || teen ? f.type : 'consumer';
+
+  // ================= account setup from the email link =================
+  if (link)
+    return (
+      <section className={`join theme-${aud} is-setup`}>
+        <div className="join-bg" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+        <AuthAura aud={aud} />
+        <div className="wrap join-grid">
+          <div className="join-side">
+            <Breadcrumbs items={[{ label: 'Create your account' }]} />
+            <h1>{link.teen ? 'Switch on your Teen account' : 'Create your account'}</h1>
+            <p className="join-lead">{link.teen ? 'Your parent or guardian said yes. Create a password you’ll remember.' : 'Your email is confirmed. Create your password. A few welcome questions come next, once you are logged in.'}</p>
+            <MemberCard f={f} step={2} />
+          </div>
+          <div className="join-card">
+            <span className="join-card-ring" aria-hidden="true" />
+            {link.teen && <TeenStatus stage="account-activation-pending" />}
+            <AccountSetup
+              user={link.user}
+              code={link.code}
+              firstName={f.firstName}
+              lastName={f.lastName}
+              email={f.email}
+              teen={link.teen}
+              onLinkUsed={() => setState('link-used')}
+              onTeenWaiting={() => setState('teen-waiting')}
+              onDone={() => {
+                window.history.replaceState(null, '', window.location.pathname + window.location.hash);
+                track('sign_up_account_created', { category: f.type });
+                if (link.teen) return setState('teen-active');
+                // Logged in now: the welcome questions follow on their own page, then the agreement.
+                welcomeChannels.set(Object.keys(f.channels).filter((k) => f.channels[k]).concat('dashboard'));
+                setState('to-welcome');
+                const country = (f.country || f.dial || '').toLowerCase();
+                const go = () => window.location.assign(hrefFor(WELCOME));
+                if (country && !ENV.DEMO_MODE) api.put(`/api/v1/user/${link.user}`, { address: [{ tag: 'Home', country }] }).catch(() => {}).finally(go);
+                else go();
+              }}
+            />
+          </div>
+        </div>
+      </section>
+    );
+
+  // ================= forms =================
+  const steps = teen ? TEEN_STEPS : STEPS;
+  const icons = teen ? TEEN_ICONS : STEP_ICONS;
+  const alert = state === 'error' && msg && (
+    <p className="form-alert" role="alert">
+      {msg}
+    </p>
+  );
+  const consents = (
+    <div className="consents">
+      <Consent k="terms" f={f} set={set} errOf={errOf}>
+        I have read and accept the{' '}
+        <a href={hrefFor('/terms/')} target="_blank" rel="noopener">
+          Terms &amp; Conditions
+        </a>
+        .
+      </Consent>
+      <Consent k="privacy" f={f} set={set} errOf={errOf}>
+        I have read and accept the{' '}
+        <a href={hrefFor('/privacy/')} target="_blank" rel="noopener">
+          Privacy Policy
+        </a>
+        , including how my data is used for research.
+      </Consent>
+      <Consent k="research" f={f} set={set} errOf={errOf}>
+        I agree to take part in surveys and other market research activities.
+      </Consent>
+      <label className="check">
+        <input type="checkbox" checked={f.marketing} onChange={(e) => set('marketing', e.target.checked)} />
+        <span className="check-ui" />
+        <span>Send me tips, reward news and the occasional newsletter.</span>
+      </label>
+    </div>
+  );
+  const captchaBox = (
+    <>
+      <Captcha onChange={onCaptcha} resetKey={resetKey} error={captchaErr} />
+      {captchaErr && (
+        <p className="field-error" role="alert">
+          {captchaErr}
+        </p>
+      )}
+    </>
+  );
+
   return (
-    <section className={`join theme-${f.type === 'pro' ? 'pro' : 'consumer'}`}>
+    <section className={`join theme-${aud} at-step-${step}`}>
       <div className="join-bg" aria-hidden="true">
         <span />
         <span />
         <span />
       </div>
-      <AuthAura aud={f.type === 'pro' ? 'pro' : 'consumer'} />
+      <AuthAura aud={aud} />
       <div className="wrap join-grid">
         <div className="join-side">
           <Breadcrumbs items={[{ label: 'Join free' }]} />
-          <h1>Create your free account</h1>
-          <p className="join-tag">
-            {'Two minutes now. Rewards for every survey after.'.split(' ').map((w, i) => (
+          <h1>{teen ? 'Join the Teen panel' : 'Create your free account'}</h1>
+          <p className="join-tag" key={`tag-${teen ? 'm' : 'x'}`}>
+            {(teen ? 'Your voice. Your parent’s OK. Then you’re in.' : 'Two minutes now. Rewards for every survey after.').split(' ').map((w, i) => (
               <span key={i} style={{ '--i': i }}>
                 {w}{' '}
               </span>
             ))}
           </p>
-          <p className="join-lead">No fees, no investment – just honest answers. Unlock each step below as you go.</p>
-          <MemberCard f={f} step={step} />
-          <AuthVoice aud={f.type === 'pro' ? 'pro' : 'consumer'} />
+          <p className="join-lead">
+            {teen
+              ? 'For ages 13 to 17. You fill in your details and your parent or guardian’s. They get an onboarding and consent form by email, and your account switches on only after they consent. A few welcome questions come after your first login.'
+              : 'No fees, no investment – just honest answers. Unlock each step below as you go.'}
+          </p>
+          <MemberCard f={f} step={teen ? Math.min(step, 3) : Math.min(step, 2)} />
+          <AuthVoice aud={aud} />
         </div>
 
         <div className="join-card">
           <span className="join-card-ring" aria-hidden="true" />
           <ol className="stepper" aria-label="Sign-up progress">
-            {STEPS.map((s, i) => (
+            {steps.map((s, i) => (
               <li key={s} className={i === step ? 'is-on' : i < step ? 'is-done' : ''} aria-current={i === step ? 'step' : undefined}>
-                <span className="stepper-dot">{i < step ? <Icon name="check" size={14} strokeWidth={3} /> : <Icon name={STEP_ICONS[i]} size={15} />}</span>
+                <span className="stepper-dot">{i < step ? <Icon name="check" size={14} strokeWidth={3} /> : <Icon name={icons[i]} size={15} />}</span>
                 <span className="stepper-label">{s}</span>
               </li>
             ))}
-            <span className="stepper-bar" style={{ '--p': step / (STEPS.length - 1) }} aria-hidden="true" />
+            <span className="stepper-bar" style={{ '--p': step / (steps.length - 1) }} aria-hidden="true" />
           </ol>
+          <p className="join-progress-note">
+            {teen ? `Step ${step + 1} of ${steps.length} · nothing is sent until the last step` : 'Step 1 of 3 · the next steps start from the link we email you'}
+          </p>
 
-          <form ref={formRef} onSubmit={step === 0 ? next : step === 1 ? submitPassword : submitProfile} noValidate key={step} className="join-step">
-            {/* ================= STEP 0: ABOUT YOU ================= */}
-            {step === 0 && (
-              <>
-                <div className="type-toggle" role="radiogroup" aria-label="I am joining as">
-                  {[
-                    ['consumer', 'Consumer', 'users', 'Everyday opinions on products & life'],
-                    ['pro', 'Business professional', 'briefcase', 'Also get B2B & workplace studies']
-                  ].map(([v, l, ic, d]) => (
-                    <button type="button" role="radio" aria-checked={f.type === v} key={v} className={`type-opt to-${v} ${f.type === v ? 'is-on' : ''}`} onClick={() => {
-                      if (f.type !== v) playAudience(v);
-                      set('type', v);
-                    }}>
-                      <span className="to-ico">
-                        <Icon name={ic} size={22} />
+          {(
+            <form ref={formRef} onSubmit={onSubmit} noValidate key={`${step}-${teen}`} className="join-step">
+              {step === 0 && (
+                <>
+                  <div className="type-toggle is-three" role="radiogroup" aria-label="I am joining as">
+                    {[
+                      ['consumer', 'Consumer', 'users', 'Everyday opinions on products & life'],
+                      ['pro', 'Business professional', 'briefcase', 'Also get B2B & workplace studies'],
+                      ['minor', 'Teen · 13–17', 'sparkles', 'With a parent or guardian’s consent']
+                    ].map(([v, l, ic, d]) => (
+                      <button type="button" role="radio" aria-checked={f.type === v} key={v} className={`type-opt to-${v} ${f.type === v ? 'is-on' : ''}`} onClick={() => chooseType(v)}>
+                        <span className="to-ico">
+                          <Icon name={ic} size={22} />
+                        </span>
+                        <strong>{l}</strong>
+                        <span className="to-sub">{d}</span>
+                        <span className="to-tick" aria-hidden="true">
+                          <Icon name="check" size={14} strokeWidth={3} />
+                        </span>
+                        <span className="to-spark" aria-hidden="true">
+                          <i />
+                          <i />
+                          <i />
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                  {ageNotice && (
+                    <p className="age-notice" role="status">
+                      <Icon name="users" size={18} />
+                      <span>{ageNotice}</span>
+                    </p>
+                  )}
+                  {teen && !ageNotice && (
+                    <p className="minor-join-note">
+                      <span className="mjn-keys" aria-hidden="true">
+                        <i>🛡️</i>
                       </span>
-                      <strong>{l}</strong>
-                      <span className="to-sub">{d}</span>
-                      <span className="to-tick" aria-hidden="true">
-                        <Icon name="check" size={14} strokeWidth={3} />
+                      <span>
+                        <strong>Parent or guardian consent is required.</strong> First your details, then theirs. They receive an onboarding form by email and your account switches on only after they
+                        consent. <a href={hrefFor('/earn/teens/')}>How the Teen panel works</a>
                       </span>
-                      <span className="to-spark" aria-hidden="true">
-                        <i />
-                        <i />
-                        <i />
-                      </span>
-                    </button>
-                  ))}
-                </div>
-                <div className="form-grid two">
+                    </p>
+                  )}
+                  {teen ? (
+                    <>
+                  <fieldset className="jf-group">
+                    <legend>
+                      <Icon name="id" size={15} /> Your name
+                    </legend>
+                    <div className="form-grid three name-row">
+                      <div data-k="firstName">
+                        <Field id="j-first" label="First name" error={errOf('firstName')} valid={okOf('firstName')}>
+                          <input id="j-first" className="input" value={f.firstName} onChange={(e) => set('firstName', e.target.value)} onBlur={touch('firstName')} autoComplete="given-name" maxLength={49} aria-required="true" aria-invalid={!!errOf('firstName')} />
+                        </Field>
+                      </div>
+                      <div data-k="middleName">
+                        <Field id="j-middle" label="Middle name" error={errOf('middleName')} valid={okOf('middleName') && !!f.middleName.trim()}>
+                          <input id="j-middle" className="input" value={f.middleName} onChange={(e) => set('middleName', e.target.value)} onBlur={touch('middleName')} autoComplete="additional-name" maxLength={49} />
+                        </Field>
+                      </div>
+                      <div data-k="lastName">
+                        <Field id="j-last" label="Last name" error={errOf('lastName')} valid={okOf('lastName') && !!f.lastName.trim()}>
+                          <input id="j-last" className="input" value={f.lastName} onChange={(e) => set('lastName', e.target.value)} onBlur={touch('lastName')} autoComplete="family-name" maxLength={49} />
+                        </Field>
+                      </div>
+                    </div>
+                  </fieldset>
+                  <fieldset className="jf-group">
+                    <legend>
+                      <Icon name="mail" size={15} /> Contact
+                    </legend>
+                    <div data-k="email">
+                      <Field id="j-email" label="Email address" error={errOf('email')} valid={okOf('email')} hint={teen ? 'Your own email. Your account link comes here after your parent consents.' : 'Your account link comes here after the welcome questions.'}>
+                        <input
+                          id="j-email"
+                          className="input"
+                          type="email"
+                          value={f.email}
+                          onChange={(e) => {
+                            set('email', e.target.value);
+                            setEmailErr('');
+                          }}
+                          onBlur={() => {
+                            touch('email')();
+                            checkEmail();
+                          }}
+                          autoComplete="email"
+                          maxLength={120}
+                          aria-invalid={!!errOf('email')}
+                        />
+                      </Field>
+                    </div>
+                    <div data-k="phone">
+                      <Field id="j-phone" label="Mobile number" error={errOf('phone')} valid={okOf('phone') && !!f.phone} hint={teen ? 'If you have your own phone. Used only for account security.' : 'With your country code. Used for account security and, if you choose, survey alerts.'}>
+                        <PhoneField id="j-phone" country={f.dial} number={f.phone} onCountry={(c) => set('dial', c)} onNumber={(v) => set('phone', v)} onBlur={touch('phone')} invalid={!!errOf('phone')} />
+                      </Field>
+                    </div>
+                  </fieldset>
+                  <fieldset className="jf-group">
+                    <legend>
+                      <Icon name="cake" size={15} /> Birthday &amp; gender
+                    </legend>
+                    <div data-k="dob">
+                      <Field
+                        id="j-dob"
+                        label={
+                          <span className="lbl-ico">
+                            <CakeIcon /> Date of birth
+                          </span>
+                        }
+                        error={errOf('dob')}
+                        valid={!!f.dob && !live.dob}
+                        hint={teen ? 'Teen panel: only birthdays for ages 13 to 17 can be picked.' : 'Full date: day, month and year. It places you in the right panel and can’t be changed later.'}
+                      >
+                        {teen ? (
+                          <DateField key="dob-teen" id="j-dob" value={f.dob} onChange={onDob} invalid={!!errOf('dob')} minDate={teenDates.min} maxDate={teenDates.max} lockedYears={4} foot="Ages 13–17 only. Greyed-out years and days can’t be picked." />
+                        ) : (
+                          <DateField key="dob-all" id="j-dob" value={f.dob} onChange={onDob} invalid={!!errOf('dob')} />
+                        )}
+                      </Field>
+                      {f.dob && !live.dob && birthdayInfo(f.dob) && (
+                        <p className="bday-chip" key={f.dob}>
+                          <strong>Age {age}</strong>
+                          <span>{birthdayInfo(f.dob).days === 0 ? 'Happy birthday today! 🎉' : `Next birthday: ${birthdayInfo(f.dob).label} · in ${birthdayInfo(f.dob).days} days`}</span>
+                        </p>
+                      )}
+                    </div>
+                    <div data-k="gender">
+                      <GenderPicker
+                        id="j-gender"
+                        value={f.gender}
+                        error={errOf('gender')}
+                        onPick={(g) => {
+                          set('gender', g);
+                          setTouched((t) => ({ ...t, gender: true }));
+                        }}
+                      />
+                    </div>
+                  </fieldset>
+                  <fieldset className="jf-group">
+                    <legend>
+                      <Icon name="pin" size={15} /> Where you live
+                    </legend>
+                    <LocationFields loc={f} set={set} errOf={errOf} touch={touch} idp="j-loc" />
+                  </fieldset>
+                    </>
+                  ) : (
+                    // Consumers and professionals: the previous create-account form, unchanged (Kunal, 20 Nov 2026).
+                    <>
+                <div className={`form-grid ${teen ? 'two' : 'three'}`}>
                   <div data-k="firstName">
                     <Field id="j-first" label="First name" error={errOf('firstName')} valid={okOf('firstName')}>
                       <input id="j-first" className="input" value={f.firstName} onChange={(e) => set('firstName', e.target.value)} onBlur={touch('firstName')} autoComplete="given-name" maxLength={49} aria-invalid={!!errOf('firstName')} />
                     </Field>
                   </div>
+                  {!teen && (
+                    <div data-k="middleName">
+                      <Field id="j-middle" label="Middle name" error={errOf('middleName')}>
+                        <input id="j-middle" className="input" value={f.middleName} onChange={(e) => set('middleName', e.target.value)} onBlur={touch('middleName')} autoComplete="additional-name" maxLength={49} />
+                      </Field>
+                    </div>
+                  )}
                   <div data-k="lastName">
-                    <Field id="j-last" label="Last name" error={errOf('lastName')} valid={okOf('lastName')}>
-                      <input id="j-last" className="input" value={f.lastName} onChange={(e) => set('lastName', e.target.value)} onBlur={touch('lastName')} autoComplete="family-name" maxLength={49} aria-invalid={!!errOf('lastName')} />
+                    <Field id="j-last" label="Last name" error={errOf('lastName')} valid={okOf('lastName') && !!f.lastName.trim()}>
+                      <input id="j-last" className="input" value={f.lastName} onChange={(e) => set('lastName', e.target.value)} onBlur={touch('lastName')} autoComplete="family-name" maxLength={49} />
                     </Field>
                   </div>
                 </div>
                 <div data-k="email">
-                  <Field id="j-email" label="Email address" error={errOf('email')} valid={okOf('email')} hint="We’ll send a verification link here.">
-                    <input id="j-email" className="input" type="email" value={f.email} onChange={(e) => { set('email', e.target.value); setEmailErr(''); }}
-onBlur={() => { touch('email')(); checkEmail(); }} autoComplete="email" maxLength={120} aria-invalid={!!errOf('email')} />
+                  <Field id="j-email" label="Email address" error={errOf('email')} valid={okOf('email')} hint={teen ? 'Your own email. Your password link comes here after your parent consents.' : 'We’ll send a verification link here.'}>
+                    <input
+                      id="j-email"
+                      className="input"
+                      type="email"
+                      value={f.email}
+                      onChange={(e) => {
+                        set('email', e.target.value);
+                        setEmailErr('');
+                      }}
+                      onBlur={() => {
+                        touch('email')();
+                        checkEmail();
+                      }}
+                      autoComplete="email"
+                      maxLength={120}
+                      aria-invalid={!!errOf('email')}
+                    />
                   </Field>
                 </div>
+                {!teen && (
+                  <div data-k="phone">
+                    <Field id="j-phone" label="Mobile number" error={errOf('phone')} valid={okOf('phone')} hint="With your country code. Used for account security and, if you choose, survey alerts.">
+                      <PhoneField id="j-phone" country={f.dial} number={f.phone} onCountry={(c) => set('dial', c)} onNumber={(v) => set('phone', v)} onBlur={touch('phone')} invalid={!!errOf('phone')} />
+                    </Field>
+                  </div>
+                )}
                 <div data-k="dob">
                   <Field
                     id="j-dob"
@@ -947,9 +1181,13 @@ onBlur={() => { touch('email')(); checkEmail(); }} autoComplete="email" maxLengt
                     }
                     error={errOf('dob')}
                     valid={!!f.dob && !live.dob}
-                    hint="Full date: day, month and year. It can’t be changed later."
+                    hint={teen ? 'Teen panel: only birthdays for ages 13 to 17 can be picked.' : 'Full date: day, month and year. We use it to place you in the right panel; it can’t be changed later.'}
                   >
-                    <DateField id="j-dob" value={f.dob} onChange={(v) => { set('dob', v); setTouched((t) => ({ ...t, dob: true })); }} invalid={!!errOf('dob')} />
+                    {teen ? (
+                      <DateField key="dob-teen" id="j-dob" value={f.dob} onChange={onDob} invalid={!!errOf('dob')} minDate={teenDates.min} maxDate={teenDates.max} lockedYears={4} foot="Ages 13–17 only. Greyed-out years and days can’t be picked." />
+                    ) : (
+                      <DateField key="dob-all" id="j-dob" value={f.dob} onChange={onDob} invalid={!!errOf('dob')} />
+                    )}
                   </Field>
                   {f.dob && !live.dob && birthdayInfo(f.dob) && (
                     <p className="bday-chip" key={f.dob}>
@@ -959,254 +1197,92 @@ onBlur={() => { touch('email')(); checkEmail(); }} autoComplete="email" maxLengt
                         ))}
                       </span>
                       <strong>Age {age}</strong>
-                      <span>
-                        {birthdayInfo(f.dob).days === 0 ? 'Happy birthday today! 🎉' : `Next birthday: ${birthdayInfo(f.dob).label} · in ${birthdayInfo(f.dob).days} days`}
-                      </span>
+                      <span>{birthdayInfo(f.dob).days === 0 ? 'Happy birthday today! 🎉' : `Next birthday: ${birthdayInfo(f.dob).label} · in ${birthdayInfo(f.dob).days} days`}</span>
                     </p>
                   )}
                 </div>
-                {minor && !live.dob && (
-                  <p className="inline-note">
-                    <Icon name="users" size={16} /> As you’re under 18, we’ll ask for a parent or guardian email on the last step.
-                  </p>
-                )}
                 <div data-k="gender">
-                  <Field
+                  <GenderPicker
                     id="j-gender"
-                    label={
-                      <span className="lbl-ico">
-                        <span className="gl-duo" aria-hidden="true">
-                          <i />
-                          <i />
-                        </span>{' '}
-                        Gender
-                      </span>
-                    }
+                    value={f.gender}
                     error={errOf('gender')}
-                  >
-                    <div className="gender-pick" role="radiogroup" aria-label="Gender" id="j-gender">
-                      {GENDERS.map((g, i) => (
-                        <button
-                          type="button"
-                          role="radio"
-                          aria-checked={f.gender === g}
-                          key={g}
-                          className={`gp-opt ${f.gender === g ? 'is-on' : ''}`}
-                          style={{ '--gc': GENDER_META[g].c, '--i': i }}
-                          onClick={() => { set('gender', g); setTouched((t) => ({ ...t, gender: true })); }}
-                        >
-                          <span className="gp-badge">
-                            <GenderGlyph g={g} on={f.gender === g} />
-                          </span>
-                          <span className="gp-label">{g}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </Field>
+                    onPick={(g) => {
+                      set('gender', g);
+                      setTouched((t) => ({ ...t, gender: true }));
+                    }}
+                  />
                 </div>
-                {state === 'error' && !duplicate && (
-                  <p className="form-alert" role="alert">
-                    {msg}
-                  </p>
-                )}
-              </>
-            )}
-
-            {/* ================= STEP 1: SECURE YOUR ACCOUNT ================= */}
-            {step === 1 && (
-              <>
-                <div data-k="password">
-                  <Field id="j-pw" label="Create a password" error={errOf('password')}>
-                    <div className="pw-wrap">
-                      <input id="j-pw" className="input" type={showPw ? 'text' : 'password'} value={f.password} onChange={(e) => set('password', e.target.value)} onBlur={touch('password')} autoComplete="new-password" maxLength={128} aria-invalid={!!errOf('password')} aria-describedby="pw-rules" />
-                      <button type="button" className="pw-eye" onClick={() => setShowPw((s) => !s)} aria-label={showPw ? 'Hide password' : 'Show password'}>
-                        <Icon name={showPw ? 'eyeOff' : 'eye'} size={18} />
-                      </button>
-                    </div>
-                  </Field>
-                  <div className={`pw-meter s${strength}`} aria-hidden="true">
-                    <span />
-                    <span />
-                    <span />
-                    <span />
-                  </div>
-                  <ul className="pw-rules" id="pw-rules">
-                    {PW_RULES.map(([l, fn]) => (
-                      <li key={l} className={fn(f.password) ? 'ok' : ''}>
-                        <Icon name={fn(f.password) ? 'check' : 'x'} size={12} strokeWidth={3} /> {l}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div data-k="confirm">
-                  <Field id="j-pw2" label="Confirm password" error={errOf('confirm')} valid={!!f.confirm && f.confirm === f.password}>
-                    <input id="j-pw2" className="input" type={showPw ? 'text' : 'password'} value={f.confirm} onChange={(e) => set('confirm', e.target.value)} onBlur={touch('confirm')} autoComplete="new-password" maxLength={128} />
-                  </Field>
-                </div>
-                <div className="consents">
-                  <label className={`check ${errOf('terms') ? 'has-error' : ''}`} data-k="terms">
-                    <input type="checkbox" checked={f.terms} onChange={(e) => set('terms', e.target.checked)} />
-                    <span className="check-ui" />
-                    <span>
-                      I accept the <Link to="/terms/">Terms & Conditions</Link> and <Link to="/privacy/">Privacy Policy</Link>.
-                    </span>
-                  </label>
-                  {errOf('terms') && <p className="field-error">{errOf('terms')}</p>}
-                  <label className={`check ${errOf('research') ? 'has-error' : ''}`} data-k="research">
-                    <input type="checkbox" checked={f.research} onChange={(e) => set('research', e.target.checked)} />
-                    <span className="check-ui" />
-                    <span>I agree to take part in surveys and other market research activities.</span>
-                  </label>
-                  {errOf('research') && <p className="field-error">{errOf('research')}</p>}
-                  <label className="check">
-                    <input type="checkbox" checked={f.marketing} onChange={(e) => set('marketing', e.target.checked)} />
-                    <span className="check-ui" />
-                    <span>Send me tips, reward news and the occasional newsletter (optional).</span>
-                  </label>
-                </div>
-                <Captcha onChange={onCaptcha} resetKey={resetKey} error={captchaErr} />
-                {captchaErr && <p className="field-error">{captchaErr}</p>}
-                {state === 'error' && (
-                  <p className="form-alert" role="alert">
-                    {msg}
-                  </p>
-                )}
-              </>
-            )}
-
-            {/* ================= STEP 2: CONTACT & PROFILE ================= */}
-            {step === 2 && (
-              <>
-                {/* <div data-k="country">
-                  <Field id="j-country" label="Country of residence" error={errOf('country')} valid={!!f.country} hint="We check this against your location for every survey.">
-                    <CountryPicker id="j-country" value={f.country} onChange={(c) => { set('country', c); set('dial', c); setTouched((t) => ({ ...t, country: true })); }} invalid={!!errOf('country')} />
-                  </Field>
-                </div> */}
-                <div data-k="phone">
-                  <Field id="j-phone" label="Mobile number" error={errOf('phone')} valid={okOf('phone')} hint="We’ll text you a one-time code to verify it.">
-                    <PhoneField id="j-phone" country={f.dial} number={f.phone} onCountry={(c) => set('dial', c)} onNumber={(v) => set('phone', v)} onBlur={touch('phone')} invalid={!!errOf('phone')} />
-                  </Field>
-                </div>
-                {f.type === 'pro' && (
-                  <fieldset className="pro-fields">
-                    <legend>
-                      <Icon name="briefcase" size={16} /> Your work
-                    </legend>
-                    <div className="form-grid two">
-                      {/* <div data-k="jobTitle">
-                        <Field id="j-job" label="Job title" error={errOf('jobTitle')} valid={okOf('jobTitle')}>
-                          <input id="j-job" className="input" value={f.jobTitle} onChange={(e) => set('jobTitle', e.target.value)} onBlur={touch('jobTitle')} maxLength={80} autoComplete="organization-title" list="job-suggest" />
-                          <datalist id="job-suggest">
-                            {jobOptions.map((t) => (
-                              <option key={t.id ?? t} value={t.label ?? t} />
-                            ))}
-                          </datalist>
-                        </Field>
-                      </div>
-                      <div data-k="industry">
-                        <Field id="j-ind" label="Industry" error={errOf('industry')} valid={!!f.industry}>
-                          <select id="j-ind" className="input" value={f.industry} onChange={(e) => { set('industry', e.target.value); setTouched((t) => ({ ...t, industry: true })); }}>
-                            <option value="">Select industry</option>
-                            {industryOptions.map((i) => (
-                              <option key={i.id ?? i} value={i.id ?? i}>{i.label ?? i}</option>
-                            ))}
-                            <option>Other</option>
-                          </select>
-                        </Field>
-                      </div> */}
-
-                      {WORK_LEVELS.map((lvl, idx) => {
-                        const opts = workOpts[lvl.key] || [];
-                        const disabled = (lvl.parent && !f[lvl.parent]) || workLoading[lvl.key];
-                        return (
-                          <div data-k={lvl.key} key={lvl.key}>
-                            <Field id={`j-${lvl.key}`} label={lvl.label} error={errOf(lvl.key)} valid={okOf(lvl.key)}>
-                              <select
-                                id={`j-${lvl.key}`}
-                                className="input"
-                                value={f[lvl.key]}
-                                disabled={disabled}
-                                onChange={(e) => onWorkChange(idx, e.target.value)}
-                              >
-                                <option value="">{workLoading[lvl.key] ? 'Loading…' : `Select ${lvl.label.toLowerCase()}`}</option>
-                                {opts.map((o) => (
-                                  <option key={o.value} value={o.value}>{o.label}</option>
-                                ))}
-                              </select>
-                            </Field>
-                          </div>
-                        );
-                      })}
-                      <Field id="j-company" label="Company" optional>
-                        <input id="j-company" className="input" value={f.company} onChange={(e) => set('company', e.target.value)} maxLength={100} autoComplete="organization" />
-                      </Field>
-                      <div data-k="workEmail">
-                        <Field id="j-wemail" label="Work email" optional error={errOf('workEmail')} hint="Verifies your role for higher-value B2B studies.">
-                          <input id="j-wemail" className="input" type="email" value={f.workEmail} onChange={(e) => set('workEmail', e.target.value)} onBlur={touch('workEmail')} maxLength={120} />
-                        </Field>
-                      </div>
-                    </div>
-                  </fieldset>
-                )}
-                {minor && (
-                  <div data-k="guardianEmail">
-                    <Field id="j-guardian" label="Parent or guardian email" error={errOf('guardianEmail')} valid={okOf('guardianEmail')} hint="We’ll let them know you’ve joined. They can ask us to pause or delete your account anytime.">
-                      <input id="j-guardian" className="input" type="email" value={f.guardianEmail} onChange={(e) => set('guardianEmail', e.target.value)} onBlur={touch('guardianEmail')} maxLength={120} />
-                    </Field>
-                  </div>
-                )}
-                <div className="field">
-                  <p className="field-label">Send me survey invitations by</p>
-                  <div className="channel-toggles">
-                    {CHANNELS.map(([k, l, ic]) => (
-                      <label key={k} className={`ch-toggle ${f.channels[k] ? 'is-on' : ''}`}>
-                        <input type="checkbox" checked={f.channels[k]} onChange={(e) => set('channels', { ...f.channels, [k]: e.target.checked })} />
-                        <Icon name={ic} size={18} /> {l}
-                      </label>
-                    ))}
-                    <span className="ch-toggle is-on is-locked">
-                      <Icon name="dashboard" size={18} /> Dashboard (always on)
-                    </span>
-                  </div>
-                </div>
-                {state === 'error' && (
-                  <p className="form-alert" role="alert">
-                    {msg}
-                  </p>
-                )}
-              </>
-            )}
-
-            <div className="join-actions">
-              <button type="submit" className="btn btn-primary btn-lg btn-shimmer" disabled={state === 'sending'}>
-                {step === 2 ? (
-                  state === 'sending' ? (
-                    'Creating your account…'
-                  ) : (
-                    <>
-                      Create my free account <Icon name="sparkles" size={18} />
-                    </>
-                  )
-                ) : state === 'sending' ? (
-                  'Please wait…'
-                ) : (
+                {!teen && (
                   <>
-                    Continue <Icon name="arrow" size={18} />
+                    {consents}
+                    <Captcha onChange={onCaptcha} resetKey={resetKey} error={captchaErr} />
+                    {captchaErr && (
+                      <p className="field-error" role="alert">
+                        {captchaErr}
+                      </p>
+                    )}
                   </>
                 )}
-              </button>
-            </div>
+                    </>
+                  )}
+                  {alert}
+                </>
+              )}
 
-            {step === 0 && <SocialAuth />}
-            
-            <p className="join-alt">
-              Already a member? <Link to="/login/">Log in</Link>
-            </p>
+              {teen && step === 1 && <TeenParentStep f={f} setParent={setParent} set={set} errOf={errOf} okOf={okOf} setTouched={setTouched} />}
 
-            <FollowUs />
-          </form>
+              {teen && step === lastStep && (
+                <>
+                  <p className="join-step-lead">Check everything once. When you press the button we save it and send the {teen ? 'onboarding form to your parent or guardian' : 'account link to your email'}.</p>
+                  <ReviewCard
+                    f={f}
+                    journey={journey}
+                    onEdit={(s) => goStep(s)}
+                  />
+                  <TeenConsentStep f={f} set={set} errOf={errOf} />
+                  {captchaBox}
+                  {alert}
+                </>
+              )}
+
+              <div className="join-actions">
+                {step > 0 && (
+                  <button
+                    type="button"
+                    className="btn btn-ghost btn-lg"
+                    onClick={() => goStep(step - 1)}
+                  >
+                    <Icon name="arrowLeft" size={18} /> Back
+                  </button>
+                )}
+                <button type="submit" className="btn btn-primary btn-lg btn-shimmer" disabled={state === 'sending'}>
+                  {state === 'sending' ? (
+                    <>
+                      <span className="btn-spin" aria-hidden="true" /> Please wait…
+                    </>
+                  ) : step === lastStep ? (
+                    <>
+                      {teen ? 'Send to my parent or guardian' : 'Create my account'} <Icon name="send" size={18} />
+                    </>
+                  ) : (
+                    <>
+                      Continue <Icon name="arrow" size={18} />
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {step === 0 && !teen && <SocialAuth />}
+              <p className="join-alt">
+                Already a member? <Link to="/login/">Log in</Link>
+              </p>
+              {step === 0 && <FollowUs />}
+            </form>
+          )}
         </div>
       </div>
     </section>
   );
 }
+
+export { termsUrl };

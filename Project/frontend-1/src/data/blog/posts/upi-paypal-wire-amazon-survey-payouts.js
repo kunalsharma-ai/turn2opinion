@@ -103,7 +103,7 @@ Ask yourself three questions:
 2. **Would I spend this on Amazon anyway?** A gift card is as good as cash for you.
 3. **What do I prefer to share?** Gift cards need only an email; bank options need account details.
 
-Many members switch between methods: cash most months, a gift card before a birthday or festival. For a broader discussion, read [paid surveys for cash vs gift cards](/blog/paid-surveys-for-cash-vs-gift-cards/).
+Many members switch between methods: cash most months, a gift card before a birthday or festival. For a broader discussion, read [paid surveys for money vs gift cards](/blog/paid-surveys-for-cash-vs-gift-cards/).
 
 ## What happens after you submit a claim
 

@@ -176,6 +176,8 @@
   font-size: 0.84rem;
   box-shadow: var(--shadow-2);
   animation: labelPeek 9s var(--ease) infinite;
+  /* Decorative peek label: never block the form button underneath it. */
+  pointer-events: none;
 }
 @keyframes labelPeek {
   0%,
@@ -3141,4 +3143,44 @@ html.low-power .amb {
 .chat:not(.is-open) *::before,
 .chat:not(.is-open) *::after {
   animation-play-state: paused !important;
+}
+
+/* Round 13: nothing floats over a field while someone is typing in it. On phones the side buttons
+   step aside too; on wider screens they sit in the margin, so only the pop-up messages hide. */
+html.is-typing .vfab-msg,
+html.is-typing .gtoast,
+html.is-typing .rdrop,
+html.form-page .vfab-msg {
+  opacity: 0 !important;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+}
+@media (max-width: 900px) {
+  html.is-typing .fab-stack,
+  html.is-typing .rate-gem,
+  html.is-typing .vfab {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+  }
+}
+/* On a phone, a form page keeps only the live-help button in the corner, so the stack of round
+   buttons no longer sits across the fields. Everything is back on every other page. */
+@media (max-width: 760px) {
+  html.form-page .fab-stack .fab-rate,
+  html.form-page .fab-stack .fab-wa,
+  html.form-page .fab-stack .fab-rail,
+  html.form-page .vfab,
+  html.form-page .rate-gem {
+    display: none;
+  }
+}
+/* Form pages at any width: the video button (bottom left) and the "Live help 24/7" label sat over the
+   form's own content on shorter screens. The round live-help, WhatsApp and rating buttons stay. */
+html.form-page .vfab,
+html.form-page .vfab-msg,
+html.form-page .fab-chat-label {
+  display: none;
 }

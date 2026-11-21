@@ -4,6 +4,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { COUNTRIES } from '../data/countries.js';
 import { Flag } from './Brand.jsx';
 import Icon from './Icon.jsx';
+import Floating from './Floating.jsx';
 
 export function Field({ id, label, error, hint, children, optional, className = '', valid }) {
   return (
@@ -40,6 +41,7 @@ export function CountryPicker({ id, value, onChange, onBlur, showDial = false, p
   const [q, setQ] = useState('');
   const [hi, setHi] = useState(0);
   const root = useRef(null);
+  const pop = useRef(null);
   const search = useRef(null);
   const listId = useId();
   const sel = COUNTRIES.find((c) => c.c === value);
@@ -64,7 +66,7 @@ export function CountryPicker({ id, value, onChange, onBlur, showDial = false, p
     setHi(Math.max(0, items.findIndex((c) => c.c === value)));
     setTimeout(() => search.current && search.current.focus(), 10);
     const out = (e) => {
-      if (root.current && !root.current.contains(e.target)) {
+      if (root.current && !root.current.contains(e.target) && !(pop.current && pop.current.contains(e.target))) {
         setOpen(false);
         onBlur && onBlur();
       }
@@ -123,7 +125,7 @@ export function CountryPicker({ id, value, onChange, onBlur, showDial = false, p
         <Icon name="chevron" size={16} className="cp-caret" />
       </button>
       {open && (
-        <div className="cp-pop">
+        <Floating anchor={root} popRef={pop} width={300} className="cp-pop">
           <div className="cp-search">
             <Icon name="search" size={16} />
             <input
@@ -164,7 +166,7 @@ export function CountryPicker({ id, value, onChange, onBlur, showDial = false, p
             ))}
             {!items.length && <li className="cp-empty">No match. Try a country name or dial code.</li>}
           </ul>
-        </div>
+        </Floating>
       )}
     </div>
   );
@@ -207,22 +209,27 @@ export function formatDate(s) {
 }
 
 /** Calendar date picker (full date of birth: day, month and year). value = 'YYYY-MM-DD'. */
-export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920, maxDate = new Date(), describedBy }) {
+const DATE_W = { fixed: 330 };
+export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920, maxDate = new Date(), minDate = null, lockedYears = 0, foot, describedBy }) {
+  // minDate narrows the pickable range (e.g. the Teen 13-17 window). lockedYears shows that many
+  // extra years either side in the year menu, greyed out, so people can see they are not allowed.
+  const loY = minDate ? minDate.getFullYear() : minYear;
   const sel = parseISO(value);
   const [open, setOpen] = useState(false);
   const [view, setView] = useState(() => {
-    const base = sel || new Date(maxDate.getFullYear() - 25, 0, 1);
+    const base = sel || (minDate ? new Date(maxDate.getFullYear(), 0, 1) : new Date(maxDate.getFullYear() - 25, 0, 1));
     return { y: base.getFullYear(), m: base.getMonth() };
   });
   const [focusDay, setFocusDay] = useState(sel ? sel.getDate() : 1);
   const root = useRef(null);
+  const pop = useRef(null);
   const grid = useRef(null);
 
   useEffect(() => {
     if (!open) return undefined;
     if (sel) setView({ y: sel.getFullYear(), m: sel.getMonth() });
     const out = (e) => {
-      if (root.current && !root.current.contains(e.target)) {
+      if (root.current && !root.current.contains(e.target) && !(pop.current && pop.current.contains(e.target))) {
         setOpen(false);
         onBlur && onBlur();
       }
@@ -240,9 +247,13 @@ export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920
   const daysIn = new Date(view.y, view.m + 1, 0).getDate();
   const lead = (new Date(view.y, view.m, 1).getDay() + 6) % 7;
   const years = [];
-  for (let y = maxDate.getFullYear(); y >= minYear; y--) years.push(y);
+  for (let y = maxDate.getFullYear() + lockedYears; y >= loY - lockedYears; y--) years.push(y);
+  const yearOff = (y) => y > maxDate.getFullYear() || y < loY;
 
-  const disabled = (d) => new Date(view.y, view.m, d) > maxDate;
+  const disabled = (d) => {
+    const t = new Date(view.y, view.m, d);
+    return t > maxDate || (minDate && t < minDate);
+  };
   const choose = (d) => {
     if (disabled(d)) return;
     onChange(toISO(new Date(view.y, view.m, d)));
@@ -253,7 +264,7 @@ export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920
   const shiftMonth = (delta) => {
     setView((v) => {
       const d = new Date(v.y, v.m + delta, 1);
-      return d.getFullYear() < minYear ? v : { y: d.getFullYear(), m: d.getMonth() };
+      return d.getFullYear() < loY || d.getFullYear() > maxDate.getFullYear() ? v : { y: d.getFullYear(), m: d.getMonth() };
     });
   };
   const onGridKey = (e) => {
@@ -288,7 +299,7 @@ export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920
         <Icon name="chevron" size={16} className="cp-caret" />
       </button>
       {open && (
-        <div className="date-pop" role="dialog" aria-label="Choose date of birth">
+        <Floating anchor={root} popRef={pop} width={DATE_W} className="date-pop" role="dialog" aria-label="Choose date of birth">
           <div className="date-head">
             <button type="button" className="date-nav" onClick={() => shiftMonth(-1)} aria-label="Previous month">
               <Icon name="chevronLeft" size={18} />
@@ -302,8 +313,9 @@ export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920
             </select>
             <select aria-label="Year" value={view.y} onChange={(e) => setView((v) => ({ ...v, y: Number(e.target.value) }))}>
               {years.map((y) => (
-                <option key={y} value={y}>
+                <option key={y} value={y} disabled={yearOff(y)}>
                   {y}
+                  {yearOff(y) ? ' (not eligible)' : ''}
                 </option>
               ))}
             </select>
@@ -340,8 +352,8 @@ export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920
               );
             })}
           </div>
-          <p className="date-foot">Use the month and year menus to jump quickly.</p>
-        </div>
+          <p className="date-foot">{foot || 'Use the month and year menus to jump quickly.'}</p>
+        </Floating>
       )}
     </div>
   );

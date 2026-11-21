@@ -30,7 +30,7 @@ const files = readdirSync(dir)
   });
 
 // Objects designed as physical paper (member review postcards and ID cards) keep their printed colours.
-const KEEP_LIGHT = /\.(pc-(addr|air|aud|date|foot|grid|kicker|left|mark|place|quote|right|stamp)|pcs-|pcm-|ps-|vc-|gbadge|gb-txt|vcard|voice-card|pcard-best|pcard-kind|pcard-tag|vm-card|vm-cta|sg-note|sn-app|sn-body|sn-ticket|sn-site|vs--magazine|rx\b|rx-|auth-|aa-|as-knob|av-|wp-ring|amb\b|amb-|fab-face|fab-ring|fab-rail|fab-lock|rate-gate|rg-|rvx-|rc-|rp-|mvx|gscore|ba-|bh-|pht-(?!paper)|cta-(lagoon|aurora|treasury|neon|stars|chat|paper))/;
+const KEEP_LIGHT = /\.(pc-(addr|air|aud|date|foot|grid|kicker|left|mark|place|quote|right|stamp)|pcs-|pcm-|ps-|vc-|gbadge|gb-txt|vcard|voice-card|pcard-best|pcard-kind|pcard-tag|vm-card|vm-cta|sg-note|sn-app|sn-body|sn-ticket|sn-site|vs--magazine|rx\b|rx-|auth-|aa-|as-knob|av-|wp-ring|amb\b|amb-|fab-face|fab-ring|fab-rail|fab-lock|rate-gate|rg-|rvx-|rc-|rp-|mvx|gscore|ba-|bh-|pht-(?!paper)|ec-|ep-|mn-|rt-|ej-|hero-minor|aud-minor|theme-minor|minor-join-note|mjn-|teen-stage|tns-|tj-|teen-status|ts-|teen-pending|age-notice|pgc|abw--teen|vm-teen|tsg-|tsg|tnb|tth|hive-teen|hex\.is-teen|cta-(lagoon|aurora|treasury|neon|stars|chat|paper))/;
 const HTML_CLASSES = ['js', 'js-ready', 'has-cursor', 'lp-open', 'modal-open', 'vt-lock', 'ask-open', 'nav-open'];
 
 /* ---------------- colour maths ---------------- */

@@ -1,4 +1,5 @@
 import { ENV } from '../config/env.js';
+import { demoRespond } from './demoApi.js';
 
 
 class API {
@@ -7,6 +8,8 @@ class API {
   }
 
   async request(method, endpoint, { body, headers = {} } = {}) {
+    // Single-file design preview only: no server, so answer from the preview stand-in.
+    if (ENV.DEMO_MODE && String(endpoint).startsWith('/api/')) return demoRespond(method, endpoint, body);
     // await wait(5000);
     const url = `${this.baseUrl}${endpoint}`;
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;

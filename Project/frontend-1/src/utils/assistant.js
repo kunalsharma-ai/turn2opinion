@@ -85,6 +85,7 @@ const DOCS = [
   ...INTENTS.map((d) => ({ ...d, kind: 'intent' })),
   surveyIntent('consumer', 'consumer'),
   surveyIntent('professional', 'professional'),
+  surveyIntent('teen', 'teen'),
   ...SITE_QA.map((d, i) => ({ id: `qa-${i}`, q: d.q, alt: [], keys: [], a: d.a, src: [d.src], kind: 'qa' }))
 ];
 
