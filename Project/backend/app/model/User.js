@@ -318,7 +318,7 @@ export default mongooseModel(
             // Consent record for Teen (13-17) members. consentStatus is what the member area reads.
             consentStatus: {
                 type: String,
-                enum: ["pending", "approved", "withdrawn"]
+                enum: ["pending", "approved", "withdrawn", "declined", "expired", "cancelled"]
             },
             submittedAt: { type: Date },
             onboardingOpenedAt: { type: Date },
@@ -326,8 +326,29 @@ export default mongooseModel(
             consentVersion: { type: String },
             consentIP: { type: String },
             consentConfirmations: [{ type: String }],
-            verifiedVia: { type: String }
-        }
+            verifiedVia: { type: String },
+            // Teen registration v2 (21 Nov 2026): the guardian's YES/NO, the onboarding form and the
+            // full consent record. All optional, so older records keep working.
+            decision: { type: String, enum: ["yes", "no"] },
+            decisionAt: { type: Date },
+            declineReasons: [{ type: String }],
+            declineNote: { type: String, maxlength: 1000 },
+            onboarding: { type: mongoose.Schema.Types.Mixed },
+            onboardingAt: { type: Date },
+            consentRecord: { type: mongoose.Schema.Types.Mixed },
+            linkRenewedAt: { type: Date },
+            remindersSent: { type: Number, default: 0 },
+            lastReminderAt: { type: Date }
+        },
+        // The teen's own confirmations on step 3 of the Teen sign-up (not the guardian's consent).
+        teenConsent: {
+            version: { type: String },
+            statements: [{ type: String }],
+            acceptedAt: { type: Date },
+            ip: { type: String }
+        },
+        registrationClosedAt: { type: Date },
+        registrationClosedReason: { type: String }
     },
     [
         [
@@ -369,7 +390,17 @@ export default mongooseModel(
                 if (!p.email) return verified ? "parent-details-needed" : "registration-started";
                 if (p.consent === true || p.consentStatus === "approved") return verified ? "account-active" : "account-activation-pending";
                 if (p.consentStatus === "withdrawn") return "consent-withdrawn";
-                return p.onboardingOpenedAt ? "consent-pending" : "parent-verification-pending";
+                if (p.consentStatus === "declined" || p.decision === "no") return "registration-rejected";
+                if (p.consentStatus === "expired") return "registration-expired";
+                if (p.consentStatus === "cancelled") return "registration-cancelled";
+                // After YES: the onboarding form, then the consent form.
+                if (p.decision === "yes") return p.onboardingAt ? "consent-pending" : "onboarding-pending";
+                return p.onboardingOpenedAt ? "parent-reviewing" : "parent-verification-pending";
+            },
+            // Short reference shown to the family and support (never the database id itself).
+            registrationRef: function () {
+                const id = String(this._id || "");
+                return id ? `T2O-TN-${id.slice(-6).toUpperCase()}` : "";
             },
             age: function () {
                 if (!this.dob) return null;

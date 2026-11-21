@@ -41,6 +41,9 @@ import { DASHBOARD, redirectIfLoggedIn, termsUrl, WELCOME, welcomeChannels } fro
 import { fullPhone, NAME_RE, phoneError, validateParent } from '../utils/signup.js';
 import LocationFields, { locationErrors } from '../components/onboarding/LocationFields.jsx';
 import AccountSetup from '../components/onboarding/AccountSetup.jsx';
+import TeenRegister, { UnderThirteen } from '../components/teen/TeenRegister.jsx';
+import TeenKeyForge from '../components/teen/TeenKeyForge.jsx';
+import { ageRoute } from '../data/teen/registration.js';
 
 const emailCheck = {
   validateDomain: async (v) => {
@@ -419,6 +422,8 @@ export default function Join() {
   const [ageNotice, setAgeNotice] = useState('');
   const [duplicate, setDuplicate] = useState(false);
   const [emailErr, setEmailErr] = useState('');
+  const [under13, setUnder13] = useState(false);
+  const [teenFromForm, setTeenFromForm] = useState(false);
   const formRef = useRef(null);
   const restored = useRef(false);
 
@@ -462,15 +467,28 @@ export default function Join() {
       playAudience(v);
       setAnswers({});
     }
+    if (v === 'minor') setTeenFromForm(true);
     setF((p) => ({ ...p, type: v, dob: v === 'minor' && a !== null && a >= SITE.adultAge ? '' : p.dob }));
   };
   const onDob = (v) => {
     const a = ageOn(v);
     setTouched((t) => ({ ...t, dob: true }));
+    // Under 13: no registration on any route. Nothing typed is kept (the API refuses it as well).
+    if (ageRoute(v) === 'blocked') {
+      try {
+        sessionStorage.removeItem(DRAFT_KEY);
+      } catch {
+        /* ignore */
+      }
+      setF((p) => ({ ...initial, type: p.type, country: p.country, dial: p.dial }));
+      setUnder13(true);
+      return;
+    }
     if (f.type !== 'minor' && isTeenAge(a)) {
       setF((p) => ({ ...p, dob: v, type: 'minor' }));
       setAnswers({});
-      setAgeNotice(`You’re ${a}, so we’ve moved you to the Teen panel. Everything you typed is kept. Next, we’ll ask for your parent or legal guardian, who must give consent before your account switches on.`);
+      setTeenFromForm(true);
+      setAgeNotice(`You’re ${a}, so you join the Teen panel. Everything you typed is kept. Your parent or legal guardian must say yes before your account switches on.`);
       playAudience('minor');
       return;
     }
@@ -503,11 +521,12 @@ export default function Join() {
     const q = new URLSearchParams(window.location.search);
     const user = q.get('user');
     const code = q.get('code');
+    const sig = q.get('s') || '';
     if (!(user && code)) return;
     setState('checking');
     (async () => {
       try {
-        const resp = await api.post(`/api/v1/user/${user}`, { channel: 'email', code });
+        const resp = await api.post(`/api/v1/user/${user}`, { channel: 'email', code, s: sig });
         if (resp?.status !== 'success') return setState('link-used');
         const u = resp.data || {};
         const isTeenAccount = u.category === 'minor' || isTeenAge(ageOn(String(u.dob || '').slice(0, 10)));
@@ -526,7 +545,7 @@ export default function Join() {
           const approved = u.parent?.consent === true || u.parent?.consentStatus === 'approved';
           if (u.parent?.email && !approved) return setState('teen-waiting');
         }
-        setLink({ user, code, teen: isTeenAccount, category: u.category });
+        setLink({ user, code, sig, teen: isTeenAccount, category: u.category });
         setState('idle');
       } catch {
         setState('link-used');
@@ -839,6 +858,21 @@ export default function Join() {
 
   const aud = f.type === 'pro' || teen ? f.type : 'consumer';
 
+  // ================= Teen: password from the guardian-approved link =================
+  if (link && link.teen)
+    return (
+      <TeenKeyForge
+        link={link}
+        f={f}
+        onLinkUsed={() => setState('link-used')}
+        onTeenWaiting={() => setState('teen-waiting')}
+        onDone={() => {
+          window.history.replaceState(null, '', window.location.pathname + window.location.hash);
+          track('sign_up_account_created', { category: 'minor' });
+        }}
+      />
+    );
+
   // ================= account setup from the email link =================
   if (link)
     return (
@@ -885,6 +919,24 @@ export default function Join() {
         </div>
       </section>
     );
+
+  // ================= under 13: no registration =================
+  if (under13)
+    return (
+      <section className={`join theme-${aud} trg-blocked`}>
+        <div className="wrap">
+          <UnderThirteen
+            onBack={() => {
+              setUnder13(false);
+              setTouched({});
+            }}
+          />
+        </div>
+      </section>
+    );
+
+  // ================= Teen registration (13–17): its own four-step journey =================
+  if (teen) return <TeenRegister seed={f} notice={ageNotice} startAtForm={teenFromForm} />;
 
   // ================= forms =================
   const steps = teen ? TEEN_STEPS : STEPS;

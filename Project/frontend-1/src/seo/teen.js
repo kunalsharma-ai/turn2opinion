@@ -4,7 +4,7 @@
 // cookie choice; keep any Meta tags inside GTM off these paths too.
 import { BLOG_POSTS } from '../data/blog/index.js';
 
-const TEEN_PREFIXES = ['/earn/teens/', '/join/teen/', '/parent-consent/'];
+const TEEN_PREFIXES = ['/earn/teens/', '/join/teen/', '/parent-consent/', '/teen/'];
 const TEEN_POSTS = new Set(BLOG_POSTS.filter((p) => p.category === 'Teens & family').map((p) => `/blog/${p.slug}/`));
 
 export function isTeenPath(path) {
