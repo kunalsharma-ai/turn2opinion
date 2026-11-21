@@ -4,7 +4,7 @@
 // The API checks the link (one use, time limited), the password rules and the CAPTCHA, then signs
 // the member in. Teens reach this only after their
 // parent or guardian has consented.
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { api } from '../../utils/api.js';
 import Captcha, { captchaLocalOk, captchaPayload, captchaReady, isCaptchaError } from '../Captcha.jsx';
 import Icon from '../Icon.jsx';
@@ -24,7 +24,7 @@ const slug = (s) =>
     .replace(/[^a-z0-9]/g, '');
 
 
-export default function AccountSetup({ user, code, firstName = '', lastName = '', email = '', teen = false, onDone, onLinkUsed, onTeenWaiting }) {
+export default function AccountSetup({ user, code, sig, firstName = '', lastName = '', email = '', teen = false, onDone, onLinkUsed, onTeenWaiting, onProgress }) {
   const [pw, setPw] = useState('');
   const [pw2, setPw2] = useState('');
   const [show, setShow] = useState(false);
@@ -49,6 +49,10 @@ export default function AccountSetup({ user, code, firstName = '', lastName = ''
   else if (pw2 !== pw) errs.confirm = 'Passwords don’t match.';
   const errOf = (k) => (touched[k] || submitted ? errs[k] || '' : '');
   const strength = passwordStrength(pw);
+  const rulesMet = PW_RULES.filter(([, fn]) => fn(pw)).length;
+  useEffect(() => {
+    onProgress?.({ rules: rulesMet, of: PW_RULES.length, match: !!pw2 && pw2 === pw });
+  }, [rulesMet, pw, pw2]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const resetCaptcha = () => {
     setCaptcha(null);
@@ -78,6 +82,7 @@ export default function AccountSetup({ user, code, firstName = '', lastName = ''
       const r = await api.patch('/api/v1/user', {
         userID: user,
         emailOTP: code,
+        ...(sig ? { sig } : {}),
         password: pw,
         confirmPassword: pw2,
         captcha: captchaPayload(captcha)
@@ -185,7 +190,7 @@ export default function AccountSetup({ user, code, firstName = '', lastName = ''
         </button>
       </div>
       <p className="wq-save-note">
-        <Icon name="lock" size={14} /> {teen ? 'Next: your dashboard.' : 'Next: a few welcome questions, your panel Terms & Conditions, then your dashboard.'}
+        <Icon name="lock" size={14} /> {teen ? 'Next: a few quick welcome questions, then your Teen profile.' : 'Next: a few welcome questions, your panel Terms & Conditions, then your dashboard.'}
       </p>
     </form>
   );

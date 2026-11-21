@@ -1,205 +1,26 @@
-<table
-  width="100%"
-  border="0"
-  cellspacing="0"
-  cellpadding="0"
-  bgcolor="#f4f4f4"
-  style="
-    margin: 0;
-    padding: 0;
-    background: #f4f4f4;
-    font-family: Arial, Helvetica, sans-serif;
-  ">
-  <tr>
-    <td align="center">
-      <table
-        width="920"
-        border="0"
-        cellspacing="0"
-        cellpadding="0"
-        bgcolor="#ffffff"
-        style="max-width: 920px">
-        <!-- TOP BORDER -->
-        <tr>
-          <td height="12" bgcolor="#002b8f"></td>
-        </tr>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>Onboarding complete</title>
+<style>@media (max-width:620px){.wrap{width:100%!important}.px{padding-left:22px!important;padding-right:22px!important}.h1{font-size:24px!important;line-height:31px!important}.stack{display:block!important;width:100%!important}}</style></head>
+<body style="margin:0;padding:0;background:#efe9dc"><div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;font-size:1px;line-height:1px">Onboarding and consent complete. Your teen is getting their password link.&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;</div>
+<table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#efe9dc" style="background:#efe9dc"><tr><td align="center" style="padding:28px 12px">
+<table role="presentation" class="wrap" width="620" border="0" cellspacing="0" cellpadding="0" bgcolor="#fffdf8" style="width:620px;max-width:620px;background:#fffdf8;border-radius:18px;border:1px solid #e2d8c3">
+<tr><td style="padding:0"><table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0"><tr>
+<td bgcolor="#0f5a46" style="background:#0f5a46;border-radius:18px 18px 0 0;padding:22px 34px" class="px">
+<table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0"><tr>
+<td><img src="https://www.turn2opinion.com/images/logo/t2o-logo.png" alt="Turn2Opinion" width="170" style="display:block;max-width:170px;background:#ffffff;border-radius:10px;padding:7px 12px"></td>
+<td align="right" style="font-family:Georgia,'Times New Roman',serif;font-size:13px;color:#e8dcbc;letter-spacing:1.6px;text-transform:uppercase">Teen panel · Parents &amp; guardians</td>
+</tr></table></td></tr></table></td></tr>
+<tr><td class="px" style="padding:34px 44px 6px;font-family:Georgia,'Times New Roman',serif">
+<p style="margin:0 0 8px;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#b07a1e">🏅&nbsp; Onboarding complete</p>
+<h1 class="h1" style="margin:0 0 18px;font-size:28px;line-height:36px;color:#0b2a6f;font-weight:700">All done. Thank you, {{ user.parent.name.first }}</h1></td></tr>
+<tr><td class="px" style="padding:0 44px 6px;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:26px;color:#2b3550"><p style="margin:0 0 14px">You have completed the onboarding form and given consent for {{ user.name.first }} to join the Turn2Opinion Teen panel. We have sent {{ user.name.first }} a secure link to create their own password.</p><table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin:16px 0;border-radius:14px;background:#f6f1e4;border:1px solid #e2d8c3"><tr><td style="padding:18px 20px;font-size:15px;line-height:24px;color:#2b3550"><b style="color:#0b2a6f">Your consent record</b><br>Agreement: <b>{{ record.version | default: "MINOR-2026.10" }}</b><br>Recorded: {{ record.acceptedAt | date: "%d %B %Y, %H:%M UTC" }}<br>Required permissions: participation, privacy notice, contact by email<br>Optional: study contact {% if record.selections.studyContact %}yes{% else %}no{% endif %} · recordings {% if record.selections.recording %}yes{% else %}no{% endif %} · sensitive topics {% if record.selections.sensitive %}yes{% else %}no{% endif %}</td></tr></table><p style="margin:0 0 14px">You can withdraw consent, change the optional permissions or ask us to delete {{ user.name.first }}&rsquo;s account at any time by writing to support with the reference below. Your teen&rsquo;s account and your guardian record are kept separately.</p></td></tr>
 
-        <!-- LOGO SECTION -->
-        <tr>
-          <td align="center" style="padding: 30px 20px; background: #ffffff">
-            <img
-              src="https://www.turn2opinion.com/images/logo/t2o-logo.png"
-              alt="Turn2Opinion.com"
-              width="420"
-              style="display: block; max-width: 100%" />
-          </td>
-        </tr>
-
-        <tr>
-          <td height="1" bgcolor="#002b8f"></td>
-        </tr>
-
-        <!-- INTRO -->
-        <tr>
-          <td style="padding: 35px 60px 15px">
-            <p style="
-            margin: 0 0 25px;
-            font-size: 28px;
-            color: #063686;
-            font-weight: bold;
-          ">
-              Dear {{ user.parent.name.first }},
-            </p>
-
-            <p style="
-            margin: 0;
-            font-size: 22px;
-            line-height: 38px;
-            color: #14245d;
-          ">
-              Thank you for confirming your consent for your child,
-              <strong>{{ user.name.first }}</strong>, to participate in 
-          Turn2Opinion.
-            </p>
-          </td>
-        </tr>
-
-        <!-- APPROVAL CARD -->
-        <tr>
-          <td style="padding: 30px 55px">
-            <table
-              width="100%"
-              border="0"
-              cellspacing="0"
-              cellpadding="0"
-              style="
-            border: 1px solid #bfdbfe;
-            border-radius: 12px;
-            background: #f0f9ff;
-          ">
-              <tr>
-                <td
-                  width="220"
-                  align="center"
-                  style="padding: 40px 10px">
-                  <img
-                    src="https://frequentresearch.com/mailer/mail-icons/t2o/mail.png"
-                    width="160"
-                    alt="Parental Consent Confirmed" />
-                </td>
-
-                <td style="padding: 35px 10px">
-                  <h2 style="
-                  margin: 0 0 15px;
-                  color: #063686;
-                  font-size: 30px;
-                ">
-                    Consent Successfully Recorded
-                  </h2>
-
-                  <p style="
-                  margin: 0;
-                  color: #17285f;
-                  font-size: 20px;
-                  line-height: 34px;
-                ">
-                    Your parental approval has been successfully recorded, 
-                and
-                    <strong>{{ user.name.first }}</strong>'s registration 
-                is now approved.
-                  </p>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-        <!-- PARTICIPATION -->
-        <tr>
-          <td style="padding: 0 55px 35px">
-            <table width="100%" style="
-            background: #f8fbff;
-            border: 1px solid #d7e4ff;
-            border-radius: 10px;
-          ">
-              <tr>
-                <td
-                  width="120"
-                  align="center"
-                  style="padding: 25px">
-                  <img
-                    src="https://frequentresearch.com/mailer/mail-icons/t2o/shield.png"
-                    width="100"
-                    alt="Participant Safety" />
-                </td>
-
-                <td style="padding: 25px 25px 25px 0">
-                  <h3 style="
-                  margin: 0 0 10px;
-                  color: #063686;
-                  font-size: 22px;
-                ">
-                    Participation on Turn2Opinion
-                  </h3>
-
-                  <p style="
-                  margin: 0;
-                  font-size: 18px;
-                  line-height: 30px;
-                  color: #22305f;
-                ">
-                    <strong>{{ user.name.first }}</strong>
-                    may now participate 
-                in eligible surveys and earn rewards by sharing their
-                opinions on various topics.
-                  </p>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-        <!-- RESPONSIBLE RESEARCH -->
-        <tr>
-          <td style="padding: 0 60px 35px">
-            <p style="
-            margin: 0 0 20px;
-            font-size: 20px;
-            line-height: 34px;
-            color: #14245d;
-            text-align: center;
-          ">
-              We appreciate your cooperation and support in helping us 
-          maintain a safe and responsible research environment for all
-          participants.
-            </p>
-
-            <p style="
-            margin: 0;
-            font-size: 18px;
-            line-height: 30px;
-            color: #22305f;
-            text-align: center;
-          ">
-              If you have any questions, would like to withdraw your consent, 
-          or request account deletion, please contact our support team.
-            </p>
-          </td>
-        </tr>
-
-        {% include "mailer/footer.liquid" %}
-
-        <!-- BOTTOM BLUE BAR -->
-        <tr>
-          <td
-            height="10"
-            bgcolor="#0c5adb"
-            style="background:#0c5adb;"></td>
-        </tr>
-
-      </table>
-    </td>
-
-
-  </tr>
+<tr><td class="px" style="padding:20px 44px 30px;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+<table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="border-top:1px solid #e2d8c3"><tr><td style="padding:16px 0 0;font-size:13px;line-height:21px;color:#5d6478">
+Registration reference: <b style="color:#0b2a6f;letter-spacing:.8px">{{ ref }}</b><br>
+You are receiving this because a Teen gave this address as their {{ relation }}. We use it only for this registration, consent and account notices, never for marketing.
+Links in this email are personal and time-limited: please do not forward it.<br>
+Questions, or want your details removed? <a href="mailto:support@turn2opinion.com" style="color:#0b2a6f">support@turn2opinion.com</a> · <a href="{{ site }}/privacy/" style="color:#0b2a6f">Privacy Policy</a> · <a href="{{ site }}/terms/" style="color:#0b2a6f">Terms</a>
+</td></tr></table></td></tr>
 </table>
+<p style="margin:16px 0 0;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12px;color:#8a8170">© Turn2Opinion · Mangolpur Kalan, New Delhi 110085, India</p>
+</td></tr></table></body></html>

@@ -39,3 +39,12 @@ Based on the SEOptimer audit of turn2opinion.com (18 Nov 2026, overall B-).
 
 - **Inline styles (Low priority):** ~700 `style` attributes are React CSS custom properties (`--k`, `--i`, `--c`) that drive the animations. Removing them means rewriting most animated sections; it does not affect ranking.
 - **Rendered content (GEO):** React still hydrates the page, so some rendering will always be reported, but with the prerendered build the HTML already contains all the text.
+
+## Round 14: Meta Pixel, schema and AI discovery (20 Nov 2026)
+
+- **Meta Pixel 1009909728169388** is in the `<head>` of every public page (prerendered, so it is in the HTML Meta's Pixel Helper reads). It stays in consent mode: nothing is sent until the visitor accepts marketing cookies in the cookie banner.
+- **Teen pages never get the pixel** (Kunal's decision, 20 Nov 2026): `/earn/teens/`, `/join/teen/`, `/parent-consent/` and every "Teens & family" blog post (`src/seo/teen.js`). In-app navigation to those pages sends no PageView either. If GTM has any Meta tags, add a trigger exception for `teen_page = true` (sent with every `page_view` in the dataLayer).
+- In-app page views were counted twice (the pixel's own history tracking plus ours); `disablePushState` fixes that, and automatic button-click events are off.
+- Every indexable page now has a `WebPage` (or `AboutPage`/`ContactPage`/`CollectionPage`) JSON-LD node linked to the Organization, WebSite and breadcrumb; `/blog/` has a `Blog` node listing every post; Teen pages carry a 13–17 `PeopleAudience`.
+- `llms-full.txt` (the readable text of every indexable page) is generated next to `llms.txt`; `robots.txt` names more AI crawlers (Meta, Amazon, DuckDuckGo, Mistral, Cohere, You.com, Apple, Google).
+- Still blocking a perfect Best Practices score: the header calls `/api/v1/me` on every page, and for a logged-out visitor the API answers 401, which Chrome logs as a console error.

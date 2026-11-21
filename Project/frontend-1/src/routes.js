@@ -260,6 +260,31 @@ export const ROUTES = [
     sitemap: false
   },
   {
+    // Teen profile section (signed-in Teen members): their record, the guardian record kept apart,
+    // consent records and the 13 Teen profile worlds.
+    path: '/teen/profile/',
+    load: page(() => import('./pages/TeenProfile.jsx')),
+    seo: {
+      title: 'My Teen Profile | Turn2Opinion',
+      description: 'Your Teen panel profile, consent records and profile worlds.',
+      crumb: 'My Teen profile',
+      robots: 'noindex,nofollow'
+    },
+    sitemap: false
+  },
+  {
+    // The Teen participation agreement (MINOR-2026.10), linked from the Teen registration.
+    path: '/teen/agreement/',
+    load: page(() => import('./pages/TeenAgreement.jsx')),
+    seo: {
+      title: 'Teen Participation Agreement (13–17) | Turn2Opinion',
+      description: 'How the Turn2Opinion Teen panel works for teens aged 13 to 17 and their parents or guardians: permission, privacy, rewards and your rights.',
+      crumb: 'Teen agreement',
+      robots: 'noindex,follow'
+    },
+    sitemap: false
+  },
+  {
     // A few welcome questions, asked once after the first login (Consumers, Professionals and Teens).
     path: '/welcome/',
     load: page(() => import('./pages/Welcome.jsx')),

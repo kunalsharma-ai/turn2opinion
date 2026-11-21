@@ -52,7 +52,8 @@ export function locationErrors(loc, prefix = '') {
 }
 
 /** loc = { country, state, city, zipcode, hasStates }; set(key, value) */
-export default function LocationFields({ loc, set, errOf, touch, idp = 'loc', prefix = '', countryLabel = 'Country' }) {
+// freeState: the state list also accepts a typed name. onNoPostal: shows "My area has no postal code".
+export default function LocationFields({ loc, set, errOf, touch, idp = 'loc', prefix = '', countryLabel = 'Country', freeState = false, noPostal = false, onNoPostal }) {
   const [states, setStates] = useState(null);
   const [cities, setCities] = useState(null);
   const [cityLoading, setCityLoading] = useState(false);
@@ -116,14 +117,23 @@ export default function LocationFields({ loc, set, errOf, touch, idp = 'loc', pr
               id={`${idp}-state`}
               value={loc.state}
               options={stateList}
+              allowFree={freeState}
+              freeLabel="Use"
               invalid={!!errOf(k('state'))}
-              placeholder="Search your state"
+              placeholder={freeState ? 'Search or type your state' : 'Search your state'}
               onChange={(v) => {
                 set('state', v);
                 set('city', '');
                 touch(k('state'))();
               }}
             />
+          </Field>
+        </div>
+      )}
+      {freeState && loc.country && states && stateList.length === 0 && (
+        <div data-k={k('state')}>
+          <Field id={`${idp}-state`} label="State / Region" hint="Optional. Leave it empty if your country has none.">
+            <input id={`${idp}-state`} className="input" value={loc.state} onChange={(e) => set('state', e.target.value.slice(0, 60))} autoComplete="address-level1" />
           </Field>
         </div>
       )}
@@ -160,9 +170,11 @@ export default function LocationFields({ loc, set, errOf, touch, idp = 'loc', pr
       </div>
       {loc.country && pl && (
         <div data-k={k('zipcode')}>
-          <Field id={`${idp}-zip`} label={pl} error={errOf(k('zipcode'))} valid={!!String(loc.zipcode || '').trim() && !errOf(k('zipcode'))}>
+          <Field id={`${idp}-zip`} label={pl} error={noPostal ? '' : errOf(k('zipcode'))} valid={!noPostal && !!String(loc.zipcode || '').trim() && !errOf(k('zipcode'))} hint={onNoPostal ? 'Type it in. Every format is accepted for your country.' : undefined}>
             <input
               id={`${idp}-zip`}
+              disabled={noPostal}
+              placeholder={noPostal ? 'No postal code' : ''}
               className="input"
               value={loc.zipcode}
               onChange={(e) => set('zipcode', e.target.value.toUpperCase().slice(0, 12))}
@@ -172,6 +184,13 @@ export default function LocationFields({ loc, set, errOf, touch, idp = 'loc', pr
               aria-invalid={!!errOf(k('zipcode'))}
             />
           </Field>
+          {onNoPostal && (
+            <label className="check loc-nopostal">
+              <input type="checkbox" checked={noPostal} onChange={(e) => onNoPostal(e.target.checked)} />
+              <span className="check-ui" />
+              <span>My area has no {pl.toLowerCase()}</span>
+            </label>
+          )}
         </div>
       )}
     </div>
