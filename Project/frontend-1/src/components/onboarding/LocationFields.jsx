@@ -44,6 +44,7 @@ export function locationErrors(loc, prefix = '') {
   if (loc.hasStates && !loc.state) e[`${prefix}state`] = 'Choose your state or province.';
   if (!String(loc.city || '').trim()) e[`${prefix}city`] = 'Choose or type your city.';
   else if (String(loc.city).trim().length < 2) e[`${prefix}city`] = 'Check the city name.';
+  if (loc.noPostal) return e; // "My area has no postal code"
   const rule = POSTAL[loc.country];
   const z = String(loc.zipcode || '').trim();
   if (rule && !rule[1].test(z)) e[`${prefix}zipcode`] = z ? rule[2] : `Enter your ${rule[0]}.`;

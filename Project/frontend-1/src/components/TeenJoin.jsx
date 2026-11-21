@@ -5,6 +5,7 @@
 import { hrefFor } from '../router/Router.jsx';
 import Icon from './Icon.jsx';
 import { DateField, EMAIL_RE, Field, PhoneField } from './FormFields.jsx';
+import { relWord, STATUS_LINE, statusIndex, TEEN_STATEMENTS } from '../data/teen/registration.js';
 
 export const RELATIONS = [
   ['mother', 'Mother', '👩'],
@@ -14,14 +15,9 @@ export const RELATIONS = [
 export const relLabel = (r) => (RELATIONS.find(([k]) => k === r) || [, 'Parent or guardian'])[1];
 const GENDERS = ['Female', 'Male', 'Other'];
 
-// Teen consent step: every box is required. [key, label, error]
-export const TEEN_CONSENTS = [
-  ['cParent', 'My parent or legal guardian knows I’m registering and agrees that Turn2Opinion may email them an onboarding and consent form.', 'Your parent or guardian needs to know about this request.'],
-  ['cTerms', 'TERMS', 'Please accept the Terms & Conditions.'],
-  ['cPrivacy', 'PRIVACY', 'Please accept the Privacy Policy.'],
-  ['cParticipation', 'I understand that I can only take part in research after my parent or guardian authorises it, and that I can skip any question or stop at any time.', 'Please confirm you understand how Teen participation works.'],
-  ['cAccuracy', 'The information I’ve given about me and my parent or guardian is true and accurate.', 'Please confirm the information is accurate.']
-];
+// Teen consent step: the seven confirmations the API records (data/teen/registration.js). Each is a
+// separate, unticked box and all are required. [form key, statement, error]
+export const TEEN_CONSENTS = TEEN_STATEMENTS.map((st) => [`tc_${st.id}`, st, 'Please tick this box to continue.']);
 
 /** Relationship cards plus the matching form (gender only for a legal guardian). */
 export function ParentFields({ p, setParent, errOf, okOf, setTouched, emailLocked = false, prefix = 'parent', idp = 'pg' }) {
@@ -85,7 +81,7 @@ export function ParentFields({ p, setParent, errOf, okOf, setTouched, emailLocke
             </Field>
           </div>
           <div data-k={k('phone')}>
-            <Field id={`${idp}-phone`} label={`${who}’s phone number`} error={errOf(k('phone'))} valid={okOf(k('phone'))}>
+            <Field id={`${idp}-phone`} label={`${who}’s phone number`} optional error={errOf(k('phone'))} valid={okOf(k('phone')) && !!p.phone}>
               <PhoneField id={`${idp}-phone`} country={p.dial} number={p.phone} onCountry={(c) => setParent('dial', c)} onNumber={(v) => setParent('phone', v)} onBlur={touch('phone')} invalid={!!errOf(k('phone'))} />
             </Field>
           </div>
@@ -184,35 +180,26 @@ export function TeenConsentStep({ f, set, errOf }) {
         </p>
         <ul className="tick-list">
           <li>This is a request. Submitting it does not count as consent.</li>
-          <li>They receive an onboarding and consent form by email and must complete it themselves.</li>
+          <li>They get an email with two buttons, Yes and No. If they choose Yes, they fill in a short onboarding form and the consent form themselves.</li>
           <li>Your account stays switched off until they consent. Then we email you a link to create your password.</li>
           <li>They can withdraw consent, or ask us to delete your account, at any time.</li>
         </ul>
       </div>
-      {TEEN_CONSENTS.map(([k, label]) => (
+      {TEEN_CONSENTS.map(([k, st]) => (
         <div key={k}>
           <label className={`check ${errOf(k) ? 'has-error' : ''}`} data-k={k}>
             <input type="checkbox" checked={!!f[k]} onChange={(e) => set(k, e.target.checked)} />
             <span className="check-ui" />
             <span>
-              {label === 'TERMS' ? (
+              <span aria-hidden="true">{st.icon}</span> {st.text(relWord(f.parent.rel))}
+              {st.link && (
                 <>
-                  I have read and accept the{' '}
-                  <a href={hrefFor('/terms/')} target="_blank" rel="noopener">
-                    Terms &amp; Conditions
+                  {' '}
+                  <a href={hrefFor(st.link[0])} target="_blank" rel="noopener">
+                    {st.link[1]}
                   </a>
-                  .
+                  {st.after || '.'}
                 </>
-              ) : label === 'PRIVACY' ? (
-                <>
-                  I have read and accept the{' '}
-                  <a href={hrefFor('/privacy/')} target="_blank" rel="noopener">
-                    Privacy Policy
-                  </a>
-                  , including the section on members under 18.
-                </>
-              ) : (
-                label
               )}
             </span>
           </label>
@@ -223,33 +210,19 @@ export function TeenConsentStep({ f, set, errOf }) {
           )}
         </div>
       ))}
+      <p className="muted tj-version">
+        Recorded with version T2O-TEEN-REG-2026.11, the date and time, and your registration reference.
+      </p>
     </fieldset>
   );
 }
 
-// The statuses Kunal listed, mapped to the API's registrationStatus values.
-const STAGES = [
-  ['registration-started', 'Registration started'],
-  ['parent-details-submitted', 'Parent details submitted'],
-  ['parent-verification-pending', 'Parent verification pending'],
-  ['consent-pending', 'Onboarding & consent pending'],
-  ['consent-verified', 'Consent verified'],
-  ['account-activation-pending', 'Account activation pending'],
-  ['account-active', 'Account active']
-];
-const AT = {
-  'registration-started': 0,
-  'parent-verification-pending': 2,
-  'consent-pending': 3,
-  'account-activation-pending': 5,
-  'account-active': 6
-};
-
-export function TeenStatus({ stage, parentEmail }) {
-  const at = AT[stage] ?? 2;
+/** Where the registration stands (the API's registrationStatus, in journey order). */
+export function TeenStatus({ stage, parentEmail, compact = false }) {
+  const at = statusIndex(stage);
   return (
-    <ol className="teen-status" aria-label="Registration status">
-      {STAGES.map(([k, l], i) => {
+    <ol className={`teen-status ${compact ? 'is-compact' : ''}`} aria-label="Registration status">
+      {STATUS_LINE.map(([k, l, d], i) => {
         const done = i < at || (stage === 'account-active' && i === at);
         const now = i === at && stage !== 'account-active';
         return (
@@ -259,7 +232,12 @@ export function TeenStatus({ stage, parentEmail }) {
             </span>
             <span>
               {l}
-              {now && k === 'parent-verification-pending' && parentEmail ? <small> · form sent to {parentEmail}</small> : null}
+              {!compact && (
+                <small>
+                  {' '}
+                  · {now && k === 'parent-verification-pending' && parentEmail ? `invitation sent to ${parentEmail}` : d}
+                </small>
+              )}
             </span>
           </li>
         );

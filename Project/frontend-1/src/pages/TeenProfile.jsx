@@ -18,7 +18,7 @@ import { DASHBOARD } from '../utils/session.js';
 import QInput, { isShown, qError } from '../components/survey/QInput.jsx';
 import { MINOR_PROFILES } from '../data/teen/teenProfiles.js';
 import { exactAge, relWord } from '../data/teen/registration.js';
-import { TeenStatusLine } from '../components/teen/TeenRegister.jsx';
+import { TeenStatus } from '../components/TeenJoin.jsx';
 
 const has = (v) => v != null && v !== '' && !(Array.isArray(v) && !v.length);
 const DEMO = {
@@ -291,7 +291,7 @@ export default function TeenProfile() {
                 Optional permissions: study contact {guardianC.selections.studyContact ? 'yes' : 'no'} · recordings {guardianC.selections.recording ? 'yes' : 'no'} · sensitive topics {guardianC.selections.sensitive ? 'yes' : 'no'}
               </p>
             )}
-            <TeenStatusLine status={d.status} compact />
+            <TeenStatus stage={d.status} compact />
           </section>
         </div>
 

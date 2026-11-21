@@ -2686,6 +2686,7 @@ g:nth-child(4) .sb-pulse {
 .join {
   position: relative;
   overflow: hidden;
+  overflow: clip; /* nothing inside can scroll it sideways (scrollIntoView on fields) */
   padding: clamp(30px, 5vw, 64px) 0 90px;
   background: linear-gradient(180deg, #eef2ff, #fbfbff);
   isolation: isolate;

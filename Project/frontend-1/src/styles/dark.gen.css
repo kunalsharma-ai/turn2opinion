@@ -3096,6 +3096,3 @@ html:where([data-mode='dark'])[data-mode='dark'] .ssel-list {
 :where(html[data-mode='dark']) .sn.sn5 .sn-waves i {
     border: 2px solid rgba(23, 33, 79, 0.35)
 }
-:where(html[data-mode='dark']) .trg .field-label {
-    color: #d7d3e8
-}
