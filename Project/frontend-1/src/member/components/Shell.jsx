@@ -688,6 +688,13 @@ function DemoBar() {
           <option value="error">{t('demo.state.error')}</option>
         </select>
       </label>
+      <label>
+        Planned features{' '}
+        <select value={p.planned ? 'show' : 'hide'} onChange={(e) => setDemoPrefs({ planned: e.target.value === 'show' })}>
+          <option value="hide">Hidden (as live)</option>
+          <option value="show">Shown</option>
+        </select>
+      </label>
     </div>
   );
 }
