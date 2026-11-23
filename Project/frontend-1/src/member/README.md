@@ -24,6 +24,24 @@ page load. Their approved designs and animations are not reproduced:
 **Going live needs one gateway rule.** Send the seven URLs above to frontend-1, and keep every other
 `/member/*` URL on the existing app.
 
+## Round 16 redesign
+
+Three experiences, each with its own hero, layout, colours and section styles:
+
+| Member type | Name | Hero visual (real data) | Profile section | Survey section |
+| --- | --- | --- | --- | --- |
+| Consumer | Opinion Playground | `OpinionLoop`: Opinion → Survey → Contribution → Reward → Impact | Profile road | Opportunity deck |
+| Professional | Insight Studio | `InsightPipeline`: Responses → Data → Analysis → Insight | Research dossier | Research briefs |
+| Teen | Voice Lab | `VoiceConstellation` plus guardian status | Profile quests | Missions |
+
+Every dashboard follows the journey: profile above surveys, then rewards, quality, referrals, activity.
+Section pages each have their own identity: Rewards (vault and milestone path), Quality (gauge, what /
+why / how, tier ladder, strengths, next steps), Referrals (network and referral journey), Activity
+(month-by-month river), My account (identity hero and membership card), Settings (control centre).
+The header has a jump-to palette (Ctrl K), animated points and quality pills, and a profile-completion
+ring on the avatar. Files: `components/art.jsx`, `components/Sections.jsx`, `dashboards/*.jsx`,
+`member-x.css`, `member-xp.css`, `i18n/en-x.js`.
+
 ## Layers
 
 ```

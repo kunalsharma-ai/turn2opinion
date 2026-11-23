@@ -27,8 +27,9 @@ export const ROUTES = {
 };
 
 // Sidebar (desktop) and bottom bar (phone). The bottom bar holds the four most used places plus "More".
-export const NAV = ['dashboard', 'surveys', 'rewards', 'quality', 'referrals', 'activity', 'profiles', 'profile', 'settings'];
-export const BOTTOM_NAV = ['dashboard', 'surveys', 'rewards', 'profile'];
+// Order follows the member journey: complete your profile -> participate -> earn -> improve -> track.
+export const NAV = ['dashboard', 'profiles', 'surveys', 'rewards', 'quality', 'referrals', 'activity', 'profile', 'settings'];
+export const BOTTOM_NAV = ['dashboard', 'profiles', 'surveys', 'rewards'];
 
 // Dashboard composition. Module ids map to components in dashboards/Composer.jsx.
 //   wide: spans the main column;  side: right column on wide screens

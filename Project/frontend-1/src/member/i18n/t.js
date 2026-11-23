@@ -3,7 +3,10 @@
 // Keys missing from a language fall back to English. The site's page translator
 // (src/i18n/engine.js, 135 languages) still translates the rendered page on top of this,
 // so a language with no dictionary file yet is translated automatically.
-import en from './en.js';
+import base from './en.js';
+import extra from './en-x.js';
+
+const en = { ...base, ...extra };
 
 const DICTS = { en };
 let active = 'en';

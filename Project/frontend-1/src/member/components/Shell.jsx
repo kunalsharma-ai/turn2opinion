@@ -1,21 +1,21 @@
 // DashboardShell: header, sidebar (desktop), bottom bar + drawer (phones), notification centre,
 // appearance, language and sound controls. Grouped so the header never shows more than five
 // controls side by side: points, quality, notifications, a settings cluster and the avatar.
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { usePath } from '../../router/Router.jsx';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { usePath, useRouter } from '../../router/Router.jsx';
 import { useI18n } from '../../i18n/I18nProvider.jsx';
 import { soundEnabled, setSoundPref, onSoundChange } from '../../utils/soundPref.js';
 import { asset, ENV } from '../../config/env.js';
 import { store } from '../../utils/storage.js';
 import { NAV, BOTTOM_NAV, ROUTES } from '../config/memberTypes.js';
-import { useMe, useSection, qualityTier } from '../data/MemberData.jsx';
+import { useMe, useSection, profileCompletion, qualityTier } from '../data/MemberData.jsx';
 import { actions } from '../data/source.js';
 import { demoPrefs, setDemoPrefs } from '../data/demo.js';
 import { useAppearance } from '../theme/AppearanceProvider.jsx';
 import { PALETTES } from '../theme/appearance.js';
 import { feedback } from '../theme/feedback.js';
 import { t, fmt, relTime } from '../i18n/t.js';
-import { Avatar, Badge, Button, Icon, IconButton, MLink, Modal, Segmented, Tabs, cx, useDismiss } from './ui.jsx';
+import { Avatar, Badge, Button, Counter, Icon, IconButton, MLink, Modal, Segmented, Tabs, cx, useDismiss, useToast } from './ui.jsx';
 
 const isActive = (path, id) => {
   const r = ROUTES[id];
@@ -302,7 +302,7 @@ function UserMenu({ me }) {
   return (
     <div className="mb-pop" ref={ref}>
       <button type="button" className="mb-userbtn" aria-haspopup="menu" aria-expanded={open} aria-label={t('hdr.profileMenu')} onClick={() => setOpen((v) => !v)}>
-        <Avatar name={me.fullName} src={me.photo} size={36} />
+        <ProgressAvatar me={me} size={34} />
         <span className="mb-userbtn__name">{me.firstName}</span>
         <Icon name="chevron" size={14} />
       </button>
@@ -339,33 +339,83 @@ function UserMenu({ me }) {
 }
 
 /* ---------------- header ---------------- */
-function Header({ onMenu }) {
+// Each place has its own colour, used for its icon tile, active state and page accent.
+export const ROUTE_COLOR = { dashboard: '#1f5bff', profiles: '#7b5cff', surveys: '#0b8bd6', rewards: '#d49100', quality: '#0f9f6e', referrals: '#e23d8f', activity: '#ea6a12', profile: '#5b5bf0', settings: '#4f6b8a', support: '#64748b', myaccount: '#0f766e' };
+
+/** Points pill: the number counts up whenever the balance changes and the coin flips. */
+function PointsPill({ points }) {
+  const [bump, setBump] = useState(false);
+  const prev = useRef(null);
+  useEffect(() => {
+    if (points && prev.current != null && prev.current !== points.total) {
+      setBump(true);
+      const id = setTimeout(() => setBump(false), 900);
+      return () => clearTimeout(id);
+    }
+    if (points) prev.current = points.total;
+    return undefined;
+  }, [points]);
+  return (
+    <MLink to="rewards" className={cx('xhd-pill xhd-pill--points', bump && 'is-bump')} title={t('nav.rewards')}>
+      <span className="xhd-coin" aria-hidden="true">
+        <span />
+      </span>
+      <span className="xhd-pill__num">{points ? <Counter value={points.total} /> : '…'}</span>
+      <span className="mb-hide-xs xhd-pill__unit">{t('pts.balance')}</span>
+    </MLink>
+  );
+}
+
+function QualityPill({ me }) {
+  const tier = qualityTier(me.quality.score, me.quality.scale);
+  const p = Math.max(0, Math.min(1, me.quality.score / (me.quality.scale || 1)));
+  return (
+    <MLink to="quality" className={cx('xhd-pill xhd-pill--quality', `is-${tier}`)} title={`${t('nav.quality')}: ${t(`q.tier.${tier}`)}`} aria-label={`${t('nav.quality')} ${me.quality.score} ${t('q.of', { n: me.quality.scale })}, ${t(`q.tier.${tier}`)}`}>
+      <svg viewBox="0 0 36 36" className="xhd-ring" aria-hidden="true">
+        <circle cx="18" cy="18" r="15" />
+        <circle cx="18" cy="18" r="15" pathLength="100" style={{ strokeDasharray: `${p * 100} 100` }} />
+      </svg>
+      <span className="xhd-pill__num">{me.quality.score}</span>
+      <span className="mb-hide-md xhd-pill__unit">{t(`q.tier.${tier}`)}</span>
+    </MLink>
+  );
+}
+
+/** Avatar with a ring that shows how complete the profile is. */
+function ProgressAvatar({ me, size = 36 }) {
+  const [profiles] = useSection('profiles');
+  const pc = profileCompletion(profiles);
+  return (
+    <span className="xhd-avatar" style={{ '--p': (pc?.percent ?? 0) / 100, '--sz': `${size + 8}px` }} title={pc ? `${t('pc.title')}: ${pc.percent}%` : undefined}>
+      <Avatar name={me.fullName} src={me.photo} size={size} />
+    </span>
+  );
+}
+
+function Header({ onMenu, onJump }) {
   const me = useMe();
   const [points] = useSection('points');
-  const tier = qualityTier(me.quality.score, me.quality.scale);
   return (
-    <header className="mb-header">
+    <header className={cx('mb-header xhd', `xhd--${me.type}`)}>
       <div className="mb-header__left">
         <IconButton icon="menu" label={t('hdr.openMenu')} className="mb-only-sm" onClick={onMenu} />
         <Brand />
+        <span className={cx('xhd-type mb-hide-sm', `is-${me.type}`)}>
+          <Icon name={me.type === 'pro' ? 'briefcase' : me.type === 'teen' ? 'sparkles' : 'heart'} size={14} />
+          {t(`member.${me.type}.short`)}
+        </span>
       </div>
+      <button type="button" className="xhd-jump" onClick={onJump} aria-haspopup="dialog" aria-label={t('cmd.open')}>
+        <Icon name="search" size={18} />
+        <span className="xhd-jump__text">{t('cmd.placeholder')}</span>
+        <kbd className="xhd-jump__kbd">Ctrl K</kbd>
+      </button>
       <div className="mb-header__right">
-        <MLink to="rewards" className="mb-pill mb-pill--points" title={t('nav.rewards')}>
-          <span className="mb-coin" aria-hidden="true" />
-          <span className="mb-hide-xs">{points ? t('hdr.points', { n: fmt(points.total) }) : '…'}</span>
-          <span className="mb-show-xs">{points ? fmt(points.total) : '…'}</span>
-        </MLink>
-        <MLink to="quality" className={cx('mb-pill mb-pill--quality', `is-${tier}`)} title={t('nav.quality')}>
-          <Icon name="shield" size={16} />
-          <span className="mb-hide-xs">{t('hdr.quality', { n: `${me.quality.score}/${me.quality.scale}` })}</span>
-          <span className="mb-show-xs">{me.quality.score}</span>
-        </MLink>
+        <PointsPill points={points} />
+        <QualityPill me={me} />
         <NotificationCenter />
         <span className="mb-hide-sm">
           <AppearanceMenu />
-        </span>
-        <span className="mb-hide-md">
-          <LanguageSelector compact />
         </span>
         <UserMenu me={me} />
       </div>
@@ -373,17 +423,116 @@ function Header({ onMenu }) {
   );
 }
 
+/* ---------------- jump to (command palette) ---------------- */
+function CommandPalette({ open, onClose }) {
+  const me = useMe();
+  const { navigate: go } = useRouter();
+  const { update, appearance } = useAppearance();
+  const [sound, setSound] = useSound();
+  const [q, setQ] = useState('');
+  const [i, setI] = useState(0);
+  const toast = useToast();
+  useEffect(() => {
+    if (open) {
+      setQ('');
+      setI(0);
+    }
+  }, [open]);
+  const isLight = typeof document !== 'undefined' ? document.documentElement.dataset.mbMode === 'light' : appearance.mode === 'light';
+  const items = useMemo(() => {
+    const pages = [...NAV, 'support', ...(me.type === 'teen' ? [] : ['myaccount'])].map((id) => ({
+      id,
+      kind: 'page',
+      icon: ROUTES[id].icon,
+      label: t(ROUTES[id].label),
+      hint: ROUTES[id].external ? t('cmd.external') : t('cmd.page'),
+      run: () => {
+        if (ROUTES[id].external) {
+          if (ENV.DEMO_MODE) toast(`Opens your existing ${t(ROUTES[id].label)} page in the live member area.`, 'info');
+          else window.location.assign(ROUTES[id].path);
+        } else go(ROUTES[id].path);
+      }
+    }));
+    const acts = [
+      { id: 'mode', kind: 'action', icon: 'eye', label: isLight ? t('cmd.dark') : t('cmd.light'), hint: t('cmd.action'), run: () => update({ mode: isLight ? 'dark' : 'light' }) },
+      { id: 'sound', kind: 'action', icon: sound ? 'volumeOff' : 'volume', label: sound ? t('hdr.sound.off') : t('hdr.sound.on'), hint: t('cmd.action'), run: () => setSound(!sound) },
+      { id: 'invite', kind: 'action', icon: 'send', label: t('cmd.invite'), hint: t('cmd.action'), run: () => go(ROUTES.referrals.path) },
+      { id: 'photo', kind: 'action', icon: 'user', label: t('cmd.photo'), hint: t('cmd.action'), run: () => go(ROUTES.profile.path) }
+    ];
+    const all = [...pages, ...acts];
+    const needle = q.trim().toLowerCase();
+    return needle ? all.filter((x) => x.label.toLowerCase().includes(needle)) : all;
+  }, [q, me.type, isLight, sound, go, update, setSound, toast]);
+  const pick = (x) => {
+    onClose();
+    x.run();
+  };
+  const onKey = (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setI((v) => Math.min(items.length - 1, v + 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setI((v) => Math.max(0, v - 1));
+    } else if (e.key === 'Enter' && items[i]) {
+      e.preventDefault();
+      pick(items[i]);
+    }
+  };
+  return (
+    <Modal open={open} onClose={onClose} title={t('cmd.open')}>
+      <div className="xcmd">
+        <label className="xcmd__search">
+          <Icon name="search" size={20} />
+          <span className="mb-sr">{t('cmd.open')}</span>
+          <input
+            autoFocus
+            value={q}
+            onChange={(e) => {
+              setQ(e.target.value);
+              setI(0);
+            }}
+            onKeyDown={onKey}
+            placeholder={t('cmd.placeholder')}
+            role="combobox"
+            aria-expanded="true"
+            aria-controls="xcmd-list"
+            aria-activedescendant={items[i] ? `xcmd-${items[i].id}` : undefined}
+          />
+          <kbd>Esc</kbd>
+        </label>
+        <ul className="xcmd__list" id="xcmd-list" role="listbox" aria-label={t('cmd.open')}>
+          {items.map((x, n) => (
+            <li key={x.id} id={`xcmd-${x.id}`} role="option" aria-selected={n === i} className={cx('xcmd__item', n === i && 'is-on')} style={{ '--nc': ROUTE_COLOR[x.id] || 'var(--mb-primary)' }} onMouseEnter={() => setI(n)} onClick={() => pick(x)}>
+              <span className="xcmd__icon" aria-hidden="true">
+                <Icon name={x.icon} size={18} />
+              </span>
+              <span className="xcmd__label">{x.label}</span>
+              <span className="xcmd__hint">{x.hint}</span>
+            </li>
+          ))}
+          {!items.length && <li className="xcmd__none">{t('cmd.none')}</li>}
+        </ul>
+      </div>
+    </Modal>
+  );
+}
+
 /* ---------------- navigation ---------------- */
 function NavList({ path, onPick, collapsed }) {
+  const on = NAV.findIndex((id) => isActive(path, id));
   return (
-    <ul className="mb-nav__list">
-      {NAV.map((id) => {
+    <ul className="mb-nav__list xnav" style={{ '--on': on }}>
+      {on >= 0 && <li className="xnav__slider" aria-hidden="true" style={{ '--nc': ROUTE_COLOR[NAV[on]] }} />}
+      {NAV.map((id, n) => {
         const r = ROUTES[id];
-        const on = isActive(path, id);
+        const active = n === on;
         return (
-          <li key={id}>
-            <MLink to={id} className={cx('mb-nav__item', on && 'is-on')} aria-current={on ? 'page' : undefined} onClick={onPick} title={collapsed ? t(r.label) : undefined}>
-              <Icon name={r.icon} size={20} />
+          <li key={id} style={{ '--nc': ROUTE_COLOR[id], '--n': n }}>
+            <MLink to={id} className={cx('mb-nav__item xnav__item', active && 'is-on')} aria-current={active ? 'page' : undefined} onClick={onPick} title={collapsed ? t(r.label) : undefined}>
+              <span className="xnav__tile" aria-hidden="true">
+                <Icon name={r.icon} size={18} />
+              </span>
               <span className="mb-nav__label">{t(r.label)}</span>
               {r.external && <Icon name="external" size={13} className="mb-nav__ext" />}
             </MLink>
@@ -396,15 +545,26 @@ function NavList({ path, onPick, collapsed }) {
 
 function Sidebar({ path, collapsed, onToggle }) {
   const me = useMe();
+  const [points] = useSection('points');
+  const pct = points ? Math.min(1, points.total / points.threshold) : 0;
   return (
-    <nav className={cx('mb-side', collapsed && 'is-collapsed')} aria-label={t('nav.main')}>
+    <nav className={cx('mb-side xside', collapsed && 'is-collapsed')} aria-label={t('nav.main')}>
       <div className="mb-side__member">
         <span className={cx('mb-side__type', `is-${me.type}`)}>
           <Icon name={me.type === 'pro' ? 'briefcase' : me.type === 'teen' ? 'sparkles' : 'heart'} size={16} />
           <span className="mb-nav__label">{t(`member.${me.type}`)}</span>
         </span>
       </div>
+      <p className="xside__group mb-nav__label">{t('nav.journey')}</p>
       <NavList path={path} collapsed={collapsed} />
+      {me.type !== 'teen' && points && (
+        <MLink to="rewards" className="xside__goal" title={collapsed ? t('xc.progress') : undefined} style={{ '--p': pct }}>
+          <span className="xside__goal-ring" aria-hidden="true" />
+          <span className="mb-nav__label">
+            <strong>{Math.round(pct * 100)}%</strong> {t('nav.toPayout')}
+          </span>
+        </MLink>
+      )}
       <div className="mb-side__foot">
         <MLink to="support" className="mb-nav__item mb-nav__item--quiet" title={collapsed ? t('nav.support') : undefined}>
           <Icon name="headset" size={20} />
@@ -426,7 +586,7 @@ function BottomNav({ path, onMore }) {
         const r = ROUTES[id];
         const on = isActive(path, id);
         return (
-          <MLink key={id} to={id} className={cx('mb-bottom__item', on && 'is-on')} aria-current={on ? 'page' : undefined}>
+          <MLink key={id} to={id} className={cx('mb-bottom__item', on && 'is-on')} aria-current={on ? 'page' : undefined} style={{ '--nc': ROUTE_COLOR[id] }}>
             <Icon name={r.icon} size={22} />
             <span>{t(r.label)}</span>
           </MLink>
@@ -507,6 +667,18 @@ export default function DashboardShell({ children }) {
   const path = usePath();
   const [drawer, setDrawer] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [jump, setJump] = useState(false);
+  const closeJump = useCallback(() => setJump(false), []);
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setJump((v) => !v);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
   useEffect(() => setCollapsed(!!store.get('t2o_member_nav_collapsed', false)), []);
   useEffect(() => setDrawer(false), [path]);
   const toggle = () => {
@@ -525,7 +697,7 @@ export default function DashboardShell({ children }) {
         <span className="mb-ambient__b" />
       </div>
       {ENV.DEMO_MODE && <DemoBar />}
-      <Header onMenu={() => setDrawer(true)} />
+      <Header onMenu={() => setDrawer(true)} onJump={() => setJump(true)} />
       <div className="mb-body">
         <Sidebar path={path} collapsed={collapsed} onToggle={toggle} />
         <main id="mb-main" className="mb-main" tabIndex={-1}>
@@ -540,6 +712,7 @@ export default function DashboardShell({ children }) {
       </div>
       <BottomNav path={path} onMore={() => setDrawer(true)} />
       <Drawer open={drawer} onClose={() => setDrawer(false)} path={path} />
+      <CommandPalette open={jump} onClose={closeJump} />
     </div>
   );
 }

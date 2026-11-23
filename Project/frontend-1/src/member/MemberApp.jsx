@@ -10,11 +10,16 @@ import { MemberDataProvider, useMemberData } from './data/MemberData.jsx';
 import { AppearanceProvider } from './theme/AppearanceProvider.jsx';
 import { setMemberLanguage, t } from './i18n/t.js';
 import DashboardShell from './components/Shell.jsx';
-import { Button, Skeleton, ToastProvider } from './components/ui.jsx';
+import { Button, ToastProvider } from './components/ui.jsx';
 import DashboardPage from './dashboards/Dashboards.jsx';
 import { ActivityPage, QualityPage, ReferralsPage, RewardsPage } from './pages/Pages.jsx';
 import { ProfilePage, SettingsPage } from './pages/Account.jsx';
-import memberCss from './member.css?inline';
+import baseCss from './member.css?inline';
+import xCss from './member-x.css?inline';
+import xpCss from './member-xp.css?inline';
+import { BrandLoader } from './components/art.jsx';
+
+const memberCss = `${baseCss}\n${xCss}\n${xpCss}`;
 
 const PAGES = {
   dashboard: DashboardPage,
@@ -43,11 +48,7 @@ function useMemberStyles() {
 function Loading() {
   return (
     <div className="mb-boot" role="status" aria-live="polite">
-      <div className="mb-boot__card">
-        <span className="mb-boot__logo" aria-hidden="true" />
-        <Skeleton w={220} h={14} />
-        <p className="mb-sr">{t('auth.checking')}</p>
-      </div>
+      <BrandLoader label={t('auth.checking')} />
     </div>
   );
 }

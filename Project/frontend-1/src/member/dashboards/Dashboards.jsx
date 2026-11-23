@@ -1,52 +1,16 @@
-// ConsumerDashboard, ProfessionalDashboard and TeenDashboard: the same modules, composed per
-// member type from config/memberTypes.js LAYOUT. Nothing here fetches data.
-import { LAYOUT } from '../config/memberTypes.js';
+// Three distinct dashboards, one per member type. Each has its own hero visual, layout, colours
+// and section styles (see member-x.css), and all read the same data sections.
+//   Consumer      "Opinion Playground"  dashboards/Consumer.jsx
+//   Professional  "Insight Studio"      dashboards/Professional.jsx
+//   Teen          "Voice Lab"           dashboards/Teen.jsx
+// Order on every dashboard follows the member journey: profile above surveys, then rewards,
+// quality, referrals and activity.
 import { useMe } from '../data/MemberData.jsx';
-import { Achievements, ActivityTimeline, ExpertiseCard, GuardianConsentCard, InsightsCard, KingdomCard, PointsCard, ProfileCompletionCard, QualificationCard, QualityScoreCard, ReferralCard, SurveySection, WelcomeHero } from '../components/Modules.jsx';
+import ConsumerDashboard from './Consumer.jsx';
+import ProfessionalDashboard from './Professional.jsx';
+import TeenDashboard from './Teen.jsx';
 
-const MODULES = {
-  surveys: () => <SurveySection limit={6} />,
-  points: () => <PointsCard />,
-  quality: () => <QualityScoreCard />,
-  profile: () => <ProfileCompletionCard />,
-  referral: () => <ReferralCard />,
-  activity: () => <ActivityTimeline limit={6} />,
-  achievements: () => <Achievements limit={6} />,
-  kingdom: () => <KingdomCard />,
-  expertise: () => <ExpertiseCard />,
-  qualification: () => <QualificationCard />,
-  insights: () => <InsightsCard />,
-  guardian: () => <GuardianConsentCard />
-};
-
-function Composer({ type }) {
-  const layout = LAYOUT[type] || LAYOUT.consumer;
-  return (
-    <div className={`mb-dash mb-dash--${type}`}>
-      <WelcomeHero />
-      <div className="mb-dash__grid">
-        <div className="mb-dash__main">
-          {layout.main.map((id) => (
-            <div key={id} className="mb-reveal">
-              {MODULES[id]()}
-            </div>
-          ))}
-        </div>
-        <aside className="mb-dash__side" aria-label="Your status">
-          {layout.side.map((id) => (
-            <div key={id} className="mb-reveal">
-              {MODULES[id]()}
-            </div>
-          ))}
-        </aside>
-      </div>
-    </div>
-  );
-}
-
-export const ConsumerDashboard = () => <Composer type="consumer" />;
-export const ProfessionalDashboard = () => <Composer type="pro" />;
-export const TeenDashboard = () => <Composer type="teen" />;
+export { ConsumerDashboard, ProfessionalDashboard, TeenDashboard };
 
 export default function DashboardPage() {
   const me = useMe();

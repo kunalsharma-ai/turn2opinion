@@ -17,6 +17,8 @@ Today each one is handled on the device or hidden.
 | 9 | Remove profile photo | Sends `PUT /me {profilePicture: null}`. Not verified against the API. | Confirm that `null` clears the photo, or add a delete call |
 | 10 | Password before email check | Kept as is. Email is confirmed first, then the password is set. | Accepting a password at `PUT /user` would need a backend change, so the flow keeps the email step |
 | 11 | More Professional sign-up fields | Only questions that already exist in the profile bank are offered (`empstat`, `industry`, `add-seniority`) | New answer keys, if more are wanted |
+| 13 | Quality score history | The Quality page shows the current score and an honest “history isn’t recorded yet” state | A dated score history, e.g. `GET /me/quality-history` |
+| 14 | Referral participation | The referral journey shows Invited, Joined and Activated. Participated and Reward are labelled “Not shown yet” and “Programme rules”. | A per-referral survey count and reward status |
 | 12 | Consent record details | `PUT /me {terms}` stores the consent ids only (the same as the agreement pages) | Store version, time and IP per consent, as is already done for Teens |
 
 The live site also needs one routing change: see `README.md`, "Going live needs one gateway rule".

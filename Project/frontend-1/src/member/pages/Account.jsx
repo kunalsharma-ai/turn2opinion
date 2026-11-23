@@ -1,14 +1,14 @@
 // Profile (My account) and Settings pages, plus the profile photo uploader.
 import { useEffect, useRef, useState } from 'react';
-import { useMe, useMemberData, useSection } from '../data/MemberData.jsx';
+import { useMe, useMemberData, useSection, profileCompletion, qualityTier } from '../data/MemberData.jsx';
 import { actions } from '../data/source.js';
 import { useAppearance } from '../theme/AppearanceProvider.jsx';
 import { feedback } from '../theme/feedback.js';
-import { t } from '../i18n/t.js';
+import { t, tn, fmt } from '../i18n/t.js';
+import { useI18n } from '../../i18n/I18nProvider.jsx';
 import { ColorPaletteSelector, LanguageSelector, ThemeSelector, useSound } from '../components/Shell.jsx';
 import { GuardianConsentCard } from '../components/Modules.jsx';
 import { Avatar, Badge, Button, Card, Field, Icon, MLink, Toggle, cx, useToast } from '../components/ui.jsx';
-import { PageHead } from './Pages.jsx';
 
 const MAX = 5 * 1024 * 1024;
 const TYPES = ['image/jpeg', 'image/png', 'image/webp'];
@@ -192,17 +192,101 @@ function useStateName(country, code) {
   return name;
 }
 
+/** Membership card with a soft 3D tilt that follows the pointer. */
+function MemberCard({ me }) {
+  const ref = useRef(null);
+  const move = (e) => {
+    if (e.pointerType !== 'mouse' || !ref.current || document.documentElement.dataset.mbMotion === 'reduce') return;
+    const r = ref.current.getBoundingClientRect();
+    ref.current.style.setProperty('--rx', `${(((e.clientY - r.top) / r.height - 0.5) * -10).toFixed(2)}deg`);
+    ref.current.style.setProperty('--ry', `${(((e.clientX - r.left) / r.width - 0.5) * 14).toFixed(2)}deg`);
+  };
+  const leave = () => {
+    ref.current?.style.setProperty('--rx', '0deg');
+    ref.current?.style.setProperty('--ry', '0deg');
+  };
+  return (
+    <div className={cx('xcard', `xcard--${me.type}`)} ref={ref} onPointerMove={move} onPointerLeave={leave} role="img" aria-label={`${t('ma.card')}: ${me.fullName}, ${t(`member.${me.type}`)}${me.memberId ? `, ${me.memberId}` : ''}`}>
+      <span className="xcard__shine" aria-hidden="true" />
+      <span className="xcard__brand">Turn2Opinion</span>
+      <span className="xcard__chip" aria-hidden="true" />
+      <span className="xcard__type">{t(`member.${me.type}`)}</span>
+      <span className="xcard__name">{me.fullName}</span>
+      <span className="xcard__row">
+        <span>
+          <small>{t('ma.id')}</small>
+          {me.memberId || '—'}
+        </span>
+        <span>
+          <small>{t('ma.since')}</small>
+          {me.joinedAt ? new Date(me.joinedAt).toLocaleDateString(undefined, { month: '2-digit', year: '2-digit' }) : '—'}
+        </span>
+      </span>
+    </div>
+  );
+}
+
 export function ProfilePage() {
   const me = useMe();
   const a = me.address;
   const stateName = useStateName(a?.country, a?.state);
   const teen = me.type === 'teen';
+  const [points] = useSection('points');
+  const [stats] = useSection('stats');
+  const [profiles] = useSection('profiles');
+  const pc = profileCompletion(profiles);
+  const tier = qualityTier(me.quality.score, me.quality.scale);
+  const stats4 = [
+    ['coin', 'rewards', t('sum.points'), points ? fmt(points.total) : '…'],
+    ['check', 'activity', t('ac.s.complete'), stats ? fmt(stats.complete) : '…'],
+    ['shield', 'quality', t('q.title'), t(`q.tier.${tier}`)],
+    ['map', 'profiles', t('sum.profile'), pc ? `${pc.percent}%` : '…']
+  ];
   return (
-    <div className="mb-page">
-      <PageHead title={t('ma.title')} icon="user" sub={t('ma.sub')} />
+    <div className="xp xp--account">
+      <section className="xid" aria-labelledby="xid-name">
+        <div className="xid__bg" aria-hidden="true" />
+        <div className="xid__who">
+          <span className="xid__avatar" style={{ '--p': (pc?.percent ?? 0) / 100 }}>
+            <Avatar name={me.fullName} src={me.photo} size={112} />
+          </span>
+          <div>
+            <p className="xph__eyebrow">{t('ma.eyebrow')}</p>
+            <h1 id="xid-name">{me.fullName || t('ma.title')}</h1>
+            <p className="xid__meta">
+              <Badge tone={me.type}>{t(`member.${me.type}`)}</Badge>
+              {me.joinedAt && <span>{t('greet.memberSince', { date: fmtDate(me.joinedAt) })}</span>}
+            </p>
+            <div className="mb-row">
+              <Button size="sm" icon="user" onClick={() => document.getElementById('xid-photo')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
+                {me.photo ? t('av.replace') : t('av.upload')}
+              </Button>
+              <Button size="sm" variant="ghost" icon="key" to="/member/settings/#set-account">
+                {t('ma.security')}
+              </Button>
+            </div>
+          </div>
+        </div>
+        <MemberCard me={me} />
+      </section>
+
+      <ul className="xid-stats">
+        {stats4.map(([icon, to, label, value], i) => (
+          <li key={to} style={{ '--i': i }}>
+            <MLink to={to} className="xid-stats__item">
+              <span className="xid-stats__icon" aria-hidden="true">
+                <Icon name={icon} size={18} />
+              </span>
+              <strong>{value}</strong>
+              <span>{label}</span>
+            </MLink>
+          </li>
+        ))}
+      </ul>
+
       <div className="mb-cols">
         <div className="mb-col-main">
-          <Card title={t('ma.basic')} icon="id">
+          <Card title={t('ma.basic')} icon="id" className="xid-card">
             <dl className="mb-deflist mb-deflist--two">
               <div>
                 <dt>{t('ma.name')}</dt>
@@ -250,17 +334,17 @@ export function ProfilePage() {
               )}
             </dl>
           </Card>
-          <Card title={t('ma.location')} icon="pin">
-            <ol className="mb-loc">
+          <Card title={t('ma.location')} icon="pin" className="xid-card">
+            <ol className="mb-loc xloc">
               {[
-                ['ma.country', a.country ? countryName(a.country) : ''],
-                ['ma.state', stateName],
-                ['ma.city', a.city],
-                ['ma.zip', a.zip]
-              ].map(([k, v], i) => (
-                <li key={k} className={cx(!v && 'is-empty')}>
+                ['ma.country', a.country ? countryName(a.country) : '', 'globe'],
+                ['ma.state', stateName, 'map'],
+                ['ma.city', a.city, 'building'],
+                ['ma.zip', a.zip, 'pin']
+              ].map(([k, v, icon], i) => (
+                <li key={k} className={cx(!v && 'is-empty')} style={{ '--i': i }}>
                   <span className="mb-loc__step" aria-hidden="true">
-                    {i + 1}
+                    <Icon name={icon} size={16} />
                   </span>
                   <span className="mb-loc__label">{t(k)}</span>
                   <span className="mb-loc__value">{v || t('ma.notSet')}</span>
@@ -271,17 +355,19 @@ export function ProfilePage() {
           </Card>
         </div>
         <div className="mb-col-side">
-          <AvatarUpload />
+          <div id="xid-photo">
+            <AvatarUpload />
+          </div>
           {teen && <GuardianConsentCard />}
           {!teen && (
-            <Card title={t('ma.payment')} icon="wallet">
+            <Card title={t('ma.payment')} icon="wallet" className="xid-card">
               <p className="mb-card__lead">{t('ma.payment.d')}</p>
               <Button to="myaccount" size="sm" variant="secondary" iconEnd="external" className="mb-wide">
                 {t('ma.payment.open')}
               </Button>
             </Card>
           )}
-          <Card title={t('st.profile.profiles')} icon="map">
+          <Card title={t('st.profile.profiles')} icon="map" className="xid-card">
             <p className="mb-card__lead">{t('kd.sub')}</p>
             <Button to="profiles" size="sm" iconEnd="external" className="mb-wide">
               {t('pc.open')}
@@ -314,8 +400,8 @@ export function SettingsPage() {
     return () => io.disconnect();
   }, []);
   return (
-    <div className="mb-page mb-settings">
-      <PageHead title={t('st.title')} icon="gear" sub={t('st.sub')} />
+    <div className="xp xp--settings mb-settings">
+      <ControlCentre onPick={setActive} />
       <div className="mb-settings__grid">
         <nav className="mb-settings__nav" aria-label={t('st.title')}>
           <ul>
@@ -356,6 +442,55 @@ export function SettingsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+/** The control centre: one tile per area, each showing its current value. */
+function ControlCentre({ onPick }) {
+  const me = useMe();
+  const { appearance } = useAppearance();
+  const [sound] = useSound();
+  const { meta } = useI18n();
+  const [ans] = useSection('answers');
+  const ch = ans?.['communication-methods'];
+  const values = {
+    appearance: t(`ap.${appearance.mode === 'system' ? 'system' : appearance.mode}`),
+    sound: sound ? t('hdr.sound.on') : t('hdr.sound.off'),
+    language: meta?.native || 'English',
+    notifications: Array.isArray(ch) ? tn('cc.channels', ch.length) : '…',
+    privacy: tn('cc.choices', (me.terms || []).length),
+    profile: me.photo ? t('cc.photoOn') : t('cc.photoOff'),
+    account: t('cc.secure')
+  };
+  return (
+    <section className="xcc" aria-labelledby="xcc-t">
+      <div className="xcc__head">
+        <p className="xph__eyebrow">{t('cc.eyebrow')}</p>
+        <h1 id="xcc-t">{t('st.title')}</h1>
+        <p className="xph__lead">{t('st.sub')}</p>
+      </div>
+      <ul className="xcc__grid">
+        {SECTIONS.map(([id, icon], i) => (
+          <li key={id} style={{ '--i': i }} className={`is-${id}`}>
+            <a
+              href={`#set-${id}`}
+              className="xcc__tile"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById(`set-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                onPick(id);
+              }}
+            >
+              <span className="xcc__icon" aria-hidden="true">
+                <Icon name={icon} size={22} />
+              </span>
+              <span className="xcc__label">{t(`st.${id}`)}</span>
+              <span className="xcc__value">{values[id]}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
