@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "npm install ; nodemon app/server.js",
-    "start": "node app/server.js"
+    "start": "node app/server.js",
+    "test": "node --experimental-test-module-mocks --test \"test/*.test.js\""
   },
   "keywords": [
     "express",

@@ -13,14 +13,35 @@ import {
     sendMail,
     Token
 } from "../../utils/index.js"
+import {
+    resolveCaller,
+    ticketListFilter,
+    assertTicketAccess,
+    mayRaiseForOthers,
+    teamRecipients
+} from "../../utils/supportAccess.js";
 const router = express.Router();
+
+// role is select:false on users, so it is loaded here for the access checks.
+const loadUser = id => User.model.findById(id).select("+role mail");
+const caller = req => resolveCaller(req, loadUser);
+async function readOwnTicket(req) {
+    const who = await caller(req);
+    let ticket = null;
+    try {
+        ticket = await supportController.read(req.params.id);
+    } catch (e) {
+        ticket = null;
+    }
+    return assertTicketAccess(who, ticket);
+}
 router
     .route("/")
     .get(expressRoute(
         async req => {
-            // showing all requests
+            // staff see all requests, members only their own
             let message = ""
-            let data = await supportController.list({}, null, {
+            let data = await supportController.list(ticketListFilter(await caller(req), {}), null, {
                 _id: -1
             });
             return { message, data };
@@ -29,9 +50,9 @@ router
     ))
     .post(expressRoute(
         async req => {
-            // showing all requests
+            // filtered list; members are always limited to their own requests
             let message = ""
-            let data = await supportController.list({ ...req.body }, null, {
+            let data = await supportController.list(ticketListFilter(await caller(req), req.body), null, {
                 _id: -1
             });
             return { message, data };
@@ -51,7 +72,8 @@ router
                 priority = ""
             } = req.body;
             let issueRaisedBy;
-            if ("user" in req.body) {
+            // only staff may raise a ticket on behalf of another member
+            if (mayRaiseForOthers(await caller(req), req.body)) {
                 const temp = await User.list({
                     mail: req.body.user
                 })
@@ -90,16 +112,11 @@ router
             )
             let status= await sendMail(
                 { origin: req.origin, "content-type": "application/json" },
-                // issueRaisedBy.email,
-                "optiwari.india@gmail.com",
+                issueRaisedBy.email,
                 `${process.env.PROJECT_NAME}: Support Ticket Created`,
                 toUser.data
-            ) 
-            
-           
-            let user = await User.read(req.user._id);
-            
-            
+            )
+
             let toTeam = await getMailer(
                 "support",
                 "ticket-created-team",
@@ -109,11 +126,11 @@ router
                 }
             )
 
-            for (let index = 0; index < teamMembers.length; index++) {
-                const member = teamMembers[index];
+            // SUPPORT_TEAM_EMAIL when set, otherwise every team member
+            for (const to of teamRecipients(teamMembers)) {
                 await sendMail(
                     { origin: req.origin, "content-type": "application/json" },
-                    member.mail,
+                    to,
                     `${process.env.PROJECT_NAME}: Support Ticket Created`,
                     toTeam.data
                 )
@@ -127,7 +144,7 @@ router
     .get(expressRoute(
         async req => {
             let message = "";
-            let data = await supportController.read(req.params.id)
+            let data = await readOwnTicket(req)
             return { message, data }
         },
         supportController
@@ -155,6 +172,8 @@ router
             let data = [];
             let message = "Successfully deleted";
 
+            // deleting tickets is for staff only
+            if (!(await caller(req)).staff) throw new Error("Ticket not found");
             await supportController.delete(req.params.id);
             return { message, data }
         },
@@ -164,7 +183,7 @@ router
     .route('/:id/reply')
     .get(expressRoute(
         async req => {
-            let ticket = await supportController.read(req.params.id)
+            let ticket = await readOwnTicket(req)
             let [message, data] = ["",
                 await supportController.conversation(ticket)
             ];
@@ -181,7 +200,7 @@ router
     ))
     .put(expressRoute(
         async req => {
-            let ticket = await supportController.read(req.params.id)
+            let ticket = await readOwnTicket(req)
             let [message, data] = [
                 "",
                 await supportController.reply(ticket, req.body)
@@ -214,11 +233,10 @@ router
                     repliedBy: req.user
                 }
             )
-            for (let index = 0; index < teamMembers.length; index++) {
-                const member = teamMembers[index];
+            for (const to of teamRecipients(teamMembers)) {
                 await sendMail(
                     { origin: req.origin, "content-type": "application/json" },
-                    member.mail,
+                    to,
                     `${process.env.PROJECT_NAME}: Support Ticket Updated`,
                     toTeam.data
                 )
