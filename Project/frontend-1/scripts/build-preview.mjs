@@ -30,7 +30,9 @@ const envPlugin = { name: 'asset-map', setup(b) {
     return { contents: s, loader: 'js', resolveDir: dir };
   });
 } };
-const r = await build({ entryPoints: [join(proj, 'src/entry-client.jsx')], bundle: true, write: false, outdir: '/tmp/x', format: 'esm', splitting: false, minify: true, jsx: 'automatic', target: 'es2020', loader: { '.js': 'jsx' }, external: ['/fonts/*'], plugins: [envPlugin],
+// MEMBER=1: the dashboard-only preview (src/member/preview-entry.jsx) with just the images it uses.
+const MEMBER = process.env.MEMBER === '1';
+const r = await build({ entryPoints: [join(proj, MEMBER ? 'src/member/preview-entry.jsx' : 'src/entry-client.jsx')], bundle: true, write: false, outdir: '/tmp/x', format: 'esm', splitting: false, minify: true, jsx: 'automatic', target: 'es2020', loader: { '.js': 'jsx' }, external: ['/fonts/*'], plugins: [envPlugin],
   define: { 'import.meta.env': JSON.stringify(env), 'process.env.NODE_ENV': '"production"' }, logLevel: 'warning' });
 let js = r.outputFiles.find((f) => f.path.endsWith('.js')).text;
 let css = r.outputFiles.find((f) => f.path.endsWith('.css')).text;
@@ -41,7 +43,9 @@ const dataUri = (p) => { const e = extname(p); const buf = readFileSync(p);
 const map = {};
 const walk = (d, rel) => { for (const n of readdirSync(d)) { const p = join(d, n), r2 = rel + '/' + n;
   if (statSync(p).isDirectory()) walk(p, r2); else if (mime[extname(n)] && !/og\//.test(r2) && extname(n) !== '.woff') map[r2] = dataUri(p); } };
-walk(join(pub, 'flags'), '/flags'); walk(join(pub, 'images'), '/images');
+walk(join(pub, 'flags'), '/flags');
+if (MEMBER) walk(join(pub, 'images', 'brand'), '/images/brand');
+else walk(join(pub, 'images'), '/images');
 css = css.replace(/url\((["']?)\/fonts\/([^)"']+)\1\)/g, (_, q, f) => `url(${dataUri(join(pub, 'fonts', f))})`);
 const icon = dataUri(join(pub, 'favicon.svg'));
 const safe = (s) => s.replace(/<\/(script|style)/gi, '<\\/$1');
@@ -52,7 +56,7 @@ const html = `<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0E1B4D" />
 <meta name="robots" content="noindex" />
-<title>Turn2Opinion – Website Preview</title>
+<title>${MEMBER ? 'Turn2Opinion – Member Dashboard Preview' : 'Turn2Opinion – Website Preview'}</title>
 <link rel="icon" href="${icon}" />
 <!-- Self-contained PREVIEW build (demo mode, hash routing). Not for deployment: deploy dist/client from "npm run build". -->
 <script>try{if(JSON.parse(localStorage.getItem('t2o_mode'))==='dark')document.documentElement.setAttribute('data-mode','dark')}catch(e){}</script>

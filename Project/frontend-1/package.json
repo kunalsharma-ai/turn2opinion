@@ -17,6 +17,7 @@
     "check:content": "node scripts/check-content.mjs",
     "seo:report": "node scripts/seo-report.mjs",
     "preview:single": "npm run gen:dark && node scripts/build-preview.mjs",
+    "preview:member": "npm run gen:dark && MEMBER=1 node scripts/build-preview.mjs preview/turn2opinion-member-dashboard.html",
     "gen:dark": "node scripts/gen-dark.mjs"
   },
   "dependencies": {
