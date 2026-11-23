@@ -747,3 +747,8 @@ html.is-member body {
     margin: -40px 0 -50px;
   }
 }
+
+/* multi-select search: the open list sits in the card, so Continue is never hidden under it */
+#t2o #fld:has(#cnt) .cb.open {
+  margin-bottom: calc(min(330px, 46vh) + 12px);
+}
