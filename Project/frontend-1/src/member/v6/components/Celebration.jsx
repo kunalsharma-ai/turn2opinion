@@ -10,6 +10,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Icon } from './Icon.jsx';
 import { celebrate, stopCelebration } from '../lib/celebrate.js';
 import { building } from '../lib/kingdom-art.js';
+import { celebrationArt } from '../lib/world-art.js';
+import { world } from '../lib/world.js';
 import { itemMeta } from '../lib/items.js';
 import { itemByIndex } from '../lib/progression.js';
 import { markPaid } from '../lib/rewards.js';
@@ -89,14 +91,14 @@ export default function Celebration({ i, points = 0, next, onClose, onNext }) {
         <div className="cb-plot" aria-hidden="true">
           <svg viewBox="-90 -170 180 190">
             <ellipse cx="0" cy="6" rx="80" ry="16" className="cb-ground" />
-            <g className="cb-bld" dangerouslySetInnerHTML={{ __html: building(m.b, m) }} />
-            <g className="cb-scaf"><path d="M-40 4v-120M40 4v-120M-40 -116h80M-40 -76h80M-40 -36h80" /></g>
+            <g className="cb-bld" dangerouslySetInnerHTML={{ __html: celebrationArt(world().id, m) || building(m.b, m) }} />
+            {world().id === 'kingdom' && <g className="cb-scaf"><path d="M-40 4v-120M40 4v-120M-40 -116h80M-40 -76h80M-40 -36h80" /></g>}
           </svg>
           <span className="cb-badge">{m.e[0]}</span>
         </div>
         <p className="cb-eyebrow">{x.kind === 'survey' ? t('v6_c_survey_done') : t('v6_c_profile_done')}</p>
         <h2 id="cb-h" className="cb-h">{t(head, { name: pnameT(x.p) })}</h2>
-        <p className="cb-p">{t('v6_c_built', { b: tr(m.name) })}</p>
+        <p className="cb-p">{world().id === 'kingdom' ? t('v6_c_built', { b: tr(m.name) }) : t(world().added)}</p>
         {points > 0 && (
           <div className="cb-rw">
             <span className="cb-r coin" ref={coinRef}><i className="big-coin" aria-hidden="true" /><b>+<CountUp to={points} delay={700} /></b><small>{t('v6_pts')}</small></span>
@@ -104,7 +106,7 @@ export default function Celebration({ i, points = 0, next, onClose, onNext }) {
         )}
         <div className="cb-acts">
           {next && <button type="button" className="btn6 primary big" onClick={() => finish(() => onNext(next.i))} data-snd="none" autoFocus>{t('v6_c_next', { name: pnameT(next.p) })}<Icon n="arrow-r" className="flip" /></button>}
-          <button type="button" className={'btn6 big ' + (next ? 'ghost' : 'primary')} onClick={() => finish(onClose)} data-snd="none" autoFocus={!next}><span aria-hidden="true">🏰</span>{t('v6_c_kingdom')}</button>
+          <button type="button" className={'btn6 big ' + (next ? 'ghost' : 'primary')} onClick={() => finish(onClose)} data-snd="none" autoFocus={!next}><span aria-hidden="true">{world().e}</span>{t(world().back)}</button>
         </div>
       </div>
     </dialog>

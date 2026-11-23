@@ -212,3 +212,10 @@ local question bank, storage or submission code is used.
 - Reward sync: `data/rewardBus.js` announces a reward only after the server confirms it (profile credits returned by `PATCH /me/profile`, or a completed survey). `components/RewardSync.jsx` reloads points, activity, progress and the member, shows the reward notification and sets `html[data-reward]` so heroes react.
 - `member-r23.css` (loaded last): compact card grid for Profiles and Surveys, Pro qualification tile, Teen hero.
 - Preview: planned features (no backend) are hidden unless "Planned features: Shown" is picked in the preview bar.
+
+## Round 24 notes
+
+- One reward world per member type, on `/member/profiles/#kingdom`: Consumer keeps the Opinion Kingdom (`v6/components/Kingdom.jsx`); Professional gets the Insight Observatory and Teen the Quest Islands (`v6/components/World.jsx`, art in `v6/lib/world-art.js`, styles in `v6/world.css`). `v6/lib/world.js` holds each world's levels, milestones and badges; `Stage.jsx` sets the world from the member type so the hero button, the "sealed" popup and the completion celebration match it.
+- All three worlds use the same real data: completed profiles, `/me/points` and the member's quality score. Each completion animates once (shared "built" record).
+- `components/WorldTeaser.jsx`: a card on every dashboard with the world's progress, points, quality and a link to the full world.
+- Sweep fixes in `member-r23.css`: side-menu "Your journey" label no longer squeezed on short screens, Profiles hero stacks on tablets, referral link box has its own row, Consumer hero loop labels have a halo.

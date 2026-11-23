@@ -11,6 +11,7 @@ import { SPRITE } from './lib/icons.js';
 import { themeCSS } from './lib/themes.js';
 import { setModel, stateOf, canOpen, nextItem } from './lib/progression.js';
 import { initBuilt } from './lib/rewards.js';
+import { setWorld } from './lib/world.js';
 import { profileKey } from './lib/storage.js';
 import { themeId } from './lib/present.js';
 import { reducedMotion } from './lib/fx.js';
@@ -30,6 +31,7 @@ export function useStage(allProfiles) {
   const about = useMemo(() => aboutYou(allProfiles), [allProfiles]);
   const topics = useMemo(() => topicProfiles(allProfiles), [allProfiles]);
   // rebuilt on every render (cheap) so the popups, which read the shared model, always see this render's list
+  setWorld(me.type); // Consumer kingdom, Professional observatory, Teen islands
   const items = setModel(about, topics, me.type === 'teen' ? 'teen' : 'b2c');
   const state = stateOf();
   const [view, setView] = useState({ name: 'hub' }); // hub | flow (item) | survey (opened paid survey)

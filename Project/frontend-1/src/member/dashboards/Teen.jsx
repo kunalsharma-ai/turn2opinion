@@ -9,6 +9,7 @@ import { useSection } from '../data/MemberData.jsx';
 import { EngageStrip, GuardianSummary, ImpactStories, LearningBadges, QuickPoll, SeasonChallenge } from '../components/Engage.jsx';
 import { BonusBanner } from '../components/Grow.jsx';
 import XHero from './Hero.jsx';
+import WorldTeaser from '../components/WorldTeaser.jsx';
 
 export default function TeenDashboard() {
   const d = useDash();
@@ -40,6 +41,7 @@ export default function TeenDashboard() {
       <BonusBanner compact />
       <SeasonChallenge />
       <EngageStrip />
+      <WorldTeaser />
       <ProfileJourney variant="quests" />
       <SurveyDiscovery variant="missions" limit={6} />
       <div className="xe-row">

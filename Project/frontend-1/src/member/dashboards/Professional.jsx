@@ -7,6 +7,7 @@ import { Donut, ProfileJourney, QualityTile, Sparkline, StackBar, SurveyDiscover
 import { BenchmarkReport, EngageStrip, ExpertBadges, ImpactStories, QuickPoll } from '../components/Engage.jsx';
 import { BonusBanner } from '../components/Grow.jsx';
 import XHero from './Hero.jsx';
+import WorldTeaser from '../components/WorldTeaser.jsx';
 
 export default function ProfessionalDashboard() {
   const d = useDash();
@@ -33,6 +34,7 @@ export default function ProfessionalDashboard() {
       />
       <BonusBanner compact />
       <EngageStrip />
+      <WorldTeaser />
       <div className="xpro-row">
         <ProfileJourney variant="dossier" />
         <Analytics />

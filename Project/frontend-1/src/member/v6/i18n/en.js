@@ -372,6 +372,30 @@ const EN = {
   v6_c_h5: 'Legendary! {name} finished 🏆', v6_c_h6: 'High five! {name} wrapped up 🙌', v6_c_h7: 'Stellar work on {name} 🌟', v6_c_h8: '{name}? Conquered! 👑',
   v6_show_all: 'Show all {n} surveys', v6_show_less: 'Show fewer surveys',
   v6_c_built: '{b} has been added to your kingdom.', v6_c_next: 'Next: {name}', v6_c_kingdom: 'See my kingdom',
+
+  /* ---------- Round 24 · Professional "Insight Observatory" ---------- */
+  w_obs_lead: 'Your About-you profiles are complete. Surveys now open one by one, and each one lights a new star in your observatory.',
+  w_obs_title: 'Your Insight Observatory', w_obs_named: '{name}’s Insight Observatory',
+  w_obs_sub: 'Every profile and survey you complete ignites a star, joins its constellation and adds its points to your balance.',
+  w_obs_aria: 'Your observatory: {done} of {total} stars lit', w_obs_unit: 'Stars lit', w_obs_seals: 'Expert badges',
+  w_obs_see: 'See my observatory', w_obs_back: 'See my observatory', w_obs_added: 'A new star is lit in your observatory.',
+  w_obs_done: 'star lit', w_obs_ready: 'ready to light', w_obs_tip: 'Lit by completing this profile', w_obs_pan: 'Drag to explore your sky',
+  w_obs_max: 'Your whole sky is lit!', w_obs_all: 'Every discovery unlocked!',
+  w_obs_lv0: 'Observer', w_obs_lv1: 'Analyst', w_obs_lv2: 'Specialist', w_obs_lv3: 'Senior expert', w_obs_lv4: 'Lead expert', w_obs_lv5: 'Principal', w_obs_lv6: 'Thought leader', w_obs_lv7: 'Distinguished fellow',
+  w_obs_ms0: 'Signal beacon', w_obs_ms1: 'Northern aurora', w_obs_ms2: 'Research satellite', w_obs_ms3: 'Comet sighting', w_obs_ms4: 'Golden telescope', w_obs_ms5: 'Meteor shower',
+  w_obs_s0: 'First signal', w_obs_s1: 'Dossier opened', w_obs_s2: 'About you', w_obs_s3: 'First brief', w_obs_s4: '5 stars', w_obs_s5: '10 stars', w_obs_s6: 'Expert panel', w_obs_s7: 'Full sky',
+
+  /* ---------- Round 24 · Teen "Quest Islands" ---------- */
+  w_isl_lead: 'Your About-you profiles are complete. Surveys now open one by one, and each one raises a new island on your map.',
+  w_isl_title: 'Your Quest Islands', w_isl_named: '{name}’s Quest Islands',
+  w_isl_sub: 'Every profile and survey you finish raises a new island with its own treasure and adds its points to your balance.',
+  w_isl_aria: 'Your islands: {done} of {total} discovered', w_isl_unit: 'Islands found', w_isl_seals: 'Explorer badges',
+  w_isl_see: 'See my islands', w_isl_back: 'See my islands', w_isl_added: 'A new island has risen on your map.',
+  w_isl_done: 'island found', w_isl_ready: 'ready to explore', w_isl_tip: 'Found by finishing this profile', w_isl_pan: 'Drag to sail around',
+  w_isl_max: 'Every island is yours!', w_isl_all: 'Every treasure found!',
+  w_isl_lv0: 'Rookie', w_isl_lv1: 'Explorer', w_isl_lv2: 'Sailor', w_isl_lv3: 'Navigator', w_isl_lv4: 'Treasure hunter', w_isl_lv5: 'Captain', w_isl_lv6: 'Admiral', w_isl_lv7: 'Island legend',
+  w_isl_ms0: 'Message in a bottle', w_isl_ms1: 'Rainbow over the sea', w_isl_ms2: 'Friendly whale', w_isl_ms3: 'Hot-air balloon', w_isl_ms4: 'Treasure ship', w_isl_ms5: 'Beach fireworks',
+  w_isl_s0: 'First island', w_isl_s1: 'Base camp', w_isl_s2: 'About you', w_isl_s3: 'First quest', w_isl_s4: '5 islands', w_isl_s5: '10 islands', w_isl_s6: 'Captain', w_isl_s7: 'Island legend',
 };
 export default EN;
 
