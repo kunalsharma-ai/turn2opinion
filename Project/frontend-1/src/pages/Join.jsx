@@ -41,6 +41,8 @@ import { DASHBOARD, redirectIfLoggedIn, termsUrl, WELCOME, welcomeChannels } fro
 import { fullPhone, NAME_RE, phoneError, validateParent } from '../utils/signup.js';
 import LocationFields, { locationErrors } from '../components/onboarding/LocationFields.jsx';
 import AccountSetup from '../components/onboarding/AccountSetup.jsx';
+import UnderThirteen from '../components/teen/UnderThirteen.jsx';
+import { ageRoute, apiGender, maskEmail, TEEN_REG_CONSENT_VERSION, TEEN_STATEMENTS } from '../data/teen/registration.js';
 
 const emailCheck = {
   validateDomain: async (v) => {
@@ -64,7 +66,12 @@ const emailCheck = {
 // The API decides the final panel from the date of birth; under-18s always become "minor".
 const category = { consumer: 'b2c', pro: 'b2b', minor: 'minor' };
 const GENDERS = ['Female', 'Male', 'Other'];
+// Teen panel: two more choices and a free description (stored exactly as profile answer D06).
+const TEEN_GENDER_OPTS = ['Female', 'Male', 'Non-binary', 'Prefer not to say', 'Let me describe'];
 const GENDER_META = {
+  'Non-binary': { c: '#8B5CF6', d: ['M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z', 'M12 3v5', 'M9.5 5.5h5', 'M12 16v5'] },
+  'Prefer not to say': { c: '#64748B', d: ['M12 4a8 8 0 1 1 0 16 8 8 0 0 1 0-16z', 'M8 12h8'] },
+  'Let me describe': { c: '#0EA5A4', d: ['M4 20l4-1 10-10-3-3L5 16z', 'M13.5 7.5l3 3'] },
   Female: { c: '#FF4F8B', d: ['M12 4.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9z', 'M12 13.5V21', 'M8.8 17.6h6.4'] },
   Male: { c: '#2F7BFF', d: ['M10 9.5a5 5 0 1 1 0 10 5 5 0 0 1 0-10z', 'M13.6 10.9 20 4.5', 'M15 4.5h5v5'] },
   Other: { c: '#8B5CF6', d: ['M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z', 'M12 3v3', 'M12 18v3', 'M3 12h3', 'M18 12h3'] }
@@ -91,7 +98,7 @@ function GenderGlyph({ g, on }) {
   );
 }
 
-export function GenderPicker({ id, value, onPick, label = 'Gender', error }) {
+export function GenderPicker({ id, value, onPick, label = 'Gender', error, options = GENDERS }) {
   return (
     <Field
       id={id}
@@ -107,7 +114,7 @@ export function GenderPicker({ id, value, onPick, label = 'Gender', error }) {
       error={error}
     >
       <div className="gender-pick" role="radiogroup" aria-label={typeof label === 'string' ? label : 'Gender'} id={id}>
-        {GENDERS.map((g, i) => (
+        {options.map((g, i) => (
           <button type="button" role="radio" aria-checked={value === g} key={g} className={`gp-opt ${value === g ? 'is-on' : ''}`} style={{ '--gc': GENDER_META[g].c, '--i': i }} onClick={() => onPick(g)}>
             <span className="gp-badge">
               <GenderGlyph g={g} on={value === g} />
@@ -274,6 +281,7 @@ const initial = {
   email: '',
   dob: '',
   gender: '',
+  genderSelf: '',
   dial: '',
   phone: '',
   country: '',
@@ -281,6 +289,7 @@ const initial = {
   city: '',
   zipcode: '',
   hasStates: false,
+  noPostal: false,
   parent: EMPTY_PARENT,
   parentConfirm: false,
   ...Object.fromEntries(TEEN_CONSENTS.map(([k]) => [k, false])),
@@ -311,10 +320,12 @@ function validate(step, f) {
     else if (!NAME_RE.test(f.firstName.trim())) e.firstName = 'Use letters only for your first name.';
     if (f.middleName.trim() && !NAME_RE.test(f.middleName.trim())) e.middleName = 'Use letters only.';
     if (f.lastName.trim() && !NAME_RE.test(f.lastName.trim())) e.lastName = 'Use letters only.';
+    if (teen && !f.lastName.trim()) e.lastName = 'Enter your last name.';
     if (!EMAIL_RE.test(f.email.trim())) e.email = 'Enter a valid email address, like name@example.com.';
     const de = dobError(f.dob, f.type);
     if (de) e.dob = de;
-    if (!f.gender) e.gender = 'Select your gender.';
+    if (!f.gender) e.gender = teen ? 'Choose an option (or “Prefer not to say”).' : 'Select your gender.';
+    if (teen && f.gender === 'Let me describe' && f.genderSelf.trim() && !/^[\p{L} '’-]{2,40}$/u.test(f.genderSelf.trim())) e.genderSelf = 'Use letters only.';
     if (!teen || f.phone.trim()) {
       const pe = phoneError(f.dial, f.phone);
       if (pe) e.phone = pe;
@@ -346,6 +357,32 @@ const readDraft = () => {
   }
 };
 
+/** "Email them again" on the Teen sent screen (the API answers the same way whatever happens). */
+function TeenResend({ email, who }) {
+  const [note, setNote] = useState('');
+  return (
+    <p className="teen-resend">
+      <button
+        type="button"
+        className="btn btn-ghost btn-sm"
+        disabled={note === '…'}
+        onClick={async () => {
+          setNote('…');
+          try {
+            const r = await api.post('/api/v1/user/parent-consent-resend', { mail: email.trim().toLowerCase() });
+            setNote(r?.message || 'Sent again.');
+          } catch {
+            setNote('We couldn’t send it right now. Please try again in a minute.');
+          }
+        }}
+      >
+        <Icon name="mail" size={16} /> Email my {who} again
+      </button>
+      {note && note !== '…' && <span role="status">{note}</span>}
+    </p>
+  );
+}
+
 /** Read-only summary of what will be sent (adult confirm step and Teen consent step). */
 function ReviewCard({ f, journey, onEdit }) {
   const teen = journey === 'teen';
@@ -376,7 +413,7 @@ function ReviewCard({ f, journey, onEdit }) {
           <dt>Born</dt>
           <dd>{formatDate(f.dob)}</dd>
           <dt>Gender</dt>
-          <dd>{f.gender}</dd>
+          <dd>{f.gender === 'Let me describe' ? f.genderSelf.trim() || 'Self-described' : f.gender}</dd>
           <dt>Lives in</dt>
           <dd>
             {c && <Flag code={c.c} size={14} />} {[f.city, f.zipcode, c?.n].filter(Boolean).join(', ')}
@@ -419,6 +456,8 @@ export default function Join() {
   const [ageNotice, setAgeNotice] = useState('');
   const [duplicate, setDuplicate] = useState(false);
   const [emailErr, setEmailErr] = useState('');
+  const [under13, setUnder13] = useState(false);
+  const [teenSent, setTeenSent] = useState(null); // { ref, parentMasked } from the API
   const formRef = useRef(null);
   const restored = useRef(false);
 
@@ -462,15 +501,26 @@ export default function Join() {
       playAudience(v);
       setAnswers({});
     }
-    setF((p) => ({ ...p, type: v, dob: v === 'minor' && a !== null && a >= SITE.adultAge ? '' : p.dob }));
+    setF((p) => ({ ...p, type: v, dob: v === 'minor' && a !== null && a >= SITE.adultAge ? '' : p.dob, gender: v !== 'minor' && !GENDERS.includes(p.gender) ? '' : p.gender }));
   };
   const onDob = (v) => {
     const a = ageOn(v);
     setTouched((t) => ({ ...t, dob: true }));
+    // Under 13: no registration on any route. Nothing typed is kept (the API refuses it as well).
+    if (ageRoute(v) === 'blocked') {
+      try {
+        sessionStorage.removeItem(DRAFT_KEY);
+      } catch {
+        /* ignore */
+      }
+      setF((p) => ({ ...initial, type: p.type, country: p.country, dial: p.dial }));
+      setUnder13(true);
+      return;
+    }
     if (f.type !== 'minor' && isTeenAge(a)) {
       setF((p) => ({ ...p, dob: v, type: 'minor' }));
       setAnswers({});
-      setAgeNotice(`You’re ${a}, so we’ve moved you to the Teen panel. Everything you typed is kept. Next, we’ll ask for your parent or legal guardian, who must give consent before your account switches on.`);
+      setAgeNotice(`You’re ${a}, so you join the Teen panel. Everything you typed is kept. Your parent or legal guardian must say yes before your account switches on.`);
       playAudience('minor');
       return;
     }
@@ -503,11 +553,12 @@ export default function Join() {
     const q = new URLSearchParams(window.location.search);
     const user = q.get('user');
     const code = q.get('code');
+    const sig = q.get('s') || '';
     if (!(user && code)) return;
     setState('checking');
     (async () => {
       try {
-        const resp = await api.post(`/api/v1/user/${user}`, { channel: 'email', code });
+        const resp = await api.post(`/api/v1/user/${user}`, { channel: 'email', code, s: sig });
         if (resp?.status !== 'success') return setState('link-used');
         const u = resp.data || {};
         const isTeenAccount = u.category === 'minor' || isTeenAge(ageOn(String(u.dob || '').slice(0, 10)));
@@ -526,7 +577,7 @@ export default function Join() {
           const approved = u.parent?.consent === true || u.parent?.consentStatus === 'approved';
           if (u.parent?.email && !approved) return setState('teen-waiting');
         }
-        setLink({ user, code, teen: isTeenAccount, category: u.category });
+        setLink({ user, code, sig, teen: isTeenAccount, category: u.category });
         setState('idle');
       } catch {
         setState('link-used');
@@ -631,7 +682,17 @@ export default function Join() {
       country: f.country,
       ...(f.state ? { state: f.state } : {}),
       city: f.city.trim(),
-      ...(f.zipcode.trim() ? { zipcode: f.zipcode.trim() } : {}),
+      ...(f.zipcode.trim() && !f.noPostal ? { zipcode: f.zipcode.trim() } : {}),
+      // Teen: saved as profile answers, so the welcome questions and profiles never ask them again.
+      ...(teen
+        ? {
+            D01: String(age),
+            D02: f.country,
+            ...(f.state ? { D03: f.state } : {}),
+            D06: f.gender === 'Let me describe' ? 'Other' : f.gender,
+            ...(f.gender === 'Let me describe' && f.genderSelf.trim() ? { 'D06-other': f.genderSelf.trim().slice(0, 40) } : {})
+          }
+        : {}),
       'communication-methods': Object.keys(f.channels)
         .filter((k) => f.channels[k] && !(teen && k !== 'email'))
         .concat('dashboard')
@@ -649,9 +710,9 @@ export default function Join() {
       mail: f.email.trim().toLowerCase(),
       ...(f.phone.trim() ? { phone: fullPhone(f.dial, f.phone) } : {}),
       dob: f.dob,
-      gender: f.gender,
+      gender: teen ? apiGender(f.gender) : f.gender,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      ...(teen ? { address: [{ tag: 'Home', country: f.country.toLowerCase(), state: f.state || undefined, city: f.city.trim(), zipcode: f.zipcode.trim() || undefined }] } : {}),
+      ...(teen ? { address: [{ tag: 'Home', country: f.country.toLowerCase(), state: f.state || undefined, city: f.city.trim(), zipcode: f.noPostal ? undefined : f.zipcode.trim() || undefined }] } : {}),
       terms: teen ? ['privacy-policy', 'video-concent'] : ['privacy-policy', f.research && 'video-concent', f.marketing && 'newsletter'].filter(Boolean),
       ...(teen ? { welcome } : {}),
       ...(teen
@@ -660,17 +721,19 @@ export default function Join() {
               relation: p.rel,
               name: { first: p.first.trim(), middle: p.middle.trim(), last: p.last.trim() },
               email: p.email.trim().toLowerCase(),
-              phone: fullPhone(p.dial, p.phone),
+              ...(p.phone.trim() ? { phone: fullPhone(p.dial, p.phone) } : {}),
               dob: p.dob,
               ...(p.rel === 'guardian' ? { gender: p.gender } : {})
             }
           }
         : {}),
+      ...(teen ? { teenConsent: { version: TEEN_REG_CONSENT_VERSION, statements: TEEN_STATEMENTS.map((s) => s.id) } } : {}),
       ...(ref ? { referredBy: ref } : {}),
       captcha: captchaPayload(captcha)
     };
     try {
       const res = await api.put('/api/v1/user', body);
+      if (res?.status === 'success' && teen) setTeenSent({ ref: res.data?.ref, parentMasked: res.data?.parentMasked || maskEmail(p.email) });
       if (res?.status === 'success') {
         try {
           localStorage.setItem(TYPE_KEY, f.type);
@@ -749,14 +812,26 @@ export default function Join() {
     );
   if (state === 'teen-submitted')
     return (
-      <Done icon="users" title="Request sent to your parent or guardian">
+      <Done icon="users" title={`Sent! Now it’s your ${relLabel(f.parent.rel).toLowerCase()}’s turn`}>
         <p>
-          Your details are saved. We have sent a <strong>Parent/Guardian Onboarding Form</strong> to <strong>{f.parent.email}</strong>, and a note to you at <strong>{f.email}</strong>. Please ask them to check
-          their inbox (and spam folder) and complete the onboarding and consent form.
+          We emailed an invitation to <strong>{teenSent?.parentMasked || maskEmail(f.parent.email)}</strong> and a confirmation to you at <strong>{maskEmail(f.email)}</strong>. They choose <strong>Yes</strong> or{' '}
+          <strong>No</strong>. If they say yes, they fill in a short onboarding form and the consent form.
         </p>
-        <p className="muted">Your Teen account stays switched off until they consent. Then we email you a secure link to create your password.</p>
-        <TeenStatus stage="parent-verification-pending" parentEmail={f.parent.email} />
-        <PreviewLinks links={[['Open the parent’s onboarding form', '?user=demo-teen&code=000000', '/parent-consent/']]} />
+        <p className="teen-inactive">
+          <Icon name="lock" size={16} />
+          <span>
+            <strong>Your account is not active yet.</strong> It switches on only after they say yes and complete both forms. Then we email you a secure link to create your password, and you log in with{' '}
+            <strong>{f.email}</strong>.
+          </span>
+        </p>
+        <TeenStatus stage="parent-verification-pending" parentEmail={teenSent?.parentMasked || maskEmail(f.parent.email)} />
+        {teenSent?.ref && (
+          <p className="teen-ref">
+            Registration reference <strong>{teenSent.ref}</strong>
+          </p>
+        )}
+        <TeenResend email={f.email} who={relLabel(f.parent.rel).toLowerCase()} />
+        <PreviewLinks links={[['Open the guardian’s invitation', '?user=demo-teen&code=000000&s=demo', '/parent-consent/']]} />
         <Link to="/earn/teens/" className="btn btn-primary">
           How the Teen panel works
         </Link>
@@ -866,6 +941,7 @@ export default function Join() {
               lastName={f.lastName}
               email={f.email}
               teen={link.teen}
+              sig={link.sig}
               onLinkUsed={() => setState('link-used')}
               onTeenWaiting={() => setState('teen-waiting')}
               onDone={() => {
@@ -882,6 +958,21 @@ export default function Join() {
               }}
             />
           </div>
+        </div>
+      </section>
+    );
+
+  // ================= under 13: no registration =================
+  if (under13)
+    return (
+      <section className={`join theme-${aud} trg-blocked`}>
+        <div className="wrap">
+          <UnderThirteen
+            onBack={() => {
+              setUnder13(false);
+              setTouched({});
+            }}
+          />
         </div>
       </section>
     );
@@ -1087,10 +1178,10 @@ export default function Join() {
                         }
                         error={errOf('dob')}
                         valid={!!f.dob && !live.dob}
-                        hint={teen ? 'Teen panel: only birthdays for ages 13 to 17 can be picked.' : 'Full date: day, month and year. It places you in the right panel and can’t be changed later.'}
+                        hint={teen ? 'Teen panel: ages 13 to 17. Under 13 can’t register yet.' : 'Full date: day, month and year. It places you in the right panel and can’t be changed later.'}
                       >
                         {teen ? (
-                          <DateField key="dob-teen" id="j-dob" value={f.dob} onChange={onDob} invalid={!!errOf('dob')} minDate={teenDates.min} maxDate={teenDates.max} lockedYears={4} foot="Ages 13–17 only. Greyed-out years and days can’t be picked." />
+                          <DateField key="dob-teen" id="j-dob" value={f.dob} onChange={onDob} invalid={!!errOf('dob')} minDate={teenDates.min} maxDate={new Date()} lockedYears={2} foot="Ages 13–17. Turned 18? Pick Consumer or Business professional." />
                         ) : (
                           <DateField key="dob-all" id="j-dob" value={f.dob} onChange={onDob} invalid={!!errOf('dob')} />
                         )}
@@ -1107,18 +1198,26 @@ export default function Join() {
                         id="j-gender"
                         value={f.gender}
                         error={errOf('gender')}
+                        options={TEEN_GENDER_OPTS}
                         onPick={(g) => {
                           set('gender', g);
                           setTouched((t) => ({ ...t, gender: true }));
                         }}
                       />
                     </div>
+                    {f.gender === 'Let me describe' && (
+                      <div data-k="genderSelf">
+                        <Field id="j-gself" label="How do you describe yourself?" hint="Optional. You can leave this empty." error={errOf('genderSelf')}>
+                          <input id="j-gself" className="input" value={f.genderSelf} onChange={(e) => set('genderSelf', e.target.value)} maxLength={40} />
+                        </Field>
+                      </div>
+                    )}
                   </fieldset>
                   <fieldset className="jf-group">
                     <legend>
                       <Icon name="pin" size={15} /> Where you live
                     </legend>
-                    <LocationFields loc={f} set={set} errOf={errOf} touch={touch} idp="j-loc" />
+                    <LocationFields loc={f} set={set} errOf={errOf} touch={touch} idp="j-loc" freeState noPostal={f.noPostal} onNoPostal={(v) => { set('noPostal', v); if (v) set('zipcode', ''); }} />
                   </fieldset>
                     </>
                   ) : (
@@ -1181,10 +1280,10 @@ export default function Join() {
                     }
                     error={errOf('dob')}
                     valid={!!f.dob && !live.dob}
-                    hint={teen ? 'Teen panel: only birthdays for ages 13 to 17 can be picked.' : 'Full date: day, month and year. We use it to place you in the right panel; it can’t be changed later.'}
+                    hint={teen ? 'Teen panel: ages 13 to 17. Under 13 can’t register yet.' : 'Full date: day, month and year. We use it to place you in the right panel; it can’t be changed later.'}
                   >
                     {teen ? (
-                      <DateField key="dob-teen" id="j-dob" value={f.dob} onChange={onDob} invalid={!!errOf('dob')} minDate={teenDates.min} maxDate={teenDates.max} lockedYears={4} foot="Ages 13–17 only. Greyed-out years and days can’t be picked." />
+                      <DateField key="dob-teen" id="j-dob" value={f.dob} onChange={onDob} invalid={!!errOf('dob')} minDate={teenDates.min} maxDate={new Date()} lockedYears={2} foot="Ages 13–17. Turned 18? Pick Consumer or Business professional." />
                     ) : (
                       <DateField key="dob-all" id="j-dob" value={f.dob} onChange={onDob} invalid={!!errOf('dob')} />
                     )}

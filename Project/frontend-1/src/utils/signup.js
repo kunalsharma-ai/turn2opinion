@@ -34,8 +34,11 @@ export function validateParent(p, teenEmail, prefix = 'parent') {
   if (p.last.trim() && !NAME_RE.test(p.last.trim())) e[k('last')] = 'Use letters only, or leave it empty.';
   if (!EMAIL_RE.test(p.email.trim())) e[k('email')] = 'Enter their email address, like name@example.com.';
   else if (teenEmail && p.email.trim().toLowerCase() === String(teenEmail).trim().toLowerCase()) e[k('email')] = 'Use the parent or guardian’s own email, not the teen’s.';
-  const pe = phoneError(p.dial, p.phone);
-  if (pe) e[k('phone')] = pe;
+  if (String(p.phone || '').trim()) {
+    // optional; checked only when filled in
+    const pe = phoneError(p.dial, p.phone);
+    if (pe) e[k('phone')] = pe;
+  }
   const pa = ageOn(p.dob);
   if (!p.dob) e[k('dob')] = 'Pick their date of birth.';
   else if (pa === null || pa < 18) e[k('dob')] = 'A parent or guardian must be 18 or older.';

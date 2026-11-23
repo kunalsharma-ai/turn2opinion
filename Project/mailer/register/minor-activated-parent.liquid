@@ -1,29 +1,26 @@
-<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#f4f4f4" style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,Helvetica,sans-serif;">
-  <tr>
-    <td align="center">
-      <table width="720" border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" style="max-width:720px">
-        <tr><td height="10" bgcolor="#002b8f"></td></tr>
-        <tr>
-          <td align="center" style="padding:28px 20px">
-            <img src="https://www.turn2opinion.com/images/logo/t2o-logo.png" alt="Turn2Opinion.com" width="300" style="display:block;max-width:100%" />
-          </td>
-        </tr>
-        <tr><td height="1" bgcolor="#002b8f"></td></tr>
-        <tr>
-          <td style="padding:34px 48px 10px;color:#17285f;font-size:17px;line-height:28px">
-            <h2 style="margin:0 0 14px;color:#063686;font-size:26px">{{ user.name.first }}’s Teen account is active</h2>
-            <p style="margin:0 0 14px">Dear {{ user.parent.name.first }}, thank you for completing the onboarding and consent form.</p>
-            <p style="margin:0 0 14px">{{ user.name.first }} has now created their password (they log in with their email address), and their Turn2Opinion Teen account is active. They will only be invited to studies suitable for ages 13 to 17, and can skip any question or stop any survey at any time.</p>
-            <p style="margin:0">If you did not expect this, or you want to withdraw consent, reply to this email or write to support@turn2opinion.com.</p>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding:10px 48px 34px;color:#5b6785;font-size:14px;line-height:22px">
-            Questions? Write to support@turn2opinion.com. You can withdraw consent or ask us to delete the account at any time.
-          </td>
-        </tr>
-        <tr><td height="10" bgcolor="#002b8f"></td></tr>
-      </table>
-    </td>
-  </tr>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>Account active</title>
+<style>@media (max-width:620px){.wrap{width:100%!important}.px{padding-left:22px!important;padding-right:22px!important}.h1{font-size:24px!important;line-height:31px!important}.stack{display:block!important;width:100%!important}}</style></head>
+<body style="margin:0;padding:0;background:#efe9dc"><div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;font-size:1px;line-height:1px">{{ user.name.first }} has created their password. The Teen account is active.&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;</div>
+<table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#efe9dc" style="background:#efe9dc"><tr><td align="center" style="padding:28px 12px">
+<table role="presentation" class="wrap" width="620" border="0" cellspacing="0" cellpadding="0" bgcolor="#fffdf8" style="width:620px;max-width:620px;background:#fffdf8;border-radius:18px;border:1px solid #e2d8c3">
+<tr><td style="padding:0"><table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0"><tr>
+<td bgcolor="#0f5a46" style="background:#0f5a46;border-radius:18px 18px 0 0;padding:22px 34px" class="px">
+<table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0"><tr>
+<td><img src="https://www.turn2opinion.com/images/logo/t2o-logo.png" alt="Turn2Opinion" width="170" style="display:block;max-width:170px;background:#ffffff;border-radius:10px;padding:7px 12px"></td>
+<td align="right" style="font-family:Georgia,'Times New Roman',serif;font-size:13px;color:#e8dcbc;letter-spacing:1.6px;text-transform:uppercase">Teen panel · Parents &amp; guardians</td>
+</tr></table></td></tr></table></td></tr>
+<tr><td class="px" style="padding:34px 44px 6px;font-family:Georgia,'Times New Roman',serif">
+<p style="margin:0 0 8px;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#b07a1e">🔐&nbsp; Account active</p>
+<h1 class="h1" style="margin:0 0 18px;font-size:28px;line-height:36px;color:#0b2a6f;font-weight:700">{{ user.name.first }}&rsquo;s Teen account is now active</h1></td></tr>
+<tr><td class="px" style="padding:0 44px 6px;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:26px;color:#2b3550"><p style="margin:0 0 14px">Dear {{ user.parent.name.first }}, {{ user.name.first }} has created their own password, so the Teen account you approved is now active.</p><table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin:16px 0;border-radius:14px;background:#f6f1e4;border:1px solid #e2d8c3"><tr><td style="padding:18px 20px;font-size:15px;line-height:24px;color:#2b3550">• {{ user.name.first }} logs in with their own email address and password. You never need their password.<br>• Every study is age-checked, and some need your separate permission first.<br>• You can withdraw consent or ask us to delete the account at any time.</td></tr></table></td></tr>
+
+<tr><td class="px" style="padding:20px 44px 30px;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+<table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="border-top:1px solid #e2d8c3"><tr><td style="padding:16px 0 0;font-size:13px;line-height:21px;color:#5d6478">
+Registration reference: <b style="color:#0b2a6f;letter-spacing:.8px">{{ ref }}</b><br>
+You are receiving this because a Teen gave this address as their {{ relation }}. We use it only for this registration, consent and account notices, never for marketing.
+Links in this email are personal and time-limited: please do not forward it.<br>
+Questions, or want your details removed? <a href="mailto:support@turn2opinion.com" style="color:#0b2a6f">support@turn2opinion.com</a> · <a href="{{ site }}/privacy/" style="color:#0b2a6f">Privacy Policy</a> · <a href="{{ site }}/terms/" style="color:#0b2a6f">Terms</a>
+</td></tr></table></td></tr>
 </table>
+<p style="margin:16px 0 0;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12px;color:#8a8170">© Turn2Opinion · Mangolpur Kalan, New Delhi 110085, India</p>
+</td></tr></table></body></html>

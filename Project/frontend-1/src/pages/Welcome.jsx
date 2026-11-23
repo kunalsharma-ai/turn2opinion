@@ -14,13 +14,14 @@ import { Breadcrumbs } from '../components/Common.jsx';
 import { AuthAura } from '../components/AuthAura.jsx';
 import { DASHBOARD, termsUrl, welcomeChannels } from '../utils/session.js';
 import WelcomeQuestions, { loadBank, welcomePayload } from '../components/onboarding/WelcomeQuestions.jsx';
+import TeenWelcome, { TEEN_HOME } from '../components/teen/TeenWelcome.jsx';
 
 const JOURNEY = { b2b: 'pro', minor: 'teen', b2c: 'consumer' };
 const AUD = { pro: 'pro', teen: 'teen', consumer: 'consumer' };
 
 /** Where a member goes once the welcome questions are answered. */
 export function afterWelcome(category) {
-  return category === 'minor' ? DASHBOARD : termsUrl(category);
+  return category === 'minor' ? hrefFor(TEEN_HOME) : termsUrl(category);
 }
 
 const COPY = {
@@ -117,6 +118,9 @@ export default function Welcome() {
         </div>
       </section>
     );
+
+  // Teens get their own welcome deck, from the Teen Profile Survey (components/teen/TeenWelcome.jsx).
+  if (journey === 'teen') return <TeenWelcome me={me} />;
 
   const [title, lead] = COPY[journey];
   return (
