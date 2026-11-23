@@ -30,7 +30,7 @@ const ROWS = [
 ];
 
 /** place n surveys: nearest to the castle first, so the kingdom grows outwards */
-export function layout(n) {
+function layout(n) {
   if (!(n > 0)) return [];
   // Every row keeps at least one plot only when there are enough plots for all rows. With fewer (a member with
   // one or two surveys), a row may be empty; otherwise the balancing loop below could never finish.
