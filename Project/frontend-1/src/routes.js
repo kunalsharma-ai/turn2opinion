@@ -6,6 +6,17 @@ import { loadPostBody } from './data/blog/loaders.js';
 
 const page = (loader) => loader; // readability helper
 
+const MEMBER_TITLES = {
+  dashboard: 'Dashboard',
+  rewards: 'Points & rewards',
+  'quality-score': 'Quality score',
+  referrals: 'Referrals',
+  activity: 'Activity',
+  profile: 'My account',
+  settings: 'Settings'
+};
+const MEMBER_PAGES = Object.keys(MEMBER_TITLES);
+
 export const ROUTES = [
   {
     path: '/',
@@ -282,6 +293,21 @@ export const ROUTES = [
       crumb: 'Teen agreement',
       robots: 'noindex,follow'
     },
+    sitemap: false
+  },
+  {
+    // Member area (Round 15): Dashboard, Rewards, Quality score, Referrals, Activity, Account and
+    // Settings, one persistent app. Profiles and Surveys stay on the existing member app.
+    path: '/member/:page/',
+    exists: (p) => MEMBER_PAGES.includes(p.page),
+    staticParams: () => MEMBER_PAGES.map((page) => ({ page })),
+    load: page(() => import('./member/MemberApp.jsx')),
+    seo: (p) => ({
+      title: `${MEMBER_TITLES[p.page] || 'Member area'} | Turn2Opinion`,
+      description: 'Your Turn2Opinion member area: surveys, points, quality score, referrals and settings.',
+      crumb: MEMBER_TITLES[p.page] || 'Member area',
+      robots: 'noindex,nofollow'
+    }),
     sitemap: false
   },
   {

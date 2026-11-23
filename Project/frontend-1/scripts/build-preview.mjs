@@ -12,6 +12,9 @@ const out = resolve(proj, process.argv[2] || 'preview/turn2opinion-preview.html'
 mkdirSync(dirname(out), { recursive: true });
 const env = { BASE_URL: './', MODE: 'production', PROD: true, DEV: false, SSR: false, VITE_SITE_URL: 'https://www.turn2opinion.com', VITE_ROUTER_MODE: 'hash', VITE_DEMO_MODE: 'true' };
 const envPlugin = { name: 'asset-map', setup(b) {
+  // Vite's `?inline` CSS import (member area): hand back the stylesheet text as a string.
+  b.onResolve({ filter: /\?inline$/ }, (a) => ({ path: resolve(a.resolveDir, a.path.replace(/\?inline$/, '')), namespace: 'inline-css' }));
+  b.onLoad({ filter: /.*/, namespace: 'inline-css' }, (a) => ({ contents: readFileSync(a.path, 'utf8'), loader: 'text' }));
   b.onLoad({ filter: /src[\/\\]config[\/\\]env\.js$/ }, (a) => {
     let s = readFileSync(a.path, 'utf8');
     s = s.replace(/export function asset\(path\) \{/, "export function asset(path) {\n  const __m = (typeof globalThis !== 'undefined' && globalThis.__T2O_ASSETS) || {};\n  const __k = '/' + String(path).replace(/^\\.?\\//, '');\n  if (__m[__k]) return __m[__k];");
