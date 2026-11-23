@@ -35,6 +35,7 @@ export function useStage(allProfiles) {
   const [view, setView] = useState({ name: 'hub' }); // hub | flow (item) | survey (opened paid survey)
   const [locked, setLocked] = useState(null);
   const [party, setParty] = useState(null);
+  const [partyPts, setPartyPts] = useState(0);
   const top = useRef(null);
 
   useEffect(() => {
@@ -72,7 +73,7 @@ export function useStage(allProfiles) {
   }, []);
 
   const profileDone = useCallback(
-    ({ first }) => {
+    ({ first, credited = [] }) => {
       const i = view.i;
       const x = items[i];
       // show it as complete straight away; the reload below brings the server's numbers
@@ -82,13 +83,16 @@ export function useStage(allProfiles) {
       refreshMe?.();
       setView({ name: 'hub' });
       toTop();
-      if (first) setParty(i);
+      if (first) {
+        setPartyPts(credited.filter((c) => !x || c.slug === x.slug).reduce((n, c) => n + (c.points || 0), 0));
+        setParty(i);
+      }
       else toast(t('changes_saved'));
     },
     [items, reload, refreshMe, toast, toTop, view.i]
   );
 
-  return { me, items, state, view, setView, open, openSlug, home, locked, setLocked, party, setParty, goKingdom, profileDone, top, about, topics };
+  return { me, items, state, view, setView, open, openSlug, home, locked, setLocked, party, partyPts, setParty, goKingdom, profileDone, top, about, topics };
 }
 
 /** The #t2o root: children are the hub; the flow replaces them while a profile is open. */
@@ -125,6 +129,7 @@ export function Stage({ s, className = '', children, renderSurvey }) {
         <Celebration
           key={s.party}
           i={s.party}
+          points={s.partyPts}
           next={nx}
           onClose={() => {
             s.setParty(null);

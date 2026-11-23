@@ -4,9 +4,12 @@ import {
     User as userController,
     OTP as otpController,
     Answer as answerController,
-    Response as responseController
+    Response as responseController,
+    Profile as profileController
 } from "../../controller/index.js";
 import Category from "../../model/Category.js";
+import { Profile as profileModel, Rewards as rewardsModel } from "../../model/index.js";
+import { PROFILE_REWARD, creditCompletedProfiles, sumCredited } from "../../utils/profileRewards.js";
 import {
     Mutate,
     expressRoute,
@@ -17,6 +20,21 @@ import {
     sendMail,
     Token
 } from "../../utils/index.js"
+/** Credited Rewards rows for the signed-in member (profile completion credits and any others). */
+async function myRewards(req) {
+    return Mutate(await rewardsModel.find({ user: req.user._id, origin: req.origin }).sort({ createdAt: -1 }).lean());
+}
+/** Credit profiles this member has just finished (once each, see utils/profileRewards.js). */
+async function creditProfiles(req) {
+    const category = req.user.category || "b2c";
+    profileController.request = req;
+    return creditCompletedProfiles({ user: req.user._id, origin: req.origin }, {
+        profiles: async () => Mutate(await profileModel.find({ category, isActive: true, isDeleted: false }, { slug: 1, name: 1, points: 1 }).lean()),
+        status: async () => (await profileController.status()) || {},
+        credited: async () => (await rewardsModel.find({ user: req.user._id, origin: req.origin, category: PROFILE_REWARD }, { remarks: 1 }).lean()).map((r) => r.remarks),
+        upsert: (filter, update, options) => rewardsModel.updateOne(filter, update, options)
+    });
+}
 Date.prototype.resetTime = function (type = "start") {
     if (type === "end") {
         this.setHours(23);
@@ -123,11 +141,15 @@ router
                 let data = []
                 responseController.request = req;
                 let category = await Category.findOne({ name: req.user.category })
-                let respPoints = await responseController.getPoints();
+                // a member with no completed survey yet has 0 survey points (getPoints throws then)
+                let respPoints = await responseController.getPoints().catch(() => 0);
+                // profile completion credits (Round 23); older members are credited on their next profile save
+                let rewardPoints = sumCredited(await myRewards(req).catch(() => []));
                 data = {
                     respPoints,
+                    rewardPoints,
                     redeemPoints: 0,
-                    totalPoints: (respPoints - 0),
+                    totalPoints: (respPoints + rewardPoints - 0),
                     threshold: category.thresholdPoints,
                     conversionRate: 0.001
                 }
@@ -154,10 +176,14 @@ router
         expressRoute(
             async req => {
                 let message = "";
+                // credited rewards (profile completion and others), newest first
+                const rows = await myRewards(req).catch(() => []);
+                const earned = sumCredited(rows);
                 const data = {
-                    total: 0,
+                    total: earned,
                     claimed: 0,
-                    earned: 0,
+                    earned,
+                    history: rows.map((r) => ({ id: r._id, category: r.category, slug: r.remarks, title: r.title || r.remarks, points: r.points, status: r.status, at: r.createdAt }))
                 }
                 return { message, data }
             },
@@ -401,7 +427,14 @@ router
                 }
             }).filter(q => Boolean(q))
             await answerController.save(updatedAnswers)
-            return { message: "Profile updated successfully", data: [] }
+            // profiles this save completed earn their points once; data lists them ([] when none)
+            let credited = [];
+            try {
+                credited = await creditProfiles(req);
+            } catch (e) {
+                console.error("profile reward credit failed", e);
+            }
+            return { message: "Profile updated successfully", data: credited }
         },
         answerController
     ))
@@ -504,6 +537,8 @@ router
             let message = "";
             let data = []
             let response = await responseController.read(req.body.respID);
+            // a member can only complete their own response (points follow the response)
+            if (!response || String(response.user?._id ?? response.user) !== String(req.user._id)) throw new Error("Invalid request");
 
             // if (response.status !== "dropout") throw new Error("Invalid request");
 

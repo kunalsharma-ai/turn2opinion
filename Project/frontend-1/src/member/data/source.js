@@ -7,8 +7,9 @@
 import { api } from '../../utils/api.js';
 import { ENV } from '../../config/env.js';
 import { memberTypeOf } from '../config/memberTypes.js';
-import { demoSection, demoSurveyDone } from './demo.js';
-import { demoAnswers, demoLastSurvey, demoOptions, demoQuestion, demoSave, demoStartSurvey } from './demoQuestions.js';
+import { demoPrefs, demoSection, demoSurveyDone } from './demo.js';
+import { demoAnswers, demoCreditProfiles, demoLastSurvey, demoOptions, demoQuestion, demoSave, demoStartSurvey } from './demoQuestions.js';
+import { announceReward } from './rewardBus.js';
 
 export const CHOICE = ['select', 'multiselect', 'checkbox', 'radio'];
 
@@ -58,7 +59,8 @@ export function adaptMe(d) {
 }
 
 export function adaptPoints(d) {
-  const earned = num(d?.respPoints ?? d?.totalPoints);
+  // survey points + profile completion credits (rewardPoints, Round 23 backend)
+  const earned = d?.respPoints != null ? num(d.respPoints) + num(d?.rewardPoints) : num(d?.totalPoints);
   const redeemed = num(d?.redeemPoints);
   return {
     total: num(d?.totalPoints, earned - redeemed),
@@ -378,25 +380,35 @@ export const actions = {
     if (ENV.DEMO_MODE) return demoAnswers(questions);
     return (await call(() => api.post('/api/v1/me', { questions }))) || {};
   },
+  /** Saves answers. Resolves to the profiles this save completed and credited ([] when none). */
   async saveProfile(values) {
-    if (ENV.DEMO_MODE) return demoSave(values);
-    const r = await api.patch('/api/v1/me/profile', values);
-    if (!ok(r)) throw new Error(r?.message || 'error');
-    return true;
+    let credited = [];
+    if (ENV.DEMO_MODE) {
+      await demoSave(values);
+      credited = await demoCreditProfiles(demoPrefs().as).catch(() => []);
+    } else {
+      const r = await api.patch('/api/v1/me/profile', values);
+      if (!ok(r)) throw new Error(r?.message || 'error');
+      credited = Array.isArray(r.data) ? r.data.filter((x) => x && x.slug && x.points > 0) : [];
+    }
+    credited.forEach((x) => announceReward({ kind: 'profile', slug: x.slug, title: x.name || x.slug, points: x.points }));
+    return credited;
   },
   /** Opens a survey for this member: { name, slug, pages, description, thankyou, link, respID }. */
   async startSurvey(slug) {
     if (ENV.DEMO_MODE) return demoStartSurvey(slug);
     return call(() => api.put('/api/v1/me/survey', { slug }));
   },
-  async saveSurvey(values, respID) {
+  /** meta: { slug, title, points } of the survey, for the reward animation once the server confirms. */
+  async saveSurvey(values, respID, meta = {}) {
     if (ENV.DEMO_MODE) {
       await demoSave(values);
       demoSurveyDone(demoLastSurvey());
-      return true;
+    } else {
+      const r = await api.patch('/api/v1/me/survey', { ...values, respID });
+      if (!ok(r)) throw new Error(r?.message || 'error');
     }
-    const r = await api.patch('/api/v1/me/survey', { ...values, respID });
-    if (!ok(r)) throw new Error(r?.message || 'error');
+    announceReward({ kind: 'survey', slug: meta.slug, title: meta.title, points: meta.points });
     return true;
   },
   // ---- Help: support tickets (existing /api/v1/support endpoints, same shapes as the old Support page) ----

@@ -229,21 +229,40 @@ let lastSurvey = null;
 /** Preview: the survey started last (its points are credited when it is finished). */
 export const demoLastSurvey = () => lastSurvey;
 
-/** Preview: About-you/topic profiles completed beyond the seeded ones (each earns +50 points, +1 quality). */
-export async function demoProfilesEarned(as) {
+/** Preview stand-in for the backend's profile completion credits (backend/app/utils/profileRewards.js):
+ *  a profile that reaches 100% is credited its points once; profiles already complete when the preview
+ *  starts count as credited, like members whose credits were written earlier. */
+const REW = (as) => `t2o_member_demo_rewards_${as}`;
+export function demoRewards(as) {
+  try {
+    return JSON.parse(sessionStorage.getItem(REW(as)) || 'null');
+  } catch {
+    return null;
+  }
+}
+export async function demoCreditProfiles(as) {
   const list = await demoProfileList(as);
   const st = await demoStatus(list);
-  const done = list.filter((p) => st[p.slug] >= 100).length;
-  // the first count in this tab is the starting point (the seeded profiles), kept with the answers
-  const k = `t2o_member_demo_base_${as}`;
-  let base = null;
+  const store = demoRewards(as);
+  const seeded = !store;
+  const next = store || {};
+  const fresh = [];
+  list.forEach((p) => {
+    if (st[p.slug] < 100 || next[p.slug]) return;
+    const row = { points: p.points || 50, title: p.name, at: new Date().toISOString(), seed: seeded };
+    next[p.slug] = row;
+    if (!seeded) fresh.push({ slug: p.slug, name: p.name, points: row.points });
+  });
   try {
-    base = sessionStorage.getItem(k);
-    if (base == null) sessionStorage.setItem(k, String(done));
+    sessionStorage.setItem(REW(as), JSON.stringify(next));
   } catch {
     /* preview only */
   }
-  return Math.max(0, done - (base == null ? done : Number(base)));
+  return fresh;
+}
+/** Points from profile credits written during this preview session. */
+export function demoRewardPoints(as) {
+  return Object.values(demoRewards(as) || {}).filter((r) => !r.seed).reduce((n, r) => n + (r.points || 0), 0);
 }
 
 export async function demoStartSurvey(slug) {

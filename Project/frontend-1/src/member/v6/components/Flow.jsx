@@ -14,7 +14,7 @@ import { t as mt } from '../../i18n/t.js';
 import { Icon } from './Icon.jsx';
 import { profileEmoji, qEmoji } from '../lib/emoji.js';
 import { finePointer, reducedMotion } from '../lib/fx.js';
-import { POINTS_PER_ITEM, QUALITY_PER_ITEM } from '../lib/rewards.js';
+import { POINTS_PER_ITEM } from '../lib/rewards.js';
 import { sound } from '../lib/uisound.js';
 import { themeId, themeOf, kind as fieldKind, EXCL } from '../lib/present.js';
 import { Tiles, Binary, Rows, Scale, Levels } from './fields/Choice.jsx';
@@ -49,6 +49,8 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
   const [shake, setShake] = useState(false);
   const [busy, setBusy] = useState(false);
   const [pending, setPending] = useState(false);
+  // profile credits the server returned during this visit (each profile is credited once, server side)
+  const credit = useRef([]);
   const [done, setDone] = useState(false);
   const [defs, setDefs] = useState({});
   const [opts, setOpts] = useState({});
@@ -303,10 +305,10 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
           if (n in values) allVals[n] = values[n];
           if (filled(values[`${n}_specify`])) allVals[`${n}_specify`] = values[`${n}_specify`];
         });
-        await actions.saveSurvey(allVals, source.respID);
+        await actions.saveSurvey(allVals, source.respID, { slug: source.slug, title: source.name, points: source.points });
         if (!alive.current) return;
         setDone(true);
-        onDone?.({ first: true });
+        onDone?.({ first: true, credited: credit.current });
       } catch (e) {
         toast(e?.message && e.message !== 'error' ? e.message : mt('qz.saveErr'), 'error');
       } finally {
@@ -314,7 +316,7 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
       }
       return;
     }
-    onDone?.({ first: !wasDone });
+    onDone?.({ first: !wasDone, credited: credit.current });
   }
 
   function fail(text) {
@@ -353,7 +355,8 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
     try {
       if (kind === 'profile') {
         const pv = pageValues();
-        await actions.saveProfile(pv);
+        const got = await actions.saveProfile(pv);
+        if (Array.isArray(got)) credit.current.push(...got);
         if (!alive.current) return;
         setSaved((s) => ({ ...s, ...pv }));
       }
@@ -618,8 +621,7 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
           <span className="fb-step">{wasDone ? t('v6_editing') : t('q_of', { n: nf(Math.max(1, pos)), total: nf(total) })}</span>
           {kind === 'profile' && !wasDone && (
             <span className="fb-rw" title={t('v6_earn')}>
-              <i className="mini-coin" />+{nf(POINTS_PER_ITEM)}
-              <i className="mini-gem" />+{nf(QUALITY_PER_ITEM)}
+              <i className="mini-coin" />+{nf(source.points || POINTS_PER_ITEM)}
             </span>
           )}
         </div>

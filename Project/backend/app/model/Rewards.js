@@ -19,12 +19,21 @@ let schema = new MongooseModel(
         remarks: {
             type: String
         },
+        title: {
+            type: String
+        },
         status: {
             type: String,
             default: "credited"
         }
     }),
-    null,
+    [
+        // one profile-completion credit per member and profile (see utils/profileRewards.js)
+        [
+            { user: 1, origin: 1, category: 1, remarks: 1 },
+            { unique: true, partialFilterExpression: { category: "profile" } }
+        ]
+    ],
     null,
     {
         auditEnforce: true,
