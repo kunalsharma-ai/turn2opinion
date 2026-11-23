@@ -19,6 +19,7 @@ export { default as SupportActions } from "./SupportActions.js";
 export { default as Batch } from "./Batch.js";
 export { default as Validation } from "./Validation.js";
 export { default as FollowSocial } from "./FollowSocial.js";
+export { default as Tombstone } from "./Tombstone.js";
 /*
 export { default as ProfileQuestions } from "./ProfileQuestions.js";
 export { default as ProfileOptions } from "./ProfileOptions.js";

@@ -38,7 +38,7 @@ import { requireAdmin, requireMember, selfOrAdmin } from "../../utils/access.js"
 import { checkQuery, memberListQuery, omit, safeFilter, userUpdate } from "../../utils/memberAccess.js";
 import { captchaLimit, loginLimit, registerLimit, linkLimit } from "../../utils/limits.js";
 import { ageInYears } from "../../model/User.js";
-import { Answers as answerModel, Response as responseModel } from "../../model/index.js";
+import { Answers as answerModel, Response as responseModel, Tombstone as tombstoneModel } from "../../model/index.js";
 import {
     TEEN_REG_CONSENT_VERSION, GUARDIAN_TERMS_VERSION, TEEN_STATEMENTS, GUARDIAN_REQUIRED, GUARDIAN_OPTIONAL, DECLINE_REASONS,
     linkFor, sigOk, maskEmail, registrationRef, cleanOnboarding, onboardingErrors, teenMail, brand
@@ -53,6 +53,8 @@ const isTeenUser = (u) => {
     const a = ageInYears(u.dob);
     return u.category === "minor" || (a !== null && a < 18);
 };
+// A deletion readers of GET /api/v1/changes/deletions must see. The member's id only, never their details.
+const tombstone = (kind, user) => tombstoneModel.create({ kind, user: String(user._id ?? user), origin: user.origin });
 const consentApproved = (u) => u?.parent?.consent === true || u?.parent?.consentStatus === "approved";
 
 // Keep only the parent/guardian fields a sign-up form may set.
@@ -514,6 +516,8 @@ router
             async req => {
                 const message = "Refreshed Respondent, All Records other than registration details removed.";
                 const data = await userController.refreshUser(req.body);
+                const member = await userController.model.findById(req.body.user).select("origin").lean();
+                if (member) await tombstone("answers", member);
                 return { message, data }
             },
             userController
@@ -677,6 +681,7 @@ router
         expressRoute(
             async req => {
                 let data = await userController.delete(req.body.userID);
+                if (data) await tombstone("member", data);
                 return { message: "App Deleted", data }
             },
             userController
@@ -1114,6 +1119,7 @@ router
                 // delete single entry
                 let message = "";
                 let data = await userController.delete(req.params.id)
+                if (data) await tombstone("member", data);
                 return { message, data };
             },
             userController
