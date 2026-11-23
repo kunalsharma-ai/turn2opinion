@@ -1,3 +1,5 @@
+import { asset } from '../../../config/env.js';
+
 
 /* Stroke icon from the inline sprite (see lib/icons.js). */
 export function Icon({ n, className }) {
@@ -8,9 +10,10 @@ export function Icon({ n, className }) {
   );
 }
 
-/* Country flags are not used in the member area. */
-export function Flag() {
-  return null;
+/* Country flag (public/flags/<cc>.svg, the same files the site header uses; Windows has no flag emoji). */
+export function Flag({ cc, className }) {
+  if (!cc || !/^[A-Za-z]{2}$/.test(String(cc))) return null;
+  return <img className={'flag6' + (className ? ' ' + className : '')} src={asset(`/flags/${String(cc).toLowerCase()}.svg`)} width="20" height="15" alt="" aria-hidden="true" loading="lazy" decoding="async" />;
 }
 
 export function MiniRing({ pct }) {

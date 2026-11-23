@@ -13,16 +13,18 @@ import { useToast } from '../../components/ui.jsx';
 import { t as mt } from '../../i18n/t.js';
 import { Icon } from './Icon.jsx';
 import { profileEmoji, qEmoji } from '../lib/emoji.js';
-import { optEmojiSet } from '../lib/emoji-plus.js';
-import { burst, finePointer, reducedMotion } from '../lib/fx.js';
+import { finePointer, reducedMotion } from '../lib/fx.js';
 import { POINTS_PER_ITEM, QUALITY_PER_ITEM } from '../lib/rewards.js';
 import { sound } from '../lib/uisound.js';
-import { themeId } from '../lib/present.js';
+import { themeId, themeOf, kind as fieldKind, EXCL } from '../lib/present.js';
+import { Tiles, Binary, Rows, Scale, Levels } from './fields/Choice.jsx';
+import { Multi } from './fields/Multi.jsx';
+import ComboBox from './fields/ComboBox.jsx';
+import MultiCombo from './fields/MultiCombo.jsx';
+import TextField from './fields/TextField.jsx';
 import { t, nf } from '../i18n/index.js';
-import { CHOICE, DIAL, checkAnswer, filled, loadQuestion, maxHint, moneyLabel, safeHtml, specifyLabel, withExtras } from '../questions.js';
+import { CHOICE, filled, loadQuestion, maxHint, moneyLabel, normalise6, safeHtml, specFor, specifyLabel, validate6, withExtras } from '../questions.js';
 
-const norm = (s) => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-const Pic = ({ e, cls = 'ic' }) => (!e ? null : typeof e === 'string' ? <span className={cls + ' emo'} aria-hidden="true">{e}</span> : <span className={cls + ' mono'} aria-hidden="true">{e.mono}</span>);
 const multi = (q) => q.type === 'multiselect' || q.type === 'checkbox';
 
 /**
@@ -50,6 +52,21 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
   const [done, setDone] = useState(false);
   const [defs, setDefs] = useState({});
   const [opts, setOpts] = useState({});
+  const [notice, setNotice] = useState(null); // v6 "please check this answer" (soft) notice
+  const ack = useRef({}); // soft notices the member confirmed: { question: code }
+  const raw = useRef({}); // text typed in a dropdown without picking an option
+  const lastV = useRef(undefined); // the answer just picked (state updates after the pick handler)
+  const [guess, setGuess] = useState('');
+  useEffect(() => {
+    let live = true;
+    actions
+      .country()
+      .then((c) => live && c && setGuess(String(c).toUpperCase()))
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, []);
   const alive = useRef(true);
   const timer = useRef(0);
   const shownAt = useRef(0);
@@ -97,7 +114,8 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
     setCur(wasDone || i < 0 ? '<first>' : '<open>');
   }, [loaded, page, pages, saved, wasDone]);
 
-  const names = page != null ? pages[page]?.slice(1) || [] : [];
+  // a question listed twice on a page (it happens in the question bank) is asked once
+  const names = useMemo(() => (page != null ? [...new Set(pages[page]?.slice(1) || [])] : []), [page, pages]);
 
   useEffect(() => {
     names.forEach((n) => {
@@ -126,6 +144,16 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
       .catch(() => {});
   }, [defs, names.join('|')]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // what the v6 validators read: every answer plus the member's country, age group and the saved value
+  const ctxFor = (qq) => {
+    const A = { ...values };
+    const c = A.country || me?.address?.country || '';
+    A.country = c ? String(c).toUpperCase() : '';
+    if (!filled(A.dob) && me?.dob) A.dob = String(me.dob).slice(0, 10);
+    // phones are kept as digits; the validators compare E.164 ("+<code><number>")
+    Object.values(defs).forEach((d) => d && d.type === 'phone' && filled(A[d.name]) && (A[d.name] = '+' + String(A[d.name]).replace(/\D/g, '')));
+    return { A, country: A.country, state: A.state, category: me?.type === 'teen' ? 'minor' : 'b2c', prev: qq ? saved[qq.name] : undefined, guess };
+  };
   const optKey = (q) => `${q.name}::${q.parent ? JSON.stringify(values[q.parent] ?? null) : ''}`;
   useEffect(() => {
     names.forEach((n) => {
@@ -195,6 +223,8 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
   const show = (name, d) => {
     clearTimeout(timer.current);
     setErr(null);
+    setNotice(null);
+    lastV.current = undefined;
     setShake(false);
     setDir(d);
     setCur(name);
@@ -204,7 +234,7 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
 
   const setValue = useCallback(
     (qq, v) => {
-      sound.click(world, Array.isArray(v) ? 'toggle' : 'pick');
+      if (CHOICE.includes(qq.type)) sound.click(world, Array.isArray(v) ? 'toggle' : 'pick');
       setValues((prev) => {
         const next = { ...prev, [qq.name]: v };
         const deps = new Set(qq.children || []);
@@ -215,6 +245,7 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
         return next;
       });
       setErr(null);
+      setNotice(null);
     },
     [defs, world]
   );
@@ -222,7 +253,7 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
   function pageValues() {
     const out = {};
     visible.forEach((x) => {
-      out[x.name] = values[x.name] ?? (multi(x) ? [] : null);
+      out[x.name] = x.name === q?.name ? normalise6(x, values, ctxFor(x)) ?? null : values[x.name] ?? (multi(x) ? [] : null);
       if (filled(values[`${x.name}_specify`])) out[`${x.name}_specify`] = values[`${x.name}_specify`];
     });
     names.forEach((n) => {
@@ -266,8 +297,17 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
     if (busy || !q) return;
     clearTimeout(timer.current);
     const o = opts[optKey(q)];
-    const e = checkAnswer(q, values, o, me.dob);
-    if (e) return fail(e);
+    const ctx = ctxFor(q);
+    const r = validate6(q, values, CHOICE.includes(q.type) ? withExtras(q, o) : o, ctx, raw.current[q.name]);
+    if (r && r.level === 'block') return fail(r.text);
+    if (r && r.level === 'soft' && ack.current[q.name] !== r.code) {
+      // unusual but possible: shown once, Continue again (or "Yes, it's correct") accepts it
+      sound.click(world, 'warn');
+      ack.current[q.name] = r.code;
+      return setNotice(r);
+    }
+    const nv = normalise6(q, values, ctx);
+    if (nv !== values[q.name]) setValues((p) => ({ ...p, [q.name]: nv }));
     if (specifyLabel(q, values[q.name], withExtras(q, o)) && !filled(values[`${q.name}_specify`])) return fail(mt('qz.specify.req'));
     // wait for questions that depend on this answer before deciding what comes next
     if (!pageReady) return setPending(true);
@@ -382,12 +422,13 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
     );
   } else {
     const o = opts[optKey(q)];
-    const list = CHOICE.includes(q.type) ? withExtras(q, o).map((x) => (q.isMoney ? { ...x, label: moneyLabel(x.label, values.country || me.address?.country) } : x)) : [];
+    const list = CHOICE.includes(q.type) ? withExtras(q, o).map((x) => (q.isMoney ? { ...x, base: x.label, label: moneyLabel(x.label, values.country || me.address?.country) } : x)) : [];
     const spec = specifyLabel(q, values[q.name], list);
-    const ok = !err && filled(values[q.name]) && !checkAnswer(q, values, o, me.dob);
-    const disabled = !q.editable && filled(saved[q.name]);
+    const ok = !err && !notice && filled(values[q.name]) && !validate6(q, values, CHOICE.includes(q.type) ? list : o, ctxFor(q), raw.current[q.name]);
+    const lockedPhone = q.name === 'phone' && filled(saved.phone);
+    const disabled = (!q.editable && filled(saved[q.name])) || lockedPhone;
     card = (
-      <div className={'qcard' + (err ? ' bad' : ok ? ' ok' : '') + (shake ? ' shake' : '')} id="cd">
+      <div className={'qcard' + (err ? ' bad' : notice ? ' warn' : ok ? ' ok' : '') + (shake ? ' shake' : '')} id="cd">
         <div className={'qb6 ' + (dir > 0 ? 'in-f' : 'in-b')} key={qKey}>
           <div className="qh6">
             <span className="qe6" aria-hidden="true">
@@ -402,17 +443,26 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
           {kind === 'survey' && page === 0 && idx === 0 && source.description ? <div className="hint6 html6" dangerouslySetInnerHTML={{ __html: safeHtml(source.description) }} /> : null}
           {multi(q) && <p className="hint6">{q.max > 0 ? maxHint(q.max) : t('select_all')}</p>}
           <div id="fld" className="fld6">
-            <Field
-              q={q}
-              list={list}
-              value={values[q.name]}
-              disabled={disabled}
-              invalid={!!err}
-              lockedPhone={q.name === 'phone' && filled(saved.phone)}
-              onChange={(v) => setValue(q, v)}
-              onPick={(v, el) => auto(q, v, el)}
-              onEnter={next}
-            />
+            <fieldset className="fs6" disabled={disabled}>
+              <Field6
+                q={q}
+                list={list}
+                value={values[q.name]}
+                invalid={!!err}
+                slug={source.slug}
+                teen={me?.type === 'teen'}
+                ctx={ctxFor(q)}
+                raw={raw.current}
+                onChange={(v, o2) => {
+                  lastV.current = v;
+                  if (o2 && o2.raw !== undefined) raw.current[q.name] = o2.raw;
+                  setValue(q, v);
+                }}
+                onPick={(el) => auto(q, lastV.current !== undefined ? lastV.current : values[q.name], el)}
+                onEnter={next}
+              />
+            </fieldset>
+            {lockedPhone && <p className="hint6">{mt('qz.phone.locked')}</p>}
           </div>
           {spec && (
             <div className={'other6' + (err ? ' bad' : '')}>
@@ -440,6 +490,27 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
                   }
                 }}
               />
+            </div>
+          )}
+          {notice && (
+            <div className="soft6" role="alert">
+              <p>
+                <span aria-hidden="true">🧐</span>
+                <span>
+                  <b>{t('check_title')}</b> {notice.text}
+                </span>
+              </p>
+              <div className="soft6-acts">
+                {notice.suggestion && (
+                  <button type="button" className="btn6 ghost sm" onClick={() => setValue(q, notice.suggestion)}>
+                    {t('use_suggestion', { s: notice.suggestion })}
+                  </button>
+                )}
+                <button type="button" className="btn6 primary sm" onClick={next}>
+                  <Icon n="check" />
+                  {t('confirm_continue')}
+                </button>
+              </div>
             </div>
           )}
           <div className="er6" id="er" role="alert">
@@ -518,239 +589,69 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
   );
 }
 
-/* ------------------------------------------------------------------ one field */
-function Field({ q, list, value, disabled, invalid, lockedPhone, onChange, onPick, onEnter }) {
-  if (q.type === 'select' || q.type === 'radio') return <Single q={q} list={list} value={value} disabled={disabled} onChange={onChange} onPick={onPick} onEnter={onEnter} />;
-  if (multi(q)) return <Multi q={q} list={list} value={value} disabled={disabled} onChange={onChange} />;
-  if (q.type === 'phone') return <Phone value={value} locked={lockedPhone} invalid={invalid} onChange={onChange} onEnter={onEnter} />;
-  const enter = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      onEnter();
-    }
+/* ------------------------------------------------------------------ one field (v6 controls) */
+// The v6 field components work on [label, value] option pairs and a small engine object (s) with actions
+// (act). This adapter gives them the member area's question, options and answers, so the controls, their
+// layout rules (lib/present.js kind) and their keyboard behaviour are exactly the v6 ones.
+function Field6({ q, list, value, invalid, slug, teen, ctx, raw, onChange, onPick, onEnter }) {
+  // v6 picks the control from the English option text (ranges, scales); money labels are shown in the member's currency
+  const o = useMemo(() => list.map((x) => [String(x.base ?? x.label), x.value]), [list]);
+  const shown = useMemo(() => new Map(list.map((x) => [x.value, String(x.label)])), [list]);
+  const ex = useMemo(() => new Set(list.filter((x) => x.exclusive).map((x) => x.value)), [list]);
+  const tw = themeOf({ s: slug || '' });
+  const s = {
+    prof: { s: slug || '', c: teen ? 'minor' : 'b2c' },
+    ans: ctx.A,
+    raw,
+    guess: ctx.guess,
+    D: { Q: {}, O: {} },
+    opts: (n) => (n === q.name && CHOICE.includes(q.type) ? o : null),
+    multi: () => multi(q),
+    q: () => q.label,
+    ctx: () => ctx,
+    spec: () => specFor(q),
+    max: () => Number(q.max) || 0,
+    isEx: (v, l) => ex.has(v) || EXCL.test(String(l || '')),
+    show: (v, l) => shown.get(v) ?? l
   };
-  if (q.type === 'date') {
-    return (
-      <div className="fld">
-        <span className="fi">
-          <Icon n="calendar" />
-        </span>
-        <input id="qi" className="in" type="date" value={value ? String(value).slice(0, 10) : ''} disabled={disabled} aria-labelledby="qh" aria-describedby="er" aria-invalid={invalid || undefined} onChange={(e) => onChange(e.target.value || null)} onKeyDown={enter} />
-      </div>
-    );
-  }
-  const numeric = q.name === 'age';
-  return (
-    <div className="fld">
-      <span className="fi">
-        <Icon n={/mail/.test(q.name) ? 'mail' : /zip|city|address/.test(q.name) ? 'pin' : numeric ? 'hash' : 'text'} />
-      </span>
-      <input
-        id="qi"
-        className="in"
-        type="text"
-        inputMode={numeric ? 'numeric' : undefined}
-        autoComplete="off"
-        spellCheck="false"
-        placeholder={t('type_here')}
-        value={value ?? ''}
-        disabled={disabled}
-        aria-labelledby="qh"
-        aria-describedby="er"
-        aria-invalid={invalid || undefined}
-        onChange={(e) => onChange(e.target.value)}
-        onKeyDown={enter}
-      />
-      <span className="vk">
-        <Icon n="check" />
-      </span>
-    </div>
-  );
-}
-
-function Single({ q, list, value, disabled, onChange, onPick, onEnter }) {
-  const [filter, setFilter] = useState('');
-  const labels = list.map((o) => String(o.label));
-  const pics = optEmojiSet(q.name, labels);
-  const pick = (o, e) => {
-    if (disabled) return;
-    onChange(o.value);
-    const el = e.target.closest('label');
-    burst(el, document.getElementById('cd'));
-    onPick(o.value, el);
-  };
-  const common = (o) => ({
-    type: 'radio',
-    name: 'q',
-    value: o.value,
-    checked: value === o.value,
-    disabled,
-    onChange: (e) => pick(o, e),
-    onClick: (e) => value === o.value && onPick(o.value, e.target.closest('label')),
-    onKeyDown: (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        onEnter();
+  const act = {
+    answer: (n, v, opt) => {
+      if (q.type === 'phone') return onChange(String(v || '').replace(/\D/g, ''), opt);
+      // radio inputs hand back a string: keep the option's own value (numbers stay numbers)
+      if (CHOICE.includes(q.type) && !Array.isArray(v) && v !== '') {
+        const h = list.find((x) => String(x.value) === String(v));
+        if (h) return onChange(h.value, opt);
       }
-    }
-  });
-  if (list.length > 8) {
-    const f = norm(filter).trim();
-    return (
-      <>
-        {list.length > 12 && (
-          <div className="mbar">
-            <label className="fsr">
-              <span className="sr">{t('filter_label')}</span>
-              <Icon n="search" />
-              <input type="search" value={filter} onChange={(e) => setFilter(e.target.value)} placeholder={t('filter_ph', { n: list.length })} autoComplete="off" onKeyDown={(e) => e.key === 'Enter' && e.preventDefault()} />
-            </label>
-          </div>
-        )}
-        <div className="rows" role="radiogroup" aria-labelledby="qh" aria-describedby="er">
-          {list.map((o, k) => (
-            <label key={o.value} className={'row' + (value === o.value ? ' on' : '')} hidden={!!f && !norm(o.label).includes(f)}>
-              <input {...common(o)} />
-              <span className="dot" />
-              {pics[k] ? <Pic e={pics[k]} cls="ri" /> : null}
-              <span>{o.label}</span>
-            </label>
-          ))}
-        </div>
-      </>
-    );
-  }
-  const yesNo = list.length <= 3 && list.every((o) => /^(yes|no|not sure|maybe)\b/i.test(o.label));
-  return (
-    <div className={'tiles' + (yesNo ? ' bin' : '')} role="radiogroup" aria-labelledby="qh" aria-describedby="er">
-      {list.map((o, k) => (
-        <label key={o.value} className={'tile' + (value === o.value ? ' on' : '') + (yesNo ? (/^yes/i.test(o.label) ? ' yes' : /^no\b/i.test(o.label) ? ' no' : '') : '')} style={{ '--k': k }}>
-          <input {...common(o)} />
-          {yesNo ? (
-            <span className="ic emo" aria-hidden="true">
-              {/^yes/i.test(o.label) ? '👍' : /^no\b/i.test(o.label) ? '👎' : '🤔'}
-            </span>
-          ) : (
-            <Pic e={pics[k]} />
-          )}
-          <span className="tl">{o.label}</span>
-          <span className="tk">
-            <Icon n="check" />
-          </span>
-        </label>
-      ))}
-    </div>
-  );
-}
-
-function Multi({ q, list, value, disabled, onChange }) {
-  const [f0, setF] = useState('');
-  const sel = Array.isArray(value) ? value : filled(value) ? [value] : [];
-  const full = q.max > 0 && sel.length >= q.max;
-  const chips = list.length > 12;
-  const f = norm(f0).trim();
-  const pics = optEmojiSet(q.name, list.map((o) => String(o.label)));
-  const toggle = (o, e) => {
-    let next;
-    if (sel.includes(o.value)) next = sel.filter((v) => v !== o.value);
-    else if (o.exclusive) next = [o.value];
-    else {
-      const ex = list.filter((x) => x.exclusive).map((x) => x.value);
-      next = [...sel.filter((v) => !ex.includes(v)), o.value];
-      burst(e.target.closest('label'), document.getElementById('cd'));
-    }
-    onChange(next);
+      return onChange(v === '' ? null : v, opt);
+    },
+    auto: (n, el) => onPick(el),
+    next: onEnter,
+    setLive: () => {},
+    other: () => {}
   };
-  return (
-    <>
-      <div className="mbar">
-        {chips && (
-          <label className="fsr">
-            <span className="sr">{t('filter_label')}</span>
-            <Icon n="search" />
-            <input type="search" value={f0} onChange={(e) => setF(e.target.value)} placeholder={t('filter_ph', { n: list.length })} autoComplete="off" onKeyDown={(e) => e.key === 'Enter' && e.preventDefault()} />
-          </label>
-        )}
-        <span className="cnt" aria-live="polite">
-          {t('n_selected', { n: sel.length })}
-        </span>
-        <button type="button" className="lnk" hidden={!sel.length || disabled} onClick={() => onChange([])}>
-          {t('clear_all')}
-        </button>
-      </div>
-      <div className={chips ? 'chips' : 'tiles multi'} role="group" aria-labelledby="qh" aria-describedby="er">
-        {list.map((o, k) => {
-          const on = sel.includes(o.value);
-          const input = <input type="checkbox" value={o.value} checked={on} disabled={disabled || (!on && full && !o.exclusive)} onChange={(e) => toggle(o, e)} />;
-          const hide = !!f && !norm(o.label).includes(f);
-          return chips ? (
-            <label key={o.value} className={'chip' + (on ? ' on' : '')} hidden={hide}>
-              {input}
-              <Icon n="check" />
-              <Pic e={pics[k]} cls="ce" />
-              <span>{o.label}</span>
-            </label>
-          ) : (
-            <label key={o.value} className={'tile' + (on ? ' on' : '')} style={{ '--k': k }} hidden={hide}>
-              {input}
-              <Pic e={pics[k]} />
-              <span className="tl">{o.label}</span>
-              <span className="tk">
-                <Icon n="check" />
-              </span>
-            </label>
-          );
-        })}
-      </div>
-    </>
-  );
-}
-
-// Phone: digits with the country code (stored the same way as the existing app); a saved phone stays locked.
-function Phone({ value, locked, invalid, onChange, onEnter }) {
-  const [cc, setCc] = useState('');
-  useEffect(() => {
-    if (filled(value)) return undefined;
-    let live = true;
-    actions.country().then((c) => live && DIAL[c] && setCc(DIAL[c]));
-    return () => {
-      live = false;
-    };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  const digits = String(value || '');
-  return (
-    <>
-      <div className={'fld' + (locked ? ' dis' : '')}>
-        <span className="fi">
-          <Icon n={locked ? 'lock' : 'call'} />
-        </span>
-        <input
-          id="qi"
-          className="in"
-          type="tel"
-          inputMode="tel"
-          autoComplete="tel"
-          dir="ltr"
-          placeholder={cc ? `+${cc} …` : t('v6_phone_ph')}
-          value={digits ? `+${digits}` : ''}
-          disabled={locked}
-          aria-labelledby="qh"
-          aria-describedby="er"
-          aria-invalid={invalid || undefined}
-          onFocus={() => !digits && cc && onChange(cc)}
-          onChange={(e) => onChange(e.target.value.replace(/\D/g, '').slice(0, 15))}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              onEnter();
-            }
-          }}
-        />
-        <span className="vk">
-          <Icon n="check" />
-        </span>
-      </div>
-      <p className="hint6">{locked ? mt('qz.phone.locked') : mt('qz.phone.hint')}</p>
-    </>
-  );
+  if (!CHOICE.includes(q.type)) {
+    const v = q.type === 'phone' ? (filled(value) ? '+' + String(value) : '') : q.type === 'date' && value ? String(value).slice(0, 10) : value;
+    return <TextField s={s} n={q.name} value={v} act={act} invalid={invalid} />;
+  }
+  const p = { s, n: q.name, o, value, act, t: tw };
+  switch (fieldKind(q.name, o, multi(q))) {
+    case 'bin':
+      return <Binary {...p} />;
+    case 'levels':
+      return <Levels {...p} />;
+    case 'scale':
+      return <Scale {...p} />;
+    case 'tiles':
+      return <Tiles {...p} />;
+    case 'rows':
+      return <Rows {...p} />;
+    case 'combo':
+      return <ComboBox key={q.name + '|' + JSON.stringify(q.parent ? ctx.A[q.parent] ?? '' : '')} {...p} />;
+    case 'mcombo':
+      return <MultiCombo key={q.name + '|' + JSON.stringify(q.parent ? ctx.A[q.parent] ?? '' : '')} {...p} />;
+    case 'mtiles':
+      return <Multi {...p} />;
+    default:
+      return <Multi {...p} chips />;
+  }
 }

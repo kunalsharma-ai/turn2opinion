@@ -10,5 +10,16 @@ export function t(key, vars) {
   return s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? (typeof vars[k] === 'number' ? nf(vars[k]) : vars[k]) : m));
 }
 export const tr = (s) => s;
-export const useI18n = () => null;
+export const useI18n = () => ({ v: 0 });
 export const lang = () => 'en';
+export const peekTr = (s) => s;
+export const isPending = () => false;
+// country names for the searchable lists (the browser's own names, English)
+const RN = typeof Intl !== 'undefined' && Intl.DisplayNames ? new Intl.DisplayNames(['en'], { type: 'region' }) : null;
+export function regionName(cc) {
+  try {
+    return (RN && cc && RN.of(String(cc).toUpperCase())) || '';
+  } catch {
+    return '';
+  }
+}

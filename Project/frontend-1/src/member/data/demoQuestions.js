@@ -42,12 +42,19 @@ function parentOf(B, n) {
 export async function demoProfileList(as) {
   const B = await bank();
   const cat = as === 'teen' ? 'minor' : 'b2c';
-  return B.profiles
-    .filter((p) => p.c === cat)
+  const mine = B.profiles.filter((p) => p.c === cat);
+  const inCat = new Set(mine.flatMap((p) => p.p.flatMap(([, qs]) => qs)));
+  return mine
     .map((p) => {
-      // a follow-up whose parent lives in another profile reads that answer in the flow (Flow.jsx), like live data
+      // a follow-up whose parent lives in another profile reads that answer in the flow (Flow.jsx), like live data.
+      // A parent that no profile of this panel asks (Teen automobile, health) is asked here, just before it.
       const pages = p.p.map(([sec, qs]) => {
-        const out = qs.filter((q) => B.Q[q]);
+        const out = [];
+        qs.filter((q) => B.Q[q]).forEach((q) => {
+          const par = parentOf(B, q);
+          if (par && !inCat.has(par) && !out.includes(par)) out.push(par);
+          out.push(q);
+        });
         return [p.p.length > 1 ? titleCase(sec) : titleCase(p.n), ...out];
       });
       return { slug: p.s, name: p.n, pages, points: 50 };

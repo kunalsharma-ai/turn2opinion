@@ -114,6 +114,8 @@ const EN = {
   cb_hint: '{n} options · use ↑ ↓ and Enter',
   cb_none: 'No matches for “{q}”. Check the spelling or try fewer letters.',
   cb_more: 'Showing {a} of {b} · keep typing to narrow',
+  mcb_hint: '{n} options · type to search, pick as many as apply',
+  qz_max_reached: 'You’ve picked the most allowed ({n})',
   clear: 'Clear',
   type_here: 'Type here…',
   decrease: 'Decrease',

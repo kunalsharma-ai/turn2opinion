@@ -7,6 +7,8 @@
 //     maxSelections caps a multi-select, age must match the date of birth, a saved phone stays locked
 import { actions, CHOICE } from '../data/source.js';
 import { t, tn } from '../i18n/t.js';
+import { t as t6 } from './i18n/index.js';
+import { fieldSpec } from './lib/validate/fields.js';
 
 export { CHOICE };
 export const filled = (v) => !(v == null || v === '' || (Array.isArray(v) && !v.length));
@@ -92,6 +94,64 @@ export function checkAnswer(q, values, opts, dob) {
     if (Number(v) !== age && Number(v) !== now.getFullYear() - d.getFullYear()) return t('qz.age');
   }
   return '';
+}
+
+/** The v6 field registry entry for a question: phone and date questions always use the phone / date rules. */
+export function specFor(q) {
+  if (q.type === 'phone') return fieldSpec(/^(alternate-phone|phone1)$/.test(q.name) ? q.name : 'phone');
+  if (q.type === 'date' || q.name === 'dob') return fieldSpec('dob');
+  return fieldSpec(q.name, q.label);
+}
+const phoneText = (q, v) => (q.type === 'phone' ? '+' + String(v).replace(/\D/g, '') : String(v));
+
+/**
+ * The v6 validation for one answer (lib/engine.js check / warn): returns null when it can be accepted,
+ * { level: 'block', text } for an error, or { level: 'soft', code, text, suggestion } for an unusual answer the
+ * member confirms once. ctx = { A: answers incl. country, category: 'minor'|'b2c', prev, guess }.
+ * opts: the choice list ({label, value}[]) or the API's text rule ({ pattern }).
+ */
+export function validate6(q, values, opts, ctx, raw) {
+  const v = values[q.name];
+  if (CHOICE.includes(q.type)) {
+    if (raw && !filled(v)) return { level: 'block', text: t6('v_pick') };
+    if (!filled(v)) return q.required ? { level: 'block', text: t6('v_choose') } : null;
+    if (Array.isArray(opts)) {
+      const ok = new Set(opts.map((x) => String(x.value)));
+      if ((Array.isArray(v) ? v : [v]).some((x) => !ok.has(String(x)))) return { level: 'block', text: t6('v_enum') };
+    }
+    return null;
+  }
+  if (!filled(v) || (typeof v === 'string' && !v.trim())) return q.required ? { level: 'block', text: t6('v_required') } : null;
+  // the API's own rule for this question still applies (as the existing app does)
+  if (q.type === 'text' && opts && opts.pattern) {
+    try {
+      if (!new RegExp(opts.pattern).test(String(v))) return { level: 'block', text: t('qz.format') };
+    } catch {
+      /* bad pattern from the server: skip the check */
+    }
+  }
+  let r;
+  try {
+    r = specFor(q).v(phoneText(q, v), ctx, q.name);
+  } catch {
+    r = { level: 'block', code: 'invalid' };
+  }
+  if (!r || r.level === 'pass' || r.level === 'stepup') return null;
+  const text = r.code ? t6('v_' + r.code, r.vars || {}) : '';
+  if (r.level === 'block') return { level: 'block', text };
+  return { level: 'soft', code: r.code, text, suggestion: r.meta && r.meta.suggestion };
+}
+/** The normalised value v6 stores (trimmed names, upper-case postcodes, E.164 phones kept as digits). */
+export function normalise6(q, values, ctx) {
+  const v = values[q.name];
+  if (!filled(v) || typeof v !== 'string' || CHOICE.includes(q.type)) return v;
+  try {
+    const r = specFor(q).v(phoneText(q, v), ctx, q.name);
+    if (r && r.level !== 'block' && typeof r.norm === 'string' && r.norm) return q.type === 'phone' ? r.norm.replace(/\D/g, '') : r.norm;
+  } catch {
+    /* keep what was typed */
+  }
+  return v;
 }
 
 export const maxHint = (n) => tn('qz.max', n);
