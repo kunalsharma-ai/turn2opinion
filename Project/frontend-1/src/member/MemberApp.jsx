@@ -20,10 +20,11 @@ import baseCss from './member.css?inline';
 import xCss from './member-x.css?inline';
 import xpCss from './member-xp.css?inline';
 import xeCss from './member-xe.css?inline';
-import pfCss from './member-pf.css?inline';
+import v6Css from './v6/v6.css?inline';
+import v6MemberCss from './v6/member-v6.css?inline';
 import { BrandLoader } from './components/art.jsx';
 
-const memberCss = `${baseCss}\n${xCss}\n${xpCss}\n${xeCss}\n${pfCss}`;
+const memberCss = `${baseCss}\n${xCss}\n${xpCss}\n${xeCss}\n${v6Css}\n${v6MemberCss}`;
 
 const PAGES = {
   dashboard: DashboardPage,

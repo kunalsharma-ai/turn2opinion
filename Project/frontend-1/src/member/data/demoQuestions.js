@@ -57,9 +57,9 @@ const STATES = {
 const TOPICS = [
   ['parenting', 'parenting', 'parenting products', opts('Baby food', 'Diapers', 'Toys', 'School supplies', 'Kids clothing')],
   ['consumer-electronics', 'consumer electronics', 'electronics', opts('Smartphone', 'Laptop', 'Smart TV', 'Smartwatch', 'Headphones')],
-  ['shopping-retail', 'shopping & retail', 'shopping', opts('Supermarkets', 'Online marketplaces', 'Malls', 'Local stores', 'Quick commerce')],
-  ['banking-financial', 'banking & financial services', 'banking', opts('Mobile banking', 'UPI / wallets', 'Credit cards', 'Investing apps', 'Branch visits')],
-  ['technology-digital', 'technology & digital services', 'digital services', opts('Cloud storage', 'Streaming', 'Food delivery apps', 'Ride hailing', 'AI assistants')],
+  ['shopping', 'shopping & retail', 'shopping', opts('Supermarkets', 'Online marketplaces', 'Malls', 'Local stores', 'Quick commerce')],
+  ['banking-financial-services', 'banking & financial services', 'banking', opts('Mobile banking', 'UPI / wallets', 'Credit cards', 'Investing apps', 'Branch visits')],
+  ['technology-digital-services', 'technology & digital services', 'digital services', opts('Cloud storage', 'Streaming', 'Food delivery apps', 'Ride hailing', 'AI assistants')],
   ['fashion-apparel', 'fashion & apparel', 'clothes', opts('Casual wear', 'Formal wear', 'Sportswear', 'Ethnic wear', 'Footwear')],
   ['beauty-personal-care', 'beauty & personal care', 'beauty products', opts('Skincare', 'Haircare', 'Make-up', 'Fragrance', 'Grooming')],
   ['food-beverages', 'food & beverages', 'food and drinks', opts('Packaged snacks', 'Soft drinks', 'Coffee & tea', 'Ready meals', 'Dairy')],

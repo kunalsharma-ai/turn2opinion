@@ -160,28 +160,41 @@ YES and NO email buttons open `/parent-consent/` at the matching question (uncha
 guardian consents, the Teen sets a password, sees a consent receipt (who, date, version, ✓) and is
 taken to the Teen dashboard.
 
-## Profiles and Surveys (Round 19)
+## Profiles and Surveys (Round 19, v6 design in Round 20)
 
-Rebuilt from the live captures (`/mnt/project-files/reference/live-member-area/`) on the same
-endpoints and rules as `Project/frontend` (`survey/components/Survey.jsx`, `Question.jsx`, `Select.jsx`).
+Round 20 carries the approved **v6 "Profiles & Surveys" design** (developer deliverables v6) onto the
+same data. The v6 visuals live in `v6/` and run on the member area's endpoints; nothing in v6's own
+local question bank, storage or submission code is used.
 
-- **Profiles** (`pages/Profiles.jsx`): blue welcome hero with the glass lock orb, Opinion Kingdom
-  (`components/Kingdom.jsx`: stage, pips, an SVG scene where every completed profile or survey adds a
-  house, scaffolds for open About-you profiles, night sky in dark mode, side stats, 8 milestones),
-  About-you cards, Incomplete, and Surveys sealed until the About-you profiles are complete.
-- **About-you profiles** are the `basic`, `educational`, `professional` and `financial` slugs
-  (`ABOUT_YOU`); a panel without them (Teen) uses its first four profiles. Every other profile is a
-  topic survey (the dark cards on the live Surveys page).
-- **Question flow** (`components/Questionnaire.jsx`): steps from `pages[i][0]`, choice questions as cards
-  (8 options or fewer) or a select, multi-select with exclusive / None / Prefer-not-to-say / Others +
-  specify / max selections, text checked against its validation pattern, phone with country code
-  (locked once saved), date, dependent options, age checked against date of birth, survey intro and
-  thank-you HTML (scripts and event handlers removed). Two deliberate differences from the existing
-  app: a profile saves after every step, and changing an answer clears only the questions that depend
-  on it. As in the existing app, a text question without a validation pattern is not shown.
-- **Surveys** (`pages/Surveys.jsx`): paid invitations first, then topic surveys; All new / High reward
-  (over 500 points) / Short (5 min or less), search, 12 / 24 / 48 per page; terms check before starting;
-  participation history with From / To dates, search, "Resume" on Turn2Opinion-hosted dropouts.
-- **Deep links** from the dashboards: `/member/profiles/#p-<slug>` opens a profile,
-  `/member/surveys/#start-<slug>` starts a survey.
+- **`v6/`**: `components/` (Hero, Kingdom, ItemCard, LockedPopup, Celebration, Icon, Logo, Odo from v6;
+  `Flow.jsx` rewritten on our endpoints), `lib/` (v6 art, emoji, themes, fx, celebrations; `progression.js`,
+  `rewards.js`, `present.js` rewritten for our profile list), `i18n/` (v6 English strings), `Stage.jsx`
+  (the `#t2o` root shared by both pages), `questions.js` (question rules), `v6.css` (GENERATED from the
+  v6 stylesheets, every selector scoped to `#t2o`, v6 dark theme mapped to `data-mb-mode` dark/night)
+  and `member-v6.css` (member-area layer: fitting in the shell, Surveys page, history).
+- **Profiles** (`pages/Profiles.jsx`): hero greeting with the Opinion Galaxy, "{Name}'s Opinion Kingdom"
+  (a building per profile/survey, treasury with the member's real points and quality score, level
+  stones, treasure chest, royal seals, starry night in dark mode), About you · Profiles, Incomplete,
+  Surveys (8 shown, then "Show all").
+- **About-you profiles** are `basic` and `educational` (`ABOUT_YOU`, as in v6); a panel without them
+  (Teen) uses its first two. Every other profile is shown as a survey.
+- **Unlocking (v6 rules)**: only the first unfinished About-you profile is open; surveys stay sealed
+  until About you is complete, then open **one at a time** in the order the API lists them. Completed
+  items stay open for updating. Tapping a locked card or plot shows "Sealed for now!" with what unlocks it.
+- **Question flow** (`v6/components/Flow.jsx`): one question per screen on the item's own world
+  colours, flow bar with journey track and "Question n of N", single-choice auto-advance, emoji per
+  option, filter on long lists, chips for long multi-selects. Same rules as before: dependent options,
+  exclusive / None / Prefer-not-to-say / Others + specify, max selections, validation patterns, phone
+  with country code (locked once saved), age vs date of birth. **A profile saves page by page**
+  (`PATCH /api/v1/me/profile` when the member leaves a page's last question); a Turn2Opinion survey saves
+  once at the end (`PATCH /api/v1/me/survey`). Completing a profile for the first time shows the v6
+  celebration (its building rises, +50 points, +1 quality).
+- **Surveys** (`pages/Surveys.jsx`): v6-style header with earned points, All new / High reward / Short,
+  search, paid invitations as colour cards, topic surveys as v6 cards (sealed until About you, then one
+  at a time), 12 / 24 / 48 per page, terms check, participation history with From / To, search,
+  "Resume" on Turn2Opinion-hosted dropouts. Partner surveys still redirect to their link.
+- **Deep links**: `/member/profiles/#p-<slug>` opens a profile (or its sealed message),
+  `/member/surveys/#start-<slug>` starts a survey (`pages/anchor.js`).
+- The device keeps only which kingdom buildings have already been raised (`t2o:member:built`), so each
+  rise animation plays once.
 - Preview data: `data/demoQuestions.js` (questions, options, answers kept for the browser session).

@@ -52,8 +52,9 @@ export const LAYOUT = {
   }
 };
 
-// The About-you profiles that unlock surveys (from the profile system), per panel.
-export const ABOUT_YOU = ['basic', 'educational', 'professional', 'financial'];
+// The About-you profiles that unlock surveys (v6 Profiles & Surveys design: Basic, then Educational).
+// Every other profile is shown as a survey that opens one at a time once these are complete.
+export const ABOUT_YOU = ['basic', 'educational'];
 
 // Points per payout and milestones for the referral progress bar (display only).
 export const REFERRAL_STEPS = [1, 3, 5, 10, 25];

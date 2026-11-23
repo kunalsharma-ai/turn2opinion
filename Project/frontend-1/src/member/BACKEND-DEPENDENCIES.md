@@ -91,8 +91,10 @@ points to confirm or small improvements:
 | 55 | Opening and finishing a survey | **Live** on `PUT` / `PATCH /api/v1/me/survey` | None |
 | 56 | Phone format | Saved as digits with country code (for example `919810012345`), the format `react-phone-input-2` sends today | Confirm the format |
 | 57 | Money ranges (`isMoney`) | Labels like `300001 - 600000` are shown in the member's currency; anything else is shown as sent | None |
-| 58 | Kingdom buildings | Completed profiles plus completed surveys from `/me/statistics` | None. Optional: a profile-completed date for a growth timeline |
+| 58 | Kingdom buildings | One building per profile on `GET /api/v1/profile`, raised when its status reaches 100. Treasury shows the real points and quality score | None |
 | 59 | Survey feedback column (`svfeedback`) | Preview only (gem rating kept on the device) | An endpoint to store a 1-5 rating and comment per response |
 | 60 | Profile length | Minutes shown as questions ÷ 7 | Optional: a real median time per profile |
+| 61 | Sequential unlocking (v6) | Done in the browser from profile status: surveys open one at a time after Basic + Educational | Optional: enforce the same order on the server if members must not open a later profile by direct API call |
+| 62 | Survey order | The order `GET /api/v1/profile` returns | Optional: an explicit display order per profile |
 
 The live site also needs one routing change: see `README.md`, "Going live needs one gateway rule".

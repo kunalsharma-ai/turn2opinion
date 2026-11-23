@@ -66,11 +66,11 @@ export function useSection(name) {
 }
 
 // ---------- derived values shared by several cards (computed from existing data only) ----------
-/** The About-you profiles that unlock surveys. Panels without those slugs (Teen) use their first four. */
+/** The About-you profiles that unlock surveys, in ABOUT_YOU order. Panels without those slugs (Teen) use their first two. */
 export function aboutYou(profiles) {
   const list = Array.isArray(profiles) ? profiles : [];
-  const hit = list.filter((p) => ABOUT_YOU.includes(p.slug));
-  return hit.length >= 2 ? hit : list.slice(0, 4);
+  const hit = ABOUT_YOU.map((s) => list.find((p) => p.slug === s)).filter(Boolean);
+  return hit.length === ABOUT_YOU.length ? hit : list.slice(0, ABOUT_YOU.length);
 }
 /** Every other profile: the topic surveys that unlock once About-you is complete. */
 export function topicProfiles(profiles) {
