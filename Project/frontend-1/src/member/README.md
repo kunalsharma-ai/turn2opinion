@@ -55,6 +55,17 @@ answer). `engageOn(id)` in `data/engage.js` returns true in the design preview a
 site, so every unbuilt block renders nothing for real members. To switch one on, add its API adapter
 and put its id in `LIVE`. The full list is in `BACKEND-DEPENDENCIES.md`, items 15 to 32.
 
+## Round 18 section-page engagement
+
+Rewards: savings goal, points forecast, bonus weekends and expiry reminders. Quality score: score
+boosters, attention-check practice, Trusted Member badge and a monthly report card. Referrals: share
+cards (WhatsApp, Instagram story image, QR code), milestones and friend nudges; Teens get invites only,
+after confirming a guardian said OK, with no rewards. Activity: year in review, active-days heatmap,
+category filter and a "why was I screened out?" explainer. My account: a downloadable member level
+card, profile freshness and linked sign-in. Settings: survey preferences, quiet hours with digests, and
+a data and privacy centre. Files: `components/Grow.jsx`, `components/qr.js`, `i18n/en-g.js`, styles
+at the end of `member-xe.css`. Items 33 to 53 in `BACKEND-DEPENDENCIES.md` say which parts are live.
+
 ## Layers
 
 ```

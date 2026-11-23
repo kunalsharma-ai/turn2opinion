@@ -5,6 +5,7 @@ import { Counter, Icon, MLink, cx } from '../components/ui.jsx';
 import { InsightPipeline } from '../components/art.jsx';
 import { Donut, ProfileJourney, QualityTile, Sparkline, StackBar, SurveyDiscovery, VaultTile, XEmpty, XError, XHead, XSkel, useDash, ABOUT_YOU } from '../components/Sections.jsx';
 import { BenchmarkReport, EngageStrip, ExpertBadges, ImpactStories, QuickPoll } from '../components/Engage.jsx';
+import { BonusBanner } from '../components/Grow.jsx';
 import XHero from './Hero.jsx';
 
 export default function ProfessionalDashboard() {
@@ -30,6 +31,7 @@ export default function ProfessionalDashboard() {
           />
         }
       />
+      <BonusBanner compact />
       <EngageStrip />
       <div className="xpro-row">
         <ProfileJourney variant="dossier" />

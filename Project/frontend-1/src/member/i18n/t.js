@@ -6,8 +6,9 @@
 import base from './en.js';
 import extra from './en-x.js';
 import engage from './en-e.js';
+import grow from './en-g.js';
 
-const en = { ...base, ...extra, ...engage };
+const en = { ...base, ...extra, ...engage, ...grow };
 
 const DICTS = { en };
 let active = 'en';

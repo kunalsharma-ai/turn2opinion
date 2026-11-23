@@ -1643,10 +1643,14 @@ html[data-mb-motion='reduce'] .mb-root .xcard {
     gap: 2px;
   }
   .xhd .mb-brand img {
-    width: 104px;
+    width: 88px;
     height: auto;
   }
   .xhd .xhd-pill--points {
-    padding-inline: 8px;
+    padding-inline: 6px;
+    gap: 4px;
+  }
+  .xhd .xhd-pill__num {
+    font-size: 13px;
   }
 }

@@ -12,7 +12,11 @@ import { store } from '../../utils/storage.js';
 import { demoPrefs } from './demo.js';
 
 /** Features whose API exists. Add an id here (and an adapter in source.js) when the backend ships. */
-const LIVE = new Set(['alerts']);
+const LIVE = new Set([
+  'alerts',
+  // Round 18 features built only from data the site already has (or kept on the device):
+  'savings', 'forecast', 'boosters', 'practice', 'share', 'teenInvite', 'wrapped', 'heatmap', 'screenout', 'levelcard', 'datacentre'
+]);
 export const engageOn = (id) => ENV.DEMO_MODE || LIVE.has(id);
 
 const daysAgo = (n) => {
@@ -121,15 +125,35 @@ const FIX = {
   }
 };
 
+const hoursAhead = (n) => new Date(Date.now() + n * 36e5).toISOString();
+
+// Round 18 preview data shared by all member types (section pages).
+const COMMON = {
+  bonus: { mult: 2, ends: hoursAhead(31), surveys: ['Weekend grocery habits', 'Streaming services in 2027'] },
+  expiry: { points: 320, on: daysAhead(38) },
+  report: { from: 158, to: 168, completed: 5, screened: 1, tip: 'q.tip.speed' },
+  trusted: 180,
+  milestones: [
+    { at: 1, reward: 250 },
+    { at: 3, reward: 1000 },
+    { at: 5, reward: 2000 },
+    { at: 10, reward: 5000 }
+  ],
+  freshness: { basic: 20, educational: 95, professional: 160, financial: 300, electronics: 245, technology: 40, business: 210, school: 30, hobbies: 400, gaming: 400 },
+  linked: { google: false, phone: true },
+  prefs: { length: 'any', avoid: [], time: 'evening' },
+  quiet: { on: true, from: '22:00', to: '08:00', digest: 'instant' }
+};
+
 /** Engagement data for the current member, or null on the live site (feature not built). */
 export function engageData(type) {
   if (!ENV.DEMO_MODE) return null;
   const { state } = demoPrefs();
   if (state === 'empty') {
     const f = FIX[type] || FIX.consumer;
-    return { ...f, streak: { ...f.streak, days: 0, week: [0, 0, 0, 0, 0, 0, 0] }, stories: [], tests: [], board: f.board ? [] : undefined, poll: POLLS[type] };
+    return { ...COMMON, ...f, streak: { ...f.streak, days: 0, week: [0, 0, 0, 0, 0, 0, 0] }, stories: [], tests: [], board: f.board ? [] : undefined, poll: POLLS[type], expiry: null, bonus: null };
   }
-  return { ...(FIX[type] || FIX.consumer), poll: POLLS[type] || POLLS.consumer, stories: STORIES[type] || [] };
+  return { ...COMMON, ...(FIX[type] || FIX.consumer), poll: POLLS[type] || POLLS.consumer, stories: STORIES[type] || [] };
 }
 
 // Small on-device memory for the preview (votes, claimed bonuses, guardian requests).

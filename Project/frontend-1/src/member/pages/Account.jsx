@@ -8,6 +8,8 @@ import { t, tn, fmt } from '../i18n/t.js';
 import { useI18n } from '../../i18n/I18nProvider.jsx';
 import { ColorPaletteSelector, LanguageSelector, ThemeSelector, useSound } from '../components/Shell.jsx';
 import { GuardianConsentCard } from '../components/Modules.jsx';
+import { DataCentre, LevelCard, LinkedAccounts, ProfileFreshness, QuietHours, SurveyPrefs } from '../components/Grow.jsx';
+import { engageOn } from '../data/engage.js';
 import { Avatar, Badge, Button, Card, Field, Icon, MLink, Toggle, cx, useToast } from '../components/ui.jsx';
 
 const MAX = 5 * 1024 * 1024;
@@ -284,6 +286,8 @@ export function ProfilePage() {
         ))}
       </ul>
 
+      <LevelCard />
+
       <div className="mb-cols">
         <div className="mb-col-main">
           <Card title={t('ma.basic')} icon="id" className="xid-card">
@@ -353,6 +357,7 @@ export function ProfilePage() {
             </ol>
             <p className="mb-faint mb-small">{t('ma.editLoc')}</p>
           </Card>
+          <ProfileFreshness />
         </div>
         <div className="mb-col-side">
           <div id="xid-photo">
@@ -367,6 +372,7 @@ export function ProfilePage() {
               </Button>
             </Card>
           )}
+          <LinkedAccounts />
           <Card title={t('st.profile.profiles')} icon="map" className="xid-card">
             <p className="mb-card__lead">{t('kd.sub')}</p>
             <Button to="profiles" size="sm" iconEnd="external" className="mb-wide">
@@ -380,15 +386,20 @@ export function ProfilePage() {
 }
 
 /* ================= Settings ================= */
-const SECTIONS = [
+const ALL_SECTIONS = [
   ['appearance', 'layers'],
   ['sound', 'volume'],
   ['language', 'globe'],
   ['notifications', 'bell'],
+  ['quiet', 'clock', 'quiet'],
+  ['prefs', 'target', 'prefs'],
   ['privacy', 'shield'],
+  ['data', 'database', 'datacentre'],
   ['profile', 'user'],
   ['account', 'key']
 ];
+// Sections whose feature is not live yet are left out on the live site (see data/engage.js).
+const SECTIONS = ALL_SECTIONS.filter(([, , gate]) => !gate || engageOn(gate));
 
 export function SettingsPage() {
   const [active, setActive] = useState('appearance');
@@ -426,7 +437,10 @@ export function SettingsPage() {
             <LanguageSelector />
           </Card>
           <NotificationSettings />
+          <QuietHours />
+          <SurveyPrefs />
           <PrivacySettings />
+          <DataCentre />
           <Card id="set-profile" title={t('st.profile')} icon="user">
             <p className="mb-card__lead">{t('st.profile.d')}</p>
             <div className="mb-row">
@@ -460,7 +474,10 @@ function ControlCentre({ onPick }) {
     notifications: Array.isArray(ch) ? tn('cc.channels', ch.length) : '…',
     privacy: tn('cc.choices', (me.terms || []).length),
     profile: me.photo ? t('cc.photoOn') : t('cc.photoOff'),
-    account: t('cc.secure')
+    account: t('cc.secure'),
+    quiet: t('g.cc.quiet'),
+    prefs: t('g.cc.prefs'),
+    data: t('g.cc.data')
   };
   return (
     <section className="xcc" aria-labelledby="xcc-t">

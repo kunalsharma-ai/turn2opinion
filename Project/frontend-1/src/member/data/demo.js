@@ -46,6 +46,12 @@ const SURVEYS = {
   ]
 };
 
+const ACT_CAT = {
+  'Coffee shop visits': 'Food & Beverages', 'Basic profile': 'Profile', 'Educational profile': 'Profile', 'Professional profile': 'Profile',
+  'Car insurance renewal': 'Finance', 'Smartphone upgrade plans': 'Technology', 'Holiday travel 2027': 'Travel', 'Weekly shopping basket': 'Food & Beverages',
+  'Household cleaning brands': 'Home', 'Data platform vendor review': 'Technology', 'IT hiring outlook': 'Business', 'ERP migration (finance leads)': 'Business',
+  'Remote collaboration tools': 'Technology', 'Streaming habits': 'Entertainment', 'Weekend breakfast': 'Food & Beverages', 'Electric cars': 'Automotive', 'Online grocery delivery': 'Food & Beverages', 'Snack flavours': 'Food & Beverages', 'Mobile banking apps': 'Finance', 'Summer travel plans': 'Travel', 'Cloud spending outlook': 'Technology', 'Hybrid work policies': 'Business', 'Vendor selection process': 'Business', 'Security awareness training': 'Technology', 'Music you love': 'Entertainment', 'School lunch ideas': 'Food & Beverages'
+};
 const ACTIVITY = {
   consumer: [
     ['complete', 'Coffee shop visits', 150, 0],
@@ -55,7 +61,14 @@ const ACTIVITY = {
     ['dropout', 'Holiday travel 2027', 0, 6],
     ['complete', 'Educational profile', 50, 8],
     ['complete', 'Weekly shopping basket', 120, 11],
-    ['complete', 'Household cleaning brands', 90, 15]
+    ['complete', 'Household cleaning brands', 90, 15],
+    ['complete', 'Streaming habits', 140, 24],
+    ['complete', 'Weekend breakfast', 80, 31],
+    ['terminate', 'Electric cars', 0, 38],
+    ['complete', 'Online grocery delivery', 160, 45],
+    ['complete', 'Snack flavours', 70, 59],
+    ['complete', 'Mobile banking apps', 200, 73],
+    ['complete', 'Summer travel plans', 180, 96]
   ],
   pro: [
     ['complete', 'Data platform vendor review', 1200, 0],
@@ -63,7 +76,10 @@ const ACTIVITY = {
     ['complete', 'IT hiring outlook', 600, 6],
     ['terminate', 'ERP migration (finance leads)', 0, 9],
     ['complete', 'Remote collaboration tools', 400, 14],
-    ['complete', 'Security awareness training', 900, 21]
+    ['complete', 'Security awareness training', 900, 21],
+    ['complete', 'Cloud spending outlook', 1100, 35],
+    ['complete', 'Hybrid work policies', 700, 52],
+    ['complete', 'Vendor selection process', 950, 80]
   ],
   teen: [
     ['complete', 'Basic profile', 50, 0],
@@ -110,7 +126,7 @@ export async function demoSection(name, ctx = {}) {
     case 'profiles':
       return adaptProfiles(PROFILES[as].map(([slug, n, s]) => ({ slug, name: n, status: empty ? -1 : s })));
     case 'activity':
-      return adaptActivity(empty ? [] : ACTIVITY[as].map(([status, n, pts, d], i) => ({ _id: `a${i}`, status, survey: { name: n, slug: n }, points: pts, timeline: { start: daysAgo(d, 9), end: daysAgo(d, 10) } })));
+      return adaptActivity(empty ? [] : ACTIVITY[as].map(([status, n, pts, d], i) => ({ _id: `a${i}`, status, survey: { name: n, slug: n, surveyCategory: ACT_CAT[n] || '' }, points: pts, timeline: { start: daysAgo(d, 9), end: daysAgo(d, 10) } })));
     case 'referrals':
       return adaptReferrals(
         empty || as === 'teen' ? [] : [{ email: 'maya@example.com', createdAt: daysAgo(20) }, { email: 'tom@example.com', createdAt: daysAgo(9) }, { email: 'li.wei@example.com', createdAt: daysAgo(2) }],

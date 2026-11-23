@@ -112,6 +112,7 @@ export function adaptActivity(list) {
       status: r.status || 'other',
       name: r.survey?.name || 'Survey',
       slug: r.survey?.slug,
+      category: r.survey?.surveyCategory || r.survey?.category || '',
       source: r.source || '',
       points: r.status === 'complete' ? num(r.points) : 0,
       date: r.timeline?.end || r.updatedAt || r.timeline?.start || r.createdAt

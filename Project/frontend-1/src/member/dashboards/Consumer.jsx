@@ -6,6 +6,7 @@ import { OpinionLoop } from '../components/art.jsx';
 import { ActivityRibbon, BadgeShelf, JourneyRail, ProfileJourney, QualityTile, ReferralTile, SurveyDiscovery, VaultTile, useDash } from '../components/Sections.jsx';
 import { useAchievements } from '../components/Modules.jsx';
 import { EngageStrip, GemTiers, ImpactStories, LuckySpin, ProductTests, QuickPoll } from '../components/Engage.jsx';
+import { BonusBanner } from '../components/Grow.jsx';
 import XHero from './Hero.jsx';
 
 export default function ConsumerDashboard() {
@@ -54,6 +55,7 @@ export default function ConsumerDashboard() {
         }
       />
       <JourneyRail />
+      <BonusBanner compact />
       <EngageStrip />
       <ProfileJourney variant="road" />
       <div className="xe-row xe-row--wide">

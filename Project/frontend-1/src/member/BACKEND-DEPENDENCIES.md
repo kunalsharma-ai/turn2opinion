@@ -50,4 +50,34 @@ the existing communication-methods answer.
 | 31 | Guardian summary email (`summary`) | Teen | Preview only. Shows what the guardian receives: totals only, never answers. | A weekly or monthly summary email to the consenting guardian, and a way for the guardian to change how often |
 | 32 | Guardian-approved gift cards (`giftcards`) | Teen | Preview only. Teens pick a gift card (no cash), the request waits for the guardian. | A gift card catalogue, a redemption request, a guardian approval email with Yes / No (like the consent email), and delivery once approved |
 
+## Section-page engagement (Round 18)
+
+Built in `components/Grow.jsx`. Features marked **Live** use only data the site already has, or keep
+the member's choice on their device, so they show on the live site today. The rest are preview only
+(hidden by `engageOn`) until their API exists.
+
+| # | Feature (`id`) | Page | Status today | Backend change that would enable it |
+| --- | --- | --- | --- | --- |
+| 33 | Savings goal (`savings`) | Rewards | **Live.** The goal is kept on the device (`t2o_member_goal`), and the survey countdown uses the member's average points per survey. | Optional: store the goal on the member so it follows them across devices |
+| 34 | Points forecast (`forecast`) | Rewards | **Live.** Uses points earned per week over the last 8 weeks. | None |
+| 35 | Bonus weekends and double-points surveys (`bonus`) | Rewards, dashboards | Preview only: a banner with a live countdown | Bonus campaigns (multiplier, start, end, eligible surveys) and crediting the extra points |
+| 36 | Points expiry reminders (`expiry`) | Rewards | Preview only | Only if points are given an expiry rule: the next expiring amount and date, plus a reminder email |
+| 37 | Score boosters (`boosters`; estimates `boostPts`) | Quality score | **Live** task list (open profiles, phone number, unfinished surveys, practice). The "+N" score estimates are preview only. | The real effect of each task on the quality score |
+| 38 | Monthly quality report card (`report`) | Quality score | Preview only. The live site keeps the "history isn't recorded yet" state. | Monthly score snapshots (see item 13) and completed and screened-out counts per month |
+| 39 | Attention-check practice (`practice`) | Quality score | **Live.** Nothing is sent or scored. | None |
+| 40 | Trusted Member badge at 180+ (`trusted`) | Quality score | Preview only | A Trusted flag and priority targeting for invites |
+| 41 | Share cards: WhatsApp, Instagram story, QR (`share`) | Referrals | **Live.** The QR code is generated in the browser (`components/qr.js`, no library), and the story image is drawn on a canvas. | None |
+| 42 | Referral milestones at 1, 3, 5 and 10 friends (`refMilestones`) | Referrals | Preview only. Not shown to Teens. | Milestone rules and crediting (see items 6 and 14) |
+| 43 | Nudge a friend (`nudge`) | Referrals | Preview only. Not shown to Teens. | Whether a referred friend has completed a survey, plus a rate-limited reminder email |
+| 44 | Teen invites with guardian OK (`teenInvite`) | Referrals | **Live.** Share buttons stay disabled until the Teen confirms a guardian said OK. There are no rewards and no milestones. | None. A guardian-side approval could be added later. |
+| 45 | Year in review (`wrapped`) | Activity | **Live**, from the activity feed. The impact line shows only when impact stories exist (item 17). | None |
+| 46 | Activity heatmap (`heatmap`) | Activity | **Live**, from the activity feed | None |
+| 47 | Category filter and screen-out explainer (`screenout`) | Activity | **Live.** The category comes from `survey.surveyCategory` when the response API includes it; otherwise the filter hides itself. | Include `survey.surveyCategory` in `POST /api/v1/response` results, if it is not already there |
+| 48 | Member level card download (`levelcard`) | My account | **Live.** Shows first name and last initial only. | None |
+| 49 | Profile freshness (`freshness`) | My account | Preview only | A last-updated date per profile in `POST /api/v1/profile` |
+| 50 | Linked accounts, Google and phone (`linked`) | My account | Preview only | Google sign-in and phone (OTP) login linked to the member |
+| 51 | Survey preferences (`prefs`) | Settings | Preview only | Store preferred length, topics to avoid and best time, and use them in survey matching |
+| 52 | Quiet hours and digest (`quiet`) | Settings | Preview only | Store them and have email, WhatsApp and push sending respect them |
+| 53 | Data and privacy centre (`datacentre`; full copy `dataFull`) | Settings | **Live**: who-sees-what, plus a JSON download of the account data the page already holds. "Full copy with answers" is preview only. | A full data-export request that includes survey answers |
+
 The live site also needs one routing change: see `README.md`, "Going live needs one gateway rule".

@@ -7,6 +7,7 @@ import { ActivityRibbon, BadgeShelf, ProfileJourney, SurveyDiscovery, XHead, XSk
 import { useAchievements } from '../components/Modules.jsx';
 import { useSection } from '../data/MemberData.jsx';
 import { EngageStrip, GuardianSummary, ImpactStories, LearningBadges, QuickPoll, SeasonChallenge } from '../components/Engage.jsx';
+import { BonusBanner } from '../components/Grow.jsx';
 import XHero from './Hero.jsx';
 
 export default function TeenDashboard() {
@@ -36,6 +37,7 @@ export default function TeenDashboard() {
         ]}
         art={<VoiceConstellation voices={done + 3} label={tn('xt2.voices', done)} />}
       />
+      <BonusBanner compact />
       <SeasonChallenge />
       <EngageStrip />
       <ProfileJourney variant="quests" />

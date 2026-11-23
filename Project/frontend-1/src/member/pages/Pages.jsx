@@ -4,7 +4,7 @@
 //   Quality     a lab: calibrated gauge, what / why / how, tier ladder, strengths and next steps
 //   Referrals   a network: you in the centre, each friend a node, and the referral journey
 //   Activity    a river: participation numbers as a band, then a month-by-month timeline
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useMe, useSection } from '../data/MemberData.jsx';
 import { actions } from '../data/source.js';
 import { feedback } from '../theme/feedback.js';
@@ -12,6 +12,8 @@ import { t, tn, fmt, relTime } from '../i18n/t.js';
 import { useAchievements } from '../components/Modules.jsx';
 import { Badge, Button, Counter, Field, Icon, MLink, cx, useToast } from '../components/ui.jsx';
 import { QualityMeter, ReferralWeb, Vault } from '../components/art.jsx';
+import { ActivityHeatmap, AttentionPractice, BonusBanner, ExpiryNotice, NudgeFriends, QualityReport, ReferralMilestones, SavingsGoal, ScoreBoosters, ScreenOutHelp, ShareKit, TrustedBadge, YearInReview } from '../components/Grow.jsx';
+import { engageOn } from '../data/engage.js';
 import { CharityDonate, Certificates, GemTiers, GiftCards, ReferralLeaderboard } from '../components/Engage.jsx';
 import { ABOUT_YOU, BadgeShelf, XEmpty, XError, XHead, XSkel, useDash } from '../components/Sections.jsx';
 
@@ -121,6 +123,10 @@ export function RewardsPage() {
           <XSkel rows={2} h={40} />
         )}
       </PageHero>
+
+      <BonusBanner />
+      <ExpiryNotice />
+      <SavingsGoal />
 
       <section className="xs xs--milestones" aria-labelledby="xs-ms">
         <XHead id="xs-ms" icon="flag" eyebrow={t('rw.ms.eyebrow')} title={t('rw.ms.title')} sub={t('rw.ms.sub')} />
@@ -273,6 +279,11 @@ export function QualityPage() {
         ))}
       </div>
 
+      <div className="xe-row">
+        <ScoreBoosters />
+        <AttentionPractice />
+      </div>
+
       <div className="xp-cols">
         <section className="xs xs--factors" aria-labelledby="xs-fac">
           <XHead id="xs-fac" icon="pulse" eyebrow={t('ql.fac.eyebrow')} title={t('q.factors')} />
@@ -331,12 +342,17 @@ export function QualityPage() {
         </section>
       </div>
 
-      <section className="xs xs--history" aria-labelledby="xs-hist">
-        <XHead id="xs-hist" icon="calendar" eyebrow={t('ql.hist.eyebrow')} title={t('ql.hist')} />
-        <XEmpty compact kind="history" title={t('ql.hist.empty.t')}>
-          {t('ql.hist.empty.p')}
-        </XEmpty>
-      </section>
+      <TrustedBadge />
+      {engageOn('report') ? (
+        <QualityReport />
+      ) : (
+        <section className="xs xs--history" aria-labelledby="xs-hist">
+          <XHead id="xs-hist" icon="calendar" eyebrow={t('ql.hist.eyebrow')} title={t('ql.hist')} />
+          <XEmpty compact kind="history" title={t('ql.hist.empty.t')}>
+            {t('ql.hist.empty.p')}
+          </XEmpty>
+        </section>
+      )}
     </div>
   );
 }
@@ -401,8 +417,8 @@ export function ReferralsPage() {
     { id: 'joined', icon: 'users', n: r ? r.joined : null, label: t('rj.joined') },
     { id: 'verified', icon: 'check', n: r ? verified : null, label: t('rj.activated') },
     { id: 'participated', icon: 'clipboard', n: null, label: t('rj.participated'), note: t('rj.notTracked') },
-    { id: 'reward', icon: 'gift', n: null, label: t('rj.reward'), note: t('rj.rules') }
-  ];
+    !teen && { id: 'reward', icon: 'gift', n: null, label: t('rj.reward'), note: t('rj.rules') }
+  ].filter(Boolean);
   return (
     <div className="xp xp--referrals">
       <PageHero
@@ -441,7 +457,9 @@ export function ReferralsPage() {
         )}
       </PageHero>
 
+      {r && <ShareKit link={r.link} />}
       {me.type === 'consumer' && <ReferralLeaderboard />}
+      {r && <ReferralMilestones joined={r.joined} />}
       <section className="xs xs--journey" aria-labelledby="xs-rj">
         <XHead id="xs-rj" icon="route" eyebrow={t('rj.j.eyebrow')} title={t('rj.j.title')} sub={t('rj.j.sub')} />
         <ol className="xrj">
@@ -516,6 +534,7 @@ export function ReferralsPage() {
           <SocialFollow />
         </div>
       </div>
+      {r && <NudgeFriends rows={rows} />}
     </div>
   );
 }
@@ -616,11 +635,15 @@ export function ActivityPage() {
   const [stats] = useSection('stats');
   const [filter, setFilter] = useState('all');
   const [range, setRange] = useState('90');
+  const [cat, setCat] = useState('all');
+  const [why, setWhy] = useState(null);
+  const closeWhy = useCallback(() => setWhy(null), []);
+  const cats = useMemo(() => [...new Set((list || []).map((a) => a.category).filter(Boolean))].sort(), [list]);
   const items = useMemo(() => {
     const days = RANGES[range];
     const since = days ? Date.now() - days * 864e5 : 0;
-    return (list || []).filter((a) => (filter === 'all' || a.status === filter) && new Date(a.date || 0).getTime() >= since);
-  }, [list, filter, range]);
+    return (list || []).filter((a) => (filter === 'all' || a.status === filter) && (cat === 'all' || a.category === cat) && new Date(a.date || 0).getTime() >= since);
+  }, [list, filter, range, cat]);
   const months = useMemo(() => {
     const g = [];
     items.forEach((a) => {
@@ -667,6 +690,9 @@ export function ActivityPage() {
         </svg>
       </section>
 
+      <YearInReview />
+      <ActivityHeatmap />
+
       <section className="xs xs--river" aria-labelledby="xs-river">
         <XHead id="xs-river" icon="pulse" title={t('ac.title')} sub={items.length ? t('av2.summary', { n: items.length, p: fmt(earnedPts) }) : undefined} />
         <div className="xriver__tools">
@@ -677,6 +703,20 @@ export function ActivityPage() {
               </button>
             ))}
           </div>
+          {cats.length > 1 && (
+            <label className="mb-select">
+              <span className="mb-sr">{t('g.cat')}</span>
+              <Icon name="layers" size={16} />
+              <select value={cat} onChange={(e) => setCat(e.target.value)}>
+                <option value="all">{t('g.cat.all')}</option>
+                {cats.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
           <label className="mb-select">
             <span className="mb-sr">{t('ac.range')}</span>
             <Icon name="calendar" size={16} />
@@ -717,6 +757,10 @@ export function ActivityPage() {
                       </div>
                       {a.points > 0 ? (
                         <span className="xriver__pts">+{fmt(a.points)}</span>
+                      ) : a.status === 'terminate' && engageOn('screenout') ? (
+                        <button type="button" className="mb-linkbtn" onClick={() => setWhy(a.name)}>
+                          {t('g.so.why')}
+                        </button>
                       ) : a.status === 'dropout' && a.source === 'internal' ? (
                         <MLink to="surveys" className="mb-linkbtn">
                           {t('ac.resume')}
@@ -730,6 +774,7 @@ export function ActivityPage() {
           </div>
         )}
       </section>
+      <ScreenOutHelp open={!!why} name={why} onClose={closeWhy} />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 // Engagement features (Round 17). Each block reads data/engage.js. On the live site those blocks
 // render nothing until their API exists (engageOn), so nothing is promised that cannot be delivered.
 // Instant alerts is real: it saves the existing communication-methods answer.
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useMe, useMemberData, useSection } from '../data/MemberData.jsx';
 import { actions } from '../data/source.js';
 import { engageData, engageMemo, engageOn } from '../data/engage.js';
@@ -653,6 +653,7 @@ export function LearningBadges() {
   const e = useEngage();
   const [open, setOpen] = useState(null);
   const [learned, setLearned] = useState(() => engageMemo.get().learned || []);
+  const close = useCallback(() => setOpen(null), []);
   if (!engageOn('learning') || !e?.learning) return null;
   const list = e.learning.map((b) => ({ ...b, done: b.done || learned.includes(b.id) }));
   const cur = list.find((b) => b.id === open);
@@ -679,7 +680,7 @@ export function LearningBadges() {
           </li>
         ))}
       </ul>
-      <Modal open={!!cur} onClose={() => setOpen(null)} title={cur?.title || ''}>
+      <Modal open={!!cur} onClose={close} title={cur?.title || ''}>
         {cur && (
           <div className="xlesson">
             <span className="xlearn__hex is-big" aria-hidden="true">
