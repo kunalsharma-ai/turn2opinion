@@ -7,8 +7,9 @@
 import { api } from '../../utils/api.js';
 import { ENV } from '../../config/env.js';
 import { memberTypeOf } from '../config/memberTypes.js';
-import { demoSection, demoSurveyDone } from './demo.js';
-import { demoAnswers, demoLastSurvey, demoOptions, demoQuestion, demoSave, demoStartSurvey } from './demoQuestions.js';
+import { demoPrefs, demoSection, demoSurveyDone } from './demo.js';
+import { demoAnswers, demoCreditProfiles, demoLastSurvey, demoOptions, demoQuestion, demoSave, demoStartSurvey } from './demoQuestions.js';
+import { announceReward } from './rewardBus.js';
 
 export const CHOICE = ['select', 'multiselect', 'checkbox', 'radio'];
 
@@ -58,7 +59,8 @@ export function adaptMe(d) {
 }
 
 export function adaptPoints(d) {
-  const earned = num(d?.respPoints ?? d?.totalPoints);
+  // survey points + profile completion credits (rewardPoints, Round 23 backend)
+  const earned = d?.respPoints != null ? num(d.respPoints) + num(d?.rewardPoints) : num(d?.totalPoints);
   const redeemed = num(d?.redeemPoints);
   return {
     total: num(d?.totalPoints, earned - redeemed),
@@ -244,6 +246,38 @@ export async function loadSection(name, ctx) {
   return LOADERS[name](ctx);
 }
 
+
+// ---------------- payment methods ----------------
+export const PAY_KEYS = ['payment-method', 'payment-method-bank-ifsc', 'payment-method-bank-account', 'payment-method-bank-name', 'payment-method-amazon', 'payment-method-paypal', 'payment-method-upi', 'payment-method-primary'];
+const PAY_DEFAULT = [
+  { value: 'wire-transfer', label: 'Bank transfer' },
+  { value: 'upi', label: 'UPI' },
+  { value: 'paypal', label: 'PayPal' },
+  { value: 'amazon-gift-card', label: 'Amazon gift card' }
+];
+const PAY_STORE = 't2o_member_demo_pay';
+function demoPayStore() {
+  try {
+    return JSON.parse(sessionStorage.getItem(PAY_STORE) || 'null') || { 'payment-method-upi': 'asha@okaxis', 'payment-method-primary': 'upi' };
+  } catch {
+    return {};
+  }
+}
+async function demoPayments() {
+  await new Promise((r) => setTimeout(r, 250));
+  return { options: PAY_DEFAULT, values: demoPayStore() };
+}
+async function demoSavePayment(body) {
+  await new Promise((r) => setTimeout(r, 350));
+  const next = { ...demoPayStore(), ...body };
+  try {
+    sessionStorage.setItem(PAY_STORE, JSON.stringify(next));
+  } catch {
+    /* private mode: keep it for this page only */
+  }
+  return true;
+}
+
 // ---------------- actions (writes, all existing endpoints) ----------------
 /** A support ticket from /api/v1/support. */
 export function adaptTicket(d) {
@@ -263,6 +297,21 @@ const demoTicketThread = (id) =>
       : [];
 
 export const actions = {
+  /** Payment methods: the same option list and profile answers the old My account page used. */
+  async paymentMethods() {
+    if (ENV.DEMO_MODE) return demoPayments();
+    const [opts, d] = await Promise.all([call(() => api.get('/api/v1/option/payment-method')).catch(() => []), call(() => api.post('/api/v1/me', { questions: PAY_KEYS }))]);
+    const list = (Array.isArray(opts) ? opts : []).map((o) => ({ value: o.value ?? o.name, label: o.label ?? o.name ?? o.value })).filter((o) => o.value);
+    const values = {};
+    PAY_KEYS.forEach((k) => d && d[k] != null && (values[k] = d[k]));
+    return { options: list.length ? list : PAY_DEFAULT, values };
+  },
+  async savePayment(body) {
+    if (ENV.DEMO_MODE) return demoSavePayment(body);
+    const r = await api.patch('/api/v1/me/answer', body);
+    if (!ok(r)) throw new Error((r && r.message) || 'request failed');
+    return true;
+  },
   async uploadPhoto(file) {
     if (ENV.DEMO_MODE) return demoSection('upload', { file });
     const fd = new FormData();
@@ -331,25 +380,35 @@ export const actions = {
     if (ENV.DEMO_MODE) return demoAnswers(questions);
     return (await call(() => api.post('/api/v1/me', { questions }))) || {};
   },
+  /** Saves answers. Resolves to the profiles this save completed and credited ([] when none). */
   async saveProfile(values) {
-    if (ENV.DEMO_MODE) return demoSave(values);
-    const r = await api.patch('/api/v1/me/profile', values);
-    if (!ok(r)) throw new Error(r?.message || 'error');
-    return true;
+    let credited = [];
+    if (ENV.DEMO_MODE) {
+      await demoSave(values);
+      credited = await demoCreditProfiles(demoPrefs().as).catch(() => []);
+    } else {
+      const r = await api.patch('/api/v1/me/profile', values);
+      if (!ok(r)) throw new Error(r?.message || 'error');
+      credited = Array.isArray(r.data) ? r.data.filter((x) => x && x.slug && x.points > 0) : [];
+    }
+    credited.forEach((x) => announceReward({ kind: 'profile', slug: x.slug, title: x.name || x.slug, points: x.points }));
+    return credited;
   },
   /** Opens a survey for this member: { name, slug, pages, description, thankyou, link, respID }. */
   async startSurvey(slug) {
     if (ENV.DEMO_MODE) return demoStartSurvey(slug);
     return call(() => api.put('/api/v1/me/survey', { slug }));
   },
-  async saveSurvey(values, respID) {
+  /** meta: { slug, title, points } of the survey, for the reward animation once the server confirms. */
+  async saveSurvey(values, respID, meta = {}) {
     if (ENV.DEMO_MODE) {
       await demoSave(values);
       demoSurveyDone(demoLastSurvey());
-      return true;
+    } else {
+      const r = await api.patch('/api/v1/me/survey', { ...values, respID });
+      if (!ok(r)) throw new Error(r?.message || 'error');
     }
-    const r = await api.patch('/api/v1/me/survey', { ...values, respID });
-    if (!ok(r)) throw new Error(r?.message || 'error');
+    announceReward({ kind: 'survey', slug: meta.slug, title: meta.title, points: meta.points });
     return true;
   },
   // ---- Help: support tickets (existing /api/v1/support endpoints, same shapes as the old Support page) ----

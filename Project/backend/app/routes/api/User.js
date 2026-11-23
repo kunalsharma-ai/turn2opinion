@@ -34,6 +34,8 @@ import {
     Token
 } from "../../utils/index.js"
 import { createCaptcha, requireCaptcha } from "../../utils/captcha.js";
+import { requireAdmin, requireMember, selfOrAdmin } from "../../utils/access.js";
+import { checkQuery, memberListQuery, omit, safeFilter, userUpdate } from "../../utils/memberAccess.js";
 import { captchaLimit, loginLimit, registerLimit, linkLimit } from "../../utils/limits.js";
 import { ageInYears } from "../../model/User.js";
 import { Answers as answerModel, Response as responseModel } from "../../model/index.js";
@@ -176,7 +178,7 @@ const router = express.Router();
 router
     .route('/')
     .get(
-        asyncHandler(isAuthenticated),
+        requireAdmin,
         expressRoute(
             async req => {
                 // Read all entries
@@ -188,14 +190,24 @@ router
         )
     )
     .post(
-        asyncHandler(isAuthenticated),
+        requireMember,
         expressRoute(
             async req => {
                 // Read all entries matching filter
                 let message = "";
+                if (!req.isAdmin) {
+                    // A member sees only their own referrals, or whether an e-mail is taken (settings page).
+                    const q = memberListQuery(req.body, req.user._id);
+                    if (q.kind === "mail-taken") {
+                        const found = await userController.list(q.filter, null, {}, "_id");
+                        return { message, data: found.length ? [{}] : [] };
+                    }
+                    const own = Mutate(await userController.list(q.filter, null, {}, q.fields));
+                    return { message, data: own.map(({ _id, mail, fullName, name, isVerified, createdAt }) => ({ _id, mail, fullName, name, isVerified: { email: isVerified?.email }, createdAt })) };
+                }
                 responseController.request = req;
                 let status = Mutate(await responseController.surveySummaryByUsers())
-                let data = Mutate(await userController.list(req.body, null, {}, "+role")).map(
+                let data = Mutate(await userController.list(safeFilter(req.body), null, {}, "+role")).map(
                     user => {
                         const stat = status.find(st => st._id === user._id);
                         user.status = {
@@ -378,7 +390,10 @@ router
 router
     .post("/check", expressRoute(
         async req => {
-            let data = await userController.list(req.body);
+            // Public: only "is this e-mail or phone in use?", never a free-form filter.
+            const q = checkQuery(req.body);
+            if (!q) throw new Error("Invalid request");
+            let data = await userController.list(q, null, {}, "_id");
             return { message: "", data: data.length }
         },
         userController
@@ -398,7 +413,7 @@ router
     )
     .get(
         "/summarize",
-        asyncHandler(isAuthenticated),
+        requireAdmin,
         expressRoute(
             async req => {
                 const message = "";
@@ -458,7 +473,7 @@ router
     ))
     .post(
         "/autologin",
-        asyncHandler(isAuthenticated),
+        requireAdmin,
         expressRoute(
             async req => {
                 const message = "Login successful";
@@ -481,7 +496,7 @@ router
     )
     .delete(
         `/terms`,
-        asyncHandler(isAuthenticated), expressRoute(
+        requireAdmin, expressRoute(
             async req => {
                 const message = "Terms reset";
                 let token;
@@ -494,6 +509,7 @@ router
     )
     .post(
         "/refresh",
+        requireAdmin,
         expressRoute(
             async req => {
                 const message = "Refreshed Respondent, All Records other than registration details removed.";
@@ -569,7 +585,7 @@ router
 
     .post(
         `/:user/profile-data`,
-        asyncHandler(isAuthenticated),
+        selfOrAdmin("user"),
         expressRoute(
             async req => {
                 // let data = await userController.read(req.params.user)
@@ -585,6 +601,7 @@ router
 router
     .route("/apps")
     .get(
+        requireAdmin,
         expressRoute(
             async req => {
                 let data = await userController.appsList(req.query, null, {}, "+role");
@@ -618,7 +635,7 @@ router
         )
     )
     .put(
-        isAuthenticated,
+        requireAdmin,
         expressRoute(
             async req => {
                 let data = await userController.appCreateUser({
@@ -646,15 +663,17 @@ router
         )
     )
     .patch(
+        requireAdmin,
         expressRoute(
             async req => {
-                let data = await userController.update(req.body._id, req.body);
+                let data = await userController.update(req.body._id, omit(req.body, ["_id", "origin", "password"]));
                 return { message: "App Updated", data }
             },
             userController
         )
     )
     .delete(
+        requireAdmin,
         expressRoute(
             async req => {
                 let data = await userController.delete(req.body.userID);
@@ -961,7 +980,7 @@ router
 router
     .route('/:id')
     .get(
-        asyncHandler(isAuthenticated),
+        selfOrAdmin("id"),
         expressRoute(
             async req => {
                 let message = "";
@@ -1036,12 +1055,14 @@ router
         )
     )
     .put(
-        asyncHandler(isAuthenticated),
+        selfOrAdmin("id"),
         expressRoute(
             async req => {
-                // update single entry
+                // update single entry: a member only their own SELF_EDITABLE fields, an admin anything but ADMIN_BLOCKED
                 let message = "";
-                let data = await userController.update(req.params.id, req.body)
+                const update = userUpdate(req.body, { isAdmin: req.isAdmin });
+                if (!Object.keys(update).length) throw new Error("Nothing to update");
+                let data = await userController.update(req.params.id, update)
                 return { message, data };
             },
             userController
@@ -1052,11 +1073,12 @@ router
         expressRoute(
             async req => {
                 // update single entry
+                // Public (the "resend verification e-mail" button). It never returns the member's record.
                 let message = req.body.action;
                 let data = await userController.read(req.params.id);
                 if (req.body.action === "resend-otp") {
                     let otp = await otpController.generate(
-                        user._id,
+                        data._id,
                         "email",
                         req.origin,
                         1 * 24 * 60 * 60 * 1000
@@ -1080,13 +1102,13 @@ router
 
                     return { message, data: [] };
                 }
-                return { message, data };
+                return { message, data: [] };
             },
             userController
         )
     )
     .delete(
-        asyncHandler(isAuthenticated),
+        requireAdmin,
         expressRoute(
             async req => {
                 // delete single entry
@@ -1099,7 +1121,7 @@ router
     )
 router.get(
     "/:id/profile",
-    isAuthenticated,
+    selfOrAdmin("id"),
     expressRoute(
         async req => {
             const data = Mutate(await userController.read(req.params.id));
@@ -1117,7 +1139,7 @@ router.get(
 )
 router.get(
     "/:id/survey",
-    isAuthenticated,
+    selfOrAdmin("id"),
     expressRoute(
         async (req) => {
             const data = await responseController.list({ user: req.params.id })

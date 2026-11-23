@@ -291,7 +291,7 @@ export const HELP_FAQS = [
   { cat: 'rewards', q: 'How do I earn points?', a: 'You earn points for every completed profile and survey. Profiles add +50 points each. Each survey shows its points before you start.' },
   { cat: 'rewards', q: 'What is the payout milestone?', a: 'The number of points you need before you can redeem. Rewards shows the milestone and how many points you have left.', for: ['consumer', 'pro'], go: '/member/rewards/' },
   { cat: 'rewards', q: 'Which rewards can I choose?', a: 'PayPal, bank transfer, wire transfer, shopping vouchers, grocery vouchers and digital gift cards. UPI is also available for members in India.', for: ['consumer', 'pro'] },
-  { cat: 'rewards', q: 'How do I add or change a payment method?', a: 'Open Rewards or My account and choose Manage payment methods.', for: ['consumer', 'pro'] },
+  { cat: 'rewards', q: 'How do I add or change a payment method?', a: 'Open My account and use the Payment methods card (or choose Manage payment methods on Rewards). Add bank transfer, UPI, PayPal or Amazon details, then choose which one is primary.', for: ['consumer', 'pro'] },
   { cat: 'rewards', q: 'Can I donate my points?', a: 'Yes. Donate to a cause turns points into a donation, and we pass on the full value.', for: ['consumer', 'pro'], feat: 'donate' },
   { cat: 'rewards', q: 'What can Teens get for their points?', a: 'Teens get gift cards, not cash. Your parent or guardian approves each gift card, and the code arrives by email.', for: ['teen'], feat: 'giftcards', go: '/member/rewards/' },
   { cat: 'rewards', q: 'What are my points for?', a: 'Points and badges show your progress. Every profile and survey adds to your points vault and moves you towards a new badge.', for: ['teen'], go: '/member/rewards/' },

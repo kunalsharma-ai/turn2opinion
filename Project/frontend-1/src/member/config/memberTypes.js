@@ -25,7 +25,8 @@ export const ROUTES = {
   help: { path: '/member/help/', icon: 'help', label: 'nav.help' },
   // The old Support page is replaced by Help (FAQs, guides and "raise a query" on the same ticket API).
   support: { path: '/member/help/#help-ask', icon: 'headset', label: 'nav.support' },
-  myaccount: { path: '/member/myaccount', icon: 'wallet', label: 'ma.payment', external: true }
+  // Payment methods now live on My account (Round 23), on the same endpoints as the old page.
+  myaccount: { path: '/member/profile/#payments', icon: 'wallet', label: 'ma.payment' }
 };
 
 /** Deep links: open a profile or start a survey straight from a dashboard card. */

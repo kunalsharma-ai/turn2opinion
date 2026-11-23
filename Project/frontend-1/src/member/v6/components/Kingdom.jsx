@@ -158,7 +158,7 @@ export default function Kingdom({ items, state, name, hold, onOpen, onLocked, po
         <div>
           <p className="kd-eyebrow"><span aria-hidden="true">{lv.e}</span>{t(lv.key)}</p>
           <h2 id="kd-h" className="kd-h">{name ? t('v6_kingdom_named', { name }) : t('v6_kingdom')}</h2>
-          <p className="kd-sub">{t('v6_kingdom_sub', { pts: POINTS_PER_ITEM, qs: QUALITY_PER_ITEM })}</p>
+          <p className="kd-sub">{t('v6_kingdom_sub')}</p>
         </div>
         <div className="kd-lv" role="img" aria-label={t('v6_lv_aria', { lv: t(lv.key), n: lv.toNext, next: t(lvNext.key) })}>
           <div className="kd-stones">{Array.from({ length: 10 }, (_, i) => { const f = total ? Math.max(done ? 1 : 0, Math.round(done / total * 10)) : 0; return <i key={i} className={i < f ? 'on' : ''} style={{ '--i': i }} />; })}</div>
@@ -198,7 +198,7 @@ export default function Kingdom({ items, state, name, hold, onOpen, onLocked, po
           </svg>
           {tip && (
             <div className="kd-tip" role="status" style={{ left: tip.left, top: tip.top }} onClick={() => setTip(null)}>
-              <b>{tr(itemMeta(tip.x.p).name)}</b><span>{t('v6_tip_built', { name: pnameT(tip.x.p) })}</span><span className="kd-tip-r"><i className="mini-coin" />+{POINTS_PER_ITEM} · <i className="mini-gem" />+{QUALITY_PER_ITEM}</span>
+              <b>{tr(itemMeta(tip.x.p).name)}</b><span>{t('v6_tip_built', { name: pnameT(tip.x.p) })}</span><span className="kd-tip-r"><i className="mini-coin" />+{(tip.x.src && tip.x.src.points) || POINTS_PER_ITEM}</span>
               <button type="button" className="kd-tip-x" onClick={(e) => { e.stopPropagation(); onOpen(tip.x.i); setTip(null); }}>{t('v6_update_answers')}</button>
             </div>
           )}

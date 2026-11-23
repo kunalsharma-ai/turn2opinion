@@ -2,7 +2,7 @@
 // server). Shapes match what the real endpoints return after the adapters in source.js.
 // Production builds never call this.
 import { store } from '../../utils/storage.js';
-import { demoProfileList, demoProfilesEarned, demoStatus } from './demoQuestions.js';
+import { demoCreditProfiles, demoProfileList, demoRewardPoints, demoRewards, demoStatus } from './demoQuestions.js';
 import { adaptActivity, adaptAlerts, adaptGuardian, adaptMe, adaptPoints, adaptProfiles, adaptReferrals, adaptSocials, adaptStats, adaptSurveys } from './source.js';
 
 const KEY = 't2o_member_demo';
@@ -115,8 +115,10 @@ export function demoSurveyDone(slug) {
 }
 async function earned(as) {
   const d = surveysDone();
-  const profiles = await demoProfilesEarned(as).catch(() => 0);
-  return { profiles, surveys: Object.keys(d).length, surveyPts: Object.values(d).reduce((n, v) => n + (v || 0), 0), done: d };
+  // the first read seeds already-complete profiles as credited (like the backend's existing members)
+  if (!demoRewards(as)) await demoCreditProfiles(as).catch(() => []);
+  const profilePts = demoRewardPoints(as);
+  return { profilePts, surveys: Object.keys(d).length, surveyPts: Object.values(d).reduce((n, v) => n + (v || 0), 0), done: d };
 }
 
 const ANSWERS = {
@@ -138,12 +140,11 @@ export async function demoSection(name, ctx = {}) {
   const p = PEOPLE[as] || PEOPLE.consumer;
   switch (name) {
     case 'me': {
-      const e = await earned(as);
-      return adaptMe({ ...p, qualityScore: (empty ? 100 : p.qualityScore) + e.profiles + e.surveys });
+      return adaptMe({ ...p, qualityScore: empty ? 100 : p.qualityScore });
     }
     case 'points': {
       const e = await earned(as);
-      const tot = (empty ? 0 : POINTS[as][0]) + e.profiles * 50 + e.surveyPts;
+      const tot = (empty ? 0 : POINTS[as][0]) + e.profilePts + e.surveyPts;
       return adaptPoints({ respPoints: tot, redeemPoints: 0, totalPoints: tot, threshold: POINTS[as][1], conversionRate: 0.001 });
     }
     case 'stats': {
