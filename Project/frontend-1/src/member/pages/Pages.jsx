@@ -5,6 +5,7 @@
 //   Referrals   a network: you in the centre, each friend a node, and the referral journey
 //   Activity    a river: participation numbers as a band, then a month-by-month timeline
 import { useCallback, useMemo, useState } from 'react';
+import { HeroHello, HeroStats } from '../components/HeroBits.jsx';
 import { useMe, useSection } from '../data/MemberData.jsx';
 import { actions } from '../data/source.js';
 import { feedback } from '../theme/feedback.js';
@@ -51,10 +52,12 @@ function PageHero({ kind, eyebrow, title, lead, art, children, artFirst }) {
     <section className={cx('xph', `xph--${kind}`, artFirst && 'is-art-first')} aria-labelledby={`xph-${kind}`}>
       <div className="xph__bg" aria-hidden="true" />
       <div className="xph__text">
+        <HeroHello />
         <p className="xph__eyebrow">{eyebrow}</p>
         <h1 id={`xph-${kind}`}>{title}</h1>
         {lead && <p className="xph__lead">{lead}</p>}
         {children}
+        {kind !== 'rewards' && <HeroStats />}
       </div>
       <div className="xph__art">{art}</div>
     </section>
@@ -663,16 +666,18 @@ export function ActivityPage() {
   const band = [
     ['clipboard', 'ac.s.total', stats?.total],
     ['check', 'ac.s.complete', stats?.complete],
-    ['x', 'ac.s.disq', stats?.disqualified],
+    ['close', 'ac.s.disq', stats?.disqualified],
     ['clock', 'ac.s.abandoned', stats?.abandoned]
   ];
   return (
     <div className="xp xp--activity">
       <section className="xact-hero" aria-labelledby="xact-t">
         <div className="xact-hero__text">
+          <HeroHello />
           <p className="xph__eyebrow">{t('av2.eyebrow')}</p>
           <h1 id="xact-t">{t('av2.title')}</h1>
           <p className="xph__lead">{t('av2.lead')}</p>
+          <HeroStats />
         </div>
         <ul className="xact-band">
           {band.map(([icon, k, v], i) => (

@@ -5,11 +5,12 @@
 // Starting a survey: PUT /api/v1/me/survey { slug }; partner surveys redirect to their link with $uid
 // replaced by the response id; Turn2Opinion-hosted surveys run in the v6 question flow and save once at the end.
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { HeroHello, HeroStats } from '../components/HeroBits.jsx';
 import { useMemberData } from '../data/MemberData.jsx';
 import { actions } from '../data/source.js';
 import { engageMemo, engageOn } from '../data/engage.js';
 import { t as mt, tn, fmt } from '../i18n/t.js';
-import { Button, Modal, cx, useToast } from '../components/ui.jsx';
+import { Button, Counter, Modal, cx, useToast } from '../components/ui.jsx';
 import { useDash, XEmpty, XError } from '../components/Sections.jsx';
 import { useStage, Stage } from '../v6/Stage.jsx';
 import Flow from '../v6/components/Flow.jsx';
@@ -103,7 +104,7 @@ export function SurveysPage() {
   const s = useStage(d.allProfiles);
   const { me, items, state } = s;
   const toast = useToast();
-  const { reload } = useMemberData();
+  const { reload, refreshMe } = useMemberData();
   const teen = me.type === 'teen';
   const topics = items.filter((x) => x.kind === 'survey');
   const [filter, setFilter] = useState('all');
@@ -141,7 +142,7 @@ export function SurveysPage() {
           else window.location.assign(url);
           return;
         }
-        setSurvey({ ...data, name: data.name || x.name, slug: x.slug });
+        setSurvey({ ...data, name: data.name || x.name, slug: x.slug, points: data.points ?? x.points });
         s.setView({ name: 'survey' });
         window.scrollTo({ top: 0 });
       } catch (e) {
@@ -157,7 +158,8 @@ export function SurveysPage() {
     reload('activity');
     reload('stats');
     reload('points');
-  }, [reload]);
+    refreshMe?.();
+  }, [reload, refreshMe]);
 
   // deep link from the dashboards: /member/surveys/#start-<slug>
   useEffect(() => {
@@ -201,17 +203,19 @@ export function SurveysPage() {
             <i>🎁</i>
           </span>
           <div className="sv6-head__t">
+            <HeroHello />
             <p className="h6-eyebrow">
               <span aria-hidden="true">🗝️</span>
               {teen ? mt('svp.sub.teen') : mt('svp.sub')}
             </p>
             <h1>{mt('svp.title')}</h1>
+            <HeroStats showPayout={false} className="sv6-stats" />
           </div>
           <div className="sv6-earned">
             <p>{mt('svp.earned')}</p>
             <p className="sv6-earned__n">
               <i className="mini-coin" aria-hidden="true" />
-              <b>{fmt(p?.total || 0)}</b>
+              <b>{p ? <Counter value={p.total} duration={1200} /> : '…'}</b>
               <small>{t('v6_pts')}</small>
             </p>
             {!teen && p && <p className="sv6-earned__usd">≈ {usd(p.total, p.rate)} USD</p>}

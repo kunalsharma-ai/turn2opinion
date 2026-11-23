@@ -98,7 +98,10 @@ function HelpHero({ me, q, setQ, total, guides, onAsk, popular, onPopular }) {
         <p className="hc-eyebrow">
           <Icon name="help" size={16} /> Help centre
         </p>
-        <h1 id="hc-title">How can we help{me.firstName ? `, ${me.firstName}` : ''}?</h1>
+        <h1 id="hc-title">
+          How can we help{me.firstName ? ', ' : ''}
+          {me.firstName && <span className="hx-name">{me.firstName}</span>}?
+        </h1>
         <p className="hc-lead">{LEAD[me.type] || LEAD.consumer}</p>
         <form className="hc-search" role="search" onSubmit={(e) => e.preventDefault()}>
           <Icon name="search" size={22} />

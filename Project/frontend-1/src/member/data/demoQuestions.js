@@ -165,7 +165,8 @@ export async function demoStatus(list) {
       const o = optionTable(B, n) ? optionsFor(B, n, a) : null;
       return !o || o.length > 0;
     });
-    const done = names.filter((n) => filled(a[n])).length;
+    // like the backend: a question counts once an answer is saved for it, even an empty one (a skipped optional)
+    const done = names.filter((n) => n in a).length;
     out[p.slug] = done ? Math.round((done / Math.max(1, names.length)) * 100) : -1;
   });
   return out;
@@ -224,7 +225,29 @@ export async function demoSave(values) {
 }
 
 // PUT /api/v1/me/survey for the preview's paid surveys: internal ones run here, external ones redirect
+let lastSurvey = null;
+/** Preview: the survey started last (its points are credited when it is finished). */
+export const demoLastSurvey = () => lastSurvey;
+
+/** Preview: About-you/topic profiles completed beyond the seeded ones (each earns +50 points, +1 quality). */
+export async function demoProfilesEarned(as) {
+  const list = await demoProfileList(as);
+  const st = await demoStatus(list);
+  const done = list.filter((p) => st[p.slug] >= 100).length;
+  // the first count in this tab is the starting point (the seeded profiles), kept with the answers
+  const k = `t2o_member_demo_base_${as}`;
+  let base = null;
+  try {
+    base = sessionStorage.getItem(k);
+    if (base == null) sessionStorage.setItem(k, String(done));
+  } catch {
+    /* preview only */
+  }
+  return Math.max(0, done - (base == null ? done : Number(base)));
+}
+
 export async function demoStartSurvey(slug) {
+  lastSurvey = slug;
   await wait(500);
   if (/streaming|e-scooters|cloud-cost|cyber/.test(slug))
     return { slug, name: 'Partner survey', respID: 'DEMO-RESP-1', link: 'https://example.com/survey?uid=$uid', description: '<p>This survey is hosted by our research partner. You’ll come back here when you finish.</p>' };

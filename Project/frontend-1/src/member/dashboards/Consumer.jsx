@@ -31,15 +31,6 @@ export default function ConsumerDashboard() {
         me={d.me}
         headline={t('xc.headline')}
         lead={t('xc.lead')}
-        progress={
-          p && {
-            label: t('xc.progress'),
-            value: p.total,
-            max: p.threshold,
-            text: `${fmt(p.total)} / ${fmt(p.threshold)}`,
-            hint: p.total >= p.threshold ? t('pts.milestoneReached') : t('pts.toMilestone', { n: fmt(p.threshold - p.total) })
-          }
-        }
         actions={actions}
         art={
           <OpinionLoop

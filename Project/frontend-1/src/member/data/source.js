@@ -7,8 +7,8 @@
 import { api } from '../../utils/api.js';
 import { ENV } from '../../config/env.js';
 import { memberTypeOf } from '../config/memberTypes.js';
-import { demoSection } from './demo.js';
-import { demoAnswers, demoOptions, demoQuestion, demoSave, demoStartSurvey } from './demoQuestions.js';
+import { demoSection, demoSurveyDone } from './demo.js';
+import { demoAnswers, demoLastSurvey, demoOptions, demoQuestion, demoSave, demoStartSurvey } from './demoQuestions.js';
 
 export const CHOICE = ['select', 'multiselect', 'checkbox', 'radio'];
 
@@ -343,7 +343,11 @@ export const actions = {
     return call(() => api.put('/api/v1/me/survey', { slug }));
   },
   async saveSurvey(values, respID) {
-    if (ENV.DEMO_MODE) return demoSave(values);
+    if (ENV.DEMO_MODE) {
+      await demoSave(values);
+      demoSurveyDone(demoLastSurvey());
+      return true;
+    }
     const r = await api.patch('/api/v1/me/survey', { ...values, respID });
     if (!ok(r)) throw new Error(r?.message || 'error');
     return true;

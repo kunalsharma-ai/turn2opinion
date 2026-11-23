@@ -25,7 +25,7 @@ const WORLDS = typeof document !== 'undefined' ? themeCSS() : '';
 /** The model for the page: items (About-you profiles first, then the others as surveys) and their state. */
 export function useStage(allProfiles) {
   const me = useMe();
-  const { reload } = useMemberData();
+  const { reload, refreshMe } = useMemberData();
   const toast = useToast();
   const about = useMemo(() => aboutYou(allProfiles), [allProfiles]);
   const topics = useMemo(() => topicProfiles(allProfiles), [allProfiles]);
@@ -79,12 +79,13 @@ export function useStage(allProfiles) {
       if (x) Object.assign(x.src, { completion: 100, started: true });
       reload('profiles');
       reload('points');
+      refreshMe?.();
       setView({ name: 'hub' });
       toTop();
       if (first) setParty(i);
       else toast(t('changes_saved'));
     },
-    [items, reload, toast, toTop, view.i]
+    [items, reload, refreshMe, toast, toTop, view.i]
   );
 
   return { me, items, state, view, setView, open, openSlug, home, locked, setLocked, party, setParty, goKingdom, profileDone, top, about, topics };

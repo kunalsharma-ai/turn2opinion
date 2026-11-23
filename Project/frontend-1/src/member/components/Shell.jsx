@@ -9,6 +9,7 @@ import { asset, ENV } from '../../config/env.js';
 import { store } from '../../utils/storage.js';
 import { NAV, BOTTOM_NAV, ROUTES } from '../config/memberTypes.js';
 import { PAGE_TOPIC } from '../data/help.js';
+import { useGain } from './HeroBits.jsx';
 import { useMe, useSection, profileCompletion, qualityTier } from '../data/MemberData.jsx';
 import { actions } from '../data/source.js';
 import { demoPrefs, setDemoPrefs } from '../data/demo.js';
@@ -345,6 +346,7 @@ export const ROUTE_COLOR = { help: '#0ea5a4', dashboard: '#1f5bff', profiles: '#
 
 /** Points pill: the number counts up whenever the balance changes and the coin flips. */
 function PointsPill({ points }) {
+  const gain = useGain(points?.total);
   const [bump, setBump] = useState(false);
   const prev = useRef(null);
   useEffect(() => {
@@ -361,13 +363,19 @@ function PointsPill({ points }) {
       <span className="xhd-coin" aria-hidden="true">
         <span />
       </span>
-      <span className="xhd-pill__num">{points ? <Counter value={points.total} /> : '…'}</span>
+      <span className="xhd-pill__num">{points ? <Counter value={points.total} duration={1200} still /> : '…'}</span>
       <span className="mb-hide-xs xhd-pill__unit">{t('pts.balance')}</span>
+      {gain && (
+        <span key={gain.k} className="hx-pop hx-pop--hdr" aria-live="polite">
+          +{fmt(gain.d)}
+        </span>
+      )}
     </MLink>
   );
 }
 
 function QualityPill({ me }) {
+  const qGain = useGain(me.quality.score);
   const tier = qualityTier(me.quality.score, me.quality.scale);
   const p = Math.max(0, Math.min(1, me.quality.score / (me.quality.scale || 1)));
   return (
@@ -376,7 +384,14 @@ function QualityPill({ me }) {
         <circle cx="18" cy="18" r="15" />
         <circle cx="18" cy="18" r="15" pathLength="100" style={{ strokeDasharray: `${p * 100} 100` }} />
       </svg>
-      <span className="xhd-pill__num">{me.quality.score}</span>
+      <span className="xhd-pill__num">
+        <Counter value={me.quality.score} duration={1200} still />
+      </span>
+      {qGain && (
+        <span key={qGain.k} className="hx-pop hx-pop--hdr hx-pop--q" aria-live="polite">
+          +{fmt(qGain.d)}
+        </span>
+      )}
       <span className="mb-hide-md xhd-pill__unit">{t(`q.tier.${tier}`)}</span>
     </MLink>
   );

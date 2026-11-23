@@ -1,5 +1,6 @@
 // Profile (My account) and Settings pages, plus the profile photo uploader.
 import { useEffect, useRef, useState } from 'react';
+import { HeroHello, HeroStats } from '../components/HeroBits.jsx';
 import { useMe, useMemberData, useSection, profileCompletion, qualityTier } from '../data/MemberData.jsx';
 import { actions } from '../data/source.js';
 import { useAppearance } from '../theme/AppearanceProvider.jsx';
@@ -254,11 +255,12 @@ export function ProfilePage() {
           </span>
           <div>
             <p className="xph__eyebrow">{t('ma.eyebrow')}</p>
-            <h1 id="xid-name">{me.fullName || t('ma.title')}</h1>
+            <h1 id="xid-name" className="hx-name">{me.fullName || t('ma.title')}</h1>
             <p className="xid__meta">
               <Badge tone={me.type}>{t(`member.${me.type}`)}</Badge>
               {me.joinedAt && <span>{t('greet.memberSince', { date: fmtDate(me.joinedAt) })}</span>}
             </p>
+            <HeroStats showPayout={false} />
             <div className="mb-row">
               <Button size="sm" icon="user" onClick={() => document.getElementById('xid-photo')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}>
                 {me.photo ? t('av.replace') : t('av.upload')}
@@ -482,9 +484,11 @@ function ControlCentre({ onPick }) {
   return (
     <section className="xcc" aria-labelledby="xcc-t">
       <div className="xcc__head">
+        <HeroHello />
         <p className="xph__eyebrow">{t('cc.eyebrow')}</p>
         <h1 id="xcc-t">{t('st.title')}</h1>
         <p className="xph__lead">{t('st.sub')}</p>
+        <HeroStats showPayout={false} />
       </div>
       <ul className="xcc__grid">
         {SECTIONS.map(([id, icon], i) => (

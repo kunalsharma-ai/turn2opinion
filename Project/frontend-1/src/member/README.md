@@ -199,3 +199,10 @@ local question bank, storage or submission code is used.
 - The device keeps only which kingdom buildings have already been raised (`t2o:member:built`), so each
   rise animation plays once.
 - Preview data: `data/demoQuestions.js` (questions, options, answers kept for the browser session).
+
+## Round 22 notes
+
+- `components/HeroBits.jsx`: `HeroHello` (avatar, time-of-day greeting, name in a moving gradient) and `HeroStats` (live points, quality ring, payout bar, "+N" pops), used on every section hero.
+- `member-polish.css` is loaded last: sticky header and sidebar (`overflow-x: clip` on html and body, never `hidden`), compact heroes, phone sizes.
+- `Counter still` shows its first value straight away and only animates later changes (header pills).
+- Flow saves hidden follow-up questions as empty answers so the backend counts the profile as 100%.

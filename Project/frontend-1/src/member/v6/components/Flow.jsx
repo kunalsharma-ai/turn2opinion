@@ -9,7 +9,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { actions } from '../../data/source.js';
 import { useMe } from '../../data/MemberData.jsx';
-import { useToast } from '../../components/ui.jsx';
+import { Counter, useToast } from '../../components/ui.jsx';
 import { t as mt } from '../../i18n/t.js';
 import { Icon } from './Icon.jsx';
 import { profileEmoji, qEmoji } from '../lib/emoji.js';
@@ -117,6 +117,15 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
   // a question listed twice on a page (it happens in the question bank) is asked once
   const names = useMemo(() => (page != null ? [...new Set(pages[page]?.slice(1) || [])] : []), [page, pages]);
 
+  // every question's definition (cached), so "Question n of N" counts only questions that apply
+  useEffect(() => {
+    if (!loaded) return;
+    all.forEach((n) => {
+      if (defs[n] !== undefined) return;
+      loadQuestion(n).then((q) => alive.current && setDefs((d) => (d[n] !== undefined ? d : { ...d, [n]: q })));
+    });
+  }, [loaded, all]); // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     names.forEach((n) => {
       if (defs[n] !== undefined) return;
@@ -196,7 +205,12 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
   useEffect(() => {
     if (!pageReady || !cur || !cur.startsWith('<')) return;
     if (!visible.length) {
-      // nothing to ask on this page (all hidden): move on in the same direction
+      // nothing to ask on this page (all hidden): record it as answered (so the profile can reach 100%), then
+      // move on in the same direction
+      if (kind === 'profile' && dir >= 0) {
+        const hv = hiddenValues();
+        if (Object.keys(hv).length) actions.saveProfile(hv).then(() => alive.current && setSaved((sv) => ({ ...sv, ...hv }))).catch(() => {});
+      }
       if (dir < 0 && page > 0) {
         setPage(page - 1);
         setCur('<last>');
@@ -214,9 +228,17 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
 
   const idx = visible.findIndex((q) => q.name === cur);
   const q = idx >= 0 ? visible[idx] : null;
-  const before = pages.slice(0, page || 0).reduce((s, p) => s + p.length - 1, 0);
-  const pos = Math.min(all.length, before + Math.max(0, idx) + 1);
-  const pct = done ? 100 : Math.round(((pos - 1) / Math.max(1, all.length)) * 100);
+  // "Question n of N": only questions that apply (a follow-up counts once its parent is answered)
+  const applies = (n) => {
+    const d = defs[n];
+    if (d === undefined) return true;
+    if (!d || d.name === 'alternate-phone-whatsapp') return false;
+    return !(d.parent && !filled(values[d.parent]));
+  };
+  const beforeNames = [...new Set(pages.slice(0, page || 0).flatMap((p) => p.slice(1)))].filter((n) => !names.includes(n));
+  const total = Math.max(1, all.filter(applies).length);
+  const pos = Math.min(total, beforeNames.filter(applies).length + Math.max(0, idx) + 1);
+  const pct = done ? 100 : Math.round(((pos - 1) / total) * 100);
   const lastPage = page === pages.length - 1;
   const lastQ = lastPage && idx === visible.length - 1;
 
@@ -250,16 +272,26 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
     [defs, world]
   );
 
+  /** Questions on this page that are not shown (their parent's answer hides them): saved empty, so the
+   *  backend's completion count (answer saved for every applicable question) can reach 100%. */
+  function hiddenValues() {
+    const out = {};
+    names.forEach((n) => {
+      if (visible.some((x) => x.name === n)) return;
+      if (n in values) out[n] = values[n];
+      else if (filled(saved[n])) return;
+      else out[n] = defs[n] && multi(defs[n]) ? [] : null;
+    });
+    return out;
+  }
+
   function pageValues() {
     const out = {};
     visible.forEach((x) => {
       out[x.name] = x.name === q?.name ? normalise6(x, values, ctxFor(x)) ?? null : values[x.name] ?? (multi(x) ? [] : null);
       if (filled(values[`${x.name}_specify`])) out[`${x.name}_specify`] = values[`${x.name}_specify`];
     });
-    names.forEach((n) => {
-      if (!(n in out) && n in values) out[n] = values[n];
-    });
-    return out;
+    return { ...hiddenValues(), ...out };
   }
 
   async function finish() {
@@ -400,6 +432,14 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
         <h2 className="qt6" id="qh" tabIndex={-1}>
           {mt('qz.done.survey')}
         </h2>
+        {source.points > 0 && (
+          <div className="dc-reward" role="status">
+            <span className="dc-coin" aria-hidden="true"><i /></span>
+            <span className="dc-reward__v">+<Counter value={source.points} duration={1400} /></span>
+            <span className="dc-reward__l">{mt('pts.balance')}</span>
+            <span className="dc-burst" aria-hidden="true">{Array.from({ length: 10 }, (_, i) => <i key={i} style={{ '--a': `${i * 36}deg` }} />)}</span>
+          </div>
+        )}
         {source.thankyou ? <div className="hint6 html6" dangerouslySetInnerHTML={{ __html: safeHtml(source.thankyou) }} /> : <p className="hint6">{mt('qz.done.surveyP')}</p>}
         <div className="nav6">
           <span />
@@ -575,7 +615,7 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
           </div>
         </div>
         <div className="fb-r">
-          <span className="fb-step">{wasDone ? t('v6_editing') : t('q_of', { n: nf(Math.max(1, pos)), total: nf(all.length || 1) })}</span>
+          <span className="fb-step">{wasDone ? t('v6_editing') : t('q_of', { n: nf(Math.max(1, pos)), total: nf(total) })}</span>
           {kind === 'profile' && !wasDone && (
             <span className="fb-rw" title={t('v6_earn')}>
               <i className="mini-coin" />+{nf(POINTS_PER_ITEM)}
