@@ -24,9 +24,10 @@ import xeCss from './member-xe.css?inline';
 import v6Css from './v6/v6.css?inline';
 import v6MemberCss from './v6/member-v6.css?inline';
 import helpCss from './member-help.css?inline';
+import polishCss from './member-polish.css?inline';
 import { BrandLoader } from './components/art.jsx';
 
-const memberCss = `${baseCss}\n${xCss}\n${xpCss}\n${xeCss}\n${v6Css}\n${v6MemberCss}\n${helpCss}`;
+const memberCss = `${baseCss}\n${xCss}\n${xpCss}\n${xeCss}\n${v6Css}\n${v6MemberCss}\n${helpCss}\n${polishCss}`;
 
 const PAGES = {
   dashboard: DashboardPage,

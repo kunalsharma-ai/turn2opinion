@@ -194,16 +194,20 @@ export function ProgressRing({ value = 0, max = 100, size = 132, stroke = 12, la
 }
 
 /** Number that counts up once when it first appears. */
-export function Counter({ value = 0, duration = 900, format }) {
-  const [n, setN] = useState(prefersReducedMotion() ? value : 0);
-  const from = useRef(0);
+export function Counter({ value = 0, duration = 900, format, still = false }) {
+  // still: show the first value as it is and only animate later changes (header pills)
+  const [n, setN] = useState(prefersReducedMotion() || still ? value : 0);
+  const from = useRef(still ? value : 0);
+  const cur = useRef(n);
+  cur.current = n;
   useEffect(() => {
     if (prefersReducedMotion()) {
       setN(value);
       return undefined;
     }
     const start = performance.now();
-    const a = from.current;
+    // carry on from the number on screen if an earlier count was interrupted
+    const a = cur.current !== from.current ? cur.current : from.current;
     let raf;
     const step = (now) => {
       // the first frame time can be a little before `start`: clamp so the number never dips below its start

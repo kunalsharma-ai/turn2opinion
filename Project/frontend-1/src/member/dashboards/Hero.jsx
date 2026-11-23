@@ -2,6 +2,7 @@
 // a dynamic visual, a progress indicator and the primary call to action. The visual and colours
 // change per member type; the structure stays the same so the page reads the same way.
 import { t, fmt } from '../i18n/t.js';
+import { HeroHello, HeroStats } from '../components/HeroBits.jsx';
 import { Button, Icon, cx } from '../components/ui.jsx';
 
 export function greeting(name) {
@@ -44,9 +45,9 @@ export default function XHero({ me, headline, lead, progress, actions, art, chip
           {me.joinedAt && <li className="xh__chip xh__chip--quiet">{t('greet.memberSince', { date: since(me.joinedAt) })}</li>}
           {chips}
         </ul>
-        <p className="xh__hello" id="xh-hello">
-          {greeting(me.firstName || me.fullName)}
-        </p>
+        <div className="xh__hello" id="xh-hello">
+          <HeroHello me={me} />
+        </div>
         <h1 className="xh__headline">
           {String(headline)
             .split(' ')
@@ -57,6 +58,7 @@ export default function XHero({ me, headline, lead, progress, actions, art, chip
             ))}
         </h1>
         <p className="xh__lead">{lead}</p>
+        <HeroStats showPayout={me.type === 'consumer'} />
         {progress && (
           <div className="xh__progress">
             <div className="xh__progress-top">

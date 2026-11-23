@@ -42,6 +42,18 @@ export function MemberDataProvider({ children }) {
     loadMe();
   }, [loadMe]);
 
+  // quiet refresh of the member (quality score) after a profile or survey is completed: no loading state
+  const refreshMe = useCallback(async () => {
+    try {
+      const data = await loadSection('me', {});
+      if (!data) return;
+      meRef.current = data;
+      setMe({ status: 'ready', data, error: null });
+    } catch {
+      /* keep what we have */
+    }
+  }, []);
+
   const patchMe = useCallback((patch) => {
     setMe((m) => {
       const data = { ...m.data, ...patch };
@@ -51,7 +63,7 @@ export function MemberDataProvider({ children }) {
   }, []);
   const patchSection = useCallback((name, fn) => setSections((s) => ({ ...s, [name]: { ...s[name], data: fn(s[name]?.data) } })), []);
 
-  const value = useMemo(() => ({ me, sections, reload: load, reloadMe: loadMe, patchMe, patchSection }), [me, sections, load, loadMe, patchMe, patchSection]);
+  const value = useMemo(() => ({ me, sections, reload: load, reloadMe: loadMe, refreshMe, patchMe, patchSection }), [me, sections, load, loadMe, refreshMe, patchMe, patchSection]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 

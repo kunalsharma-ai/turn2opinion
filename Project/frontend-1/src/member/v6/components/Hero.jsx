@@ -7,6 +7,8 @@
      paused when off-screen, removed with prefers-reduced-motion.
    Palette: brand navy #0b1e6e · royal blue #1f5eff · sky #36c2ff · violet #7c5cff · amber #ffb020 · mint #22d3a6 */
 import { useEffect, useRef, useState } from 'react';
+import { Counter } from '../../components/ui.jsx';
+import { useGain } from '../../components/HeroBits.jsx';
 import { Icon } from './Icon.jsx';
 import Logo from './Logo.jsx';
 import { t, nf, useI18n } from '../i18n/index.js';
@@ -23,6 +25,8 @@ function partOfDay() { const h = new Date().getHours(); return h < 5 ? 'v6_night
 const DAY_E = { v6_morning: '☀️', v6_afternoon: '🌤️', v6_evening: '🌇', v6_night: '🌙' };
 
 export default function Hero({ name, aboutDone, aboutTotal, pts, qs, next, onStart, onKingdom }) {
+  const gp = useGain(pts);
+  const gq = useGain(qs);
   useI18n();
   const [w, setW] = useState(0), ref = useRef(null);
   useEffect(() => {
@@ -54,8 +58,8 @@ export default function Hero({ name, aboutDone, aboutTotal, pts, qs, next, onSta
         <p className="h6-lead">{fresh ? t('v6_lead_new') : aboutDone < aboutTotal ? t('v6_lead_about', { left: aboutTotal - aboutDone }) : t('v6_lead_surveys')}</p>
         <div className="h6-stats" role="list">
           <span className="h6-stat" role="listitem"><span aria-hidden="true">🙋</span><b>{nf(aboutDone)}/{nf(aboutTotal)}</b><small>{t('v6_about_you')}</small></span>
-          <span className="h6-stat" role="listitem" id="pill-pts"><span aria-hidden="true" className="mini-coin" /><b>{nf(pts)}</b><small>{t('v6_pts')}</small></span>
-          <span className="h6-stat" role="listitem" id="pill-qs"><span aria-hidden="true" className="mini-gem" /><b>{nf(qs)}</b><small>{t('v6_qs')}</small></span>
+          <span className="h6-stat" role="listitem" id="pill-pts"><span aria-hidden="true" className="mini-coin" /><b><Counter value={pts || 0} duration={1200} /></b><small>{t('v6_pts')}</small>{gp && <span key={gp.k} className="hx-pop">+{nf(gp.d)}</span>}</span>
+          <span className="h6-stat" role="listitem" id="pill-qs"><span aria-hidden="true" className="mini-gem" /><b><Counter value={qs || 0} duration={1200} /></b><small>{t('v6_qs')}</small>{gq && <span key={gq.k} className="hx-pop hx-pop--q">+{nf(gq.d)}</span>}</span>
         </div>
         <div className="h6-cta">
           {next && (

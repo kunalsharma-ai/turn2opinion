@@ -130,3 +130,15 @@ with the same request shapes as the old `/member/support` page, which Help repla
 | 74 | Answers about features not live yet (gift cards for Teens, donations, certificates, guardian summary) | Hidden automatically until the feature is switched on in `data/engage.js` | None |
 
 Going live: add `/member/help/` to the gateway rule in `README.md`. `/member/support` can redirect to `/member/help/#help-ask`.
+
+## Round 22: live points, compact heroes, 100% profiles
+
+Every section hero now greets the member by name and shows live points and quality score; the header pills
+count up and show "+N" whenever a number goes up. The member area refreshes `/me` quietly after each finished
+profile or survey, so the numbers move as soon as the backend changes them.
+
+| # | Item | Status today | Backend change |
+| --- | --- | --- | --- |
+| 75 | Points for completing a profile | The backend awards **no points** when a profile reaches 100%, so the header and hero only move when the balance from the API changes. The preview adds 50 points per finished profile to show the animation | Award points on profile completion (amount per profile) if wanted |
+| 76 | Points for a finished internal survey | The thank-you card shows "+N points" from the survey's `points`; the balance moves once the backend credits it | None (credit as today) |
+| 77 | Profile completion | Hidden follow-up questions are now saved as empty answers when a page is passed, matching `Profile.js status()`, so every profile can reach 100% | None |

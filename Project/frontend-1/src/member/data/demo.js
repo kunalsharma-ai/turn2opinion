@@ -2,7 +2,7 @@
 // server). Shapes match what the real endpoints return after the adapters in source.js.
 // Production builds never call this.
 import { store } from '../../utils/storage.js';
-import { demoProfileList, demoStatus } from './demoQuestions.js';
+import { demoProfileList, demoProfilesEarned, demoStatus } from './demoQuestions.js';
 import { adaptActivity, adaptAlerts, adaptGuardian, adaptMe, adaptPoints, adaptProfiles, adaptReferrals, adaptSocials, adaptStats, adaptSurveys } from './source.js';
 
 const KEY = 't2o_member_demo';
@@ -92,6 +92,33 @@ const ACTIVITY = {
 const POINTS = { consumer: [730, 15000], pro: [8650, 15000], teen: [120, 15000] };
 const STATS = { consumer: { total: 8, complete: 6, disqualified: 1, abdoned: 1, points: 730 }, pro: { total: 6, complete: 5, disqualified: 1, abdoned: 0, points: 3150 }, teen: { total: 3, complete: 2, disqualified: 0, abdoned: 1, points: 120 } };
 
+// Preview: surveys finished in this browser tab { slug: points }, so the balance, list and activity move.
+const DONE_KEY = 't2o_member_demo_surveys_done';
+const surveysDone = () => {
+  try {
+    return JSON.parse(sessionStorage.getItem(DONE_KEY) || '{}') || {};
+  } catch {
+    return {};
+  }
+};
+export function demoSurveyDone(slug) {
+  if (!slug) return;
+  const { as } = demoPrefs();
+  const hit = (SURVEYS[as] || []).find((x) => x.slug === slug);
+  const d = surveysDone();
+  d[slug] = hit ? hit.points : 50;
+  try {
+    sessionStorage.setItem(DONE_KEY, JSON.stringify(d));
+  } catch {
+    /* preview only */
+  }
+}
+async function earned(as) {
+  const d = surveysDone();
+  const profiles = await demoProfilesEarned(as).catch(() => 0);
+  return { profiles, surveys: Object.keys(d).length, surveyPts: Object.values(d).reduce((n, v) => n + (v || 0), 0), done: d };
+}
+
 const ANSWERS = {
   consumer: { 'communication-methods': ['email', 'dashboard'] },
   pro: { 'communication-methods': ['email', 'dashboard', 'whatsapp'], empstat: 'Employed full-time', industry: 'Information technology', 'add-seniority': 'Senior manager', orgsize: '1,000 – 4,999 employees', jobrole: 'Head of IT infrastructure', orgdecision: ['Final decision maker'] },
@@ -110,22 +137,38 @@ export async function demoSection(name, ctx = {}) {
   const empty = state === 'empty';
   const p = PEOPLE[as] || PEOPLE.consumer;
   switch (name) {
-    case 'me':
-      return adaptMe(empty ? { ...p, qualityScore: 100 } : p);
-    case 'points':
-      return adaptPoints({ respPoints: empty ? 0 : POINTS[as][0], redeemPoints: 0, totalPoints: empty ? 0 : POINTS[as][0], threshold: POINTS[as][1], conversionRate: 0.001 });
-    case 'stats':
-      return adaptStats(empty ? {} : STATS[as]);
-    case 'surveys':
-      return adaptSurveys(empty ? [] : SURVEYS[as]);
+    case 'me': {
+      const e = await earned(as);
+      return adaptMe({ ...p, qualityScore: (empty ? 100 : p.qualityScore) + e.profiles + e.surveys });
+    }
+    case 'points': {
+      const e = await earned(as);
+      const tot = (empty ? 0 : POINTS[as][0]) + e.profiles * 50 + e.surveyPts;
+      return adaptPoints({ respPoints: tot, redeemPoints: 0, totalPoints: tot, threshold: POINTS[as][1], conversionRate: 0.001 });
+    }
+    case 'stats': {
+      const e = await earned(as);
+      const s0 = empty ? {} : STATS[as];
+      return adaptStats(e.surveys ? { ...s0, total: (s0.total || 0) + e.surveys, complete: (s0.complete || 0) + e.surveys, points: (s0.points || 0) + e.surveyPts } : s0);
+    }
+    case 'surveys': {
+      const e = await earned(as);
+      return adaptSurveys(empty ? [] : SURVEYS[as].filter((x) => !e.done[x.slug]));
+    }
     case 'profiles':
     {
       const list = await demoProfileList(as);
       const st = await demoStatus(list);
       return adaptProfiles(list.map((p) => ({ ...p, status: empty ? -1 : st[p.slug] })));
     }
-    case 'activity':
-      return adaptActivity(empty ? [] : ACTIVITY[as].map(([status, n, pts, d], i) => ({ _id: `a${i}`, status, survey: { name: n, slug: n, surveyCategory: ACT_CAT[n] || '', loi: 4 + ((i * 7) % 13) }, source: i % 3 ? 'external' : 'internal', points: pts, timeline: { start: daysAgo(d, 9), end: daysAgo(d, 10) } })));
+    case 'activity': {
+      const e = await earned(as);
+      const fresh = Object.entries(e.done).map(([slug, pts], i) => {
+        const x = (SURVEYS[as] || []).find((y) => y.slug === slug) || { name: slug, surveyCategory: '' };
+        return { _id: `d${i}`, status: 'complete', survey: { name: x.name, slug, surveyCategory: x.surveyCategory, loi: x.loi || 5 }, source: 'internal', points: pts, timeline: { start: daysAgo(0, 9), end: new Date().toISOString() } };
+      });
+      return adaptActivity([...fresh, ...(empty ? [] : ACTIVITY[as].map(([status, n, pts, d], i) => ({ _id: `a${i}`, status, survey: { name: n, slug: n, surveyCategory: ACT_CAT[n] || '', loi: 4 + ((i * 7) % 13) }, source: i % 3 ? 'external' : 'internal', points: pts, timeline: { start: daysAgo(d, 9), end: daysAgo(d, 10) } })))]);
+    }
     case 'referrals':
       return adaptReferrals(
         empty || as === 'teen' ? [] : [{ email: 'maya@example.com', createdAt: daysAgo(20) }, { email: 'tom@example.com', createdAt: daysAgo(9) }, { email: 'li.wei@example.com', createdAt: daysAgo(2) }],
