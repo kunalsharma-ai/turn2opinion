@@ -219,3 +219,9 @@ local question bank, storage or submission code is used.
 - All three worlds use the same real data: completed profiles, `/me/points` and the member's quality score. Each completion animates once (shared "built" record).
 - `components/WorldTeaser.jsx`: a card on every dashboard with the world's progress, points, quality and a link to the full world.
 - Sweep fixes in `member-r23.css`: side-menu "Your journey" label no longer squeezed on short screens, Profiles hero stacks on tablets, referral link box has its own row, Consumer hero loop labels have a halo.
+
+## Round 25 notes
+
+- Header redesign (`components/HeaderBits.jsx`, `member-hdr.css`, loaded last): points as a turning 3D coin with sparkles and a payout bar (not for Teens), quality as a faceted gem in a progress ring coloured by tier, coloured tiles for help, alerts and appearance, and a turning avatar ring.
+- When the real points or quality score go up, the header plays a collection burst (coins or gem shards, a light ring and "+N"). The preview bar's "Play header reward" replays it without changing any number.
+- Phones keep points, quality (gem and ring), alerts and the account menu inside the screen from 320px up; the account button used to be cut off at the right edge.
