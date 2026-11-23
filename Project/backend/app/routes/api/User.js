@@ -43,6 +43,7 @@ import {
     TEEN_REG_CONSENT_VERSION, GUARDIAN_TERMS_VERSION, TEEN_STATEMENTS, GUARDIAN_REQUIRED, GUARDIAN_OPTIONAL, DECLINE_REASONS,
     linkFor, sigOk, maskEmail, registrationRef, cleanOnboarding, onboardingErrors, teenMail, brand
 } from "../../utils/teen.js";
+import { familyRecord } from "../../utils/teenFamily.js";
 
 const TEEN_LINK_MS = 7 * 24 * 60 * 60 * 1000; // parent onboarding and teen activation links
 const TEEN_CONSENT_VERSION = "teen-consent-2026-11";
@@ -893,7 +894,10 @@ router
                         user.teenConsent && { who: "teen", version: user.teenConsent.version, at: user.teenConsent.acceptedAt },
                         p.consentRecord && { who: "guardian", version: p.consentRecord.version, at: p.consentRecord.acceptedAt, selections: p.consentRecord.selections }
                     ].filter(Boolean),
-                    answers
+                    answers,
+                    // 23 Nov 2026: the guardian's onboarding answers and consent record, only once the
+                    // guardian approved and finished onboarding; contact details masked (utils/teenFamily.js).
+                    family: familyRecord(user)
                 }
             };
         },

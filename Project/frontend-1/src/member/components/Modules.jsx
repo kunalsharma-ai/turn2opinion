@@ -681,8 +681,8 @@ export function GuardianConsentCard() {
         ) : (
           <p className="mb-muted mb-small">{t('gc.unknown')}</p>
         )}
-        <Button to="/teen/profile/" size="sm" variant="ghost" iconEnd="arrow">
-          {t('gc.view')}
+        <Button href="/member/profile/#family" size="sm" variant="ghost" iconEnd="arrow">
+          {t('gc.family')}
         </Button>
       </Section>
     </Card>
