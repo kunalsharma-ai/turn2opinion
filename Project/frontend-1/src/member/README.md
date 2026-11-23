@@ -206,3 +206,9 @@ local question bank, storage or submission code is used.
 - `member-polish.css` is loaded last: sticky header and sidebar (`overflow-x: clip` on html and body, never `hidden`), compact heroes, phone sizes.
 - `Counter still` shows its first value straight away and only animates later changes (header pills).
 - Flow saves hidden follow-up questions as empty answers so the backend counts the profile as 100%.
+
+## Round 23 notes
+
+- Reward sync: `data/rewardBus.js` announces a reward only after the server confirms it (profile credits returned by `PATCH /me/profile`, or a completed survey). `components/RewardSync.jsx` reloads points, activity, progress and the member, shows the reward notification and sets `html[data-reward]` so heroes react.
+- `member-r23.css` (loaded last): compact card grid for Profiles and Surveys, Pro qualification tile, Teen hero.
+- Preview: planned features (no backend) are hidden unless "Planned features: Shown" is picked in the preview bar.

@@ -150,3 +150,16 @@ profile or survey, so the numbers move as soon as the backend changes them.
 | # | Item | Status today | Backend change |
 | --- | --- | --- | --- |
 | 78 | Payment methods | **Live**, same calls as the old page: `GET /api/v1/option/payment-method`, `POST /api/v1/me { questions: [payment-method-*] }`, `PATCH /api/v1/me/answer { <key>: value }` and `payment-method-primary` | None |
+
+## Round 23: real reward sync (small backend change)
+
+Kunal's redesign brief asked for real, server-backed reward sync. Item 75 above is now done in the backend.
+
+| # | Item | Status | Change |
+| --- | --- | --- | --- |
+| 79 | Profile completion points | **Done**. `PATCH /api/v1/me/profile` credits each profile that reaches 100% once, using the profile's own `points` (default 50), as a `Rewards` row `{ category: "profile", remarks: <slug> }`. Upsert with `$setOnInsert` and a unique partial index, so repeats, edits and two tabs never double credit. The response `data` lists the profiles credited by that save | `backend/app/utils/profileRewards.js`, `routes/api/Me.js`, `model/Rewards.js`, tests in `backend/test/profileRewards.test.js` |
+| 80 | Balance | `GET /api/v1/me/points` adds `rewardPoints` (credited Rewards) to `totalPoints`. A member with no completed survey gets 0 instead of an error | Same files |
+| 81 | Earning history | `GET /api/v1/me/rewards` returns the credited history (was hard-coded zeros) | Same files |
+| 82 | Survey completion ownership | `PATCH /api/v1/me/survey` only completes the caller's own response | `routes/api/Me.js` |
+| 83 | Quality score | No rule changes it per profile or survey today (`User.qualityScore` is only set by staff). The UI refreshes it after every reward but no longer promises "+1 quality" | Optional: a quality rule, if wanted |
+| 84 | Members who finished profiles before this change | Credited on their next profile save (any page) | Optional: a one-off backfill script |
