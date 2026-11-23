@@ -1,6 +1,7 @@
 // DashboardShell: header, sidebar (desktop), bottom bar + drawer (phones), notification centre,
 // appearance, language and sound controls. Grouped so the header never shows more than five
 // controls side by side: points, quality, notifications, a settings cluster and the avatar.
+import RewardSync from './RewardSync.jsx';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { usePath, useRouter } from '../../router/Router.jsx';
 import { useI18n } from '../../i18n/I18nProvider.jsx';
@@ -687,6 +688,13 @@ function DemoBar() {
           <option value="error">{t('demo.state.error')}</option>
         </select>
       </label>
+      <label>
+        Planned features{' '}
+        <select value={p.planned ? 'show' : 'hide'} onChange={(e) => setDemoPrefs({ planned: e.target.value === 'show' })}>
+          <option value="hide">Hidden (as live)</option>
+          <option value="show">Shown</option>
+        </select>
+      </label>
     </div>
   );
 }
@@ -742,6 +750,7 @@ export default function DashboardShell({ children }) {
       <BottomNav path={path} onMore={() => setDrawer(true)} />
       <Drawer open={drawer} onClose={() => setDrawer(false)} path={path} />
       <CommandPalette open={jump} onClose={closeJump} />
+      <RewardSync />
     </div>
   );
 }

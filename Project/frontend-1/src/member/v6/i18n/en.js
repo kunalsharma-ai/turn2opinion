@@ -337,7 +337,7 @@ const EN = {
   v6_pts_aria: '{n} points. Show my kingdom', v6_qs_aria: 'Quality score {n}. Show my kingdom',
   v6_start_x: 'Start {name}', v6_continue_x: 'Continue {name}', v6_see_kingdom: 'See my kingdom', v6_go: 'Let’s go',
   v6_kingdom: 'Your Opinion Kingdom', v6_kingdom_named: '{name}’s Opinion Kingdom',
-  v6_kingdom_sub: 'Every profile and survey you complete raises a new building and earns +{pts} points and +{qs} quality score.',
+  v6_kingdom_sub: 'Every profile and survey you complete raises a new building and adds its points to your balance.',
   v6_kingdom_aria: 'Your kingdom: {done} of {total} buildings built',
   v6_lv_aria: 'Level {lv}. {n} more to reach {next}', v6_lv_next: '{n} more to reach {next}', v6_lv_max: 'Your realm is legendary!',
   lv_camp: 'Campsite', lv_hamlet: 'Hamlet', lv_village: 'Village', lv_town: 'Town', lv_city: 'City', lv_kingdom: 'Kingdom', lv_empire: 'Empire', lv_legend: 'Legendary Realm',

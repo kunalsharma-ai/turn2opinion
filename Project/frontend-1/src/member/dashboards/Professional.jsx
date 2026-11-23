@@ -108,6 +108,8 @@ function Qualification() {
   const prof = (d.profiles || []).find((p) => p.slug === 'professional');
   const ok = prof && prof.completion >= 100;
   const cats = (d.allProfiles || []).filter((p) => !ABOUT_YOU.includes(p.slug));
+  const doneN = cats.filter((c) => c.completion >= 100).length;
+  const shown = [...cats].sort((a, b) => (b.completion >= 100) - (a.completion >= 100)).slice(0, 6);
   return (
     <section className={cx('xt xt--qual', ok ? 'is-ok' : 'is-partial')} aria-labelledby="xt-qual">
       <span className="xt__k" id="xt-qual">
@@ -118,13 +120,27 @@ function Qualification() {
       </span>
       <span className="xt__big">{ok ? t('pro.qual.ok') : t('pro.qual.partial')}</span>
       {cats.length > 0 && (
-        <ul className="xt__tags" aria-label={t('pro.categories')}>
-          {cats.map((c) => (
-            <li key={c.slug} className={cx(c.completion >= 100 && 'is-on')}>
-              {c.name}
-            </li>
-          ))}
-        </ul>
+        <>
+          {/* Round 23: a progress line and the first few topics, not every topic as a tag */}
+          <span className="xt__prog" role="img" aria-label={`${doneN} / ${cats.length}`}>
+            <i style={{ width: `${Math.round((doneN / cats.length) * 100)}%` }} />
+          </span>
+          <span className="xt__count">
+            {doneN} / {cats.length} {t('pro.categories')}
+          </span>
+          <ul className="xt__tags" aria-label={t('pro.categories')}>
+            {shown.map((c) => (
+              <li key={c.slug} className={cx(c.completion >= 100 && 'is-on')}>
+                {c.name}
+              </li>
+            ))}
+            {cats.length > shown.length && (
+              <li className="xt__more">
+                <MLink to="profiles">+{cats.length - shown.length}</MLink>
+              </li>
+            )}
+          </ul>
+        </>
       )}
     </section>
   );

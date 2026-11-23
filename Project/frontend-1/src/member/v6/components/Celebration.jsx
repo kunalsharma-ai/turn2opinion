@@ -2,7 +2,7 @@
    Shown on top of the dashboard right after a profile/survey is completed for the first time:
      1. the item's own particle effect (lib/celebrate.js) in its palette and emoji
      2. its building rises on a little plot, with scaffolding falling away
-     3. the rewards count up: +50 points (coin) and +1 quality score (gem)
+     3. the points the server credited for it count up (coin)
      4. on "Continue", a coin and a gem fly into the header pills, which count up when they land
    The dashboard underneath is already in its final state, so closing the overlay never shifts the layout.
    Native <dialog>: focus trapped, Esc closes, and nothing behind it can be clicked by accident. */
@@ -12,7 +12,7 @@ import { celebrate, stopCelebration } from '../lib/celebrate.js';
 import { building } from '../lib/kingdom-art.js';
 import { itemMeta } from '../lib/items.js';
 import { itemByIndex } from '../lib/progression.js';
-import { POINTS_PER_ITEM, QUALITY_PER_ITEM, markPaid } from '../lib/rewards.js';
+import { markPaid } from '../lib/rewards.js';
 import { profileKey } from '../lib/storage.js';
 import { pnameT, themeId } from '../lib/present.js';
 import { sound } from '../lib/uisound.js';
@@ -54,8 +54,8 @@ export function fly(from, to, cls, html, host) {
 }
 export function pop(el) { if (!el || reducedMotion() || !el.animate) return; el.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.18)' }, { transform: 'scale(1)' }], { duration: 420, easing: 'cubic-bezier(.3,1.6,.5,1)' }); }
 
-export default function Celebration({ i, next, onClose, onNext }) {
-  const dlg = useRef(null), coinRef = useRef(null), gemRef = useRef(null), closing = useRef(false);
+export default function Celebration({ i, points = 0, next, onClose, onNext }) {
+  const dlg = useRef(null), coinRef = useRef(null), closing = useRef(false);
   const x = itemByIndex(i), m = x && itemMeta(x.p);
   useEffect(() => {
     const d = dlg.current; if (!d || !x) return;
@@ -63,7 +63,7 @@ export default function Celebration({ i, next, onClose, onNext }) {
     const r = d.querySelector('.cb-plot'), b = r && r.getBoundingClientRect();
     const origin = b ? { x: b.left + b.width / 2, y: b.top + b.height * 0.4 } : undefined;
     sound.chime(themeId(x.p));
-    const t1 = setTimeout(() => sound.ui('coin'), 900), t2 = setTimeout(() => sound.ui('gem'), 1250);
+    const t1 = setTimeout(() => points > 0 && sound.ui('coin'), 900), t2 = 0;
     celebrate(m.fx, { colors: [m.a, m.a2, m.a3, '#ffffff'], emoji: m.e, origin, host: d });
     return () => { clearTimeout(t1); clearTimeout(t2); stopCelebration(); };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -76,11 +76,9 @@ export default function Celebration({ i, next, onClose, onNext }) {
     const pp = document.getElementById('pill-pts'), pq = document.getElementById('pill-qs');
     sound.ui('whoosh');
     const d = dlg.current; if (d) d.classList.add('leaving');
-    await Promise.all([
-      fly(coinRef.current, pp, 'coin', '<i class="mini-coin"></i><b>+' + POINTS_PER_ITEM + '</b>', d),
-      new Promise((r) => setTimeout(r, 140)).then(() => fly(gemRef.current, pq, 'gem', '<i class="mini-gem"></i><b>+' + QUALITY_PER_ITEM + '</b>', d)),
-    ]);
-    markPaid(key); pop(pp); pop(pq); sound.ui('coin');
+    // only the points the server credited fly to the header (the quality score has no per-profile rule)
+    if (points > 0) await fly(coinRef.current, pp, 'coin', '<i class="mini-coin"></i><b>+' + nf(points) + '</b>', d);
+    markPaid(key); if (points > 0) { pop(pp); sound.ui('coin'); } void pq;
     if (d && d.open) d.close();
     then();
   };
@@ -99,10 +97,11 @@ export default function Celebration({ i, next, onClose, onNext }) {
         <p className="cb-eyebrow">{x.kind === 'survey' ? t('v6_c_survey_done') : t('v6_c_profile_done')}</p>
         <h2 id="cb-h" className="cb-h">{t(head, { name: pnameT(x.p) })}</h2>
         <p className="cb-p">{t('v6_c_built', { b: tr(m.name) })}</p>
-        <div className="cb-rw">
-          <span className="cb-r coin" ref={coinRef}><i className="big-coin" aria-hidden="true" /><b>+<CountUp to={POINTS_PER_ITEM} delay={700} /></b><small>{t('v6_pts')}</small></span>
-          <span className="cb-r gem" ref={gemRef}><i className="big-gem" aria-hidden="true" /><b>+<CountUp to={QUALITY_PER_ITEM} ms={500} delay={1100} /></b><small>{t('v6_qs')}</small></span>
-        </div>
+        {points > 0 && (
+          <div className="cb-rw">
+            <span className="cb-r coin" ref={coinRef}><i className="big-coin" aria-hidden="true" /><b>+<CountUp to={points} delay={700} /></b><small>{t('v6_pts')}</small></span>
+          </div>
+        )}
         <div className="cb-acts">
           {next && <button type="button" className="btn6 primary big" onClick={() => finish(() => onNext(next.i))} data-snd="none" autoFocus>{t('v6_c_next', { name: pnameT(next.p) })}<Icon n="arrow-r" className="flip" /></button>}
           <button type="button" className={'btn6 big ' + (next ? 'ghost' : 'primary')} onClick={() => finish(onClose)} data-snd="none" autoFocus={!next}><span aria-hidden="true">🏰</span>{t('v6_c_kingdom')}</button>

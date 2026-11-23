@@ -9,6 +9,7 @@ import { t, tn, fmt } from '../i18n/t.js';
 import { useI18n } from '../../i18n/I18nProvider.jsx';
 import { ColorPaletteSelector, LanguageSelector, ThemeSelector, useSound } from '../components/Shell.jsx';
 import { GuardianConsentCard } from '../components/Modules.jsx';
+import PaymentMethods from '../components/PaymentMethods.jsx';
 import { DataCentre, LevelCard, LinkedAccounts, ProfileFreshness, QuietHours, SurveyPrefs } from '../components/Grow.jsx';
 import { engageOn } from '../data/engage.js';
 import { Avatar, Badge, Button, Card, Field, Icon, MLink, Toggle, cx, useToast } from '../components/ui.jsx';
@@ -367,12 +368,7 @@ export function ProfilePage() {
           </div>
           {teen && <GuardianConsentCard />}
           {!teen && (
-            <Card title={t('ma.payment')} icon="wallet" className="xid-card">
-              <p className="mb-card__lead">{t('ma.payment.d')}</p>
-              <Button to="myaccount" size="sm" variant="secondary" iconEnd="external" className="mb-wide">
-                {t('ma.payment.open')}
-              </Button>
-            </Card>
+            <PaymentMethods id="payments" />
           )}
           <LinkedAccounts />
           <Card title={t('st.profile.profiles')} icon="map" className="xid-card">

@@ -752,3 +752,219 @@ html.is-member body {
 #t2o #fld:has(#cnt) .cb.open {
   margin-bottom: calc(min(330px, 46vh) + 12px);
 }
+
+/* payment methods (My account) */
+.xpay__list {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.xpay__item {
+  border: 1px solid var(--mb-line, rgba(15, 23, 42, 0.1));
+  border-radius: 14px;
+  background: var(--mb-surface, #fff);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.xpay__item.is-primary {
+  border-color: color-mix(in srgb, #16a34a 45%, transparent);
+  box-shadow: 0 6px 18px rgba(22, 163, 74, 0.12);
+}
+.xpay__item.is-open {
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.1);
+}
+.xpay__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+}
+.xpay__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  color: #0f766e;
+  background: color-mix(in srgb, #0f766e 12%, transparent);
+}
+.xpay__main {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+.xpay__main strong {
+  font: 700 14px/1.2 'Manrope', system-ui, sans-serif;
+}
+.xpay__sub {
+  font-size: 12.5px;
+  color: var(--mb-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.xpay .xpay__edit,
+.xpay .xpay__link {
+  flex: none;
+  border: 0;
+  background: none;
+  font: 700 13px/1 'Inter', sans-serif;
+  color: var(--mb-primary, #1f5bff);
+  cursor: pointer;
+  padding: 8px 6px;
+  border-radius: 8px;
+}
+.xpay .xpay__link {
+  color: var(--mb-muted);
+  font-size: 12px;
+}
+.xpay .xpay__edit:hover,
+.xpay .xpay__link:hover {
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+.xpay__form {
+  display: grid;
+  gap: 10px;
+  padding: 4px 12px 12px;
+  animation: dc-pop 0.25s ease-out both;
+}
+.xpay__form .mb-field {
+  display: grid;
+  gap: 4px;
+}
+.xpay__actions {
+  display: flex;
+  gap: 8px;
+}
+.xpay__skel {
+  height: 120px;
+  margin-top: 12px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, rgba(148, 163, 184, 0.12), rgba(148, 163, 184, 0.24), rgba(148, 163, 184, 0.12));
+  background-size: 200% 100%;
+  animation: xpay-sk 1.2s linear infinite;
+}
+@keyframes xpay-sk {
+  to {
+    background-position: -200% 0;
+  }
+}
+#payments {
+  scroll-margin-top: 96px;
+}
+
+/* Round 23 · reward notification under the header (components/RewardSync.jsx) */
+.rw-stack {
+  position: fixed;
+  z-index: 90;
+  top: 76px;
+  right: 18px;
+  display: grid;
+  gap: 8px;
+  pointer-events: none;
+}
+.rw-toast {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 240px;
+  padding: 10px 16px 10px 10px;
+  border-radius: 16px;
+  color: #3d2700;
+  background: linear-gradient(135deg, #fff9e0, #ffe39a);
+  box-shadow: 0 14px 34px rgba(160, 98, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  animation: rw-in 0.55s cubic-bezier(0.2, 1.4, 0.4, 1) both, rw-out 0.4s 3.7s ease-in forwards;
+}
+.rw-toast__coin {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff3b0, #ffc93c 45%, #e09400 100%);
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.15);
+  animation: hx-coin 1.6s ease-in-out 2;
+}
+.rw-toast__coin i {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(160, 98, 0, 0.55);
+}
+.rw-toast__txt {
+  display: grid;
+  gap: 2px;
+}
+.rw-toast__txt strong {
+  font: 800 20px/1 'Manrope', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.rw-toast__txt span {
+  font: 600 12.5px/1.2 'Inter', sans-serif;
+  opacity: 0.8;
+}
+.rw-toast__burst {
+  position: absolute;
+  left: 30px;
+  top: 50%;
+}
+.rw-toast__burst i {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffc93c;
+  animation: dc-burst 0.9s 0.25s ease-out both;
+}
+.rw-toast__burst i:nth-child(even) {
+  background: #22c55e;
+}
+@keyframes rw-in {
+  from {
+    transform: translateY(-14px) scale(0.85);
+    opacity: 0;
+  }
+}
+@keyframes rw-out {
+  to {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+}
+/* heroes react while a reward lands (html[data-reward] is set for ~2.5 s) */
+html[data-reward] .xh__art,
+html[data-reward] .xph__art,
+html[data-reward] .hx-stat--pts,
+html[data-reward] .xhd-pill--points {
+  animation: rw-cheer 0.9s cubic-bezier(0.3, 1.6, 0.5, 1) 2;
+}
+@keyframes rw-cheer {
+  40% {
+    transform: translateY(-4px) scale(1.04);
+    filter: drop-shadow(0 0 14px rgba(255, 201, 60, 0.65));
+  }
+}
+@media (max-width: 760px) {
+  .rw-stack {
+    top: auto;
+    bottom: 84px;
+    right: 12px;
+    left: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rw-toast,
+  .rw-toast__coin,
+  .rw-toast__burst i,
+  html[data-reward] .xh__art,
+  html[data-reward] .xph__art,
+  html[data-reward] .hx-stat--pts,
+  html[data-reward] .xhd-pill--points {
+    animation: none;
+  }
+}

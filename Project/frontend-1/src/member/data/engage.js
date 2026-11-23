@@ -17,7 +17,9 @@ const LIVE = new Set([
   // Round 18 features built only from data the site already has (or kept on the device):
   'savings', 'forecast', 'boosters', 'practice', 'share', 'teenInvite', 'wrapped', 'heatmap', 'screenout', 'levelcard', 'datacentre'
 ]);
-export const engageOn = (id) => ENV.DEMO_MODE || LIVE.has(id);
+// Round 23: the preview shows what the live site shows. Planned features (no backend yet) appear only
+// when the preview bar's "Planned features" switch is on, so nothing looks real that isn't.
+export const engageOn = (id) => LIVE.has(id) || (ENV.DEMO_MODE && !!demoPrefs().planned);
 
 const daysAgo = (n) => {
   const d = new Date();

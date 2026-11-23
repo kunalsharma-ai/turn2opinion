@@ -324,7 +324,7 @@ export default {
   'ma.locked': 'Locked',
   'ma.editLoc': 'Your location comes from sign-up. Update it in your Basic profile.',
   'ma.payment': 'Payment methods',
-  'ma.payment.d': 'Add or change how you receive rewards on the existing payment page.',
+  'ma.payment.d': 'Add or change how you receive rewards in My account.',
   'ma.payment.open': 'Manage payment methods',
   'ma.danger': 'Account & privacy',
 

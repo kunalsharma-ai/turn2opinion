@@ -8,7 +8,7 @@ import { Icon } from './Icon.jsx';
 import { pnameT, qcount, themeOf } from '../lib/present.js';
 import { profileEmoji } from '../lib/emoji.js';
 import { itemMeta } from '../lib/items.js';
-import { POINTS_PER_ITEM, QUALITY_PER_ITEM } from '../lib/rewards.js';
+import { POINTS_PER_ITEM } from '../lib/rewards.js';
 import { prefetchCore } from '../lib/data.js';
 import { t, tr, nf } from '../i18n/index.js';
 
@@ -37,7 +37,7 @@ export default function ItemCard({ x, st, num, onOpen, onLocked, big }) {
       <span className="ic-body">
         <span className="ic-name">{name}</span>
         <span className="ic-meta"><span><Icon n="clipboard" />{t('v6_n_q', { n: q })}</span><span><Icon n="clock" />{t('v6_n_min', { n: mins })}</span></span>
-        <span className="ic-rw" aria-hidden="true"><span className="r-coin"><i className="mini-coin" />+{nf(POINTS_PER_ITEM)}</span><span className="r-gem"><i className="mini-gem" />+{nf(QUALITY_PER_ITEM)}</span>{s === 'done' && <span className="r-bld">🏗️ {tr(m.name)}</span>}</span>
+        <span className="ic-rw" aria-hidden="true"><span className="r-coin"><i className="mini-coin" />+{nf((x.src && x.src.points) || POINTS_PER_ITEM)}</span>{s === 'done' && <span className="r-bld">🏗️ {tr(m.name)}</span>}</span>
       </span>
       <span className="ic-foot">
         <span className={'ic-st st-' + s}>{s === 'prog' ? <Ring pct={st.pct} /> : null}{status}</span>

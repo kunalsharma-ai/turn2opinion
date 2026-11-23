@@ -113,7 +113,7 @@ export function RewardsPage() {
             </dl>
             {!teen &&
               (ready ? (
-                <Button to="myaccount" icon="wallet" iconEnd="external" className="xrw__cta">
+                <Button to="myaccount" icon="wallet" iconEnd="arrow" className="xrw__cta">
                   {t('pts.redeem')}
                 </Button>
               ) : (
@@ -206,7 +206,7 @@ export function RewardsPage() {
             </li>
           </ol>
           {!teen && (
-            <Button to="myaccount" variant="secondary" size="sm" iconEnd="external">
+            <Button to="myaccount" variant="secondary" size="sm" icon="wallet" iconEnd="arrow">
               {t('ma.payment.open')}
             </Button>
           )}
