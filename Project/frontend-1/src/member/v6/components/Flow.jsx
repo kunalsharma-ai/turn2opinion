@@ -16,6 +16,8 @@ import { profileEmoji, qEmoji } from '../lib/emoji.js';
 import { optEmojiSet } from '../lib/emoji-plus.js';
 import { burst, finePointer, reducedMotion } from '../lib/fx.js';
 import { POINTS_PER_ITEM, QUALITY_PER_ITEM } from '../lib/rewards.js';
+import { sound } from '../lib/uisound.js';
+import { themeId } from '../lib/present.js';
 import { t, nf } from '../i18n/index.js';
 import { CHOICE, DIAL, checkAnswer, filled, loadQuestion, maxHint, moneyLabel, safeHtml, specifyLabel, withExtras } from '../questions.js';
 
@@ -51,6 +53,8 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
   const alive = useRef(true);
   const timer = useRef(0);
   const shownAt = useRef(0);
+  // v6 sounds: every answer is voiced in the item's own world (sound.click), sections end with a tick
+  const world = themeId({ s: source.slug || '' });
   useEffect(() => {
     alive.current = true;
     return () => {
@@ -102,6 +106,26 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
     });
   }, [names.join('|')]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // A question whose parent is answered in ANOTHER profile (e.g. children ← havechild): read that answer once,
+  // so the follow-up shows instead of being skipped. Only read here, never saved from this page.
+  const askedParents = useRef(new Set());
+  useEffect(() => {
+    const need = names
+      .map((n) => defs[n]?.parent)
+      .filter((pn) => pn && !all.includes(pn) && !(pn in values) && !askedParents.current.has(pn));
+    if (!need.length) return;
+    need.forEach((pn) => askedParents.current.add(pn));
+    actions
+      .answers(need)
+      .then((d) => {
+        if (!alive.current || !d) return;
+        const v = {};
+        need.forEach((pn) => filled(d[pn]) && (v[pn] = d[pn]));
+        if (Object.keys(v).length) setValues((prev) => ({ ...v, ...prev }));
+      })
+      .catch(() => {});
+  }, [defs, names.join('|')]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const optKey = (q) => `${q.name}::${q.parent ? JSON.stringify(values[q.parent] ?? null) : ''}`;
   useEffect(() => {
     names.forEach((n) => {
@@ -126,7 +150,8 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
       if (q.parent && !filled(values[q.parent])) return false;
       const o = opts[optKey(q)];
       if (CHOICE.includes(q.type)) return Array.isArray(o) && o.length > 0;
-      if (q.type === 'text') return Boolean(o && o !== 'loading' && o.pattern);
+      // every text question is asked (a validation rule, when the API has one, only checks the answer)
+      if (q.type === 'text') return o !== undefined && o !== 'loading';
       return ['phone', 'date'].includes(q.type);
     });
   const pageReady =
@@ -179,6 +204,7 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
 
   const setValue = useCallback(
     (qq, v) => {
+      sound.click(world, Array.isArray(v) ? 'toggle' : 'pick');
       setValues((prev) => {
         const next = { ...prev, [qq.name]: v };
         const deps = new Set(qq.children || []);
@@ -190,7 +216,7 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
       });
       setErr(null);
     },
-    [defs]
+    [defs, world]
   );
 
   function pageValues() {
@@ -229,6 +255,7 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
   }
 
   function fail(text) {
+    sound.click(world, 'warn');
     setErr(text);
     setShake(false);
     requestAnimationFrame(() => setShake(true));
@@ -244,7 +271,11 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
     if (specifyLabel(q, values[q.name], withExtras(q, o)) && !filled(values[`${q.name}_specify`])) return fail(mt('qz.specify.req'));
     // wait for questions that depend on this answer before deciding what comes next
     if (!pageReady) return setPending(true);
-    if (idx < visible.length - 1) return show(visible[idx + 1].name, 1);
+    if (idx < visible.length - 1) {
+      sound.click(world, 'next');
+      return show(visible[idx + 1].name, 1);
+    }
+    sound.prime();
     // end of the page: a profile saves this page now
     setBusy(true);
     try {
@@ -257,6 +288,7 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
       if (lastPage) {
         await finish();
       } else {
+        sound.tick();
         setDir(1);
         setErr(null);
         setPage(page + 1);
@@ -277,6 +309,7 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
 
   function back() {
     clearTimeout(timer.current);
+    sound.click(world, 'back');
     if (idx > 0) return show(visible[idx - 1].name, -1);
     if (page > 0) {
       setDir(-1);

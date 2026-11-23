@@ -16,6 +16,7 @@ import { themeId } from './lib/present.js';
 import { reducedMotion } from './lib/fx.js';
 import { t } from './i18n/index.js';
 import Flow from './components/Flow.jsx';
+import { installClickSounds } from './lib/uisound.js';
 import LockedPopup from './components/LockedPopup.jsx';
 import Celebration from './components/Celebration.jsx';
 
@@ -91,6 +92,8 @@ export function useStage(allProfiles) {
 
 /** The #t2o root: children are the hub; the flow replaces them while a profile is open. */
 export function Stage({ s, className = '', children, renderSurvey }) {
+  // v6: a sound on every click (buttons, cards, links); answers are voiced by the flow itself
+  useEffect(() => installClickSounds(s.top.current), [s.top]);
   const x = s.view.name === 'flow' ? s.items[s.view.i] : null;
   const world = x ? themeId(x.p) : s.view.name === 'survey' ? 'rewards' : 'brand';
   const nx = s.party != null ? nextItem() : null;

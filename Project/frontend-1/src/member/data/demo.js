@@ -120,8 +120,8 @@ export async function demoSection(name, ctx = {}) {
       return adaptSurveys(empty ? [] : SURVEYS[as]);
     case 'profiles':
     {
-      const list = demoProfileList(as);
-      const st = demoStatus(list);
+      const list = await demoProfileList(as);
+      const st = await demoStatus(list);
       return adaptProfiles(list.map((p) => ({ ...p, status: empty ? -1 : st[p.slug] })));
     }
     case 'activity':
