@@ -43,7 +43,7 @@ const dateOf = (d, time) => {
 };
 const fullName = (n = {}) => [n.first, n.middle, n.last].filter(Boolean).join(' ');
 
-function useFamily() {
+export function useFamily() {
   const [s, setS] = useState({ status: 'loading' });
   useEffect(() => {
     let live = true;

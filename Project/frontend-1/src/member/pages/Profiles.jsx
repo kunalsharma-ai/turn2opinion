@@ -17,6 +17,8 @@ import { Icon } from '../v6/components/Icon.jsx';
 import { t, nf } from '../v6/i18n/index.js';
 import { reducedMotion } from '../v6/lib/fx.js';
 import { readAnchor, clearAnchor } from './anchor.js';
+import { GuardianProfiles } from '../components/GuardianProfiles.jsx';
+import { useMe } from '../data/MemberData.jsx';
 
 export function ProfilesPage() {
   const d = useDash();
@@ -41,6 +43,7 @@ export function ProfilesPage() {
 function Hub({ s, d }) {
   const [all, setAll] = useState(false);
   const { me, items, state } = s;
+  const teen = useMe()?.type === 'teen';
   const loading = !d.allProfiles;
   const name = me.firstName || '';
   const profiles = items.filter((x) => x.kind === 'profile');
@@ -79,6 +82,8 @@ function Hub({ s, d }) {
           {loading ? [0, 1].map((k) => <span key={k} className="icard big skel6" aria-hidden="true" />) : profiles.map((x) => <ItemCard key={x.slug} x={x} st={st(x)} onOpen={s.open} onLocked={s.setLocked} big />)}
         </div>
       </section>
+
+      {teen && <GuardianProfiles />}
 
       <section className="sec6 sec-inc" aria-labelledby="h-inc">
         <header className="sec6-h">

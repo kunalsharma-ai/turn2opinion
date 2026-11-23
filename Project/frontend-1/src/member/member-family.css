@@ -773,3 +773,183 @@
     overflow: visible;
   }
 }
+
+/* ---------- Parent & guardian profile cards (components/GuardianProfiles.jsx, /member/profiles/) ---------- */
+.xgp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 16px;
+}
+.xgp-card {
+  --tone: #2f6bff;
+  --tone-soft: rgba(47, 107, 255, 0.12);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  border-radius: 20px;
+  background: var(--mb-card, #fff);
+  border: 1px solid var(--mb-border, rgba(18, 26, 61, 0.1));
+  box-shadow: 0 1px 2px rgba(18, 26, 61, 0.05), 0 14px 32px -20px rgba(18, 26, 61, 0.3);
+  overflow: hidden;
+  animation: xfam-in 0.5s ease both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.xgp-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--tone), color-mix(in srgb, var(--tone) 40%, #fff));
+}
+.xgp-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 2px 4px rgba(18, 26, 61, 0.06), 0 22px 40px -22px var(--tone);
+}
+.xgp-card--violet { --tone: #7c4dff; --tone-soft: rgba(124, 77, 255, 0.12); }
+.xgp-card--sky { --tone: #1aa3e8; --tone-soft: rgba(26, 163, 232, 0.12); }
+.xgp-card--mint { --tone: #12a77f; --tone-soft: rgba(18, 167, 127, 0.13); }
+.xgp-card--coral { --tone: #f0476a; --tone-soft: rgba(240, 71, 106, 0.12); }
+.xgp-card--gold { --tone: #d88a00; --tone-soft: rgba(255, 176, 32, 0.16); }
+.xgp-card > header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+.xgp-card h3 {
+  margin: 0;
+  font-size: 16.5px;
+  line-height: 1.25;
+}
+.xgp-card header p {
+  margin: 2px 0 0;
+  font-size: 12.5px;
+  color: var(--mb-muted, #5a6488);
+}
+.xgp-ring {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: conic-gradient(var(--tone) calc(var(--p) * 360deg), var(--tone-soft) 0);
+  transition: background 0.6s ease;
+}
+.xgp-ring span {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--mb-card, #fff);
+  font-size: 21px;
+}
+.xgp-n {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--tone);
+  background: var(--tone-soft);
+  border-radius: 999px;
+  padding: 3px 9px;
+}
+.is-full .xgp-n::after {
+  content: ' ✓';
+}
+.xgp-card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+  flex: 1;
+  align-content: start;
+}
+.xgp-card li {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: start;
+  padding: 7px 0;
+  border-top: 1px dashed var(--mb-border, rgba(18, 26, 61, 0.1));
+  font-size: 13.5px;
+}
+.xgp-card li:first-child {
+  border-top: 0;
+}
+.xgp-dot {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  border-radius: 50%;
+  border: 2px dashed var(--mb-border-strong, rgba(18, 26, 61, 0.25));
+}
+.xgp-l {
+  color: var(--mb-muted, #5a6488);
+}
+.xgp-v {
+  font-weight: 650;
+  overflow-wrap: anywhere;
+  text-align: right;
+  max-width: 12.5em;
+}
+li.is-ok .xgp-dot {
+  border: 0;
+  background: var(--tone);
+  color: #fff;
+}
+li.is-no .xgp-v,
+li.is-wait .xgp-v {
+  color: var(--mb-faint, #8a93b3);
+  font-style: italic;
+  font-weight: 500;
+}
+li.is-na .xgp-v {
+  color: var(--mb-faint, #8a93b3);
+  font-weight: 500;
+  font-size: 12.5px;
+}
+li.is-na .xgp-dot {
+  border-style: dotted;
+  opacity: 0.6;
+}
+.xgp-more {
+  align-self: flex-start;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--tone);
+  text-decoration: none;
+}
+.xgp-more:hover {
+  text-decoration: underline;
+}
+.xgp-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 14px 0 0;
+  font-size: 12.5px;
+  color: var(--mb-muted, #5a6488);
+}
+.xgp-legend span::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border-radius: 50%;
+  vertical-align: -1px;
+}
+.xgp-legend .is-ok::before { background: #12a77f; }
+.xgp-legend .is-no::before { border: 2px dashed #8a93b3; width: 6px; height: 6px; }
+.xgp-legend .is-na::before { border: 2px dotted #8a93b3; width: 6px; height: 6px; opacity: 0.6; }
+@media (prefers-reduced-motion: reduce) {
+  .xgp-card { animation: none; transition: none; }
+}
