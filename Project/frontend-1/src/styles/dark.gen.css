@@ -3036,6 +3036,39 @@ html:where([data-mode='dark'])[data-mode='dark'] .ssel-list {
     color: #dee1f2;
     background-color: #0b1128
 }
+:where(html[data-mode='dark']) .jf-optional {
+    background-color: #131928;
+    color: #aeb6d4
+}
+:where(html[data-mode='dark']) .reg-receipt {
+    background-color: #0b1128;
+    border: 1px solid #2c364e
+}
+:where(html[data-mode='dark']) .reg-receipt > div {
+    border-bottom: 1px solid #2a3348
+}
+:where(html[data-mode='dark']) .reg-receipt dt {
+    color: #aeb6d4
+}
+:where(html[data-mode='dark']) .reg-receipt dd {
+    color: #e2e6f1
+}
+:where(html[data-mode='dark']) .reg-receipt .is-ok {
+    color: #c4ebdd
+}
+:where(html[data-mode='dark']) .reg-redirect {
+    color: #c0c7dd
+}
+:where(html[data-mode='dark']) .consents-note {
+    background-color: #0b142d;
+    color: #c8cee2
+}
+:where(html[data-mode='dark']) .consents-note svg {
+    color: var(--j1, #8cabff)
+}
+:where(html[data-mode='dark']) .jf-hint {
+    color: #b7bed8
+}
 :where(html[data-mode='dark']) .ftw-scale {
     color: #b7bed8
 }

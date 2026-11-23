@@ -172,9 +172,30 @@ const countryName = (c) => {
   }
 };
 
+/** "IN-MH" -> "Maharashtra" from the sign-up state list (loaded only when a code is stored). */
+function useStateName(country, code) {
+  const [name, setName] = useState(code || '');
+  useEffect(() => {
+    if (!code || !/^[A-Z]{2}-[A-Z0-9]{1,3}$/i.test(code)) return setName(code || '');
+    let live = true;
+    import('../../data/welcome/states.json')
+      .then((m) => {
+        const list = (m.default || m)[String(country || code.slice(0, 2)).toUpperCase()] || [];
+        const hit = list.find((x) => x[1].toUpperCase() === code.toUpperCase());
+        if (live) setName(hit ? hit[0] : code);
+      })
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, [country, code]);
+  return name;
+}
+
 export function ProfilePage() {
   const me = useMe();
   const a = me.address;
+  const stateName = useStateName(a?.country, a?.state);
   const teen = me.type === 'teen';
   return (
     <div className="mb-page">
@@ -233,7 +254,7 @@ export function ProfilePage() {
             <ol className="mb-loc">
               {[
                 ['ma.country', a.country ? countryName(a.country) : ''],
-                ['ma.state', a.state],
+                ['ma.state', stateName],
                 ['ma.city', a.city],
                 ['ma.zip', a.zip]
               ].map(([k, v], i) => (

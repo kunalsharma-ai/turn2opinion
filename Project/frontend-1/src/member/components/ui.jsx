@@ -1,6 +1,7 @@
 // Member design-system primitives. Every visual value comes from tokens (member.css :root vars,
 // painted by theme/appearance.js). No component sets its own colours.
 import { createContext, useCallback, useContext, useEffect, useId, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Icon from '../../components/Icon.jsx';
 import { Link } from '../../router/Router.jsx';
 import { ENV } from '../../config/env.js';
@@ -205,7 +206,8 @@ export function Counter({ value = 0, duration = 900, format }) {
     const a = from.current;
     let raf;
     const step = (now) => {
-      const k = Math.min(1, (now - start) / duration);
+      // the first frame time can be a little before `start`: clamp so the number never dips below its start
+      const k = Math.min(1, Math.max(0, (now - start) / duration));
       const e = 1 - Math.pow(1 - k, 3);
       setN(Math.round(a + (value - a) * e));
       if (k < 1) raf = requestAnimationFrame(step);
@@ -447,7 +449,10 @@ export function Modal({ open, onClose, title, children, side, labelledBy }) {
     };
   }, [open, onClose]);
   if (!open) return null;
-  return (
+  // Rendered at the app root: an opener inside the blurred, sticky header would otherwise become
+  // the containing block of this fixed layer and clip it to the header's height.
+  const host = typeof document !== 'undefined' ? document.querySelector('.mb-root') || document.body : null;
+  const layer = (
     <div className={cx('mb-modal', side && `mb-modal--${side}`)}>
       <div className="mb-modal__scrim" onClick={onClose} aria-hidden="true" />
       <div className="mb-modal__panel" role="dialog" aria-modal="true" aria-label={labelledBy ? undefined : title} aria-labelledby={labelledBy} ref={ref} tabIndex={-1}>
@@ -455,6 +460,7 @@ export function Modal({ open, onClose, title, children, side, labelledBy }) {
       </div>
     </div>
   );
+  return host ? createPortal(layer, host) : layer;
 }
 
 /* ---------------- toast ---------------- */

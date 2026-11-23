@@ -190,7 +190,7 @@ export default function AccountSetup({ user, code, sig, firstName = '', lastName
         </button>
       </div>
       <p className="wq-save-note">
-        <Icon name="lock" size={14} /> {teen ? 'Next: a few quick welcome questions, then your Teen profile.' : 'Next: a few welcome questions, your panel Terms & Conditions, then your dashboard.'}
+        <Icon name="lock" size={14} /> {teen ? 'Next: your dashboard opens. You are signed in straight away.' : 'Next: your Consent & Terms, then your dashboard. You are signed in straight away.'}
       </p>
     </form>
   );

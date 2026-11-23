@@ -4,7 +4,7 @@ import { api } from './api.js';
 import { ENV } from '../config/env.js';
 import { hrefFor } from '../router/Router.jsx';
 
-export const DASHBOARD = '/member/dashboard';
+export const DASHBOARD = '/member/dashboard/';
 
 export async function isLoggedIn() {
   try {
@@ -18,7 +18,7 @@ export async function isLoggedIn() {
 /** Sign-up and login are for visitors: a signed-in member goes to their dashboard instead. */
 export async function redirectIfLoggedIn() {
   const me = await isLoggedIn();
-  if (me) window.location.replace(DASHBOARD);
+  if (me) window.location.replace(hrefFor(DASHBOARD));
   return me;
 }
 
@@ -28,17 +28,11 @@ export function termsUrl(cat, type) {
   return ENV.DEMO_MODE ? hrefFor('/terms/') : `/user/terms-${c}.html`;
 }
 
-/** The welcome questions page, shown once after the first login (see pages/Welcome.jsx). */
+/** Retired page: the welcome questions were removed from registration (Round 15). Kept so old links work. */
 export const WELCOME = '/welcome/';
-/** After logging in: the welcome questions if they are still unanswered, otherwise the dashboard. */
+/** After logging in: always the dashboard (no welcome questions any more). */
 export async function afterLogin() {
-  try {
-    const w = await api.get('/api/v1/user/welcome');
-    if (w?.status === 'success' && w.data && w.data.done === false) return hrefFor(WELCOME);
-  } catch {
-    /* fall through to the dashboard; the member area has its own check */
-  }
-  return DASHBOARD;
+  return hrefFor(DASHBOARD);
 }
 
 const CH_KEY = 't2o_welcome_channels';

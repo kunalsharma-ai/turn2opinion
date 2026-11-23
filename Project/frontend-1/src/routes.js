@@ -311,7 +311,7 @@ export const ROUTES = [
     sitemap: false
   },
   {
-    // A few welcome questions, asked once after the first login (Consumers, Professionals and Teens).
+    // Retired: the welcome questions were removed (Round 15). Old links redirect to the dashboard.
     path: '/welcome/',
     load: page(() => import('./pages/Welcome.jsx')),
     seo: {

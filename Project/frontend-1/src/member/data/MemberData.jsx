@@ -67,7 +67,8 @@ export function useSection(name) {
 // ---------- derived values shared by several cards (computed from existing data only) ----------
 export function profileCompletion(profiles) {
   if (!Array.isArray(profiles) || !profiles.length) return null;
-  const avg = profiles.reduce((n, p) => n + p.completion, 0) / profiles.length;
+  // the API reports -1 for a profile not started yet: that counts as 0 %
+  const avg = profiles.reduce((n, p) => n + Math.min(100, Math.max(0, Number(p.completion) || 0)), 0) / profiles.length;
   return { percent: Math.round(avg), left: profiles.filter((p) => p.completion < 100).length, total: profiles.length };
 }
 

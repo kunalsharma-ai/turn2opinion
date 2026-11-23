@@ -1,22 +1,26 @@
 // Free sign-up for the three panels.
 //
-// Consumer / Business professional (the previous create-account process, Kunal 20 Nov 2026:
-// details -> CAPTCHA -> email link -> password -> login -> welcome questions -> T&C -> dashboard)
-//   0 Your details       First (required), Middle, Last, email, mobile, date of birth, gender,
-//                        country, state / province, city, postal code, consents, CAPTCHA
-//                        -> PUT /api/v1/user -> account link by email
-//   email link           ?user=…&code=… -> password + CAPTCHA (AccountSetup); login is by email
-//                        -> logged in -> /welcome/ (pages/Welcome.jsx): a few welcome questions
-//                           from the original profile bank, saved with PUT /api/v1/user/welcome
-//                        -> the panel's Terms & Conditions form (/user/terms-b2c|b2b.html)
-//                        -> the member dashboard (Project/frontend, unchanged)
+// Consumer / Business professional (Round 15, Kunal 23 Nov 2026: no welcome questions, a
+// dedicated Consent & Terms step, then straight into the dashboard):
+//   1 Your details       First (required), Middle, Last, email, mobile, date of birth, gender,
+//                        Country -> State / Province -> City -> ZIP / Postal code,
+//                        (Professional) three optional "Your work" answers from the profile bank,
+//                        privacy acknowledgement, CAPTCHA
+//                        -> PUT /api/v1/user (address + location answers) -> account link by email
+//   2 Confirm email      ?user=…&code=… from the email (the API requires the email check first)
+//   3 Create password    AccountSetup: PATCH /api/v1/user sets the password AND logs the member in
+//   4 Consent & terms    ConsentPanel: the approved Consumer or Professional agreement, word for
+//                        word, with its consent boxes -> PUT /api/v1/me { terms }
+//   5 Dashboard          /member/dashboard/ (already signed in, no second login)
 //
 // Teen (13–17): a 13–17 birthday on the Consumer or Professional form moves the visitor here
 // (the API checks the age again).
-//   0 You · 1 Parent or guardian · 2 Consent & send (welcome questions come after the first login)
-//   -> the parent/guardian gets the onboarding and consent form (/parent-consent/)
+//   0 You · 1 Parent or guardian · 2 Consent & send
+//   -> the parent/guardian gets the onboarding and consent form (/parent-consent/); the YES and NO
+//      buttons in their email open that page at the matching question
 //   -> after consent the teen gets a secure link back here (?user&code&activate=1) to choose a
-//      password. No password is ever emailed.
+//      password, which logs them in -> consent receipt -> the Teen dashboard. No password is ever
+//      emailed.
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, hrefFor } from '../router/Router.jsx';
 import { ENV, asset } from '../config/env.js';
@@ -37,7 +41,10 @@ import { AuthAura, AuthVoice, saveAud } from '../components/AuthAura.jsx';
 import { playAudience } from '../utils/sound.js';
 import { relLabel, TeenConsentStep, TeenParentStep, TeenStatus, TEEN_CONSENTS } from '../components/TeenJoin.jsx';
 import { readReferral, clearReferral } from '../utils/referral.js';
-import { DASHBOARD, redirectIfLoggedIn, termsUrl, WELCOME, welcomeChannels } from '../utils/session.js';
+import { redirectIfLoggedIn, termsUrl } from '../utils/session.js';
+import ConsentPanel from '../components/onboarding/ConsentPanel.jsx';
+import ProWorkFields, { proWorkAnswers } from '../components/onboarding/ProWorkFields.jsx';
+import { loadBank } from '../components/onboarding/WelcomeQuestions.jsx';
 import { fullPhone, NAME_RE, phoneError, validateParent } from '../utils/signup.js';
 import LocationFields, { locationErrors } from '../components/onboarding/LocationFields.jsx';
 import AccountSetup from '../components/onboarding/AccountSetup.jsx';
@@ -176,7 +183,7 @@ function MemberCard({ f, step }) {
         ['user', 'You & your parent', 'Your details and theirs'],
         ['users', 'Parent consent', 'They get an onboarding form by email'],
         ['key', 'Your password', 'Link sent once they consent'],
-        ['sparkles', 'Welcome questions', 'A few, after your first login']
+        ['dashboard', 'Your dashboard', 'Opens as soon as your password is set']
       ]
     : [
         ['user', 'Account', 'Free, no investment'],
@@ -260,10 +267,9 @@ function Done({ icon = 'mail', title, children }) {
 
 const TYPE_KEY = 't2o_join_type';
 const DRAFT_KEY = 't2o_join_draft_v2';
-// Adults fill in one page; the other stages happen after the email link and are shown for orientation.
-const STEPS = ['Your details', 'Secure your account', 'Welcome questions after login'];
-const STEP_ICONS = ['user', 'lock', 'sparkles'];
-// Welcome questions are asked after the first login (pages/Welcome.jsx), for every audience.
+// Adults fill in one page here; the next stages start from the email link and are shown for orientation.
+const STEPS = ['Your details', 'Confirm email', 'Create password', 'Consent & terms', 'Dashboard'];
+const STEP_ICONS = ['user', 'mail', 'key', 'clipboard', 'dashboard'];
 const TEEN_STEPS = ['You', 'Parent or guardian', 'Consent & send'];
 const TEEN_ICONS = ['user', 'users', 'shield'];
 const CHANNELS = [
@@ -294,10 +300,8 @@ const initial = {
   parentConfirm: false,
   ...Object.fromEntries(TEEN_CONSENTS.map(([k]) => [k, false])),
   channels: { email: true, sms: false, whatsapp: false },
-  terms: false,
-  privacy: false,
-  research: false,
-  marketing: false
+  work: {},
+  privacy: false
 };
 
 function dobError(dob, type) {
@@ -330,17 +334,14 @@ function validate(step, f) {
       const pe = phoneError(f.dial, f.phone);
       if (pe) e.phone = pe;
     }
-    if (teen) Object.assign(e, locationErrors(f));
+    Object.assign(e, locationErrors(f));
   }
   if (teen && step === 1) {
     Object.assign(e, validateParent(f.parent, f.email));
     if (!f.parentConfirm) e.parentConfirm = 'Please confirm these are your parent or guardian’s real details.';
   }
-  if (!teen && step === 0) {
-    if (!f.terms) e.terms = 'Please accept the Terms & Conditions to create your account.';
-    if (!f.privacy) e.privacy = 'Please accept the Privacy Policy to create your account.';
-    if (!f.research) e.research = 'Consent to take part in research is needed to receive surveys.';
-  }
+  // The panel Terms & Conditions and research consents have their own step after the password.
+  if (!teen && step === 0 && !f.privacy) e.privacy = 'Please accept the Privacy Policy to create your account.';
   if (teen && step === 2) {
     TEEN_CONSENTS.forEach(([k, , msg]) => {
       if (!f[k]) e[k] = msg;
@@ -440,6 +441,117 @@ function ReviewCard({ f, journey, onEdit }) {
   );
 }
 
+/** The five adult stages, shown on the details form and again on the password and consent steps. */
+function AdultStepper({ step }) {
+  return (
+    <>
+      <ol className="stepper is-five" aria-label="Sign-up progress">
+        {STEPS.map((s, i) => (
+          <li key={s} className={i === step ? 'is-on' : i < step ? 'is-done' : ''} aria-current={i === step ? 'step' : undefined}>
+            <span className="stepper-dot">{i < step ? <Icon name="check" size={14} strokeWidth={3} /> : <Icon name={STEP_ICONS[i]} size={15} />}</span>
+            <span className="stepper-label">{s}</span>
+          </li>
+        ))}
+        <span className="stepper-bar" style={{ '--p': step / (STEPS.length - 1) }} aria-hidden="true" />
+      </ol>
+      <p className="join-progress-note">{`Step ${step + 1} of ${STEPS.length}`}</p>
+    </>
+  );
+}
+
+/** Teen: who gave consent and when, read from the signed-in Teen's own record. */
+async function loadTeenReceipt(f) {
+  const rel = (r) => (r ? relLabel(r) : 'Parent or guardian');
+  if (ENV.DEMO_MODE) {
+    let u = null;
+    try {
+      u = JSON.parse(sessionStorage.getItem('t2o_demo_signup'))?.user || null;
+    } catch {
+      u = null;
+    }
+    const p = u?.parent || f.parent || {};
+    return { name: [p.name?.first || p.first, p.name?.last || p.last].filter(Boolean).join(' ') || 'Meera Shah', relation: rel(p.relation || p.rel || 'mother'), at: new Date().toISOString(), version: 'MINOR-2026.10' };
+  }
+  try {
+    const r = await api.get('/api/v1/user/teen-profile');
+    const g = r?.data?.guardian;
+    if (!g) return null;
+    const rec = (r.data.consents || []).find((c) => c.who === 'guardian');
+    return { name: [g.name?.first, g.name?.last].filter(Boolean).join(' '), relation: rel(g.relation), at: g.approvedAt || rec?.at || null, version: rec?.version || null };
+  } catch {
+    return null;
+  }
+}
+
+function ConsentReceipt({ info }) {
+  if (!info) return null;
+  const date = info.at ? new Date(info.at).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' }) : null;
+  return (
+    <dl className="reg-receipt" aria-label="Parent or guardian consent">
+      <div>
+        <dt>Consent provided by</dt>
+        <dd>
+          {info.name || info.relation}
+          {info.name ? ` (${info.relation.toLowerCase()})` : ''}
+        </dd>
+      </div>
+      {date && (
+        <div>
+          <dt>Date</dt>
+          <dd>{date}</dd>
+        </div>
+      )}
+      {info.version && (
+        <div>
+          <dt>Consent version</dt>
+          <dd>{info.version}</dd>
+        </div>
+      )}
+      <div>
+        <dt>Status</dt>
+        <dd className="is-ok">
+          <Icon name="check" size={16} strokeWidth={3} /> Consent given
+        </dd>
+      </div>
+    </dl>
+  );
+}
+
+/** Opens the dashboard a few seconds after the last step (the member is already signed in). */
+function ToDashboard({ type, delay = 4 }) {
+  const [left, setLeft] = useState(delay);
+  const href = hrefFor('/member/dashboard/');
+  const go = useCallback(() => {
+    if (ENV.DEMO_MODE) {
+      // preview only: open the matching demo dashboard
+      try {
+        localStorage.setItem('t2o_member_demo', JSON.stringify({ as: type, state: 'ready' }));
+      } catch {
+        /* ignore */
+      }
+    }
+    window.location.assign(href);
+  }, [href, type]);
+  useEffect(() => {
+    if (left <= 0) {
+      go();
+      return undefined;
+    }
+    const t = setTimeout(() => setLeft((n) => n - 1), 1000);
+    return () => clearTimeout(t);
+  }, [left, go]);
+  return (
+    <>
+      <p className="reg-redirect" role="status" aria-live="polite">
+        <span className="btn-spin" aria-hidden="true" /> Opening your dashboard{left > 0 ? ` in ${left}…` : '…'}
+      </p>
+      <button type="button" className="btn btn-primary" onClick={go}>
+        Go to my dashboard <Icon name="arrow" size={18} />
+      </button>
+    </>
+  );
+}
+
 export default function Join() {
   const [f, setF] = useState(initial);
   const [answers, setAnswers] = useState({});
@@ -458,6 +570,7 @@ export default function Join() {
   const [emailErr, setEmailErr] = useState('');
   const [under13, setUnder13] = useState(false);
   const [teenSent, setTeenSent] = useState(null); // { ref, parentMasked } from the API
+  const [receipt, setReceipt] = useState(null); // Teen: who consented and when
   const formRef = useRef(null);
   const restored = useRef(false);
 
@@ -677,8 +790,11 @@ export default function Join() {
     if (isTeenAge(age) && !teen) return onDob(f.dob);
     setState('sending');
     setMsg('');
-    // Only the sign-up details go with the request; the welcome questions are asked after login.
+    // Location (every panel), the optional Professional work answers, and contact channels go with
+    // the request as ordinary profile answers. There are no welcome questions any more.
+    const bank = f.type === 'pro' ? await loadBank().catch(() => null) : null;
     const welcome = {
+      ...(f.type === 'pro' ? proWorkAnswers(bank, f.work) : {}),
       country: f.country,
       ...(f.state ? { state: f.state } : {}),
       city: f.city.trim(),
@@ -712,9 +828,9 @@ export default function Join() {
       dob: f.dob,
       gender: teen ? apiGender(f.gender) : f.gender,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      ...(teen ? { address: [{ tag: 'Home', country: f.country.toLowerCase(), state: f.state || undefined, city: f.city.trim(), zipcode: f.noPostal ? undefined : f.zipcode.trim() || undefined }] } : {}),
-      terms: teen ? ['privacy-policy', 'video-concent'] : ['privacy-policy', f.research && 'video-concent', f.marketing && 'newsletter'].filter(Boolean),
-      ...(teen ? { welcome } : {}),
+      address: [{ tag: 'Home', country: f.country.toLowerCase(), state: f.state || undefined, city: f.city.trim(), zipcode: f.noPostal ? undefined : f.zipcode.trim() || undefined }],
+      terms: teen ? ['privacy-policy', 'video-concent'] : ['privacy-policy'],
+      welcome,
       ...(teen
         ? {
             parent: {
@@ -787,19 +903,16 @@ export default function Join() {
             <Icon name="check" size={14} strokeWidth={3} /> Your details and CAPTCHA
           </li>
           <li className="is-now">
-            <Icon name="mail" size={14} /> Open the email link
+            <Icon name="mail" size={14} /> Confirm your email (open the link)
           </li>
           <li>
             <Icon name="key" size={14} /> Create your password
           </li>
           <li>
-            <Icon name="sparkles" size={14} /> Log in: a few welcome questions
+            <Icon name="clipboard" size={14} /> {f.type === 'pro' ? 'Professional' : 'Consumer'} Consent &amp; Terms
           </li>
           <li>
-            <Icon name="clipboard" size={14} /> {f.type === 'pro' ? 'Professional' : 'Consumer'} panel Terms &amp; Conditions
-          </li>
-          <li>
-            <Icon name="dashboard" size={14} /> Your dashboard
+            <Icon name="dashboard" size={14} /> Your dashboard, already signed in
           </li>
         </ol>
         <p className="muted">The link works for 24 hours. If you can’t see the email, check your spam or promotions folder.</p>
@@ -850,31 +963,60 @@ export default function Join() {
   if (state === 'teen-active')
     return (
       <Done icon="check" title="Your Teen account is active 🎉">
-        <p>Your parent or guardian has consented and your password is set. You log in with your email address. You can change your password any time in your account settings.</p>
+        <p>Your parent or guardian has consented and your password is set. You are signed in. Next time, log in with your email address.</p>
         <TeenStatus stage="account-active" />
-        <a href={hrefFor(WELCOME)} className="btn btn-primary">
-          Continue: a few welcome questions <Icon name="arrow" size={18} />
-        </a>
+        <ConsentReceipt info={receipt} />
+        <ToDashboard type="teen" />
       </Done>
     );
-  if (state === 'to-welcome')
+  if (state === 'to-dashboard')
     return (
-      <Done icon="check" title="Your account is ready">
-        <p>You are logged in. Next: a few quick welcome questions, then your panel agreement.</p>
-        <a href={hrefFor(WELCOME)} className="btn btn-primary">
-          Continue <Icon name="arrow" size={18} />
-        </a>
+      <Done icon="check" title="Account created 🎉">
+        <p>You are signed in, and your consent choices are saved. You can change the optional ones any time in Settings.</p>
+        <ToDashboard type={f.type === 'pro' ? 'pro' : 'consumer'} />
       </Done>
     );
-  if (state === 'to-terms')
+  // ================= Consent & Terms (logged in, after the password) =================
+  if (state === 'consent') {
+    const kind = f.type === 'pro' || link?.category === 'b2b' ? 'pro' : 'consumer';
     return (
-      <Done icon="clipboard" title="Account created. One last step">
-        <p>Read and accept your panel agreement (Terms &amp; Conditions, privacy notice and consent). Then your dashboard opens.</p>
-        <a href={termsUrl(link?.category, f.type)} className="btn btn-primary">
-          Open the Terms &amp; Conditions <Icon name="arrow" size={18} />
-        </a>
-      </Done>
+      <section className={`join theme-${kind} is-setup at-step-3`}>
+        <div className="join-bg" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+        <AuthAura aud={kind} />
+        <div className="wrap join-grid">
+          <div className="join-side">
+            <Breadcrumbs items={[{ label: 'Create your account' }]} />
+            <h1>One step before your dashboard</h1>
+            <p className="join-lead">Your password is set and you are signed in. Read your panel agreement and choose your permissions. Your dashboard opens right after.</p>
+            <MemberCard f={f} step={3} />
+          </div>
+          <div className="join-card">
+            <span className="join-card-ring" aria-hidden="true" />
+            <AdultStepper step={3} />
+            <ConsentPanel
+              kind={kind}
+              firstName={f.firstName}
+              onDone={() => {
+                track('sign_up_consent_saved', { category: f.type });
+                // Marks the old welcome questionnaire as done (no questions are asked), so the
+                // existing member pages never show it, and keeps the chosen contact channels.
+                if (!ENV.DEMO_MODE)
+                  api
+                    .put('/api/v1/user/welcome', { welcome: { 'communication-methods': Object.keys(f.channels).filter((k) => f.channels[k]).concat('dashboard') } })
+                    .catch(() => {});
+                setState('to-dashboard');
+                window.scrollTo({ top: 0 });
+              }}
+            />
+          </div>
+        </div>
+      </section>
     );
+  }
   if (state === 'checking')
     return (
       <Done icon="refresh" title="Checking your link…">
@@ -928,11 +1070,12 @@ export default function Join() {
           <div className="join-side">
             <Breadcrumbs items={[{ label: 'Create your account' }]} />
             <h1>{link.teen ? 'Switch on your Teen account' : 'Create your account'}</h1>
-            <p className="join-lead">{link.teen ? 'Your parent or guardian said yes. Create a password you’ll remember.' : 'Your email is confirmed. Create your password. A few welcome questions come next, once you are logged in.'}</p>
+            <p className="join-lead">{link.teen ? 'Your parent or guardian said yes. Create a password you’ll remember.' : 'Your email is confirmed. Create your password: it signs you in. Your Consent & Terms come next, then your dashboard.'}</p>
             <MemberCard f={f} step={2} />
           </div>
           <div className="join-card">
             <span className="join-card-ring" aria-hidden="true" />
+            {!link.teen && <AdultStepper step={2} />}
             {link.teen && <TeenStatus stage="account-activation-pending" />}
             <AccountSetup
               user={link.user}
@@ -947,14 +1090,13 @@ export default function Join() {
               onDone={() => {
                 window.history.replaceState(null, '', window.location.pathname + window.location.hash);
                 track('sign_up_account_created', { category: f.type });
-                if (link.teen) return setState('teen-active');
-                // Logged in now: the welcome questions follow on their own page, then the agreement.
-                welcomeChannels.set(Object.keys(f.channels).filter((k) => f.channels[k]).concat('dashboard'));
-                setState('to-welcome');
-                const country = (f.country || f.dial || '').toLowerCase();
-                const go = () => window.location.assign(hrefFor(WELCOME));
-                if (country && !ENV.DEMO_MODE) api.put(`/api/v1/user/${link.user}`, { address: [{ tag: 'Home', country }] }).catch(() => {}).finally(go);
-                else go();
+                if (link.teen) {
+                  loadTeenReceipt(f).then(setReceipt);
+                  return setState('teen-active');
+                }
+                // Signed in now (the password call sets the session): the Consent & Terms step.
+                setState('consent');
+                window.scrollTo({ top: 0 });
               }}
             />
           </div>
@@ -985,15 +1127,10 @@ export default function Join() {
       {msg}
     </p>
   );
+  // Only the privacy acknowledgement for the details typed here. The panel Terms & Conditions and
+  // every research and marketing consent are on their own Consent & Terms step after the password.
   const consents = (
     <div className="consents">
-      <Consent k="terms" f={f} set={set} errOf={errOf}>
-        I have read and accept the{' '}
-        <a href={hrefFor('/terms/')} target="_blank" rel="noopener">
-          Terms &amp; Conditions
-        </a>
-        .
-      </Consent>
       <Consent k="privacy" f={f} set={set} errOf={errOf}>
         I have read and accept the{' '}
         <a href={hrefFor('/privacy/')} target="_blank" rel="noopener">
@@ -1001,14 +1138,9 @@ export default function Join() {
         </a>
         , including how my data is used for research.
       </Consent>
-      <Consent k="research" f={f} set={set} errOf={errOf}>
-        I agree to take part in surveys and other market research activities.
-      </Consent>
-      <label className="check">
-        <input type="checkbox" checked={f.marketing} onChange={(e) => set('marketing', e.target.checked)} />
-        <span className="check-ui" />
-        <span>Send me tips, reward news and the occasional newsletter.</span>
-      </label>
+      <p className="consents-note">
+        <Icon name="clipboard" size={14} /> Your {f.type === 'pro' ? 'Professional' : 'Consumer'} Consent &amp; Terms come on their own step, after you create your password.
+      </p>
     </div>
   );
   const captchaBox = (
@@ -1043,7 +1175,7 @@ export default function Join() {
           </p>
           <p className="join-lead">
             {teen
-              ? 'For ages 13 to 17. You fill in your details and your parent or guardian’s. They get an onboarding and consent form by email, and your account switches on only after they consent. A few welcome questions come after your first login.'
+              ? 'For ages 13 to 17. You fill in your details and your parent or guardian’s. They get an onboarding and consent form by email, and your account switches on only after they consent.'
               : 'No fees, no investment – just honest answers. Unlock each step below as you go.'}
           </p>
           <MemberCard f={f} step={teen ? Math.min(step, 3) : Math.min(step, 2)} />
@@ -1062,7 +1194,7 @@ export default function Join() {
             <span className="stepper-bar" style={{ '--p': step / (steps.length - 1) }} aria-hidden="true" />
           </ol>
           <p className="join-progress-note">
-            {teen ? `Step ${step + 1} of ${steps.length} · nothing is sent until the last step` : 'Step 1 of 3 · the next steps start from the link we email you'}
+            {teen ? `Step ${step + 1} of ${steps.length} · nothing is sent until the last step` : `Step 1 of ${steps.length} · the next steps start from the link we email you`}
           </p>
 
           {(
@@ -1138,7 +1270,7 @@ export default function Join() {
                       <Icon name="mail" size={15} /> Contact
                     </legend>
                     <div data-k="email">
-                      <Field id="j-email" label="Email address" error={errOf('email')} valid={okOf('email')} hint={teen ? 'Your own email. Your account link comes here after your parent consents.' : 'Your account link comes here after the welcome questions.'}>
+                      <Field id="j-email" label="Email address" error={errOf('email')} valid={okOf('email')} hint={teen ? 'Your own email. Your account link comes here after your parent consents.' : 'Your account link comes here.'}>
                         <input
                           id="j-email"
                           className="input"
@@ -1313,6 +1445,13 @@ export default function Join() {
                 </div>
                 {!teen && (
                   <>
+                    <fieldset className="jf-group">
+                      <legend>
+                        <Icon name="pin" size={15} /> Where you live
+                      </legend>
+                      <LocationFields loc={f} set={set} errOf={errOf} touch={touch} idp="j-loc" freeState noPostal={f.noPostal} onNoPostal={(v) => { set('noPostal', v); if (v) set('zipcode', ''); }} />
+                    </fieldset>
+                    {f.type === 'pro' && <ProWorkFields work={f.work || {}} onChange={(w) => set('work', w)} />}
                     {consents}
                     <Captcha onChange={onCaptcha} resetKey={resetKey} error={captchaErr} />
                     {captchaErr && (
