@@ -548,3 +548,73 @@
   color: #5b6588;
   text-align: start !important;
 }
+
+/* ===================== Approved consent pages (ConsentKit, Round 21) =====================
+   The package renders in its own Shadow DOM; these rules only place it on the site's pages. */
+.ckit {
+  position: relative;
+  /* above the rest of the page, so the package's own dialogs cover the footer too */
+  z-index: 60;
+  min-height: 70vh;
+}
+html.ckit-page {
+  --header-h: 0px;
+}
+html.ckit-page .site-header {
+  display: none;
+}
+.ckit-host {
+  display: block;
+}
+.ckit-wait {
+  display: grid;
+  gap: 14px;
+  width: min(960px, calc(100% - 32px));
+  margin: 24px auto;
+}
+.ckit-wait span {
+  height: 120px;
+  border-radius: 22px;
+  background: linear-gradient(90deg, rgba(30, 60, 160, 0.06), rgba(30, 60, 160, 0.12), rgba(30, 60, 160, 0.06));
+  background-size: 200% 100%;
+  animation: ckitWait 1.4s linear infinite;
+}
+.ckit-wait span:first-child {
+  height: 220px;
+}
+@keyframes ckitWait {
+  to {
+    background-position: -200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ckit-wait span {
+    animation: none;
+  }
+}
+.join.join--kit {
+  padding: clamp(18px, 3vw, 32px) 0 0;
+  overflow: visible;
+  /* no stacking context: the package's dialogs (receipt, certificate) must sit above the site footer */
+  isolation: auto;
+}
+.join-kit-head {
+  display: grid;
+  gap: 8px;
+  max-width: 880px;
+  margin: 0 auto 18px;
+}
+.join--kit .join-progress-note {
+  text-align: center;
+  color: rgba(225, 232, 255, 0.85);
+}
+.join-kit-lead {
+  margin: 0;
+  color: rgba(225, 232, 255, 0.92);
+  font-size: 15px;
+  text-align: center;
+}
+.gdc.gdc--kit {
+  max-width: none;
+  padding: 0;
+}

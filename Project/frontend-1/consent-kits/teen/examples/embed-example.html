@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Embed example — your logged-in app</title>
+  <style>body{margin:0;font-family:Georgia,serif;background:#eee} .host-nav{padding:14px 20px;background:#222;color:#fff}</style>
+</head>
+<body>
+  <!-- Your app's own header stays untouched — the teen agreement renders in a Shadow DOM below it -->
+  <div class="host-nav">Your app header (example)</div>
+
+  <div id="t2o-minor"></div>
+  <script>
+    window.T2O_MINOR = {
+      member: { id: 'P-12345', firstName: 'Aarav', age: 15, country: 'IN' },
+      submitUrl: '/api/minor-consent',      // your endpoint (see README → API)
+      statusUrl: '/api/minor-consent/status',
+      headers: { 'X-CSRF-Token': 'TOKEN' },  // optional
+      continueUrl: '/dashboard',
+      logoutUrl: '/logout',
+      assetBase: '/',                        // URL where dist/ (brand/, fonts/) is published
+    };
+    window.addEventListener('t2o:minor-consent', function (e) { console.log('record sent', e.detail); });
+    window.addEventListener('t2o:minor-activated', function (e) { console.log('account activated', e.detail); });
+  </script>
+  <script src="/embed/t2o-minor-consent.js" defer></script>
+</body>
+</html>

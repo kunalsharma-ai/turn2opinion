@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Teen research terms & parental consent — Turn2Opinion</title>
+    <meta name="description" content="Turn2Opinion teen (13–17) research participation terms and parental consent: read it together, tap to agree, a parent or guardian gives permission and the teen decides." />
+    <!-- Members-only page shown after login to members aged 13–17: never indexed -->
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="preload" href="fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="fonts/manrope-var.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="brand/turn2opinion-logo.webp" as="image" type="image/webp" fetchpriority="high" />
+    <!--
+      BACKEND: fill this object for the signed-in teen (README → Integration). Example:
+      window.T2O_MINOR = { member: { id: 'P-12345', firstName: 'Aarav', age: 15, country: 'IN' },
+                           // from registration — shown masked, never sent back by the page:
+                           guardian: { name: 'Priya Sharma', relationship: 'mother', contactType: 'email', contact: 'parent@example.com' },
+                           submitUrl: '/api/minor-consent', statusUrl: '/api/minor-consent/status',
+                           headers: { 'X-CSRF-Token': '…' }, continueUrl: '/dashboard', logoutUrl: '/logout' };
+    -->
+    <script>window.T2O_MINOR = window.T2O_MINOR || {};</script>
+    <!-- Language + theme before first paint: the member's saved choice, else config.theme, else English = white
+         theme and any other language = Turn2Opinion navy (dark) theme -->
+    <script>
+      (function () {
+        try {
+          var d = document.documentElement, c = window.T2O_MINOR || {};
+          var CH = /*LANG_CHUNKS*/{};
+          var l = new URLSearchParams(location.search).get('lang') || (c.language && c.language !== 'auto' ? c.language : '') || localStorage.getItem('t2o.lang') || '';
+          if (!l) { var n = (navigator.language || '').toLowerCase(); for (var k in CH) if (n === k.toLowerCase() || n.split('-')[0] === k.toLowerCase()) { l = k; break; } }
+          var th = localStorage.getItem('t2o.minor.theme') || (c.theme === 'light' || c.theme === 'dark' ? c.theme : '') || (l && !/^en/i.test(l) ? 'dark' : 'light');
+          d.setAttribute('data-theme', th === 'dark' ? 'classic' : 'light');
+          if (th === 'dark') { var tc = document.querySelector('meta[name="theme-color"]'); if (tc) tc.setAttribute('content', '#070d2b'); }
+          if (l && !/^en/i.test(l)) {
+            d.classList.add('lang-boot');
+            setTimeout(function () { d.classList.remove('lang-boot'); }, 3000);
+            var f = CH[l] || CH[l.split('-')[0]];
+            if (f) { var p = document.createElement('link'); p.rel = 'modulepreload'; p.href = f; document.head.appendChild(p); }
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <!--app-css-->
+  </head>
+  <body>
+    <div id="t2o-minor" data-prerendered="1"><!--app-html--></div>
+    <!-- the prerendered page follows the theme chosen in <head> from its first paint (no light→dark flash) -->
+    <script>try { var x = document.querySelector('#t2o-minor > .mt'); if (x) x.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') || 'light'); } catch (e) {}</script>
+    <noscript><p style="font:16px/1.6 system-ui;padding:24px;max-width:640px;margin:auto">Please enable JavaScript to read and complete the Turn2Opinion teen participation agreement.</p></noscript>
+    <!--app-js-->
+  </body>
+</html>

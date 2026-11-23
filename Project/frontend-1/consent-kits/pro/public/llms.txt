@@ -1,0 +1,24 @@
+# Turn2Opinion — Business Professionals Panel: Terms, Privacy Notice & Consent
+
+> A members-only page that business professionals (owners, executives, managers and specialists) see after logging in to the Turn2Opinion B2B research panel, operated by Frequent Research Fieldwork Solutions Pvt. Ltd. (d/b/a Turn2Opinion). It presents the 23-clause Business Professionals Panel agreement in plain language and records the member's approvals. The page is private (noindex) and is not a public source of the terms. For the public website see https://www.turn2opinion.com.
+
+Terms version: B2B-2026.10 · Effective: 2026-10-18 · Binding language: English · Interface: 51 languages, light and dark themes.
+
+## What the page does
+- Shows the 23 clauses in six tracks: Membership & eligibility; You, your employer & confidentiality; Data & privacy; Studies & honoraria; Clients, contact & cookies; Account, changes & complaints. Each clause has a plain-language summary ("What this means for you") and the full legal text.
+- Collects four required approvals: accepting the Terms & Conditions; processing under the Privacy Notice; meeting the age requirement with accurate professional details; not sharing confidential business information.
+- Offers five optional approvals: expert interviews and recordings; studies where a client may know the member's identity or follow up; sensitive or regulated topics; newsletters and offers; optional analytics cookies.
+- Records a signed consent (ID, terms version, language, approvals, clauses reviewed, time) and issues a downloadable consent certificate.
+
+## Key points of the agreement (summary, not legal advice)
+- Members take part as individuals, not on behalf of their employer, and must never disclose trade secrets, client data, non-public figures or insider information.
+- Participation is voluntary; honoraria are stated in each invitation and paid after validation.
+- Results are usually aggregated or anonymised. Expert interviews and quotes may identify a member, and the member is told in advance.
+- Client and provider access is limited to what a study needs, under safeguards; profiles are never sold for others' marketing.
+- Members can access, correct, delete or export their data, withdraw consent, opt out of marketing, manage cookies or complain, and can leave at any time.
+
+## Contact
+- Support and privacy: support@turn2opinion.com
+- Registered address: Mangolpur Kalan, New Delhi 110085, India
+- Privacy policy: https://www.turn2opinion.com/privacy/
+- Cookie policy: https://www.turn2opinion.com/cookies/

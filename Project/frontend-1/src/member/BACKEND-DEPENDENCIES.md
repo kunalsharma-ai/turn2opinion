@@ -98,3 +98,16 @@ points to confirm or small improvements:
 | 62 | Survey order | The order `GET /api/v1/profile` returns | Optional: an explicit display order per profile |
 
 The live site also needs one routing change: see `README.md`, "Going live needs one gateway rule".
+
+## Round 20: approved consent pages (Consumer v1.1.0, Professional v1.0.0, Teen v1.1.0)
+
+The three delivered consent packages now are the Consent & Terms step of Consumer and Professional registration
+and the guardian's consent part of `/parent-consent/`. Saving uses the same calls as before, so nothing new is stored:
+
+| # | Item | Status today | Backend change |
+| --- | --- | --- | --- |
+| 63 | Consumer / Professional choices | **Live**: the ids of the boxes ticked go to `PUT /api/v1/me { terms }` (earlier records kept, this agreement's ids replaced) | None |
+| 64 | Teen guardian consent | **Live**: `PUT /api/v1/user/parent-consent/:user` with `termsRead`, `declaration` and `selections` (participation, privacy, contact required; studyContact, recording, sensitive optional) | None |
+| 65 | The package's consent record (record id, terms version, sections opened, language, time zone, timestamp per choice) | Shown to the member as their receipt, **not stored**: the API keeps only the ticked ids | A field or table to keep the full record if Legal needs it as evidence |
+| 66 | Declining the agreement | Consumer / Professional: the account is closed with `DELETE /api/v1/me` (as before). Teen: the guardian's "No" path is unchanged | None |
+| 67 | Legal text | Kept exactly as delivered. It names the legal operator and uses "minor" inside the legal clauses; Legal should confirm the operator name, effective dates and versions before launch | Legal review |

@@ -148,9 +148,9 @@ bar to switch between Consumer, Professional and Teen, and between data, loading
    answers from the profile bank.
 2. **Confirm email.** Opened from the email link.
 3. **Create password.** This call also signs the member in.
-4. **Consent & Terms.** `components/onboarding/ConsentPanel.jsx` shows the approved agreement from
-   `src/data/consent/`, generated word for word by `scripts/extract-consent.mjs`. Choices are saved
-   with `PUT /api/v1/me {terms}`.
+4. **Consent & Terms.** `components/onboarding/ConsentKit.jsx` shows the approved consent page
+   (Consumer v1.1.0 or Professional v1.0.0, see `consent-kits/README.md`). Choices are saved with
+   `PUT /api/v1/me {terms}` (`utils/consentTerms.js`).
 5. **Dashboard.**
 
 There are no welcome questions. `/welcome/` now redirects to the dashboard.

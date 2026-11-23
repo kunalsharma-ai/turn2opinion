@@ -20,6 +20,14 @@ const envPlugin = { name: 'asset-map', setup(b) {
     s = s.replace(/export function asset\(path\) \{/, "export function asset(path) {\n  const __m = (typeof globalThis !== 'undefined' && globalThis.__T2O_ASSETS) || {};\n  const __k = '/' + String(path).replace(/^\\.?\\//, '');\n  if (__m[__k]) return __m[__k];");
     return { contents: s, loader: 'js' };
   });
+  // The approved consent pages: bundled in (no separate host.js in a single file); their CSS is imported as text.
+  b.onLoad({ filter: /src[\/\\]components[\/\\]onboarding[\/\\]ConsentKit\.jsx$/ }, (a) => {
+    const kits = join(proj, 'consent-kits');
+    const s = readFileSync(a.path, 'utf8').replace(/import\(\/\* @vite-ignore \*\/ asset\([^;]*\)\);/, () =>
+      `({ consumer: () => import(${JSON.stringify(join(kits, 'consumer/src/host.jsx'))}), pro: () => import(${JSON.stringify(join(kits, 'pro/src/host.jsx'))}), teen: () => import(${JSON.stringify(join(kits, 'teen/src/host.jsx'))}) })[kind]();`);
+    return { contents: s, loader: 'jsx' };
+  });
+  b.onLoad({ filter: /consent-kits[\/\\].*\.css$/ }, (a) => ({ contents: readFileSync(a.path, 'utf8'), loader: 'text' }));
   // esbuild has no import.meta.glob: expand each glob into a literal map of lazy imports.
   b.onLoad({ filter: /src[\/\\]i18n[\/\\]engine\.js$/ }, (a) => {
     const dir = dirname(a.path);
@@ -47,6 +55,19 @@ walk(join(pub, 'flags'), '/flags');
 if (MEMBER) walk(join(pub, 'images', 'brand'), '/images/brand');
 else walk(join(pub, 'images'), '/images');
 css = css.replace(/url\((["']?)\/fonts\/([^)"']+)\1\)/g, (_, q, f) => `url(${dataUri(join(pub, 'fonts', f))})`);
+// the consent pages resolve brand/, fonts/ and flags/ through their own asset maps (see consent-kits/*/src/assets.js)
+const kitMaps = {};
+if (!MEMBER) {
+  const kitMime = { ...mime, '.woff2': 'font/woff2' };
+  for (const [kind, key] of [['consumer', '__T2O_CONSENT_ASSETS'], ['pro', '__T2O_PRO_ASSETS'], ['teen', '__T2O_MINOR_ASSETS']]) {
+    const m = (kitMaps[key] = {});
+    const kp = join(proj, 'consent-kits', kind, 'public');
+    const w2 = (d, rel) => { for (const n of readdirSync(d)) { const p2 = join(d, n), r2 = rel ? rel + '/' + n : n;
+      if (statSync(p2).isDirectory()) w2(p2, r2); else if (kitMime[extname(n)] && /^(brand|fonts|flags)\//.test(r2) && !/\.png$/.test(n)) {
+        const e = extname(n); m[r2] = e === '.svg' ? dataUri(p2) : `data:${kitMime[e]};base64,${readFileSync(p2).toString('base64')}`; } } };
+    w2(kp, '');
+  }
+}
 const icon = dataUri(join(pub, 'favicon.svg'));
 const safe = (s) => s.replace(/<\/(script|style)/gi, '<\\/$1');
 const html = `<!doctype html>
@@ -62,7 +83,7 @@ const html = `<!doctype html>
 <script>try{if(JSON.parse(localStorage.getItem('t2o_mode'))==='dark')document.documentElement.setAttribute('data-mode','dark')}catch(e){}</script>
 <script>document.documentElement.classList.add('js');setTimeout(function(){if(!document.documentElement.classList.contains('js-ready'))document.documentElement.classList.remove('js')},5000);</script>
 <style>${safe(css)}</style>
-<script>window.__T2O_ASSETS=${safe(JSON.stringify(map))};</script>
+<script>window.__T2O_ASSETS=${safe(JSON.stringify(map))};</script>${Object.entries(kitMaps).map(([k, m]) => `<script>window.${k}=${safe(JSON.stringify(m))};</script>`).join('')}
 </head>
 <body>
 <div id="root"></div>

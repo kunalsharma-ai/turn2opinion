@@ -7,14 +7,14 @@
 //   onboard   the Parent & Guardian Onboarding Form (Module 1 of the attached questionnaire, all
 //             questions kept; what the teen already gave is pre-filled and only confirmed)
 //   review    check every answer, edit any of them
-//   consent   the Teen participation agreement MINOR-2026.10 (Parts A and B), declaration and the
-//             six separate, unticked permissions (3 required, 3 optional)
+//   consent   the approved Teen consent page (v1.1.0) in guardian mode: agreement MINOR-2026.10,
+//             declaration and the six separate, untapped permissions (3 required, 3 optional)
 //   done      certificate; the teen is emailed a password link, the guardian a confirmation
 //   decline   (NO) reasons + optional note, with a way back before the final confirmation
 //   declined  the request is closed; nobody gets an account
 // Every call carries the signed link; the API checks each stage was completed before the next.
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, hrefFor } from '../router/Router.jsx';
+import { Link } from '../router/Router.jsx';
 import { api } from '../utils/api.js';
 import Icon from '../components/Icon.jsx';
 import { Flag } from '../components/Brand.jsx';
@@ -25,8 +25,8 @@ import { fullPhone, splitPhone } from '../utils/signup.js';
 import { playSuccess, playSwitch, pop } from '../utils/sound.js';
 import { PARENT_SURVEY } from '../data/teen/parentSurvey.js';
 import QInput, { answerText, isShown, qError, warmRegions } from '../components/survey/QInput.jsx';
-import AgreementReader from '../components/teen/AgreementReader.jsx';
-import { DECLARATION, SELECTIONS, EN as AG } from '../data/teen/agreement.js';
+import ConsentKit from '../components/onboarding/ConsentKit.jsx';
+import { SELECTIONS } from '../data/teen/agreement.js';
 import { DECLINE_REASONS, GUARDIAN_TERMS_VERSION, relWord } from '../data/teen/registration.js';
 
 const DRAFT = 't2o_guardian_onboarding_v2';
@@ -430,105 +430,49 @@ function Review({ t, a, onEdit, onBack, onSubmit, busy, err }) {
 }
 
 // ------------------------------------------------------------------ consent
-function Consent({ t, busy, err, onSubmit }) {
-  const [read, setRead] = useState(false);
-  const [decl, setDecl] = useState(false);
-  const [sel, setSel] = useState({});
-  const [tried, setTried] = useState(false);
-  const req = SELECTIONS.filter((s) => s.required);
-  const opt = SELECTIONS.filter((s) => !s.required);
-  const ready = read && decl && req.every((s) => sel[s.id]);
-  const send = () => {
-    setTried(true);
-    if (!ready) {
-      setTimeout(() => document.querySelector('.gdc .has-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 30);
-      return;
-    }
-    onSubmit({ termsRead: true, declaration: true, selections: sel });
-  };
-  const tick = (id, s) => (
-    <label key={id} className={`gdc-sel ${sel[id] ? 'is-on' : ''} ${tried && s.required && !sel[id] ? 'has-error' : ''}`}>
-      <input type="checkbox" checked={!!sel[id]} onChange={(e) => { setSel((x) => ({ ...x, [id]: e.target.checked })); if (e.target.checked) pop({ pitch: 1.2 }); }} />
-      <span className="gdc-sel-box" aria-hidden="true">
-        <Icon name="check" size={15} strokeWidth={3} />
-      </span>
-      <span className="gdc-sel-e" aria-hidden="true">
-        {s.emoji}
-      </span>
-      <span>
-        <b>{AG[`c_${id}_k`]}</b> <em>{AG[s.kind]}</em>
-        <small>{AG[`c_${id}`]}</small>
-      </span>
-    </label>
-  );
+// The approved Teen consent page (v1.1.0, "Two Turns") in guardian mode: Part A the terms, Part B the
+// declaration and the separate permissions (3 required, 3 optional, all untapped), Part C shown as already
+// recorded (the teen gave their own decision at registration). Saved with the same call as before:
+// PUT /api/v1/user/parent-consent/:id { termsRead, declaration, selections, version }.
+function Consent({ t, onSave, onFinish, onBack }) {
+  const teen = t.name?.first || 'your teen';
+  const p = t.parent || {};
+  const cc = String(t.teen?.address?.country || '').toLowerCase();
   return (
-    <div className="wrap gdc">
-      <div className="gdc-head">
-        <p className="gdn-kicker">Step 4 · Consent form</p>
-        <h1>Teen participation agreement</h1>
-        <p className="gdn-lead">
-          Version {GUARDIAN_TERMS_VERSION}. Plain-language summaries first, the full text of every section one tap away. The English text is the binding version.
-        </p>
-      </div>
-      <AgreementReader />
-      <label className={`gdc-read ${read ? 'is-on' : ''} ${tried && !read ? 'has-error' : ''}`}>
-        <input type="checkbox" checked={read} onChange={(e) => setRead(e.target.checked)} />
-        <span className="gdc-sel-box" aria-hidden="true">
-          <Icon name="check" size={15} strokeWidth={3} />
-        </span>
-        <span>I have read the Teen participation agreement (Part A) and the <a href={hrefFor('/privacy/')} target="_blank" rel="noopener">Privacy Policy</a>, and I had the chance to ask questions.</span>
-      </label>
-      <section className="gdc-part">
-        <h2>
-          <span>Part B</span> Declaration
-        </h2>
-        <p>{AG.b2_lead}</p>
-        <ol className="gdc-decl">
-          {DECLARATION.map((d, i) => (
-            <li key={i}>{d}</li>
-          ))}
-        </ol>
-        <label className={`gdc-read ${decl ? 'is-on' : ''} ${tried && !decl ? 'has-error' : ''}`}>
-          <input type="checkbox" checked={decl} onChange={(e) => setDecl(e.target.checked)} />
-          <span className="gdc-sel-box" aria-hidden="true">
-            <Icon name="check" size={15} strokeWidth={3} />
-          </span>
-          <span>I confirm all ten points of this declaration.</span>
-        </label>
-      </section>
-      <section className="gdc-part">
-        <h2>
-          <span>Part B</span> Your permissions
-        </h2>
-        <p>{AG.b3_lead}</p>
-        <p className="gdc-group">Required</p>
-        {req.map((s) => (
-          tick(s.id, s)
-        ))}
-        <p className="gdc-group is-opt">Optional · each one separate</p>
-        {opt.map((s) => (
-          tick(s.id, s)
-        ))}
-        <p className="gdn-small">{AG.opt_note}</p>
-      </section>
-      {tried && !ready && (
-        <p className="form-alert" role="alert">
-          Please tick the agreement, the declaration and the three required permissions.
-        </p>
-      )}
-      {err && (
-        <p className="form-alert" role="alert">
-          {err}
-        </p>
-      )}
-      <div className="gdc-submit">
-        <p>
-          Recorded with version {GUARDIAN_TERMS_VERSION}, the date and time, and reference <b>{t.ref}</b>. {t.name?.first || 'Your teen'}’s own confirmations ({t.teenConsent?.version || 'recorded at registration'}) do not replace yours.
-        </p>
-        <button type="button" className="gdn-btn is-big" onClick={send} disabled={busy}>
-          {busy ? 'Recording your consent…' : 'Give consent and finish'} <Icon name="check" size={18} strokeWidth={2.6} />
-        </button>
-      </div>
+    <div className="gdc gdc--kit">
+      <ConsentKit
+        kind="teen"
+        label="Teen participation agreement and parental consent"
+        config={{
+          mode: 'guardian',
+          member: { id: t.ref || '', firstName: p.name?.first || '', country: cc },
+          teenName: teen,
+          guardian: { name: fullName(p.name), relationship: p.relation || '', contactType: 'email', contact: p.email || '', country: cc, verified: true },
+          termsVersion: GUARDIAN_TERMS_VERSION,
+          continueUrl: '',
+          logoutUrl: '',
+          text: {
+            hello: 'Hi {0} — the last step: your consent',
+            hello_anon: 'The last step: your consent',
+            lead: `Read it with ${teen} if you can. You give permission here; ${teen} already made their own decision when they registered. The account switches on only when both are done.`,
+            role3_h: `${teen} decides`,
+            j_teen: teen,
+            lock_teen: `${teen}’s key`,
+            on_file_note: 'We use the details from your onboarding form — nothing new to enter. Your confirmation goes to {0}.',
+            done_active_h: 'Consent recorded — thank you!',
+            done_active_p: `Your permission and ${teen}’s decision are both saved. ${teen} now gets a secure link to create their password.`,
+            lock_open: 'Both keys turned',
+            continue: 'See your confirmation',
+            decline_h: 'Leave without finishing?',
+            decline_p: 'Nothing is saved yet. You can come back to this page with the link in your email while it is valid.',
+            decline_back: 'Back to the agreement',
+            decline_out: 'Back to my answers'
+          },
+          save: onSave,
+          onContinue: onFinish,
+          onDecline: onBack
+        }}
+      />
     </div>
   );
 }
@@ -722,12 +666,20 @@ export default function ParentConsent() {
       show('consent');
     });
   };
-  const giveConsent = (body) =>
-    call(() => api.put(`/api/v1/user/parent-consent/${user}`, { ...auth, ...body, version: GUARDIAN_TERMS_VERSION }), (d) => {
-      setRes(d);
-      playSuccess();
-      show('done');
-    });
+  // Called by the consent page; throwing shows its "couldn't send" message with a retry.
+  const giveConsent = async (rec) => {
+    const c = rec?.consents || {};
+    const selections = Object.fromEntries(SELECTIONS.map((x) => [x.id, c[x.id] === true]));
+    const r = await api.put(`/api/v1/user/parent-consent/${user}`, { ...auth, termsRead: rec?.termsAccepted === true, declaration: SELECTIONS.filter((x) => x.required).every((x) => selections[x.id]), selections, version: GUARDIAN_TERMS_VERSION });
+    if (r?.status !== 'success') {
+      const m = r?.message || '';
+      if (/expired/i.test(m)) setStage('expired');
+      throw new Error(m || 'save failed');
+    }
+    setRes(r.data || {});
+    playSuccess();
+    return { consentId: r.data?.ref || r.data?.consentId, accountActivationStatus: 'active' };
+  };
   const askRenew = async () => {
     setRenew('sending');
     try {
@@ -801,7 +753,7 @@ export default function ParentConsent() {
       {stage === 'decline' && <Decline t={t} busy={busy} err={err} onBack={() => show('invite')} onConfirm={sayNo} />}
       {stage === 'onboard' && <Onboarding t={t} a={a} setA={setA} start={onbStart} onDone={() => show('review')} />}
       {stage === 'review' && <Review t={t} a={a} busy={busy} err={err} onBack={() => { setOnbStart(PARENT_SURVEY.sections.length - 1); show('onboard'); }} onEdit={(si) => { setOnbStart(si); show('onboard'); }} onSubmit={saveOnboarding} />}
-      {stage === 'consent' && <Consent t={t} busy={busy} err={err} onSubmit={giveConsent} />}
+      {stage === 'consent' && <Consent t={t} onSave={giveConsent} onFinish={() => show('done')} onBack={() => show('review')} />}
       {stage === 'done' && <Done t={t} res={res} />}
     </GuardianFrame>
   );

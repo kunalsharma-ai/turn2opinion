@@ -9,8 +9,8 @@
 //                        -> PUT /api/v1/user (address + location answers) -> account link by email
 //   2 Confirm email      ?user=…&code=… from the email (the API requires the email check first)
 //   3 Create password    AccountSetup: PATCH /api/v1/user sets the password AND logs the member in
-//   4 Consent & terms    ConsentPanel: the approved Consumer or Professional agreement, word for
-//                        word, with its consent boxes -> PUT /api/v1/me { terms }
+//   4 Consent & terms    ConsentKit: the approved Consumer (v1.1.0) or Professional (v1.0.0) consent
+//                        page, word for word, with its consent boxes -> PUT /api/v1/me { terms }
 //   5 Dashboard          /member/dashboard/ (already signed in, no second login)
 //
 // Teen (13–17): a 13–17 birthday on the Consumer or Professional form moves the visitor here
@@ -42,7 +42,8 @@ import { playAudience } from '../utils/sound.js';
 import { relLabel, TeenConsentStep, TeenParentStep, TeenStatus, TEEN_CONSENTS } from '../components/TeenJoin.jsx';
 import { readReferral, clearReferral } from '../utils/referral.js';
 import { redirectIfLoggedIn, termsUrl } from '../utils/session.js';
-import ConsentPanel from '../components/onboarding/ConsentPanel.jsx';
+import ConsentKit from '../components/onboarding/ConsentKit.jsx';
+import { saveAgreementTerms } from '../utils/consentTerms.js';
 import ProWorkFields, { proWorkAnswers } from '../components/onboarding/ProWorkFields.jsx';
 import { loadBank } from '../components/onboarding/WelcomeQuestions.jsx';
 import { fullPhone, NAME_RE, phoneError, validateParent } from '../utils/signup.js';
@@ -980,40 +981,42 @@ export default function Join() {
   if (state === 'consent') {
     const kind = f.type === 'pro' || link?.category === 'b2b' ? 'pro' : 'consumer';
     return (
-      <section className={`join theme-${kind} is-setup at-step-3`}>
-        <div className="join-bg" aria-hidden="true">
-          <span />
-          <span />
-          <span />
+      <section className={`join theme-${kind} is-setup at-step-3 join--kit`}>
+        <div className="wrap join-kit-head">
+          <AdultStepper step={3} />
+          <p className="join-kit-lead">Your password is set and you are signed in. Read your panel agreement and choose your permissions. Your dashboard opens right after.</p>
         </div>
-        <AuthAura aud={kind} />
-        <div className="wrap join-grid">
-          <div className="join-side">
-            <Breadcrumbs items={[{ label: 'Create your account' }]} />
-            <h1>One step before your dashboard</h1>
-            <p className="join-lead">Your password is set and you are signed in. Read your panel agreement and choose your permissions. Your dashboard opens right after.</p>
-            <MemberCard f={f} step={3} />
-          </div>
-          <div className="join-card">
-            <span className="join-card-ring" aria-hidden="true" />
-            <AdultStepper step={3} />
-            <ConsentPanel
-              kind={kind}
-              firstName={f.firstName}
-              onDone={() => {
-                track('sign_up_consent_saved', { category: f.type });
-                // Marks the old welcome questionnaire as done (no questions are asked), so the
-                // existing member pages never show it, and keeps the chosen contact channels.
-                if (!ENV.DEMO_MODE)
-                  api
-                    .put('/api/v1/user/welcome', { welcome: { 'communication-methods': Object.keys(f.channels).filter((k) => f.channels[k]).concat('dashboard') } })
-                    .catch(() => {});
-                setState('to-dashboard');
-                window.scrollTo({ top: 0 });
-              }}
-            />
-          </div>
-        </div>
+        <ConsentKit
+          kind={kind}
+          label={kind === 'pro' ? 'Professional Consent & Terms' : 'Consumer Consent & Terms'}
+          config={{
+            member: { id: link?.user || '', firstName: f.firstName.trim(), email: f.email.trim(), country: f.country },
+            continueUrl: '',
+            logoutUrl: '',
+            // the package keeps its "saving" state and its retry message while this runs
+            save: async (rec) => {
+              await saveAgreementTerms(kind, rec.consents);
+              track('sign_up_consent_saved', { category: f.type });
+              // Marks the old welcome questionnaire as done (no questions are asked), so the
+              // existing member pages never show it, and keeps the chosen contact channels.
+              if (!ENV.DEMO_MODE)
+                api
+                  .put('/api/v1/user/welcome', { welcome: { 'communication-methods': Object.keys(f.channels).filter((k) => f.channels[k]).concat('dashboard') } })
+                  .catch(() => {});
+              return {};
+            },
+            // "Continue to your dashboard" on the package's receipt
+            onContinue: () => {
+              setState('to-dashboard');
+              window.scrollTo({ top: 0 });
+            },
+            // "Not now" -> "Log out"
+            onDecline: async () => {
+              if (!ENV.DEMO_MODE) await api.delete('/api/v1/me').catch(() => {});
+              window.location.assign(hrefFor('/'));
+            }
+          }}
+        />
       </section>
     );
   }

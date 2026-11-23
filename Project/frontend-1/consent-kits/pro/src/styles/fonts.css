@@ -1,0 +1,4 @@
+/* Self-hosted variable fonts (SIL Open Font License, see public/fonts/OFL-*.txt).
+   Manrope 600–700: headings & numbers · Inter 400–600: body, buttons, navigation. */
+@font-face { font-family: 'Manrope'; src: url('fonts/manrope-var.woff2') format('woff2'); font-weight: 500 700; font-display: swap; }
+@font-face { font-family: 'Inter'; src: url('fonts/inter-var.woff2') format('woff2'); font-weight: 400 600; font-display: swap; }
