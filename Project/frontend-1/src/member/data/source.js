@@ -244,6 +244,38 @@ export async function loadSection(name, ctx) {
   return LOADERS[name](ctx);
 }
 
+
+// ---------------- payment methods ----------------
+export const PAY_KEYS = ['payment-method', 'payment-method-bank-ifsc', 'payment-method-bank-account', 'payment-method-bank-name', 'payment-method-amazon', 'payment-method-paypal', 'payment-method-upi', 'payment-method-primary'];
+const PAY_DEFAULT = [
+  { value: 'wire-transfer', label: 'Bank transfer' },
+  { value: 'upi', label: 'UPI' },
+  { value: 'paypal', label: 'PayPal' },
+  { value: 'amazon-gift-card', label: 'Amazon gift card' }
+];
+const PAY_STORE = 't2o_member_demo_pay';
+function demoPayStore() {
+  try {
+    return JSON.parse(sessionStorage.getItem(PAY_STORE) || 'null') || { 'payment-method-upi': 'asha@okaxis', 'payment-method-primary': 'upi' };
+  } catch {
+    return {};
+  }
+}
+async function demoPayments() {
+  await new Promise((r) => setTimeout(r, 250));
+  return { options: PAY_DEFAULT, values: demoPayStore() };
+}
+async function demoSavePayment(body) {
+  await new Promise((r) => setTimeout(r, 350));
+  const next = { ...demoPayStore(), ...body };
+  try {
+    sessionStorage.setItem(PAY_STORE, JSON.stringify(next));
+  } catch {
+    /* private mode: keep it for this page only */
+  }
+  return true;
+}
+
 // ---------------- actions (writes, all existing endpoints) ----------------
 /** A support ticket from /api/v1/support. */
 export function adaptTicket(d) {
@@ -263,6 +295,21 @@ const demoTicketThread = (id) =>
       : [];
 
 export const actions = {
+  /** Payment methods: the same option list and profile answers the old My account page used. */
+  async paymentMethods() {
+    if (ENV.DEMO_MODE) return demoPayments();
+    const [opts, d] = await Promise.all([call(() => api.get('/api/v1/option/payment-method')).catch(() => []), call(() => api.post('/api/v1/me', { questions: PAY_KEYS }))]);
+    const list = (Array.isArray(opts) ? opts : []).map((o) => ({ value: o.value ?? o.name, label: o.label ?? o.name ?? o.value })).filter((o) => o.value);
+    const values = {};
+    PAY_KEYS.forEach((k) => d && d[k] != null && (values[k] = d[k]));
+    return { options: list.length ? list : PAY_DEFAULT, values };
+  },
+  async savePayment(body) {
+    if (ENV.DEMO_MODE) return demoSavePayment(body);
+    const r = await api.patch('/api/v1/me/answer', body);
+    if (!ok(r)) throw new Error((r && r.message) || 'request failed');
+    return true;
+  },
   async uploadPhoto(file) {
     if (ENV.DEMO_MODE) return demoSection('upload', { file });
     const fd = new FormData();

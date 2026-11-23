@@ -142,3 +142,11 @@ profile or survey, so the numbers move as soon as the backend changes them.
 | 75 | Points for completing a profile | The backend awards **no points** when a profile reaches 100%, so the header and hero only move when the balance from the API changes. The preview adds 50 points per finished profile to show the animation | Award points on profile completion (amount per profile) if wanted |
 | 76 | Points for a finished internal survey | The thank-you card shows "+N points" from the survey's `points`; the balance moves once the backend credits it | None (credit as today) |
 | 77 | Profile completion | Hidden follow-up questions are now saved as empty answers when a page is passed, matching `Profile.js status()`, so every profile can reach 100% | None |
+
+## Round 23: payment methods in My account
+
+"Manage payment methods" used to leave the new member area for the old `/member/myaccount` page (and in the preview it only showed a note). Payment methods now live on My account (`/member/profile/#payments`).
+
+| # | Item | Status today | Backend change |
+| --- | --- | --- | --- |
+| 78 | Payment methods | **Live**, same calls as the old page: `GET /api/v1/option/payment-method`, `POST /api/v1/me { questions: [payment-method-*] }`, `PATCH /api/v1/me/answer { <key>: value }` and `payment-method-primary` | None |
