@@ -1,0 +1,28 @@
+{
+  "name": "t2o-minor-consent-page",
+  "private": true,
+  "version": "1.1.0",
+  "description": "Turn2Opinion — Teen (13–17) Research Participation Terms & Parental Consent (shown after login, minors only). Four taps, no forms, full agreement behind 'Read more', PDF download. React 19 + esbuild, 51 languages, light/dark themes, 'Two Keys' design.",
+  "type": "module",
+  "engines": {
+    "node": ">=18.18"
+  },
+  "scripts": {
+    "dev": "node scripts/build.mjs --dev && node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "build:preview": "node scripts/build-preview.mjs",
+    "preview": "node scripts/serve.mjs",
+    "serve:api": "node server/minor-consent-api.mjs",
+    "alt:report": "node scripts/alt-report.mjs",
+    "i18n:check": "node scripts/i18n-check.mjs",
+    "i18n:sync": "node scripts/i18n-sync.mjs",
+    "perf": "node scripts/perf.mjs"
+  },
+  "dependencies": {
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

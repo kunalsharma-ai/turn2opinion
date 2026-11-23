@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Embed example — your logged-in app</title>
+  <style>body{margin:0;font-family:Georgia,serif;background:#eee} .host-nav{padding:14px 20px;background:#222;color:#fff}</style>
+</head>
+<body>
+  <!-- Your app's own header stays untouched — the business consent page renders in a Shadow DOM below it -->
+  <div class="host-nav">Your app header (example)</div>
+
+  <div id="t2o-pro-consent"></div>
+  <script>
+    window.T2O_PRO_CONSENT = {
+      member: { id: 'B-10293', firstName: 'Arjun', jobTitle: 'IT Director', company: 'Northwind Ltd' },
+      submitUrl: '/api/consent/business',   // your endpoint (see README → API contract)
+      headers: { 'X-CSRF-Token': 'TOKEN' },  // optional
+      theme: 'auto',                         // 'auto' | 'light' | 'dark' — members can still switch
+      continueUrl: '/business/dashboard',
+      logoutUrl: '/logout',
+      assetBase: '/',                        // URL where dist/ (brand/, fonts/) is published
+    };
+    window.addEventListener('t2o:consent', function (e) { console.log('business consent saved', e.detail); });
+  </script>
+  <script src="/embed/t2o-pro-consent.js" defer></script>
+</body>
+</html>

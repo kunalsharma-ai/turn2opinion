@@ -155,7 +155,7 @@ export default function Login() {
         }
 
         setState('ok');
-        // first login: a few welcome questions before the dashboard (asked once)
+        // straight to the member dashboard (the welcome questions were removed in Round 15)
         if (!res.demo) window.location.assign(await afterLogin());
         return;
       }

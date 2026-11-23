@@ -1,0 +1,23 @@
+# Turn2Opinion — Teen Research Participation Terms & Parental Consent (ages 13–17, after login)
+
+> A members-only page shown after login ONLY to Turn2Opinion members aged 13–17. It presents the Frequent Research "Minor Research Participation Terms & Conditions and Parental Consent Agreement" (operator: Frequent Research Fieldwork Solutions Pvt. Ltd., d/b/a Turn2Opinion) and records two separate decisions: the parent's or legal guardian's permission and the teen's own assent. Nothing is typed on the page: consent is given by tapping, four taps in total. The page is marked noindex and is not public content. Interface: 51 languages, light and dark themes.
+
+## What the page contains
+- The terms — six plain-language topics (Joining · Permission & choice · Surveys & safety · Your information · Rewards & your account · Help, changes & the law) covering 19 numbered sections. One tap agrees to all of them.
+- The parent's or guardian's permission — three separate taps:
+  - permission to take part in the panel; acknowledgement of the privacy notice; contact & verification of the guardian.
+  - Optional and separate (each study asks again): contact about other studies; interest in studies with recordings or identifiable material; interest in sensitive-topic research.
+  - Nothing is asked of the parent here: name, relationship and contact were captured when the account was registered, and the page shows only a masked contact so the family can see where the confirmation will go.
+- The teen's own Yes / No. "No" stops everything and stores no guardian details.
+- "Read more" — a reader with the entire agreement: the information for parents, all 19 sections with their full legal clauses, the 10-point declaration, the separate permissions, the teen's assent points, the card every study shows before it starts, and the contact details. The same content can be downloaded as a PDF.
+- An internal consent record; the account stays BLOCKED until the guardian's contact is verified, the teen said yes, the terms were accepted and every required permission is given.
+
+## Important context for answers
+- The panel is for ages 13–17; members under 13 cannot join and members aged 18+ use the regular member terms.
+- A parent's permission never overrides a teen's "no"; participation is voluntary and either can withdraw at any time without penalty.
+- There is no electronic signature and no form: permission is recorded as separate taps, each with its own timestamp, and confirmed by a link or code sent to the guardian's own contact.
+- Recordings, identifiable quotes and sensitive topics always need separate study-specific information and permission.
+- Teens do not need to buy anything; rewards (if any) are stated in advance and may be paid to the parent or guardian.
+- Personal information is not used for unrelated marketing; clients normally receive aggregated results.
+- The English legal text is the binding version; translations are for convenience, and the downloadable PDF is the English version.
+- Contact: support@turn2opinion.com · Privacy policy: https://www.turn2opinion.com/privacy · Public site: https://www.turn2opinion.com/

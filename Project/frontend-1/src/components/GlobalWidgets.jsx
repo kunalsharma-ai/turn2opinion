@@ -404,6 +404,9 @@ export const FORM_PAGE = /^\/(join|login|welcome|parent-consent|teen|forgot-pass
 export default function GlobalWidgets() {
   const path = usePath();
   const formPage = FORM_PAGE.test(path || '');
+  // The member area is a working app: no marketing toasts, video badge, ambience or arrival chime
+  // there. Support (chat, WhatsApp) and the cookie choice stay.
+  const member = (path || '').startsWith('/member/');
   const [chatOpen, setChatOpen] = useState(false);
   const [consentDone, setConsentDone] = useState(false);
   useEffect(() => {
@@ -438,7 +441,7 @@ export default function GlobalWidgets() {
 
   // The site's signature arrival sound. Browsers block audio until the visitor interacts, so this
   // arms the chime and fires it on their first tap, click, key press or scroll — see utils/sound.js.
-  useEffect(() => armArrivalSound(), []);
+  useEffect(() => (member ? undefined : armArrivalSound()), [member]);
 
   // The reward pop-up has its own cash-register ka-ching (review toasts use a softer kalimba).
   useEffect(() => {
@@ -449,15 +452,15 @@ export default function GlobalWidgets() {
 
   return (
     <>
-      <ModeAmbience />
-      <ScrollProgress />
-      <VideoFab quiet={formPage} />
+      {!member && <ModeAmbience />}
+      {!member && <ScrollProgress />}
+      {!member && <VideoFab quiet={formPage} />}
       <FloatingActions chatOpen={chatOpen} onChat={() => setChatOpen((o) => !o)} />
       <LiveChat open={chatOpen} onClose={() => setChatOpen(false)} />
-      <ReviewWidget ready={consentDone && !formPage} />
+      {!member && <ReviewWidget ready={consentDone && !formPage} />}
       {/* Right-hand side: live member reviews. Bottom-left: reward tickets. They never collide. */}
-      <ReviewToasts blocked={!consentDone || chatOpen || formPage} />
-      <ActivityToasts blocked={!consentDone || chatOpen || formPage} />
+      {!member && <ReviewToasts blocked={!consentDone || chatOpen || formPage} />}
+      {!member && <ActivityToasts blocked={!consentDone || chatOpen || formPage} />}
       <CookieConsent onDone={() => setConsentDone(true)} />
     </>
   );

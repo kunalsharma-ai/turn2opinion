@@ -1,0 +1,1 @@
+var e="t2o.sound",o=null;function n(){try{let t=window.localStorage.getItem(e);return t==null?o!==!1:t!=="off"}catch{return o!==!1}}function l(t){o=!!t;try{window.localStorage.setItem(e,t?"on":"off")}catch{}}export{n as a,l as b};

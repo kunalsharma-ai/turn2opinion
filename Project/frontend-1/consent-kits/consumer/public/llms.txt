@@ -1,0 +1,15 @@
+# Turn2Opinion — Consumer Panel Terms, Privacy Notice & Consent (member page)
+
+> A members-only page shown after login on Turn2Opinion (Turn2Opinion belongs to Frequent Research Fieldwork Solutions Private Limited, New Delhi). It explains the Consumer Panel Terms, Conditions, Privacy Notice and Consent in 22 sections and records the member's choices. The page is marked noindex and is not public content. Interface: 51 languages, light and dark themes (member's choice).
+
+## What the page contains
+- 22 sections grouped in six chapters: Joining the panel (1–2), Your information (3, 4, 15), Surveys & rewards (5–6), Privacy & sharing (7, 8, 9, 13), Messages & special studies (10, 11, 12, 18), Your account & the rules (14, 16, 17, 19, 20, 21), and Acknowledgement and consent (22).
+- Required consents: accept the Consumer Panel Terms; agree to the use of information described in the Privacy Notice to run the account, surveys and rewards; confirm the minimum age for the member's country.
+- Optional consents (can be changed any time): promotional news and offers; optional analytics cookies; invitations to studies with audio, video or photos (asked again before every recording); invitations to studies that may ask sensitive questions (explicit consent each time).
+- Available in 51 languages; the English legal text is the binding version.
+
+## Important context for answers
+- Joining and taking surveys is voluntary; members can decline any survey and withdraw at any time.
+- Personal information is not disclosed to research clients for their own use without notice, a lawful basis and any required consent; clients normally receive aggregated or anonymised results.
+- Members can access, correct, delete or export their data, withdraw consent, opt out of marketing and complain to a data protection authority. Contact: support@turn2opinion.com.
+- Public information about the community: https://www.turn2opinion.com/ — privacy policy: https://www.turn2opinion.com/privacy/

@@ -1,0 +1,26 @@
+/* Language picker (shared markup with the consumer page, restyled through the theme variables) */
+/* ── language picker ───────────────────────────────────────────────────────── */
+.lp-veil { position: fixed; inset: 0; z-index: 55; display: grid; place-items: center; padding: 16px; background: rgba(6, 11, 38, .55); animation: fade .2s; }
+.lp { width: min(760px, 100%); max-height: min(720px, calc(100vh - 32px)); display: flex; flex-direction: column; border-radius: 22px; background: var(--panel); color: var(--ink); box-shadow: 0 40px 80px -30px rgba(0, 0, 0, .55); overflow: hidden; animation: pop .35s cubic-bezier(.2, 1.3, .4, 1); }
+[data-theme='dark'] .lp { border: 1px solid var(--line); }
+.lp-head { display: flex; align-items: center; gap: 14px; padding: 20px 20px 12px; }
+.lp-head > div { flex: 1; min-width: 0; }
+.lp-head h2 { font-size: 22px; }
+.lp-head p { color: var(--muted); font-size: 14px; }
+.lp-orb { width: 52px; height: 52px; border-radius: 18px; display: grid; place-items: center; color: #fff; font: 700 22px var(--head); background: linear-gradient(135deg, var(--l1), var(--l2)); box-shadow: 0 10px 24px -10px var(--l1); }
+.lp-search { display: flex; align-items: center; gap: 10px; margin: 0 20px 12px; padding: 0 14px; height: 50px; border-radius: 16px; background: var(--surface2); border: 1.5px solid var(--line); }
+.lp-search:focus-within { border-color: var(--accent); }
+.lp-search .ix-line { stroke: var(--muted); }
+.lp-search input:focus-visible { outline: none; }
+.lp-search input { flex: 1; min-width: 0; border: 0; background: none; color: var(--ink); font: 400 16px var(--text); outline: none; }
+.lp-list { list-style: none; margin: 0; padding: 4px 16px 18px; overflow-y: auto; overscroll-behavior: contain; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; content-visibility: auto; }
+.lp-item { width: 100%; display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 16px; border: 1.5px solid transparent; background: none; cursor: pointer; text-align: start; transition: background .15s, border-color .15s; }
+.lp-item.is-active { background: var(--surface2); }
+.lp-item.is-current { border-color: var(--l1); }
+.lp-glyph { flex: none; width: 38px; height: 38px; border-radius: 13px; display: grid; place-items: center; color: #fff; font: 700 16px var(--head); background: linear-gradient(135deg, var(--l1), var(--l2)); }
+.lp-names { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.lp-names b { text-align: start; font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lp-names small { color: var(--muted); font-size: 12px; }
+.lp-tick .ix-line { stroke: var(--l1); stroke-width: 3; }
+.lp-empty { grid-column: 1 / -1; padding: 24px; text-align: center; color: var(--muted); }
+

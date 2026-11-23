@@ -68,6 +68,8 @@ function Shell() {
   const [, bump] = useState(0);
   const last = useRef(null);
   const mounted = useMounted();
+  // The member area brings its own header, navigation and footer (member/components/Shell.jsx).
+  const isMember = path.startsWith('/member/');
 
   useEffect(() => {
     if (ready) return undefined;
@@ -90,11 +92,13 @@ function Shell() {
   let content;
   if (ready) {
     const Page = getPage(route);
+    // The member area is one persistent app (src/member/MemberApp.jsx): a stable key keeps its data
+    // and shell mounted while the member moves between Dashboard, Rewards, Settings and the rest.
     // The page and its video showcase are siblings in <main>, so their keys must differ (a shared key
     // left the previous page on screen after clicking Home, 18 Nov 2026).
-    const page = <Page key={`page:${path}`} params={params} data={getData(path)} />;
+    const page = <Page key={isMember ? 'member-app' : `page:${path}`} params={params} data={getData(path)} />;
     // member area ke pages: pehle check ho ki profile complete hai ya nahi
-    content = path.startsWith('/member/') ? <MemberGuard>{page}</MemberGuard> : page;
+    content = isMember ? <MemberGuard key="member-guard">{page}</MemberGuard> : page;
     last.current = content;
   } else content = last.current;
 
@@ -102,14 +106,14 @@ function Shell() {
     <>
       <a className="skip-link" href="#main">Skip to content</a>
       <SocialRedirect />
-      <Header />
+      {!isMember && <Header />}
       {!ready && <div className="route-progress" role="progressbar" aria-label="Loading page" />}
       <main id="main" tabIndex={-1}>
         {content}
         {/* Every page closes with its own video showcase, in its own template (data/videos.js). */}
-        {ready && !path.startsWith('/member/') && <VideoShowcase key={`video:${path}`} v={videoFor(path)} />}
+        {ready && !isMember && <VideoShowcase key={`video:${path}`} v={videoFor(path)} />}
       </main>
-      <Footer />
+      {!isMember && <Footer />}
       {mounted && (
         <>
           <AnimationGate />

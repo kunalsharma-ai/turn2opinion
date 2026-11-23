@@ -1,0 +1,620 @@
+/* ===================== Registration: Consent & Terms step (Round 15) =====================
+   components/onboarding/ConsentPanel.jsx, plus the redesigned stepper notes, the Professional
+   "Your work" fields and the Teen consent receipt on the final screen. Accent: --j1 / --j2 of the
+   join theme (Consumer blue, Professional violet). Dark rules come from scripts/gen-dark.mjs. */
+.rc-panel {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+.rc-head {
+  display: grid;
+  gap: 8px;
+}
+.rc-badge {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--j1, #1f5bff), var(--j2, #22b8ff));
+  color: #fff;
+  font: 700 12.5px/1.2 'Inter', sans-serif;
+  letter-spacing: 0.02em;
+  box-shadow: 0 8px 20px -10px var(--jglow, rgba(31, 91, 255, 0.5));
+}
+.rc-head h2 {
+  margin: 4px 0 0;
+  font: 800 clamp(22px, 2.4vw, 28px) / 1.2 'Manrope', sans-serif;
+  letter-spacing: -0.01em;
+  color: #0d1733;
+}
+.rc-lead {
+  margin: 0;
+  color: #4a5578;
+  font-size: 14.5px;
+  line-height: 1.55;
+  text-align: start !important;
+}
+.rc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 0;
+  color: #69739a;
+  font-size: 12.5px;
+}
+.rc-meta span + span::before {
+  content: '·';
+  margin-right: 14px;
+  color: #b3bad3;
+}
+.rc-read {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+.rc-read::before {
+  content: '';
+  flex: 1;
+  height: 6px;
+  border-radius: 99px;
+  background: #e8ecf7;
+}
+.rc-read span {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 6px;
+  margin-top: -3px;
+  width: calc((100% - 110px) * var(--p, 0));
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--j1, #1f5bff), var(--j2, #22b8ff));
+  transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.rc-read em {
+  flex: 0 0 100px;
+  text-align: right;
+  font: 600 12px/1 'Inter', sans-serif;
+  font-style: normal;
+  color: #4a5578;
+}
+
+/* chapters */
+.rc-chapters {
+  display: grid;
+  gap: 10px;
+}
+.rc-ch {
+  border: 1px solid #e3e8f4;
+  border-radius: 16px;
+  background: #fff;
+  overflow: hidden;
+  transition: box-shadow 0.25s, border-color 0.25s, transform 0.25s;
+  animation: rcIn 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--ci, 0) * 50ms);
+}
+.rc-ch.is-open {
+  border-color: #c9d3ef;
+  box-shadow: 0 18px 40px -26px rgba(16, 32, 88, 0.45);
+}
+.rc-ch h3 {
+  margin: 0;
+}
+.rc-ch-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 60px;
+  padding: 10px 14px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.rc-ch-btn:focus-visible {
+  outline: 3px solid var(--j1, #1f5bff);
+  outline-offset: -3px;
+  border-radius: 16px;
+}
+.rc-ch-ico {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: #eef2ff;
+  color: var(--j1, #1f5bff);
+  transform: perspective(300px) rotateX(10deg);
+  box-shadow: 0 6px 12px -8px rgba(16, 32, 88, 0.5);
+}
+.rc-ch-t {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+.rc-ch-t strong {
+  font: 700 15px/1.3 'Manrope', sans-serif;
+  color: #0d1733;
+}
+.rc-ch-t small {
+  color: #69739a;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+.rc-ch-n {
+  flex: none;
+  display: grid;
+  place-items: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 6px;
+  border-radius: 99px;
+  background: #f1f4fb;
+  color: #4a5578;
+  font: 700 12px/1 'Inter', sans-serif;
+}
+.rc-ch-chev {
+  flex: none;
+  color: #8a93b5;
+  transition: transform 0.25s;
+}
+.rc-ch.is-open .rc-ch-chev {
+  transform: rotate(180deg);
+}
+.rc-ch-body {
+  display: grid;
+  gap: 4px;
+  padding: 0 14px 14px;
+  animation: rcIn 0.3s ease both;
+}
+.rc-sec {
+  padding: 12px 0;
+  border-top: 1px solid #eef1f8;
+}
+.rc-sec h4 {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 6px;
+  font: 700 14.5px/1.35 'Manrope', sans-serif;
+  color: #0d1733;
+}
+.rc-sec-n {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  height: 22px;
+  border-radius: 7px;
+  background: #eef2ff;
+  color: var(--j1, #1f5bff);
+  font: 800 11.5px/1 'Inter', sans-serif;
+}
+.rc-short {
+  margin: 0;
+  color: #39456b;
+  font-size: 14px;
+  line-height: 1.55;
+  text-align: start !important;
+}
+.rc-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--j1, #1f5bff);
+  font: 600 13px/1.2 'Inter', sans-serif;
+  cursor: pointer;
+}
+.rc-more[aria-expanded='true'] svg {
+  transform: rotate(180deg);
+}
+.rc-clauses {
+  margin-top: 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #f7f9fd;
+  color: #2b3658;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.rc-clauses p,
+.rc-clauses li {
+  text-align: start !important;
+}
+.rc-clauses p {
+  margin: 0 0 8px;
+}
+.rc-clauses h5 {
+  margin: 10px 0 4px;
+  font: 700 13.5px/1.3 'Manrope', sans-serif;
+  color: #0d1733;
+}
+.rc-clauses ol,
+.rc-clauses ul {
+  margin: 0 0 8px;
+  padding-left: 20px;
+}
+.rc-clauses li + li {
+  margin-top: 4px;
+}
+.rc-contact {
+  display: grid;
+  gap: 2px;
+  font-style: normal;
+}
+
+/* choices */
+.rc-choices {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #f6f8ff, #fff);
+  border: 1px solid #e3e8f4;
+}
+.rc-choices h3 {
+  margin: 0;
+  font: 800 18px/1.25 'Manrope', sans-serif;
+  color: #0d1733;
+}
+.rc-group {
+  display: grid;
+  gap: 8px;
+}
+.rc-group-h {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font: 700 11.5px/1 'Inter', sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #69739a;
+}
+.rc-group-h em {
+  font-style: normal;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #c2410c;
+}
+.rc-choice {
+  border: 1px solid #e3e8f4;
+  border-radius: 14px;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+.rc-choice:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px -18px rgba(16, 32, 88, 0.6);
+}
+.rc-choice.is-on {
+  border-color: var(--j1, #1f5bff);
+  box-shadow: 0 0 0 3px rgba(31, 91, 255, 0.12);
+}
+.rc-choice.has-error {
+  border-color: #e5484d;
+  box-shadow: 0 0 0 3px rgba(229, 72, 77, 0.12);
+}
+.rc-choice .check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  margin: 0;
+  cursor: pointer;
+}
+.rc-choice-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.rc-choice-text > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+.rc-choice-text strong {
+  font: 600 14px/1.45 'Inter', sans-serif;
+  color: #0d1733;
+}
+.rc-choice-text small {
+  font-size: 12.5px;
+  color: #69739a;
+  line-height: 1.4;
+}
+.rc-choice-ico {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: #eef2ff;
+  color: var(--j1, #1f5bff);
+}
+.rc-tag {
+  flex: none;
+  padding: 3px 8px;
+  border-radius: 99px;
+  background: #f1f4fb;
+  color: #4a5578;
+  font: 700 11px/1.2 'Inter', sans-serif;
+}
+.rc-tag.is-req {
+  background: #fff1e6;
+  color: #b4470b;
+}
+.rc-note {
+  margin: 0;
+  font-size: 13px;
+  color: #69739a;
+  text-align: start !important;
+}
+.rc-foot {
+  margin: 0;
+  font-size: 13px;
+  color: #69739a;
+  text-align: center !important;
+}
+.rc-foot a {
+  color: var(--j1, #1f5bff);
+}
+.rc-skel {
+  height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, #eef1f8 25%, #f7f9fd 37%, #eef1f8 63%);
+  background-size: 400% 100%;
+  animation: rcShimmer 1.3s ease infinite;
+}
+.rc-skel.short {
+  width: 60%;
+}
+@keyframes rcIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes rcShimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+/* Professional "Your work" (optional) */
+.jf-optional {
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: #f1f4fb;
+  color: #69739a;
+  font: 600 11px/1.3 'Inter', sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Done screens: account created, Teen consent receipt */
+.reg-receipt {
+  display: grid;
+  gap: 0;
+  width: min(100%, 440px);
+  margin: 6px auto 18px;
+  padding: 6px 18px;
+  border-radius: 18px;
+  background: #fff;
+  border: 1px solid #e3e8f4;
+  box-shadow: 0 24px 50px -32px rgba(16, 32, 88, 0.55);
+  text-align: left;
+}
+.reg-receipt > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid #eef1f8;
+  font-size: 14px;
+}
+.reg-receipt > div:last-child {
+  border-bottom: 0;
+}
+.reg-receipt dt {
+  color: #69739a;
+}
+.reg-receipt dd {
+  margin: 0;
+  font-weight: 700;
+  color: #0d1733;
+  text-align: right;
+}
+.reg-receipt .is-ok {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #0e8a5f;
+}
+.reg-redirect {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  color: #4a5578;
+  font-size: 14px;
+}
+.reg-redirect .btn-spin {
+  border-color: rgba(31, 91, 255, 0.25);
+  border-top-color: #1f5bff;
+}
+
+@media (max-width: 560px) {
+  .rc-choices {
+    padding: 14px;
+  }
+  .rc-choice-text {
+    flex-wrap: wrap;
+  }
+  .rc-choice-ico {
+    display: none;
+  }
+  .rc-ch-t small {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rc-ch,
+  .rc-ch-body,
+  .rc-skel {
+    animation: none;
+  }
+  .rc-choice:hover {
+    transform: none;
+  }
+}
+
+/* five-stage adult stepper: Details · Confirm email · Create password · Consent & terms · Dashboard */
+.join .stepper:has(> li:nth-child(5)) {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.join .stepper:has(> li:nth-child(5))::before,
+.join .stepper:has(> li:nth-child(5)) .stepper-bar {
+  left: 10%;
+  right: 10%;
+}
+.join .stepper:has(> li:nth-child(5)) .stepper-label {
+  font-size: 0.7rem;
+  line-height: 1.25;
+}
+@media (max-width: 560px) {
+  /* on phones only the current stage keeps its label */
+  .join .stepper:has(> li:nth-child(5)) li:not(.is-on) .stepper-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .join .stepper:has(> li:nth-child(5)) li.is-on .stepper-label {
+    white-space: nowrap;
+  }
+}
+.consents-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 4px 0 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f3f6ff;
+  color: #39456b;
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: start !important;
+}
+.consents-note svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--j1, #1f5bff);
+}
+.jf-work {
+  display: grid;
+  gap: 4px;
+}
+.jf-hint {
+  margin: -4px 0 10px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #5b6588;
+  text-align: start !important;
+}
+
+/* ===================== Approved consent pages (ConsentKit, Round 21) =====================
+   The package renders in its own Shadow DOM; these rules only place it on the site's pages. */
+.ckit {
+  position: relative;
+  /* above the rest of the page, so the package's own dialogs cover the footer too */
+  z-index: 60;
+  min-height: 70vh;
+}
+html.ckit-page {
+  --header-h: 0px;
+}
+html.ckit-page .site-header {
+  display: none;
+}
+.ckit-host {
+  display: block;
+}
+.ckit-wait {
+  display: grid;
+  gap: 14px;
+  width: min(960px, calc(100% - 32px));
+  margin: 24px auto;
+}
+.ckit-wait span {
+  height: 120px;
+  border-radius: 22px;
+  background: linear-gradient(90deg, rgba(30, 60, 160, 0.06), rgba(30, 60, 160, 0.12), rgba(30, 60, 160, 0.06));
+  background-size: 200% 100%;
+  animation: ckitWait 1.4s linear infinite;
+}
+.ckit-wait span:first-child {
+  height: 220px;
+}
+@keyframes ckitWait {
+  to {
+    background-position: -200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ckit-wait span {
+    animation: none;
+  }
+}
+.join.join--kit {
+  padding: clamp(18px, 3vw, 32px) 0 0;
+  overflow: visible;
+  /* no stacking context: the package's dialogs (receipt, certificate) must sit above the site footer */
+  isolation: auto;
+}
+.join-kit-head {
+  display: grid;
+  gap: 8px;
+  max-width: 880px;
+  margin: 0 auto 18px;
+}
+.join--kit .join-progress-note {
+  text-align: center;
+  color: rgba(225, 232, 255, 0.85);
+}
+.join-kit-lead {
+  margin: 0;
+  color: rgba(225, 232, 255, 0.92);
+  font-size: 15px;
+  text-align: center;
+}
+.gdc.gdc--kit {
+  max-width: none;
+  padding: 0;
+}

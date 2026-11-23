@@ -11,12 +11,14 @@
     "dev": "vite",
     "build": "npm run gen:dark && npm run build:client && npm run build:server && npm run prerender",
     "build:client": "vite build --outDir dist/client",
+    "build:consent-kits": "node scripts/build-consent-kits.mjs",
     "build:server": "vite build --ssr src/entry-server.jsx --outDir dist/server",
     "prerender": "node scripts/prerender.mjs",
     "preview": "node scripts/serve.mjs",
     "check:content": "node scripts/check-content.mjs",
     "seo:report": "node scripts/seo-report.mjs",
     "preview:single": "npm run gen:dark && node scripts/build-preview.mjs",
+    "preview:member": "npm run gen:dark && MEMBER=1 node scripts/build-preview.mjs preview/turn2opinion-member-dashboard.html",
     "gen:dark": "node scripts/gen-dark.mjs"
   },
   "dependencies": {

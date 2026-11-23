@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="240" height="240" role="img" aria-labelledby="t"><title id="t">Ring made of two arcs with arrowheads — the right arc for the parent or guardian’s permission (blue) and the left arc for the teen’s own yes (cyan); the account opens only when both arcs are complete</title>
+<defs><linearGradient id="p" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1f5bff"/><stop offset="1" stop-color="#52c8ff"/></linearGradient><linearGradient id="q" x1="1" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#12b6e8"/><stop offset="1" stop-color="#7be3d0"/></linearGradient></defs>
+<circle cx="100" cy="100" r="64" fill="#f4f7ff"/>
+<path d="M116.22 24.2A78 78 0 0 1 177.8 116.22" transform="rotate(0 100 100)" fill="none" stroke="url(#p)" stroke-width="16" stroke-linecap="round"/>
+<path d="M83.78 175.8A78 78 0 0 1 22.2 83.78" fill="none" stroke="url(#q)" stroke-width="16" stroke-linecap="round"/>
+<text x="100" y="112" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-weight="800" font-size="46" fill="#0a1240">2</text>
+</svg>

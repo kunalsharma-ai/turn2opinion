@@ -1,388 +1,83 @@
-<table
-  width="100%"
-  border="0"
-  cellspacing="0"
-  cellpadding="0"
-  bgcolor="#f4f4f4"
-  style="
-    margin: 0;
-    padding: 0;
-    background: #f4f4f4;
-    font-family: Arial, Helvetica, sans-serif;
-  ">
-  <tr>
-    <td align="center">
-      <table
-        width="920"
-        border="0"
-        cellspacing="0"
-        cellpadding="0"
-        bgcolor="#ffffff"
-        style="
-          max-width: 920px;
-          width: 100%;
-        ">
-        <tr>
-          <td height="12" bgcolor="#063686"></td>
-        </tr>
+{%- comment -%}
+===============================================================================
+  Turn2Opinion — email system v1 ("the conversation")
+  -----------------------------------------------------------------------------
+  Template   : 13. Birthday greeting
+  File       : birthday.liquid
+  Class      : Engagement (marketing — unsubscribe required)
+  Trigger    : Member’s birthday
+  Tone       : coral
+  Replaces   : birthday.liquid
 
-        <tr>
-          <td align="center" style="
-              padding: 28px 20px 24px;
-              background: #ffffff;
-            ">
-            <img
-              src="https://www.turn2opinion.com/images/logo/t2o-logo.png"
-              alt="Turn2Opinion.com"
-              width="460"
-              style="
-                display: block;
-                max-width: 100%;
-                height: auto;
-                border: 0;
-              " />
-          </td>
-        </tr>
+  SUBJECT LINES — pick one, or A/B them
+    1. Happy birthday, {{ user.name.first }}!
+    2. A birthday wish from Turn2Opinion
+    3. {{ user.name.first }}, today is all yours
 
-        <tr>
-          <td height="3" bgcolor="#1e40af"></td>
-        </tr>
+  PREHEADER
+    No survey, nothing to do — just a good wish from all of us.
 
-        <tr>
-          <td align="center" style="
-              padding: 55px 40px 50px;
-              background: #f0f9ff;
-            ">
-            <table
-              border="0"
-              cellspacing="0"
-              cellpadding="0"
-              align="center">
-              <tr>
-                <td style="
-                    padding: 0 12px;
-                    color: #1e40af;
-                    font-size: 28px;
-                    font-weight: bold;
-                  ">
-                  •
-                </td>
+  PRIMARY CTA
+    none — this template asks for nothing
 
-                <td style="
-                    padding: 0 12px;
-                    color: #063686;
-                    font-size: 38px;
-                    font-weight: bold;
-                  ">
-                  •
-                </td>
+  PLAIN-TEXT ALTERNATIVE
+    dist/text/birthday.txt — send as the text/plain part of a multipart message.
+    HTML-only mail is scored down by most spam filters.
 
-                <td style="
-                    padding: 0 12px;
-                    color: #60a5fa;
-                    font-size: 24px;
-                    font-weight: bold;
-                  ">
-                  •
-                </td>
+  Generated from react/src/emails/13-birthday.jsx — edit the JSX and re-run
+  `npm run build`. Hand edits to this file are overwritten.
 
-                <td style="
-                    padding: 0 12px;
-                    color: #1e40af;
-                    font-size: 32px;
-                    font-weight: bold;
-                  ">
-                  •
-                </td>
+  Images are served from the base configured at build time; upload assets/
+  there before sending. Serve over HTTPS from a stable path — clients do not
+  retry a 404, so a moved asset breaks every copy already delivered.
+===============================================================================
+{%- endcomment -%}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="x-apple-disable-message-reformatting"><meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no"><meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light only"><title>Happy birthday, {{ user.name.first }}!</title><!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><style>td,th,p,a,span,h1,h2{font-family:'Segoe UI',Arial,sans-serif!important}</style><![endif]--><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"><style>
+  body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+  table,td{mso-table-lspace:0pt;mso-table-rspace:0pt}
+  img{-ms-interpolation-mode:bicubic;border:0;outline:none;text-decoration:none}
+  table{border-collapse:separate}
+  body{margin:0!important;padding:0!important;width:100%!important;background:#FFFFFF}
+  a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important;font-size:inherit!important;font-family:inherit!important;font-weight:inherit!important;line-height:inherit!important}
+  u+#body a{color:inherit;text-decoration:none}
+  .btn:hover{background-color:#1544C9!important}
+  .btn-ghost:hover{border-color:#1F5BFF!important}
 
-                <td style="
-                    padding: 0 12px;
-                    color: #063686;
-                    font-size: 26px;
-                    font-weight: bold;
-                  ">
-                  •
-                </td>
-              </tr>
-            </table>
+  /* Motion is a progressive extra: Apple Mail and iOS Mail play a slow float on the
+     hero scene; Gmail and Outlook strip it and show the still image, which is the
+     complete design on its own. Reduced-motion users never see it. */
+  @media (prefers-reduced-motion:no-preference){
+    .float{animation:t2oFloat 6s ease-in-out infinite}
+    @keyframes t2oFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  }
 
-            <table
-              width="110"
-              height="110"
-              border="0"
-              cellspacing="0"
-              cellpadding="0"
-              align="center"
-              style="
-                margin-top: 12px;
-                background: #ffffff;
-                border: 3px solid #1e40af;
-                border-radius: 55px;
-              ">
-              <tr>
-                <td
-                  align="center"
-                  valign="middle"
-                  style="
-                    color: #1e40af;
-                    font-size: 50px;
-                    line-height: 110px;
-                    font-weight: bold;
-                  ">
-                  ★
-                </td>
-              </tr>
-            </table>
+  @media screen and (max-width:600px){
+    .wrap{width:100%!important;max-width:100%!important}
+    .px{padding-left:20px!important;padding-right:20px!important}
+    .stage-out{padding-left:12px!important;padding-right:12px!important}
+    .stack{display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box}
+    .art-cell{padding:22px 0 0!important;text-align:center!important}
+    .art{width:170px!important;height:170px!important}
+    .stage-text{padding:10px 22px 4px!important}
+    .h1{font-size:23px!important;line-height:1.22!important}
+    .stage-sub{font-size:14.5px!important}
+    .facts-pad{padding:12px 18px 20px!important}
+    .fact-cell{display:block!important;padding:0 0 8px!important}
+    .card-col{padding:0 0 12px!important}
+    .stat-col{display:block!important;width:100%!important;padding:0 0 8px!important}
+    .pay-col{display:inline-block!important;width:50%!important;box-sizing:border-box}
+    .hide-sm{display:none!important;max-height:0!important;overflow:hidden!important}
+    .btn,.btn-ghost{min-width:0!important;width:100%!important}
+    .figure{font-size:23px!important}
+    .ask{font-size:16.5px!important}
+    .kv-k,.kv-v{display:block!important;width:100%!important;padding:6px 0!important;border-top:0!important}
+    .foot-link{display:inline-block!important;padding:4px 6px!important}
+    .wordmark{font-size:27px!important;letter-spacing:.14em!important}
+  }
 
-            <p style="
-                margin: 28px 0 8px;
-                color: #1e40af;
-                font-size: 18px;
-                font-weight: bold;
-                letter-spacing: 2px;
-                text-transform: uppercase;
-              ">
-              It's Your Special Day
-            </p>
-
-            <h1 style="
-                margin: 0;
-                color: #063686;
-                font-size: 48px;
-                line-height: 58px;
-                font-weight: bold;
-              ">
-              Happy Birthday,
-              <br/>
-              {{ user.name.first }}!
-            </h1>
-
-            <p style="
-                margin: 22px auto 0;
-                max-width: 680px;
-                color: #263d69;
-                font-size: 21px;
-                line-height: 34px;
-              ">
-              Wishing you a wonderful birthday filled with 
-              happiness, memorable moments, and plenty of reasons
-              to smile.
-            </p>
-          </td>
-        </tr>
-
-        <tr>
-          <td style="padding: 40px 55px 20px;">
-            <table
-              width="100%"
-              border="0"
-              cellspacing="0"
-              cellpadding="0"
-              style="
-                background: #ffffff;
-                border: 1px solid #bfdbfe;
-                border-radius: 16px;
-              ">
-              <tr>
-                <td
-                  width="180"
-                  align="center"
-                  valign="middle"
-                  style="
-                    padding: 35px 15px;
-                    background: #f0f9ff;
-                    border-radius: 16px 0 0 16px;
-                  ">
-                  <table
-                    border="0"
-                    cellspacing="0"
-                    cellpadding="0"
-                    align="center">
-                    <tr>
-                      <td align="center" style="
-                          color: #1e40af;
-                          font-size: 58px;
-                          line-height: 60px;
-                          font-weight: bold;
-                        ">
-                        ★
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td align="center" style="
-                          padding-top: 8px;
-                          color: #063686;
-                          font-size: 16px;
-                          font-weight: bold;
-                          letter-spacing: 1px;
-                        ">
-                        CELEBRATE
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-
-                <td valign="middle" style="
-                    padding: 38px 40px;
-                  ">
-                  <h2 style="
-                      margin: 0 0 14px;
-                      color: #063686;
-                      font-size: 28px;
-                      line-height: 36px;
-                    ">
-                    A Birthday Wish From Us
-                  </h2>
-
-                  <p style="
-                      margin: 0 0 18px;
-                      color: #253562;
-                      font-size: 18px;
-                      line-height: 30px;
-                    ">
-                    Today is all about celebrating
-                    <strong>{{ user.name.first }}</strong>. 
-                    We are delighted to have you as a valued member
-                    of the
-                    <span style="
-                        color: #1e40af;
-                        font-weight: bold;
-                      ">
-                      Turn2Opinion
-                    </span>
-                    panel.
-                  </p>
-
-                  <p style="
-                      margin: 0;
-                      color: #253562;
-                      font-size: 18px;
-                      line-height: 30px;
-                    ">
-                    Thank you for being part of our community and 
-                    for sharing your valuable opinions with us.
-                  </p>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-        <tr>
-          <td style="padding: 20px 55px 35px;">
-            <table
-              width="100%"
-              border="0"
-              cellspacing="0"
-              cellpadding="0"
-              style="
-                background: #063686;
-                border-radius: 16px;
-              ">
-              <tr>
-                <td align="center" style="
-                    padding: 40px 35px;
-                  ">
-                  <p style="
-                      margin: 0 0 10px;
-                      color: #93c5fd;
-                      font-size: 17px;
-                      font-weight: bold;
-                      letter-spacing: 1.5px;
-                      text-transform: uppercase;
-                    ">
-                    Here's to another great year
-                  </p>
-
-                  <h2 style="
-                      margin: 0 0 14px;
-                      color: #ffffff;
-                      font-size: 30px;
-                      line-height: 40px;
-                    ">
-                    Keep sharing. Keep connecting. Keep celebrating.
-                  </h2>
-
-                  <p style="
-                      margin: 0 auto 25px;
-                      max-width: 650px;
-                      color: #dbeafe;
-                      font-size: 17px;
-                      line-height: 28px;
-                    ">
-                    We hope your special day is as rewarding as 
-                    being a part of the Turn2Opinion community.
-                  </p>
-
-                  <a href="https://www.turn2opinion.com" style="
-                      display: inline-block;
-                      background: #1e40af;
-                      color: #ffffff;
-                      text-decoration: none;
-                      padding: 15px 34px;
-                      border-radius: 10px;
-                      font-size: 17px;
-                      font-weight: bold;
-                      border: 1px solid #60a5fa;
-                    ">
-                    VISIT TURN2OPINION
-                  </a>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-        <tr>
-          <td align="center" style="
-              padding: 15px 60px 40px;
-            ">
-            <table
-              border="0"
-              cellspacing="0"
-              cellpadding="0"
-              align="center">
-              <tr>
-                <td
-                  height="3"
-                  width="55"
-                  bgcolor="#1e40af"></td>
-
-                <td width="15"></td>
-
-                <td
-                  height="3"
-                  width="55"
-                  bgcolor="#063686"></td>
-              </tr>
-            </table>
-
-            <p style="
-                margin: 20px 0 0;
-                color: #063686;
-                font-size: 21px;
-                line-height: 32px;
-                font-weight: bold;
-                font-style: italic;
-              ">
-              "May your year ahead be filled with 
-              wonderful opportunities and happy moments."
-            </p>
-          </td>
-        </tr>
-
-        {% include "mailer/footer.liquid" %}
-        <!-- BOTTOM BLUE BAR -->
-        <tr>
-
-          <td
-            height="10"
-            bgcolor="#0c5adb"
-            style="background:#0c5adb;"></td>
-
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
+  :root{color-scheme:light only;supported-color-schemes:light only}
+  [data-ogsc] .keep-white,[data-ogsb] .keep-white{background-color:#FFFFFF!important}
+  [data-ogsc] .keep-ink{color:#0E1B4D!important}
+  [data-ogsc] .keep-text{color:#17224D!important}
+</style></head><body id="body" class="keep-white" style="margin:0;padding:0;background-color:#FFFFFF;width:100%"><div style="display:none;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all">No survey, nothing to do — just a good wish from all of us. ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌</div><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0" bgcolor="#FFFFFF" class="keep-white" style="background-color:#FFFFFF"><tbody><tr><td align="center" style="padding:0"><!--[if mso]><table role="presentation" width="600" align="center" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]--><table role="presentation" class="wrap keep-white" width="600" border="0" cellPadding="0" cellSpacing="0" align="center" style="width:600px;max-width:600px;margin:0 auto;background-color:#FFFFFF"><tbody><tr><td class="px" style="padding:22px 36px 14px"><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0"><tbody><tr><td valign="middle"><a href="https://www.turn2opinion.com?utm_source=email&amp;utm_medium=logo" style="text-decoration:none"><img src="https://www.turn2opinion.com/mailer/v1/brand/turn2opinion-logo.png" width="170" height="52" alt="Turn2Opinion" style="display:block;border:0;width:170px;height:auto;font-family:&#x27;Manrope&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:20px;font-weight:800;color:#0E1B4D"/></a></td><td valign="middle" align="right" style="text-align:right"><table role="presentation" border="0" cellPadding="0" cellSpacing="0" align="right"><tbody><tr><td style="border:1px solid #E1E6F5;border-radius:999px;padding:6px 12px;background-color:#FFFFFF;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:12px;font-weight:600;color:#24356F;white-space:nowrap"><span style="color:#1F5BFF">●</span>  Celebration</td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td class="stage-out" style="padding:6px 24px 0"><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0" bgcolor="#C42858" class="stage" style="background-color:#C42858;background-image:linear-gradient(135deg,#B42350 0%,#C92D5E 55%,#D6415C 100%);border-radius:28px"><tbody><tr><td style="padding:0"><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0" dir="rtl"><tbody><tr><td dir="ltr" width="214" valign="bottom" class="stack art-cell" align="center" style="padding:22px 18px 8px 0;width:214px"><img class="art float" src="https://www.turn2opinion.com/mailer/v1/heroes/13-birthday.png" width="196" height="196" alt="A cheerful member in a pink portal surrounded by a birthday cake tile, a gift tile and sparkles" style="display:block;border:0;width:196px;height:196px;margin:0 auto"/></td><td dir="ltr" valign="middle" class="stack stage-text" style="padding:30px 6px 10px 30px;text-align:left"><table role="presentation" border="0" cellPadding="0" cellSpacing="0" style="margin:0 0 14px"><tbody><tr><td bgcolor="#FFFFFF" style="background-color:#FFFFFF;border-radius:14px 14px 14px 4px;padding:6px 12px;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#D63262;white-space:nowrap">A little celebration</td></tr></tbody></table><h1 class="h1" style="margin:0 0 12px;font-family:&#x27;Manrope&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:27px;line-height:1.18;font-weight:800;color:#FFFFFF;letter-spacing:-0.02em">Happy birthday, <span style="color:#FFE3A3">{{ user.name.first | default: "there" }}</span>!</h1><p class="stage-sub" style="margin:0;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#E9EFFF">No survey, nothing to do, nothing to click. Just a good wish from all of us at Turn2Opinion.</p></td></tr></tbody></table></td></tr><tr><td class="facts-pad" style="padding:10px 22px 24px 24px"><table role="presentation" border="0" cellPadding="0" cellSpacing="0"><tbody><tr><td class="fact-cell" style="padding:0 8px 0 0"><table role="presentation" border="0" cellPadding="0" cellSpacing="0"><tbody><tr><td style="background-color:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.36);border-radius:999px;padding:7px 13px;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:12.5px;font-weight:600;color:#FFFFFF;white-space:nowrap"><span style="color:#FFD872">●</span>  Nothing to do</td></tr></tbody></table></td><td class="fact-cell" style="padding:0 8px 0 0"><table role="presentation" border="0" cellPadding="0" cellSpacing="0"><tbody><tr><td style="background-color:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.36);border-radius:999px;padding:7px 13px;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:12.5px;font-weight:600;color:#FFFFFF;white-space:nowrap"><span style="color:#FFE3A3">●</span>  Just a good wish</td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td class="px " style="padding:26px 36px"><p class="hello keep-ink" style="margin:0 0 10px;font-family:&#x27;Manrope&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:22px;font-weight:800;color:#0E1B4D;line-height:1.3">Dear <span style="color:#1F5BFF">{{ user.name.first | default: "there" }}</span>,</p><p class="keep-text" style="margin:0 0 12px;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:16.5px;line-height:1.65;color:#24356F;font-weight:400">Wishing you a wonderful birthday filled with happiness, memorable moments and plenty of reasons to smile.</p><p class="keep-text" style="margin:0 0 0px;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:16.5px;line-height:1.65;color:#24356F;font-weight:400">We’re glad to have you in the Turn2Opinion community, and grateful for every opinion you’ve shared with us this year.</p></td></tr><tr><td class="px " style="padding:8px 36px"><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0"><tbody><tr><td width="33%" valign="top" class="stat-col" style="width:33%;padding:0 6px 0 0"><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0" bgcolor="#FFF0F3" style="background-color:#FFF0F3;border-radius:20px"><tbody><tr><td align="center" style="padding:18px 10px;text-align:center"><p style="margin:0;font-size:30px;line-height:1.1">🎂</p><p style="margin:8px 0 2px;font-family:&#x27;Manrope&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:15px;font-weight:800;color:#0E1B4D">Celebrate</p><p style="margin:0;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:13px;color:#56618C;line-height:1.45">Today is entirely yours.</p></td></tr></tbody></table></td><td width="33%" valign="top" class="stat-col" style="width:33%;padding:0 6px 0 0"><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0" bgcolor="#FFF7E6" style="background-color:#FFF7E6;border-radius:20px"><tbody><tr><td align="center" style="padding:18px 10px;text-align:center"><p style="margin:0;font-size:30px;line-height:1.1">🎁</p><p style="margin:8px 0 2px;font-family:&#x27;Manrope&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:15px;font-weight:800;color:#0E1B4D">Treat yourself</p><p style="margin:0;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:13px;color:#56618C;line-height:1.45">You’ve earned a slow day.</p></td></tr></tbody></table></td><td width="33%" valign="top" class="stat-col" style="width:33%;padding:0 6px 0 0"><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0" bgcolor="#F3F0FF" style="background-color:#F3F0FF;border-radius:20px"><tbody><tr><td align="center" style="padding:18px 10px;text-align:center"><p style="margin:0;font-size:30px;line-height:1.1">✨</p><p style="margin:8px 0 2px;font-family:&#x27;Manrope&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:15px;font-weight:800;color:#0E1B4D">Big year ahead</p><p style="margin:0;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:13px;color:#56618C;line-height:1.45">Full of good things.</p></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td class="px " style="padding:22px 36px"><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0"><tbody><tr><td width="52" valign="bottom" style="width:52px"><img src="https://www.turn2opinion.com/mailer/v1/ui/mark.png" width="40" height="40" alt="Turn2Opinion" style="display:block;border:0;width:40px;height:40px"/></td><td valign="bottom"><table role="presentation" border="0" cellPadding="0" cellSpacing="0"><tbody><tr><td bgcolor="#F3F6FF" style="background-color:#F3F6FF;border:1px solid #E8EEFF;border-radius:20px 20px 20px 6px;padding:13px 18px"><p style="margin:0;font-family:&#x27;Manrope&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:16px;font-weight:800;color:#0E1B4D;line-height:1.4">May the year ahead be full of good opportunities and happy moments.</p><p style="margin:3px 0 0;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:13px;font-weight:600;color:#1F5BFF">— Team Turn2Opinion</p></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td class="stage-out" style="padding:10px 24px 0"><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0" bgcolor="#F3F6FF" style="background-color:#F3F6FF;border-radius:28px"><tbody><tr><td align="center" style="padding:26px 20px 4px;text-align:center"><p class="wordmark" style="margin:0;font-family:&#x27;Manrope&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:34px;font-weight:800;letter-spacing:.2em;line-height:1.1;color:#0E1B4D">TURN<span style="color:#1F5BFF">2</span>OPINION</p><p style="margin:8px 0 0;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:13px;font-weight:600;color:#1544C9">Speak your mind. Shape what’s next. Get rewarded.</p></td></tr><tr><td align="center" style="padding:16px 20px 4px"><p style="margin:0;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.7;color:#24356F;text-align:center">Questions? <a href="mailto:support@turn2opinion.com" style="color:#1F5BFF;font-weight:700">support@turn2opinion.com</a> · <a href="tel:+918130015743" style="color:#24356F;font-weight:600;text-decoration:none">+91 81300 15743</a> · WhatsApp <a href="https://wa.me/918178200573" style="color:#24356F;font-weight:600;text-decoration:none">+91 81782 00573</a></p></td></tr><tr><td align="center" style="padding:10px 20px 2px;text-align:center"><a class="foot-link" href="https://www.turn2opinion.com/member" style="font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:13px;font-weight:600;color:#0E1B4D;text-decoration:none">My dashboard</a><span class="hide-sm" style="color:#C5CEEA;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:13px"> · </span><a class="foot-link" href="https://www.turn2opinion.com/faq" style="font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:13px;font-weight:600;color:#0E1B4D;text-decoration:none">Member FAQ</a><span class="hide-sm" style="color:#C5CEEA;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:13px"> · </span><a class="foot-link" href="https://www.turn2opinion.com/privacy" style="font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:13px;font-weight:600;color:#0E1B4D;text-decoration:none">Privacy</a><span class="hide-sm" style="color:#C5CEEA;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:13px"> · </span><a class="foot-link" href="https://www.turn2opinion.com/terms" style="font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:13px;font-weight:600;color:#0E1B4D;text-decoration:none">Terms</a><span class="hide-sm" style="color:#C5CEEA;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:13px"> · </span><a class="foot-link" href="https://www.turn2opinion.com/contact" style="font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:13px;font-weight:600;color:#0E1B4D;text-decoration:none">Contact</a></td></tr><tr><td align="center" style="padding:14px 20px 24px"><table role="presentation" border="0" cellPadding="0" cellSpacing="0" align="center"><tbody><tr><td style="padding:0 5px"><a href="https://www.instagram.com/turn2opinion/"><img src="https://www.turn2opinion.com/mailer/v1/social/instagram.png" width="32" height="32" alt="Turn2Opinion on Instagram" style="display:block;border:0;width:32px;height:32px"/></a></td><td style="padding:0 5px"><a href="https://www.facebook.com/tryturn2opinion"><img src="https://www.turn2opinion.com/mailer/v1/social/facebook.png" width="32" height="32" alt="Turn2Opinion on Facebook" style="display:block;border:0;width:32px;height:32px"/></a></td><td style="padding:0 5px"><a href="https://www.linkedin.com/company/turn2opinionpanel/home/"><img src="https://www.turn2opinion.com/mailer/v1/social/linkedin.png" width="32" height="32" alt="Turn2Opinion on LinkedIn" style="display:block;border:0;width:32px;height:32px"/></a></td><td style="padding:0 5px"><a href="https://www.youtube.com/@Turn2Opinion"><img src="https://www.turn2opinion.com/mailer/v1/social/youtube.png" width="32" height="32" alt="Turn2Opinion on YouTube" style="display:block;border:0;width:32px;height:32px"/></a></td><td style="padding:0 5px"><a href="https://wa.me/918178200573"><img src="https://www.turn2opinion.com/mailer/v1/social/whatsapp.png" width="32" height="32" alt="Turn2Opinion on WhatsApp" style="display:block;border:0;width:32px;height:32px"/></a></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td class="px" style="padding:18px 36px 30px"><p style="font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:12.5px;line-height:1.6;color:#56618C;margin:0 0 6px;text-align:center">You are receiving this because you are a Turn2Opinion member and today is the birthday on your profile.</p><p style="font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:11.5px;line-height:1.6;color:#56618C;margin:0;text-align:center">© 2026 Turn2Opinion · Frequent Research Fieldwork Solutions Pvt. Ltd. · Mangolpur Kalan, New Delhi 110085, India</p></td></tr></tbody></table><!--[if mso]></td></tr></table><![endif]--></td></tr></tbody></table></body></html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Your professional panel agreement — Turn2Opinion</title>
+    <meta name="description" content="Turn2Opinion Business Professionals Panel — Terms and Conditions, Privacy Notice and Consent: key points first, full clauses one tap away, then approve." />
+    <!-- Members-only page shown after login: never indexed -->
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#f6f7fb" />
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="preload" href="fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="fonts/manrope-var.woff2" as="font" type="font/woff2" crossorigin />
+    <!--
+      BACKEND: fill this object for the signed-in professional (see README → Integration). Example:
+      window.T2O_PRO_CONSENT = { member: { id: 'B-10293', firstName: 'Arjun', jobTitle: 'IT Director', company: 'Acme' },
+                                 submitUrl: '/api/consent/business', continueUrl: '/dashboard', logoutUrl: '/logout',
+                                 headers: { 'X-CSRF-Token': '…' } };
+    -->
+    <script>window.T2O_PRO_CONSENT = window.T2O_PRO_CONSENT || {};</script>
+    <!-- Before first paint: the member's saved theme (or English → light, other languages → dark), and the text
+         chunk of a non-English language is preloaded. -->
+    <script>
+      (function () {
+        try {
+          var d = document.documentElement, c = window.T2O_PRO_CONSENT || {};
+          var CH = /*LANG_CHUNKS*/{};
+          var l = new URLSearchParams(location.search).get('lang') || (c.language && c.language !== 'auto' ? c.language : '') || localStorage.getItem('t2o.lang') || '';
+          if (!l) { var n = (navigator.language || '').toLowerCase(); for (var k in CH) if (n === k.toLowerCase() || n.split('-')[0] === k.toLowerCase()) { l = k; break; } }
+          var th = localStorage.getItem('t2o.pro.theme') || (c.theme === 'light' || c.theme === 'dark' ? c.theme : '') || (l && !/^en/i.test(l) ? 'dark' : 'light');
+          d.setAttribute('data-theme', th);
+          if (l && !/^en/i.test(l)) {
+            d.classList.add('lang-boot');
+            setTimeout(function () { d.classList.remove('lang-boot'); }, 3000);
+            var f = CH[l] || CH[l.split('-')[0]];
+            if (f) { var p = document.createElement('link'); p.rel = 'modulepreload'; p.href = f; document.head.appendChild(p); }
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <!--app-css-->
+  </head>
+  <body>
+    <div id="t2o-pro-consent" data-prerendered="1"><!--app-html--></div>
+    <!-- the prerendered page follows the theme chosen in <head> from its first paint (no light→dark flash) -->
+    <script>try { var x = document.querySelector('#t2o-pro-consent > .px'); if (x) x.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') || 'light'); } catch (e) {}</script>
+    <noscript><p style="font:16px/1.6 system-ui;padding:24px;max-width:640px;margin:auto">Please enable JavaScript to review and approve the Turn2Opinion Business Professionals Panel terms.</p></noscript>
+    <!--app-js-->
+  </body>
+</html>

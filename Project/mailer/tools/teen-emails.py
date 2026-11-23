@@ -1,6 +1,8 @@
-# Generates the Teen registration email templates (Liquid) into Project/mailer/register/.
-# Run: python3 Project/mailer/tools/teen-emails.py  (rewrites the twelve Teen templates; edit the copy here, not the .liquid files).
-import os
+# SUPERSEDED (Round 20): the twelve Teen templates are now built from Project/mailer/design-v1/src/emails/teen-set.jsx
+# (the v1 email design), with the same copy, merge fields and links. This script is kept for reference only and
+# refuses to run, so it cannot overwrite the new templates by accident.
+import os, sys
+sys.exit('teen-emails.py is superseded: edit Project/mailer/design-v1/src/emails/teen-set.jsx and run npm run build there.')
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'register')  # Project/mailer/register/
 LOGO = 'https://www.turn2opinion.com/images/logo/t2o-logo.png'
 FONT = "'Segoe UI',Roboto,Helvetica,Arial,sans-serif"

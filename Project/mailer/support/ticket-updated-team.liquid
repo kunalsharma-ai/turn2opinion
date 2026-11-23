@@ -1,234 +1,83 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Support Ticket Updated</title>
-  </head>
-  <body style="margin:0; padding:0; background:#f4f4f4;">
-    <table
-      width="100%"
-      border="0"
-      cellspacing="0"
-      cellpadding="0"
-      bgcolor="#f4f4f4"
-      style="
-    margin:0;
-    padding:0;
-    background:#f4f4f4;
-    font-family:Arial, Helvetica, sans-serif;
-  ">
-      <tr>
-        <td align="center">
-          <table
-            width="920"
-            border="0"
-            cellspacing="0"
-            cellpadding="0"
-            bgcolor="#ffffff"
-            style="max-width:920px; width:100%;">
-            <!-- TOP BORDER -->
-            <tr>
-              <td height="12" bgcolor="#002b8f"></td>
-            </tr>
-            <!-- LOGO SECTION -->
-            <tr>
-              <td align="center" style="padding:30px 20px; background:#ffffff;">
-                <img
-                  src="https://www.turn2opinion.com/images/logo/t2o-logo.png"
-                  alt="Turn2Opinion.com"
-                  width="420"
-                  style="
-                display:block;
-                max-width:100%;
-                height:auto;
-              " />
-              </td>
-            </tr>
-            <!-- DIVIDER -->
-            <tr>
-              <td height="1" bgcolor="#002b8f"></td>
-            </tr>
-            <!-- INTRO -->
-            <tr>
-              <td style="padding:35px 60px 15px;">
-                <p style="
-                margin:0 0 25px;
-                font-size:28px;
-                color:#063686;
-                font-weight:bold;
-              ">
-                  Dear team,
-                </p>
-                <p style="
-                margin:0;
-                font-size:22px;
-                line-height:38px;
-                color:#14245d;
-              ">
-                  Support ticket {{ reply.ticketNo }} has been updated by {{ repliedBy.fullName }}.
-                </p>
-              </td>
-            </tr>
-            <!-- TICKET CARD -->
-            <tr>
-              <td style="padding:30px 55px;">
-                <table
-                  width="100%"
-                  border="0"
-                  cellspacing="0"
-                  cellpadding="0"
-                  style="
-                border:1px solid #bfdbfe;
-                border-radius:12px;
-                background:#f0f9ff;
-              ">
-                  <tr>
-                    <!-- ICON -->
-                    <td
-                      width="220"
-                      align="center"
-                      valign="middle"
-                      style="padding:40px 10px;">
-                      <img
-                        src="https://frequentresearch.com/mailer/mail-icons/t2o/mail.png"
-                        width="160"
-                        alt="Support Ticket"
-                        style="
-                      display:block;
-                      max-width:100%;
-                    " />
-                    </td>
-                    <!-- TICKET DETAILS -->
-                    <td style="padding:35px 25px 35px 10px;">
-                      <h2 style="
-                      margin:0 0 20px;
-                      color:#063686;
-                      font-size:30px;
-                    ">
-                        Ticket [{{ reply.ticketNo }}]
-                      </h2>
-                      <p style="
-                      margin:0 0 10px;
-                      color:#17285f;
-                      font-size:18px;
-                      line-height:30px;
-                    ">
-                        Updated by
-                      </p>
-                      <p style="
-                      margin:0;
-                      color:#063686;
-                      font-size:22px;
-                      font-weight:bold;
-                    ">
-                        {{ repliedBy.fullName }}
-                      </p>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <!-- LATEST RESPONSE -->
-            <tr>
-              <td style="padding:0 55px 35px;">
-                <table
-                  width="100%"
-                  border="0"
-                  cellspacing="0"
-                  cellpadding="0"
-                  style="
-                border:1px solid #d7e4ff;
-                border-radius:10px;
-                background:#ffffff;
-              ">
-                  <tr>
-                    <td style="padding:30px;">
-                      <h3 style="
-                      margin:0 0 18px;
-                      color:#063686;
-                      font-size:24px;
-                    ">
-                        Latest Update
-                      </h3>
-                      <div style="
-                      font-size:19px;
-                      line-height:32px;
-                      color:#22305f;
-                    ">
-                        {{ reply.message }}
-                      </div>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            <!-- ACTION NOTICE -->
-            <tr>
-              <td style="padding:0 55px 35px;">
-                <table
-                  width="100%"
-                  border="0"
-                  cellspacing="0"
-                  cellpadding="0"
-                  style="
-                background:#f8fbff;
-                border:1px solid #d7e4ff;
-                border-radius:10px;
-              ">
-                  <tr>
-                    <td
-                      width="120"
-                      align="center"
-                      valign="middle"
-                      style="padding:25px;">
-                      <img
-                        src="https://frequentresearch.com/mailer/mail-icons/t2o/shield.png"
-                        width="100"
-                        alt="Support"
-                        style="display:block;" />
-                    </td>
-                  {% comment %} <td style="padding:25px 25px 25px 0;">
-                                      <h3
-                                        style="
-                                          margin:0 0 10px;
-                                          color:#063686;
-                                          font-size:22px;
-                                        "
-                                      >
-                                        Action Required
-                                      </h3>
-                                      <p
-                                        style="
-                                          margin:0;
-                                          font-size:18px;
-                                          line-height:30px;
-                                          color:#22305f;
-                                        "
-                                      >
-                                        Please review the latest ticket update and follow up
-                                        with the panel member if necessary. Any additional
-                                        response should be added through the Support Ticket
-                                        system.
-                                      </p>
-                                  </td> {% endcomment %}
-                  </tr>
-                </table>
-              </td>
-            </tr>
-            {% include "mailer/footer.liquid" %}
-            <!-- BOTTOM BLUE BAR -->
-            <tr>
+{%- comment -%}
+===============================================================================
+  Turn2Opinion — email system v1 ("the conversation")
+  -----------------------------------------------------------------------------
+  Template   : 17. Ticket updated — team
+  File       : ticket-updated-team.liquid
+  Class      : Support (transactional — no unsubscribe)
+  Trigger    : Internal: a ticket received a new reply
+  Tone       : night
+  Replaces   : ticket-updated-team.liquid
 
-              <td
-                height="10"
-                bgcolor="#0c5adb"
-                style="background:#0c5adb;"></td>
+  SUBJECT LINES — pick one, or A/B them
+    1. Ticket {{ reply.ticketNo }} updated by {{ repliedBy.fullName }}
+    2. [T2O] Ticket {{ reply.ticketNo }} — new reply
+    3. Turn2Opinion support — ticket {{ reply.ticketNo }} awaiting review
 
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-  </body>
-</html>
+  PREHEADER
+    A new message was added. Review and respond if needed.
+
+  PRIMARY CTA
+    none — this template asks for nothing
+
+  PLAIN-TEXT ALTERNATIVE
+    dist/text/ticket-updated-team.txt — send as the text/plain part of a multipart message.
+    HTML-only mail is scored down by most spam filters.
+
+  Generated from react/src/emails/17-ticket-updated-team.jsx — edit the JSX and re-run
+  `npm run build`. Hand edits to this file are overwritten.
+
+  Images are served from the base configured at build time; upload assets/
+  there before sending. Serve over HTTPS from a stable path — clients do not
+  retry a 404, so a moved asset breaks every copy already delivered.
+===============================================================================
+{%- endcomment -%}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="x-apple-disable-message-reformatting"><meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no"><meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light only"><title>Ticket {{ reply.ticketNo }} updated by {{ repliedBy.fullName }}</title><!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><style>td,th,p,a,span,h1,h2{font-family:'Segoe UI',Arial,sans-serif!important}</style><![endif]--><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"><style>
+  body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+  table,td{mso-table-lspace:0pt;mso-table-rspace:0pt}
+  img{-ms-interpolation-mode:bicubic;border:0;outline:none;text-decoration:none}
+  table{border-collapse:separate}
+  body{margin:0!important;padding:0!important;width:100%!important;background:#FFFFFF}
+  a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important;font-size:inherit!important;font-family:inherit!important;font-weight:inherit!important;line-height:inherit!important}
+  u+#body a{color:inherit;text-decoration:none}
+  .btn:hover{background-color:#1544C9!important}
+  .btn-ghost:hover{border-color:#1F5BFF!important}
+
+  /* Motion is a progressive extra: Apple Mail and iOS Mail play a slow float on the
+     hero scene; Gmail and Outlook strip it and show the still image, which is the
+     complete design on its own. Reduced-motion users never see it. */
+  @media (prefers-reduced-motion:no-preference){
+    .float{animation:t2oFloat 6s ease-in-out infinite}
+    @keyframes t2oFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  }
+
+  @media screen and (max-width:600px){
+    .wrap{width:100%!important;max-width:100%!important}
+    .px{padding-left:20px!important;padding-right:20px!important}
+    .stage-out{padding-left:12px!important;padding-right:12px!important}
+    .stack{display:block!important;width:100%!important;max-width:100%!important;box-sizing:border-box}
+    .art-cell{padding:22px 0 0!important;text-align:center!important}
+    .art{width:170px!important;height:170px!important}
+    .stage-text{padding:10px 22px 4px!important}
+    .h1{font-size:23px!important;line-height:1.22!important}
+    .stage-sub{font-size:14.5px!important}
+    .facts-pad{padding:12px 18px 20px!important}
+    .fact-cell{display:block!important;padding:0 0 8px!important}
+    .card-col{padding:0 0 12px!important}
+    .stat-col{display:block!important;width:100%!important;padding:0 0 8px!important}
+    .pay-col{display:inline-block!important;width:50%!important;box-sizing:border-box}
+    .hide-sm{display:none!important;max-height:0!important;overflow:hidden!important}
+    .btn,.btn-ghost{min-width:0!important;width:100%!important}
+    .figure{font-size:23px!important}
+    .ask{font-size:16.5px!important}
+    .kv-k,.kv-v{display:block!important;width:100%!important;padding:6px 0!important;border-top:0!important}
+    .foot-link{display:inline-block!important;padding:4px 6px!important}
+    .wordmark{font-size:27px!important;letter-spacing:.14em!important}
+  }
+
+  :root{color-scheme:light only;supported-color-schemes:light only}
+  [data-ogsc] .keep-white,[data-ogsb] .keep-white{background-color:#FFFFFF!important}
+  [data-ogsc] .keep-ink{color:#0E1B4D!important}
+  [data-ogsc] .keep-text{color:#17224D!important}
+</style></head><body id="body" class="keep-white" style="margin:0;padding:0;background-color:#FFFFFF;width:100%"><div style="display:none;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all">A new message was added. Review and respond if needed. ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌</div><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0" bgcolor="#FFFFFF" class="keep-white" style="background-color:#FFFFFF"><tbody><tr><td align="center" style="padding:0"><!--[if mso]><table role="presentation" width="600" align="center" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]--><table role="presentation" class="wrap keep-white" width="600" border="0" cellPadding="0" cellSpacing="0" align="center" style="width:600px;max-width:600px;margin:0 auto;background-color:#FFFFFF"><tbody><tr><td class="px" style="padding:22px 36px 14px"><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0"><tbody><tr><td valign="middle"><a href="https://www.turn2opinion.com?utm_source=email&amp;utm_medium=logo" style="text-decoration:none"><img src="https://www.turn2opinion.com/mailer/v1/brand/turn2opinion-logo.png" width="170" height="52" alt="Turn2Opinion" style="display:block;border:0;width:170px;height:auto;font-family:&#x27;Manrope&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:20px;font-weight:800;color:#0E1B4D"/></a></td><td valign="middle" align="right" style="text-align:right"><table role="presentation" border="0" cellPadding="0" cellSpacing="0" align="right"><tbody><tr><td style="border:1px solid #E1E6F5;border-radius:999px;padding:6px 12px;background-color:#FFFFFF;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:12px;font-weight:600;color:#24356F;white-space:nowrap"><span style="color:#1F5BFF">●</span>  Internal · Support</td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td class="stage-out" style="padding:6px 24px 0"><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0" bgcolor="#0E1B4D" class="stage" style="background-color:#0E1B4D;background-image:linear-gradient(135deg,#0A1238 0%,#14286E 60%,#1F4FE0 130%);border-radius:28px"><tbody><tr><td style="padding:0"><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0" dir="rtl"><tbody><tr><td dir="ltr" width="214" valign="bottom" class="stack art-cell" align="center" style="padding:22px 18px 8px 0;width:214px"><img class="art float" src="https://www.turn2opinion.com/mailer/v1/heroes/17-ticket-updated-team.png" width="196" height="196" alt="A member in a violet portal beside a chat tile and a refresh tile" style="display:block;border:0;width:196px;height:196px;margin:0 auto"/></td><td dir="ltr" valign="middle" class="stack stage-text" style="padding:30px 6px 10px 30px;text-align:left"><table role="presentation" border="0" cellPadding="0" cellSpacing="0" style="margin:0 0 14px"><tbody><tr><td bgcolor="#FFFFFF" style="background-color:#FFFFFF;border-radius:14px 14px 14px 4px;padding:6px 12px;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0E1B4D;white-space:nowrap">Internal notice</td></tr></tbody></table><h1 class="h1" style="margin:0 0 12px;font-family:&#x27;Manrope&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:27px;line-height:1.18;font-weight:800;color:#FFFFFF;letter-spacing:-0.02em">Ticket <span style="color:#9FD6FF">{{ reply.ticketNo }}</span> updated and awaiting review.</h1><p class="stage-sub" style="margin:0;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#E9EFFF">A new message has been added to the thread. The full text is quoted below.</p></td></tr></tbody></table></td></tr><tr><td class="facts-pad" style="padding:10px 22px 24px 24px"><table role="presentation" border="0" cellPadding="0" cellSpacing="0"><tbody><tr><td class="fact-cell" style="padding:0 8px 0 0"><table role="presentation" border="0" cellPadding="0" cellSpacing="0"><tbody><tr><td style="background-color:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:7px 13px;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:12.5px;font-weight:600;color:#FFFFFF;white-space:nowrap"><span style="color:#FFD872">●</span>  By {{ repliedBy.fullName | default: "Turn2Opinion Support" }}</td></tr></tbody></table></td><td class="fact-cell" style="padding:0 8px 0 0"><table role="presentation" border="0" cellPadding="0" cellSpacing="0"><tbody><tr><td style="background-color:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:7px 13px;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:12.5px;font-weight:600;color:#FFFFFF;white-space:nowrap"><span style="color:#FFB3C4">●</span>  Awaiting review</td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td class="px " style="padding:20px 36px"><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0" style="border:1px solid #E1E6F5;border-radius:20px;background-color:#FFFFFF" bgcolor="#FFFFFF"><tbody><tr><td height="5" bgcolor="#1F5BFF" style="height:5px;font-size:1px;line-height:1px;background-color:#1F5BFF;background-image:linear-gradient(90deg,#1F5BFF,#49B6FF,#7B5CFF);border-radius:20px 20px 0 0"> </td></tr><tr><td style="padding:16px 22px 4px"><p style="margin:0;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#56618C">Ticket</p></td></tr><tr><td style="padding:6px 22px 14px"><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0"><tbody><tr><td width="40%" valign="top" class="kv-k" style="width:40%;padding:10px 10px 10px 0;border-top:0;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:14px;color:#56618C">Ticket number</td><td valign="top" class="kv-v" style="padding:10px 0;border-top:0;font-family:&#x27;Manrope&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:15px;font-weight:700;color:#0E1B4D;word-break:break-word">{{ reply.ticketNo }}</td></tr><tr><td width="40%" valign="top" class="kv-k" style="width:40%;padding:10px 10px 10px 0;border-top:1px dashed #E1E6F5;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:14px;color:#56618C">Updated by</td><td valign="top" class="kv-v" style="padding:10px 0;border-top:1px dashed #E1E6F5;font-family:&#x27;Manrope&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:15px;font-weight:700;color:#0E1B4D;word-break:break-word">{{ repliedBy.fullName | default: "Turn2Opinion Support" }}</td></tr><tr><td width="40%" valign="top" class="kv-k" style="width:40%;padding:10px 10px 10px 0;border-top:1px dashed #E1E6F5;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:14px;color:#56618C">Status</td><td valign="top" class="kv-v" style="padding:10px 0;border-top:1px dashed #E1E6F5;font-family:&#x27;Manrope&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:15px;font-weight:700;color:#D63262;word-break:break-word">Awaiting review</td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td class="px " style="padding:12px 36px"><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0"><tbody><tr><td width="48" valign="bottom" style="width:48px;padding:0 8px 0 0"><img src="https://www.turn2opinion.com/mailer/v1/ui/mark.png" width="40" height="40" alt="" style="display:block;border:0;width:40px;height:40px"/></td><td valign="top"><p style="margin:0 0 6px;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:12.5px;font-weight:700;color:#56618C">{{ repliedBy.fullName | default: "Turn2Opinion Support" }} <span style="color:#C5CEEA">·</span> Latest response</p><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0" bgcolor="#EEF3FF" style="background-color:#EEF3FF;border:1px solid #CFDCFF;border-radius:20px 20px 20px 6px"><tbody><tr><td style="padding:16px 18px;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.65;color:#0E1B4D">{{ reply.message }}</td></tr></tbody></table></td></tr></tbody></table></td></tr><tr><td class="px " style="padding:12px 36px"><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0" bgcolor="#FFF0F3" style="background-color:#FFF0F3;border:1px solid #FFCCD6;border-radius:20px"><tbody><tr><td width="62" valign="top" style="width:62px;padding:18px 0 18px 18px"><img src="https://www.turn2opinion.com/mailer/v1/icons/bell-coral.png" width="40" height="40" alt="" style="display:block;border:0;width:40px;height:40px"/></td><td valign="top" style="padding:18px 20px 18px 12px"><p style="margin:0 0 4px;font-family:&#x27;Manrope&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:16px;font-weight:800;color:#0E1B4D">Action required</p><div style="font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:14.5px;line-height:1.6;color:#24356F">Review the update and take the appropriate action. If a response is required, reply through the Support Ticket system.</div></td></tr></tbody></table></td></tr><tr><td class="px " style="padding:18px 36px"><p class="keep-text" style="margin:0 0 0px;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:13px;line-height:1.65;color:#56618C;text-align:center;font-weight:400">Automated notification — no reply needed.</p></td></tr><tr><td class="stage-out" style="padding:10px 24px 0"><table role="presentation" width="100%" border="0" cellPadding="0" cellSpacing="0" bgcolor="#F3F6FF" style="background-color:#F3F6FF;border-radius:28px"><tbody><tr><td align="center" style="padding:26px 20px 4px;text-align:center"><p class="wordmark" style="margin:0;font-family:&#x27;Manrope&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:34px;font-weight:800;letter-spacing:.2em;line-height:1.1;color:#0E1B4D">TURN<span style="color:#1F5BFF">2</span>OPINION</p><p style="margin:8px 0 0;font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:13px;font-weight:600;color:#1544C9">Speak your mind. Shape what’s next. Get rewarded.</p></td></tr><tr><td style="padding:0 0 22px"> </td></tr></tbody></table></td></tr><tr><td class="px" style="padding:18px 36px 30px"><p style="font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:12.5px;line-height:1.6;color:#56618C;margin:0 0 6px;text-align:center">Internal notification from the Turn2Opinion support system.</p><p style="font-family:&#x27;Inter&#x27;,&#x27;Segoe UI&#x27;,Roboto,Helvetica,Arial,sans-serif;font-size:11.5px;line-height:1.6;color:#56618C;margin:0;text-align:center">© 2026 Turn2Opinion · Frequent Research Fieldwork Solutions Pvt. Ltd. · Mangolpur Kalan, New Delhi 110085, India</p></td></tr></tbody></table><!--[if mso]></td></tr></table><![endif]--></td></tr></tbody></table></body></html>
