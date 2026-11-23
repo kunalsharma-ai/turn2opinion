@@ -292,6 +292,9 @@ export default function TeenProfile() {
               </p>
             )}
             <TeenStatus stage={d.status} compact />
+            <a className="tpr-btn is-ghost" href="/member/profile/#family">
+              Everything my {relWord(d.guardian?.relation)} shared <Icon name="arrow" size={16} />
+            </a>
           </section>
         </div>
 

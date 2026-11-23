@@ -357,6 +357,7 @@ export default {
   'gc.withdrawn': 'Withdrawn',
   'gc.unknown': 'Consent details aren’t available right now.',
   'gc.view': 'View my Teen profile',
+  'gc.family': 'See everything my guardian shared',
 
   // professional
   'pro.expertise': 'Your expertise',

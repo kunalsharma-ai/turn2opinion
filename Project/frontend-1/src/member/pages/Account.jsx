@@ -9,6 +9,7 @@ import { t, tn, fmt } from '../i18n/t.js';
 import { useI18n } from '../../i18n/I18nProvider.jsx';
 import { ColorPaletteSelector, LanguageSelector, ThemeSelector, useSound } from '../components/Shell.jsx';
 import { GuardianConsentCard } from '../components/Modules.jsx';
+import { FamilyRecord } from '../components/FamilyRecord.jsx';
 import { DataCentre, LevelCard, LinkedAccounts, ProfileFreshness, QuietHours, SurveyPrefs } from '../components/Grow.jsx';
 import { engageOn } from '../data/engage.js';
 import { Avatar, Badge, Button, Card, Field, Icon, MLink, Toggle, cx, useToast } from '../components/ui.jsx';
@@ -383,6 +384,7 @@ export function ProfilePage() {
           </Card>
         </div>
       </div>
+      {teen && <FamilyRecord />}
     </div>
   );
 }
