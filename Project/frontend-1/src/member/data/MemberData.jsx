@@ -2,6 +2,7 @@
 // UI state (open drawers, tabs, filters) stays inside the components that own it.
 // Sections load in parallel once the member is known, so one slow or failing endpoint never blanks
 // the whole dashboard: its card shows its own skeleton or error with "Try again".
+import { ABOUT_YOU } from '../config/memberTypes.js';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { loadSection } from './source.js';
 
@@ -65,8 +66,21 @@ export function useSection(name) {
 }
 
 // ---------- derived values shared by several cards (computed from existing data only) ----------
-export function profileCompletion(profiles) {
-  if (!Array.isArray(profiles) || !profiles.length) return null;
+/** The About-you profiles that unlock surveys. Panels without those slugs (Teen) use their first four. */
+export function aboutYou(profiles) {
+  const list = Array.isArray(profiles) ? profiles : [];
+  const hit = list.filter((p) => ABOUT_YOU.includes(p.slug));
+  return hit.length >= 2 ? hit : list.slice(0, 4);
+}
+/** Every other profile: the topic surveys that unlock once About-you is complete. */
+export function topicProfiles(profiles) {
+  const about = aboutYou(profiles);
+  return (Array.isArray(profiles) ? profiles : []).filter((p) => !about.includes(p));
+}
+
+export function profileCompletion(all) {
+  const profiles = aboutYou(all);
+  if (!profiles.length) return null;
   // the API reports -1 for a profile not started yet: that counts as 0 %
   const avg = profiles.reduce((n, p) => n + Math.min(100, Math.max(0, Number(p.completion) || 0)), 0) / profiles.length;
   return { percent: Math.round(avg), left: profiles.filter((p) => p.completion < 100).length, total: profiles.length };

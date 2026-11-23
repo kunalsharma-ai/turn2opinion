@@ -241,7 +241,7 @@ export function BonusBanner({ compact }) {
       <span className="xbonus__timer" role="timer" aria-live="off">
         <Icon name="clock" size={15} /> {t('g.bonus.ends', { t: left(b.ends, now) })}
       </span>
-      <Button to="surveys" size="sm" iconEnd="external" className="xbonus__go">
+      <Button to="surveys" size="sm" iconEnd="arrow" className="xbonus__go">
         {t('g.bonus.go')}
       </Button>
     </section>
@@ -847,7 +847,7 @@ export function ScreenOutHelp({ open, onClose, name }) {
           <Icon name="spark" size={16} /> {t('g.so.tip')}
         </p>
         <div className="mb-row">
-          <Button to="profiles" iconEnd="external">
+          <Button to="profiles" iconEnd="arrow">
             {t('pc.cta')}
           </Button>
           <Button variant="ghost" onClick={onClose}>

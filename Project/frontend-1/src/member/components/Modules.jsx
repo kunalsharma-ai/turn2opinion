@@ -2,7 +2,7 @@
 // Numbers shown are only ever existing backend values or simple arithmetic on them.
 import { useMemo, useRef, useState } from 'react';
 import { useMe, useSection, profileCompletion, qualityTier } from '../data/MemberData.jsx';
-import { ABOUT_YOU, REFERRAL_STEPS } from '../config/memberTypes.js';
+import { ABOUT_YOU, REFERRAL_STEPS, surveyLink } from '../config/memberTypes.js';
 import { feedback } from '../theme/feedback.js';
 import { t, tn, fmt, relTime } from '../i18n/t.js';
 import { Badge, Button, Card, Counter, EmptyState, Icon, MLink, Progress, ProgressRing, Section, Skeleton, Tabs, Tooltip, cx, useToast, prefersReducedMotion } from './ui.jsx';
@@ -248,7 +248,7 @@ export function SurveyCard({ s, featured, teen }) {
           <span className="mb-coin mb-coin--sm" aria-hidden="true" /> {t('sv.pts', { n: fmt(s.points) })}
         </span>
       </div>
-      <Button to="surveys" size="sm" variant={featured ? 'primary' : 'secondary'} iconEnd="arrow" className="mb-survey__cta" aria-label={`${t('sv.start')}: ${s.name}`}>
+      <Button to={surveyLink(s.slug)} size="sm" variant={featured ? 'primary' : 'secondary'} iconEnd="arrow" className="mb-survey__cta" aria-label={`${t('sv.start')}: ${s.name}`}>
         {t('sv.start')}
       </Button>
     </article>
@@ -272,7 +272,7 @@ export function SurveySection({ limit = 6 }) {
       icon="clipboard"
       className="mb-surveys"
       action={
-        <Button to="surveys" size="sm" variant="ghost" iconEnd="external">
+        <Button to="surveys" size="sm" variant="ghost" iconEnd="arrow">
           {t('sv.browse')}
         </Button>
       }
@@ -382,7 +382,7 @@ export function KingdomCard() {
       <div className="mb-kingdom__text">
         <h2 id="mb-kd">{t('kd.title')}</h2>
         <p>{t('kd.sub')}</p>
-        <Button to="profiles" size="sm" variant="secondary" iconEnd="external">
+        <Button to="profiles" size="sm" variant="secondary" iconEnd="arrow">
           {t('kd.cta')}
         </Button>
       </div>
@@ -470,7 +470,7 @@ export function ActivityTimeline({ limit = 6, items, compact }) {
                       <p className="mb-tl__title">{t(`ac.${a.status}`) === `ac.${a.status}` ? t('ac.other') : t(`ac.${a.status}`)}</p>
                       <p className="mb-tl__name">{a.name}</p>
                     </div>
-                    {a.points > 0 ? <span className="mb-tl__pts">+{fmt(a.points)}</span> : a.status === 'dropout' && a.source === 'internal' ? <MLink to="surveys" className="mb-linkbtn">{t('ac.resume')}</MLink> : null}
+                    {a.points > 0 ? <span className="mb-tl__pts">+{fmt(a.points)}</span> : a.status === 'dropout' && a.source === 'internal' && a.slug ? <MLink to={surveyLink(a.slug)} className="mb-linkbtn">{t('ac.resume')}</MLink> : null}
                   </li>
                 ))}
               </ul>

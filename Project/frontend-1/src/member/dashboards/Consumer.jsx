@@ -23,8 +23,8 @@ export default function ConsumerDashboard() {
   ];
   const actions =
     d.stage === 0
-      ? [{ label: t('pc.cta'), to: 'profiles', iconEnd: 'external' }, { label: open ? tn('sv.count', open) : t('nav.surveys'), to: 'surveys', icon: 'clipboard', iconEnd: null }]
-      : [{ label: open ? tn('sv.count', open) : t('nav.surveys'), to: 'surveys', iconEnd: 'external' }, { label: t('pts.view'), to: 'rewards', icon: 'coin', iconEnd: null }];
+      ? [{ label: t('pc.cta'), to: 'profiles', iconEnd: 'arrow' }, { label: open ? tn('sv.count', open) : t('nav.surveys'), to: 'surveys', icon: 'clipboard', iconEnd: null }]
+      : [{ label: open ? tn('sv.count', open) : t('nav.surveys'), to: 'surveys', iconEnd: 'arrow' }, { label: t('pts.view'), to: 'rewards', icon: 'coin', iconEnd: null }];
   return (
     <div className="xp xp--dash xd xd--consumer">
       <XHero

@@ -6,6 +6,8 @@ It is one persistent React app mounted for every `/member/<page>/` route that fr
 | URL | Page |
 | --- | --- |
 | `/member/dashboard/` | Dashboard. Consumer, Professional or Teen layout, picked from `me.category`. |
+| `/member/profiles/` | Profiles: welcome hero, Opinion Kingdom, About-you cards, Incomplete, sealed Surveys. Answering runs here. |
+| `/member/surveys/` | Surveys: survey cards with filters, search and paging, starting a survey, participation history |
 | `/member/rewards/` | Points and rewards |
 | `/member/quality-score/` | Quality score |
 | `/member/referrals/` | Invite & earn, history, follow-us bonuses |
@@ -16,12 +18,10 @@ It is one persistent React app mounted for every `/member/<page>/` route that fr
 These pages stay on the existing member app (Project/frontend) and are linked from here with a full
 page load. Their approved designs and animations are not reproduced:
 
-- `/member/surveys`: survey cards and survey flow
-- `/member/profiles`: the "Welcome! Your world is waiting" hero and Opinion Kingdom
 - `/member/myaccount`: payment methods, pause and delete
 - `/member/support`
 
-**Going live needs one gateway rule.** Send the seven URLs above to frontend-1, and keep every other
+**Going live needs one gateway rule.** Send the nine URLs above to frontend-1, and keep every other
 `/member/*` URL on the existing app.
 
 ## Round 16 redesign
@@ -113,6 +113,14 @@ Nothing below `data/` calls `fetch`. To change where a number comes from, change
 | password | `PATCH /api/v1/me` |
 | channels | `PATCH /api/v1/me/answer` |
 | email | `PATCH /api/v1/me/change-email` |
+| question | `POST /api/v1/question {name}` |
+| options | `GET /api/v1/option/:name`, or `POST {parentValue}` for a dependent question |
+| text checks | `GET /api/v1/validation/:name`, or `POST {parentValue}` |
+| saved answers | `POST /api/v1/me {questions}` |
+| save a profile | `PATCH /api/v1/me/profile {answers}` (sent after every step) |
+| open a survey | `PUT /api/v1/me/survey {slug}`; a partner survey redirects to `link` with `$uid` = `respID` |
+| finish a survey | `PATCH /api/v1/me/survey {answers, respID}` |
+| phone country | `GET /api/v1/get-country` |
 
 ## Appearance
 
@@ -151,3 +159,29 @@ There are no welcome questions. `/welcome/` now redirects to the dashboard.
 YES and NO email buttons open `/parent-consent/` at the matching question (unchanged). After the
 guardian consents, the Teen sets a password, sees a consent receipt (who, date, version, ✓) and is
 taken to the Teen dashboard.
+
+## Profiles and Surveys (Round 19)
+
+Rebuilt from the live captures (`/mnt/project-files/reference/live-member-area/`) on the same
+endpoints and rules as `Project/frontend` (`survey/components/Survey.jsx`, `Question.jsx`, `Select.jsx`).
+
+- **Profiles** (`pages/Profiles.jsx`): blue welcome hero with the glass lock orb, Opinion Kingdom
+  (`components/Kingdom.jsx`: stage, pips, an SVG scene where every completed profile or survey adds a
+  house, scaffolds for open About-you profiles, night sky in dark mode, side stats, 8 milestones),
+  About-you cards, Incomplete, and Surveys sealed until the About-you profiles are complete.
+- **About-you profiles** are the `basic`, `educational`, `professional` and `financial` slugs
+  (`ABOUT_YOU`); a panel without them (Teen) uses its first four profiles. Every other profile is a
+  topic survey (the dark cards on the live Surveys page).
+- **Question flow** (`components/Questionnaire.jsx`): steps from `pages[i][0]`, choice questions as cards
+  (8 options or fewer) or a select, multi-select with exclusive / None / Prefer-not-to-say / Others +
+  specify / max selections, text checked against its validation pattern, phone with country code
+  (locked once saved), date, dependent options, age checked against date of birth, survey intro and
+  thank-you HTML (scripts and event handlers removed). Two deliberate differences from the existing
+  app: a profile saves after every step, and changing an answer clears only the questions that depend
+  on it. As in the existing app, a text question without a validation pattern is not shown.
+- **Surveys** (`pages/Surveys.jsx`): paid invitations first, then topic surveys; All new / High reward
+  (over 500 points) / Short (5 min or less), search, 12 / 24 / 48 per page; terms check before starting;
+  participation history with From / To dates, search, "Resume" on Turn2Opinion-hosted dropouts.
+- **Deep links** from the dashboards: `/member/profiles/#p-<slug>` opens a profile,
+  `/member/surveys/#start-<slug>` starts a survey.
+- Preview data: `data/demoQuestions.js` (questions, options, answers kept for the browser session).

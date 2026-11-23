@@ -375,7 +375,7 @@ export function ProfilePage() {
           <LinkedAccounts />
           <Card title={t('st.profile.profiles')} icon="map" className="xid-card">
             <p className="mb-card__lead">{t('kd.sub')}</p>
-            <Button to="profiles" size="sm" iconEnd="external" className="mb-wide">
+            <Button to="profiles" size="sm" iconEnd="arrow" className="mb-wide">
               {t('pc.open')}
             </Button>
           </Card>
@@ -447,7 +447,7 @@ export function SettingsPage() {
               <Button to="profile" size="sm" variant="secondary" iconEnd="arrow">
                 {t('st.profile.open')}
               </Button>
-              <Button to="profiles" size="sm" variant="ghost" iconEnd="external">
+              <Button to="profiles" size="sm" variant="ghost" iconEnd="arrow">
                 {t('st.profile.profiles')}
               </Button>
             </div>

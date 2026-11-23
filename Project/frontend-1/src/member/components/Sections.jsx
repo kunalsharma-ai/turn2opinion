@@ -2,8 +2,8 @@
 // Every number comes from an existing section (see data/source.js) or simple arithmetic on it.
 // Each block owns its loading, empty and error state, drawn in the section's own style.
 import { useMemo, useState } from 'react';
-import { useMe, useSection, profileCompletion, qualityTier } from '../data/MemberData.jsx';
-import { ABOUT_YOU, ROUTES } from '../config/memberTypes.js';
+import { aboutYou, useMe, useSection, profileCompletion, qualityTier } from '../data/MemberData.jsx';
+import { ABOUT_YOU, ROUTES, profileLink, surveyLink } from '../config/memberTypes.js';
 import { t, tn, fmt, relTime } from '../i18n/t.js';
 import { Button, Counter, Icon, MLink, Skeleton, cx } from './ui.jsx';
 import { EmptyArt, QualityMeter, Vault } from './art.jsx';
@@ -16,10 +16,11 @@ export function useDash() {
   const [points, pStatus] = useSection('points');
   const [stats, stStatus] = useSection('stats');
   const [surveys, sStatus, sRetry] = useSection('surveys');
-  const [profiles, prStatus, prRetry] = useSection('profiles');
+  const [allProfiles, prStatus, prRetry] = useSection('profiles');
+  const profiles = useMemo(() => (allProfiles ? aboutYou(allProfiles) : allProfiles), [allProfiles]);
   const [activity, aStatus, aRetry] = useSection('activity');
   const [refs, rStatus] = useSection('referrals');
-  const pc = profileCompletion(profiles);
+  const pc = profileCompletion(allProfiles);
   const tier = qualityTier(me.quality.score, me.quality.scale);
   const rate = stats && stats.total ? stats.complete / stats.total : 0;
   // points per week for the last 8 weeks, oldest first (from completed responses)
@@ -34,7 +35,7 @@ export function useDash() {
   }, [activity]);
   // the member's next step in the journey: 0 profile, 1 survey, 2 earn, 3 quality, 4 impact
   const stage = !pc || pc.percent < 100 ? 0 : surveys?.length ? 1 : points && points.total < points.threshold ? 2 : tier !== 'excellent' ? 3 : 4;
-  return { me, points, pStatus, stats, stStatus, surveys, sStatus, sRetry, profiles, prStatus, prRetry, activity, aStatus, aRetry, refs, rStatus, pc, tier, rate, weeks, stage };
+  return { me, points, pStatus, stats, stStatus, surveys, sStatus, sRetry, profiles, allProfiles, prStatus, prRetry, activity, aStatus, aRetry, refs, rStatus, pc, tier, rate, weeks, stage };
 }
 
 /* ------------------------------------------------------------------ categories */
@@ -214,7 +215,7 @@ export function ProfileJourney({ variant = 'road' }) {
     ) : !d.profiles ? (
       <XSkel rows={variant === 'quests' ? 1 : 2} h={variant === 'quests' ? 132 : 58} />
     ) : !list.length ? (
-      <XEmpty kind="profile" title={t('pc.empty')} action={<Button to="profiles" size="sm" iconEnd="external">{t('pc.open')}</Button>} />
+      <XEmpty kind="profile" title={t('pc.empty')} action={<Button to="profiles" size="sm" iconEnd="arrow">{t('pc.open')}</Button>} />
     ) : variant === 'dossier' ? (
       <Dossier list={list} />
     ) : variant === 'quests' ? (
@@ -231,7 +232,7 @@ export function ProfileJourney({ variant = 'road' }) {
         title={t(`pj.title.${variant}`)}
         sub={d.pc ? (d.pc.left ? tn('pc.left', d.pc.left) : t('pc.done')) : t('pj.sub')}
         action={
-          <Button to="profiles" size="sm" variant={next ? 'primary' : 'secondary'} iconEnd="external">
+          <Button to={next ? profileLink(next.slug) : 'profiles'} size="sm" variant={next ? 'primary' : 'secondary'} iconEnd="arrow">
             {next ? t('pj.continue', { name: next.name }) : t('pc.open')}
           </Button>
         }
@@ -261,7 +262,7 @@ function Road({ list }) {
         const done = p.completion >= 100;
         return (
           <li key={p.slug} className={cx('xr__stop', done && 'is-done', i === firstOpen && 'is-next')} style={{ '--i': i }}>
-            <MLink to="profiles" className="xr__pin" aria-label={`${p.name}: ${p.completion}%`}>
+            <MLink to={profileLink(p.slug)} className="xr__pin" aria-label={`${p.name}: ${p.completion}%`}>
               <span className="xr__flag" aria-hidden="true">
                 {done ? <Icon name="check" size={16} strokeWidth={3} /> : <span>{p.completion}%</span>}
               </span>
@@ -334,7 +335,7 @@ function Quests({ list }) {
             <span className="xq__ring" style={{ '--p': p.completion / 100 }} aria-hidden="true" />
             <span className="xq__state">{done ? t('pj.q.done') : p.started ? t('pj.q.progress', { n: p.completion }) : t('pj.q.new')}</span>
             {!done && (
-              <MLink to="profiles" className="xq__go">
+              <MLink to={profileLink(p.slug)} className="xq__go">
                 {p.started ? t('pj.q.resume') : t('pj.q.start')} <Icon name="arrow" size={14} />
               </MLink>
             )}
@@ -369,7 +370,7 @@ export function SurveyDiscovery({ variant = 'deck', limit = 6 }) {
       title={t(`sd.title.${variant}`)}
       sub={d.sStatus === 'ready' && d.surveys.length ? t(`sd.sub.${variant}`, { n: d.surveys.length }) : t('sv.sub')}
       action={
-        <Button to="surveys" size="sm" variant="ghost" iconEnd="external">
+        <Button to="surveys" size="sm" variant="ghost" iconEnd="arrow">
           {t('sv.browse')}
         </Button>
       }
@@ -380,7 +381,7 @@ export function SurveyDiscovery({ variant = 'deck', limit = 6 }) {
   else if (d.sStatus !== 'ready') body = <XSkel rows={variant === 'briefs' ? 3 : 2} h={variant === 'briefs' ? 62 : 120} />;
   else if (!d.surveys.length)
     body = (
-      <XEmpty kind="surveys" title={t(`sd.empty.${variant}`)} action={<Button to="profiles" variant="secondary" size="sm" iconEnd="external">{t('sv.empty.cta')}</Button>}>
+      <XEmpty kind="surveys" title={t(`sd.empty.${variant}`)} action={<Button to="profiles" variant="secondary" size="sm" iconEnd="arrow">{t('sv.empty.cta')}</Button>}>
         {t('sv.empty.p')}
       </XEmpty>
     );
@@ -450,7 +451,7 @@ function Deck({ list }) {
               </span>
             </span>
           </div>
-          <Button to="surveys" iconEnd="arrow" aria-label={`${t('sd.take')}: ${first.name}`}>
+          <Button to={surveyLink(first.slug)} iconEnd="arrow" aria-label={`${t('sd.take')}: ${first.name}`}>
             {t('sd.take')}
           </Button>
         </div>
@@ -461,7 +462,7 @@ function Deck({ list }) {
             const a = catArt(s.category);
             return (
               <li key={s.id} className={cx('xdk__card', `hue-${a.hue}`)} style={{ '--i': i }}>
-                <MLink to="surveys" className="xdk__cardlink" aria-label={`${t('sv.start')}: ${s.name}`}>
+                <MLink to={surveyLink(s.slug)} className="xdk__cardlink" aria-label={`${t('sv.start')}: ${s.name}`}>
                   <span className="xdk__mini" aria-hidden="true">
                     <Icon name={a.icon} size={20} />
                   </span>
@@ -525,7 +526,7 @@ function Briefs({ list }) {
               </span>
             </span>
             <span role="cell" className="xbr__go">
-              <Button to="surveys" size="sm" variant={i === 0 ? 'primary' : 'secondary'} iconEnd="arrow" aria-label={`${t('sd.open')}: ${s.name}`}>
+              <Button to={surveyLink(s.slug)} size="sm" variant={i === 0 ? 'primary' : 'secondary'} iconEnd="arrow" aria-label={`${t('sd.open')}: ${s.name}`}>
                 {t('sd.open')}
               </Button>
             </span>
@@ -554,7 +555,7 @@ function Missions({ list }) {
                 <Icon name="clock" size={14} /> {t('sv.min', { n: s.loi || '—' })}
               </span>
             </span>
-            <Button to="surveys" size="sm" iconEnd="arrow" className="xm__go" aria-label={`${t('sd.go')}: ${s.name}`}>
+            <Button to={surveyLink(s.slug)} size="sm" iconEnd="arrow" className="xm__go" aria-label={`${t('sd.go')}: ${s.name}`}>
               {t('sd.go')}
             </Button>
           </li>

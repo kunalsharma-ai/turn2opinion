@@ -2,6 +2,7 @@
 // server). Shapes match what the real endpoints return after the adapters in source.js.
 // Production builds never call this.
 import { store } from '../../utils/storage.js';
+import { demoProfileList, demoStatus } from './demoQuestions.js';
 import { adaptActivity, adaptAlerts, adaptGuardian, adaptMe, adaptPoints, adaptProfiles, adaptReferrals, adaptSocials, adaptStats, adaptSurveys } from './source.js';
 
 const KEY = 't2o_member_demo';
@@ -88,12 +89,6 @@ const ACTIVITY = {
   ]
 };
 
-const PROFILES = {
-  consumer: [['basic', 'Basic', 100], ['educational', 'Educational', 100], ['professional', 'Professional', 60], ['financial', 'Financial', -1], ['parenting', 'Parenting', -1], ['electronics', 'Consumer Electronics', 40]],
-  pro: [['basic', 'Basic', 100], ['educational', 'Educational', 100], ['professional', 'Professional', 100], ['financial', 'Financial', 80], ['technology', 'Technology & IT', 100], ['business', 'Business Decisions', 70]],
-  teen: [['basic', 'Basic', 100], ['school', 'School & Learning', 30], ['hobbies', 'Hobbies', -1], ['gaming', 'Gaming', -1]]
-};
-
 const POINTS = { consumer: [730, 15000], pro: [8650, 15000], teen: [120, 15000] };
 const STATS = { consumer: { total: 8, complete: 6, disqualified: 1, abdoned: 1, points: 730 }, pro: { total: 6, complete: 5, disqualified: 1, abdoned: 0, points: 3150 }, teen: { total: 3, complete: 2, disqualified: 0, abdoned: 1, points: 120 } };
 
@@ -124,9 +119,13 @@ export async function demoSection(name, ctx = {}) {
     case 'surveys':
       return adaptSurveys(empty ? [] : SURVEYS[as]);
     case 'profiles':
-      return adaptProfiles(PROFILES[as].map(([slug, n, s]) => ({ slug, name: n, status: empty ? -1 : s })));
+    {
+      const list = demoProfileList(as);
+      const st = demoStatus(list);
+      return adaptProfiles(list.map((p) => ({ ...p, status: empty ? -1 : st[p.slug] })));
+    }
     case 'activity':
-      return adaptActivity(empty ? [] : ACTIVITY[as].map(([status, n, pts, d], i) => ({ _id: `a${i}`, status, survey: { name: n, slug: n, surveyCategory: ACT_CAT[n] || '' }, points: pts, timeline: { start: daysAgo(d, 9), end: daysAgo(d, 10) } })));
+      return adaptActivity(empty ? [] : ACTIVITY[as].map(([status, n, pts, d], i) => ({ _id: `a${i}`, status, survey: { name: n, slug: n, surveyCategory: ACT_CAT[n] || '', loi: 4 + ((i * 7) % 13) }, source: i % 3 ? 'external' : 'internal', points: pts, timeline: { start: daysAgo(d, 9), end: daysAgo(d, 10) } })));
     case 'referrals':
       return adaptReferrals(
         empty || as === 'teen' ? [] : [{ email: 'maya@example.com', createdAt: daysAgo(20) }, { email: 'tom@example.com', createdAt: daysAgo(9) }, { email: 'li.wei@example.com', createdAt: daysAgo(2) }],

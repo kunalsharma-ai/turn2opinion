@@ -8,6 +8,9 @@ import { api } from '../../utils/api.js';
 import { ENV } from '../../config/env.js';
 import { memberTypeOf } from '../config/memberTypes.js';
 import { demoSection } from './demo.js';
+import { demoAnswers, demoOptions, demoQuestion, demoSave, demoStartSurvey } from './demoQuestions.js';
+
+export const CHOICE = ['select', 'multiselect', 'checkbox', 'radio'];
 
 const ok = (r) => r && r.status === 'success';
 async function call(fn) {
@@ -95,13 +98,54 @@ export function adaptSurveys(list) {
 }
 
 export function adaptProfiles(list) {
-  return (Array.isArray(list) ? list : []).map((p) => ({
-    slug: p.slug,
-    name: p.name || title(p.slug),
-    completion: Math.max(0, num(p.status, -1)),
-    started: num(p.status, -1) >= 0,
-    group: p.group || p.section || ''
-  }));
+  return (Array.isArray(list) ? list : []).map((p) => {
+    // pages: [[pageTitle, questionName, ...], ...] (same shape the existing profile flow reads)
+    const pages = (Array.isArray(p.pages) ? p.pages : []).filter((pg) => Array.isArray(pg) && pg.length > 1);
+    const questions = pages.reduce((n, pg) => n + pg.length - 1, 0);
+    return {
+      slug: p.slug,
+      name: title(p.name || p.slug),
+      completion: Math.min(100, Math.max(0, num(p.status, -1))),
+      started: num(p.status, -1) >= 0,
+      group: p.group || p.section || '',
+      icon: p.icon || '',
+      points: num(p.points, 50) || 50,
+      pages,
+      questions,
+      minutes: questions ? Math.max(1, Math.round(questions / 7)) : 0
+    };
+  });
+}
+
+/** A question definition from POST /api/v1/question. */
+export function adaptQuestion(q) {
+  if (!q || !q.name) return null;
+  return {
+    name: q.name,
+    label: q.label || q.name,
+    description: q.description || '',
+    type: String(q.type || '').toLowerCase(),
+    required: Boolean(q.required ?? q.isRequired),
+    // the existing flow sends GET when a question has no parent field at all, POST otherwise
+    hasParentField: Object.prototype.hasOwnProperty.call(q, 'parent'),
+    parent: q.parent || null,
+    children: Array.isArray(q.children) ? q.children : [],
+    editable: q.isEditable ?? true,
+    size: num(q.size, 6) || 6,
+    hasOthers: Boolean(q.hasOthers),
+    hasNone: Boolean(q.hasNone),
+    hasSkip: Boolean(q.hasSkip),
+    max: num(q.maxSelections, 0),
+    isMoney: Boolean(q.isMoney),
+    icon: q.icon || ''
+  };
+}
+
+/** Options from /api/v1/option/:name. Strings and objects both occur. */
+export function adaptOptions(list) {
+  return (Array.isArray(list) ? list : []).map((o) =>
+    typeof o === 'string' ? { label: o, value: o } : { label: o.label ?? o.value, value: o.value ?? o.label, img: o.img || '', exclusive: Boolean(o.isExclusive), describe: o.describeLabel || '' }
+  );
 }
 
 export function adaptActivity(list) {
@@ -115,6 +159,8 @@ export function adaptActivity(list) {
       category: r.survey?.surveyCategory || r.survey?.category || '',
       source: r.source || '',
       points: r.status === 'complete' ? num(r.points) : 0,
+      loi: num(r.survey?.loi),
+      start: r.timeline?.start || null,
       date: r.timeline?.end || r.updatedAt || r.timeline?.start || r.createdAt
     }))
     .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
@@ -248,6 +294,47 @@ export const actions = {
     const r = await api.post('/api/v1/follow-social/verify', fd);
     if (!ok(r)) throw new Error(r?.message || 'error');
     return r.message;
+  },
+  // ---- profiles and surveys (the same endpoints the existing member app calls) ----
+  async question(name) {
+    if (ENV.DEMO_MODE) return demoQuestion(name);
+    const d = await call(() => api.post('/api/v1/question', { name }));
+    return adaptQuestion(Array.isArray(d) && d.length === 1 ? d[0] : null);
+  },
+  /** Options (choice questions) or validation (text questions); dependent ones send the parent's answer. */
+  async options(q, parentValue) {
+    if (ENV.DEMO_MODE) return demoOptions(q, parentValue);
+    const kind = CHOICE.includes(q.type) ? 'option' : 'validation';
+    if (q.parent && (parentValue == null || parentValue === '' || (Array.isArray(parentValue) && !parentValue.length))) return kind === 'option' ? [] : null;
+    const r = q.hasParentField ? await api.post(`/api/v1/${kind}/${q.name}`, { parentValue }) : await api.get(`/api/v1/${kind}/${q.name}`);
+    const d = r?.data ?? (kind === 'option' ? [] : null);
+    return kind === 'option' ? adaptOptions(d) : d;
+  },
+  async answers(questions) {
+    if (ENV.DEMO_MODE) return demoAnswers(questions);
+    return (await call(() => api.post('/api/v1/me', { questions }))) || {};
+  },
+  async saveProfile(values) {
+    if (ENV.DEMO_MODE) return demoSave(values);
+    const r = await api.patch('/api/v1/me/profile', values);
+    if (!ok(r)) throw new Error(r?.message || 'error');
+    return true;
+  },
+  /** Opens a survey for this member: { name, slug, pages, description, thankyou, link, respID }. */
+  async startSurvey(slug) {
+    if (ENV.DEMO_MODE) return demoStartSurvey(slug);
+    return call(() => api.put('/api/v1/me/survey', { slug }));
+  },
+  async saveSurvey(values, respID) {
+    if (ENV.DEMO_MODE) return demoSave(values);
+    const r = await api.patch('/api/v1/me/survey', { ...values, respID });
+    if (!ok(r)) throw new Error(r?.message || 'error');
+    return true;
+  },
+  async country() {
+    if (ENV.DEMO_MODE) return 'in';
+    const r = await api.get('/api/v1/get-country').catch(() => null);
+    return String(r?.country || r?.data?.country || '').toLowerCase().trim();
   },
   async logout() {
     if (!ENV.DEMO_MODE) await api.delete?.('/api/v1/me').catch(() => {});

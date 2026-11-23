@@ -8,6 +8,8 @@ const page = (loader) => loader; // readability helper
 
 const MEMBER_TITLES = {
   dashboard: 'Dashboard',
+  profiles: 'Profiles',
+  surveys: 'Surveys',
   rewards: 'Points & rewards',
   'quality-score': 'Quality score',
   referrals: 'Referrals',
@@ -297,7 +299,7 @@ export const ROUTES = [
   },
   {
     // Member area (Round 15): Dashboard, Rewards, Quality score, Referrals, Activity, Account and
-    // Settings, one persistent app. Profiles and Surveys stay on the existing member app.
+    // Settings, Profiles and Surveys: one persistent app.
     path: '/member/:page/',
     exists: (p) => MEMBER_PAGES.includes(p.page),
     staticParams: () => MEMBER_PAGES.map((page) => ({ page })),

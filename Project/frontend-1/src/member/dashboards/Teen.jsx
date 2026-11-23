@@ -32,7 +32,7 @@ export default function TeenDashboard() {
         }
         progress={next && { label: t('xt2.next', { name: t(`ach.${next.id}`) }), value: Math.min(next.have, next.goal), max: next.goal, text: t('ach.progress', { a: fmt(Math.min(next.have, next.goal)), b: fmt(next.goal) }) }}
         actions={[
-          { label: d.surveys?.length ? tn('xt2.missions', d.surveys.length) : t('pc.cta'), to: d.surveys?.length ? 'surveys' : 'profiles', iconEnd: 'external' },
+          { label: d.surveys?.length ? tn('xt2.missions', d.surveys.length) : t('pc.cta'), to: d.surveys?.length ? 'surveys' : 'profiles', iconEnd: 'arrow' },
           { label: t('xt2.badges'), to: 'rewards', icon: 'trophy', iconEnd: null }
         ]}
         art={<VoiceConstellation voices={done + 3} label={tn('xt2.voices', done)} />}

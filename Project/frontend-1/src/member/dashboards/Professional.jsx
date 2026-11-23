@@ -19,7 +19,7 @@ export default function ProfessionalDashboard() {
         lead={t('xpz.lead')}
         progress={d.pc && { label: t('xpz.progress'), value: d.pc.percent, max: 100, hint: d.pc.left ? tn('pc.left', d.pc.left) : t('pc.done') }}
         actions={[
-          { label: open ? tn('xpz.briefs', open) : t('nav.surveys'), to: 'surveys', iconEnd: 'external' },
+          { label: open ? tn('xpz.briefs', open) : t('nav.surveys'), to: 'surveys', iconEnd: 'arrow' },
           { label: t('xpz.dossier'), to: 'profiles', icon: 'id', iconEnd: null }
         ]}
         art={
@@ -107,7 +107,7 @@ function Qualification() {
   const d = useDash();
   const prof = (d.profiles || []).find((p) => p.slug === 'professional');
   const ok = prof && prof.completion >= 100;
-  const cats = (d.profiles || []).filter((p) => !ABOUT_YOU.includes(p.slug));
+  const cats = (d.allProfiles || []).filter((p) => !ABOUT_YOU.includes(p.slug));
   return (
     <section className={cx('xt xt--qual', ok ? 'is-ok' : 'is-partial')} aria-labelledby="xt-qual">
       <span className="xt__k" id="xt-qual">

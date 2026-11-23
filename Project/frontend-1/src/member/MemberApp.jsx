@@ -1,7 +1,7 @@
 // The member area (frontend-1). One persistent app for every /member/* route this build serves:
 // data loads once and survives navigation between Dashboard, Rewards, Referrals and the rest.
-// The approved Profiles page (/member/profiles) and Surveys page (/member/surveys) are NOT
-// rendered here; they stay on the existing member app and are linked to.
+// Profiles (/member/profiles/) and Surveys (/member/surveys/) are rebuilt here too, on the same
+// profile, question and survey endpoints the existing member app uses.
 import { useEffect } from 'react';
 import { usePath } from '../router/Router.jsx';
 import { useI18n } from '../i18n/I18nProvider.jsx';
@@ -14,16 +14,21 @@ import { Button, ToastProvider } from './components/ui.jsx';
 import DashboardPage from './dashboards/Dashboards.jsx';
 import { ActivityPage, QualityPage, ReferralsPage, RewardsPage } from './pages/Pages.jsx';
 import { ProfilePage, SettingsPage } from './pages/Account.jsx';
+import { ProfilesPage } from './pages/Profiles.jsx';
+import { SurveysPage } from './pages/Surveys.jsx';
 import baseCss from './member.css?inline';
 import xCss from './member-x.css?inline';
 import xpCss from './member-xp.css?inline';
 import xeCss from './member-xe.css?inline';
+import pfCss from './member-pf.css?inline';
 import { BrandLoader } from './components/art.jsx';
 
-const memberCss = `${baseCss}\n${xCss}\n${xpCss}\n${xeCss}`;
+const memberCss = `${baseCss}\n${xCss}\n${xpCss}\n${xeCss}\n${pfCss}`;
 
 const PAGES = {
   dashboard: DashboardPage,
+  profiles: ProfilesPage,
+  surveys: SurveysPage,
   rewards: RewardsPage,
   'quality-score': QualityPage,
   referrals: ReferralsPage,

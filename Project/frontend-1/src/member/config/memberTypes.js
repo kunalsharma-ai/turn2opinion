@@ -10,21 +10,25 @@ export function memberTypeOf(category) {
   return 'consumer';
 }
 
-// Routes. `external: true` pages belong to the existing member app (approved Profiles hero and the
-// approved survey experience) and are opened with a full page load, never re-rendered here.
+// Routes. `external: true` pages belong to the existing member app and are opened with a full page
+// load. Profiles and Surveys are rebuilt in frontend-1 on the same endpoints.
 export const ROUTES = {
   dashboard: { path: '/member/dashboard/', icon: 'dashboard', label: 'nav.dashboard' },
-  surveys: { path: '/member/surveys', icon: 'clipboard', label: 'nav.surveys', external: true },
+  surveys: { path: '/member/surveys/', icon: 'clipboard', label: 'nav.surveys' },
   rewards: { path: '/member/rewards/', icon: 'coin', label: 'nav.rewards' },
   quality: { path: '/member/quality-score/', icon: 'shield', label: 'nav.quality' },
   referrals: { path: '/member/referrals/', icon: 'users', label: 'nav.referrals' },
   activity: { path: '/member/activity/', icon: 'pulse', label: 'nav.activity' },
   profile: { path: '/member/profile/', icon: 'user', label: 'nav.account' },
-  profiles: { path: '/member/profiles', icon: 'map', label: 'nav.profiles', external: true },
+  profiles: { path: '/member/profiles/', icon: 'map', label: 'nav.profiles' },
   settings: { path: '/member/settings/', icon: 'gear', label: 'nav.settings' },
   support: { path: '/member/support', icon: 'headset', label: 'nav.support', external: true },
   myaccount: { path: '/member/myaccount', icon: 'wallet', label: 'ma.payment', external: true }
 };
+
+/** Deep links: open a profile or start a survey straight from a dashboard card. */
+export const profileLink = (slug) => `${ROUTES.profiles.path}#p-${slug}`;
+export const surveyLink = (slug) => `${ROUTES.surveys.path}#start-${slug}`;
 
 // Sidebar (desktop) and bottom bar (phone). The bottom bar holds the four most used places plus "More".
 // Order follows the member journey: complete your profile -> participate -> earn -> improve -> track.

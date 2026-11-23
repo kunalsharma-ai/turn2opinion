@@ -80,4 +80,19 @@ the member's choice on their device, so they show on the live site today. The re
 | 52 | Quiet hours and digest (`quiet`) | Settings | Preview only | Store them and have email, WhatsApp and push sending respect them |
 | 53 | Data and privacy centre (`datacentre`; full copy `dataFull`) | Settings | **Live**: who-sees-what, plus a JSON download of the account data the page already holds. "Full copy with answers" is preview only. | A full data-export request that includes survey answers |
 
+## Round 19: Profiles and Surveys pages
+
+Both pages run on existing endpoints (see README, "APIs used"). Nothing new is required; these are
+points to confirm or small improvements:
+
+| # | Item | Status today | Backend change |
+| --- | --- | --- | --- |
+| 54 | Profile and survey answers | **Live** on `POST /api/v1/question`, `/api/v1/option`, `/api/v1/validation`, `POST /api/v1/me`, `PATCH /api/v1/me/profile` | None |
+| 55 | Opening and finishing a survey | **Live** on `PUT` / `PATCH /api/v1/me/survey` | None |
+| 56 | Phone format | Saved as digits with country code (for example `919810012345`), the format `react-phone-input-2` sends today | Confirm the format |
+| 57 | Money ranges (`isMoney`) | Labels like `300001 - 600000` are shown in the member's currency; anything else is shown as sent | None |
+| 58 | Kingdom buildings | Completed profiles plus completed surveys from `/me/statistics` | None. Optional: a profile-completed date for a growth timeline |
+| 59 | Survey feedback column (`svfeedback`) | Preview only (gem rating kept on the device) | An endpoint to store a 1-5 rating and comment per response |
+| 60 | Profile length | Minutes shown as questions ÷ 7 | Optional: a real median time per profile |
+
 The live site also needs one routing change: see `README.md`, "Going live needs one gateway rule".

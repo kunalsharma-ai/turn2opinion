@@ -181,7 +181,7 @@ export function RewardsPage() {
               ))}
             </ol>
           ) : (
-            <XEmpty kind="rewards" title={t('rw.empty.t')} action={<Button to="surveys" size="sm" iconEnd="external">{t('nav.surveys')}</Button>}>
+            <XEmpty kind="rewards" title={t('rw.empty.t')} action={<Button to="surveys" size="sm" iconEnd="arrow">{t('nav.surveys')}</Button>}>
               {t('pts.none')}
             </XEmpty>
           )}
@@ -734,7 +734,7 @@ export function ActivityPage() {
         ) : status !== 'ready' ? (
           <XSkel rows={4} h={56} />
         ) : !list.length ? (
-          <XEmpty kind="activity" title={t('ac.empty.t')} action={<Button to="surveys" size="sm" iconEnd="external">{t('nav.surveys')}</Button>}>
+          <XEmpty kind="activity" title={t('ac.empty.t')} action={<Button to="surveys" size="sm" iconEnd="arrow">{t('nav.surveys')}</Button>}>
             {t('ac.empty.p')}
           </XEmpty>
         ) : !items.length ? (
