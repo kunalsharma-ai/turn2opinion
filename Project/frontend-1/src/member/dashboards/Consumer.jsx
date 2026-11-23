@@ -8,6 +8,7 @@ import { useAchievements } from '../components/Modules.jsx';
 import { EngageStrip, GemTiers, ImpactStories, LuckySpin, ProductTests, QuickPoll } from '../components/Engage.jsx';
 import { BonusBanner } from '../components/Grow.jsx';
 import XHero from './Hero.jsx';
+import WorldTeaser from '../components/WorldTeaser.jsx';
 
 export default function ConsumerDashboard() {
   const d = useDash();
@@ -46,6 +47,7 @@ export default function ConsumerDashboard() {
         }
       />
       <JourneyRail />
+      <WorldTeaser />
       <BonusBanner compact />
       <EngageStrip />
       <ProfileJourney variant="road" />

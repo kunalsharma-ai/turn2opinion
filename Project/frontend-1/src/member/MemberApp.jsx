@@ -23,12 +23,13 @@ import xpCss from './member-xp.css?inline';
 import xeCss from './member-xe.css?inline';
 import v6Css from './v6/v6.css?inline';
 import v6MemberCss from './v6/member-v6.css?inline';
+import worldCss from './v6/world.css?inline';
 import helpCss from './member-help.css?inline';
 import polishCss from './member-polish.css?inline';
 import r23Css from './member-r23.css?inline';
 import { BrandLoader } from './components/art.jsx';
 
-const memberCss = `${baseCss}\n${xCss}\n${xpCss}\n${xeCss}\n${v6Css}\n${v6MemberCss}\n${helpCss}\n${polishCss}\n${r23Css}`;
+const memberCss = `${baseCss}\n${xCss}\n${xpCss}\n${xeCss}\n${v6Css}\n${v6MemberCss}\n${worldCss}\n${helpCss}\n${polishCss}\n${r23Css}`;
 
 const PAGES = {
   dashboard: DashboardPage,

@@ -12,6 +12,7 @@ import { profileEmoji } from '../lib/emoji.js';
 import { itemByIndex, profilesOf, stateOf } from '../lib/progression.js';
 import { sound } from '../lib/uisound.js';
 import { t, nf } from '../i18n/index.js';
+import { world } from '../lib/world.js';
 
 export default function LockedPopup({ i, onClose, onGo }) {
   const dlg = useRef(null);
@@ -55,7 +56,7 @@ export default function LockedPopup({ i, onClose, onGo }) {
                   <span className="lp-s">{s === 'done' ? <><Icon n="check" />{t('v6_st_done')}</> : s === 'prog' ? t('v6_st_prog', { pct: S.map.get(a.i).pct }) : s === 'locked' ? <><Icon n="lock" />{t('v6_st_locked')}</> : t('v6_st_open')}</span></li>); })}
             </ol>
           )}
-          <div className="lp-steps" aria-hidden="true"><span className="on">🙋 {t('v6_about_you')}</span><Icon n="arrow-r" className="flip" /><span className={S.aboutDone ? 'on' : ''}>🗝️ {t('v6_lp_one_by_one')}</span><Icon n="arrow-r" className="flip" /><span>🏰 +{nf(50)}</span></div>
+          <div className="lp-steps" aria-hidden="true"><span className="on">🙋 {t('v6_about_you')}</span><Icon n="arrow-r" className="flip" /><span className={S.aboutDone ? 'on' : ''}>🗝️ {t('v6_lp_one_by_one')}</span><Icon n="arrow-r" className="flip" /><span>{world().e} +{nf(50)}</span></div>
           <div className="lp-acts">
             {need && <button type="button" className="btn6 primary" onClick={() => onGo(need.i)} data-snd="open"><span aria-hidden="true">{profileEmoji(need.slug)[0]}</span>{t('v6_lp_go', { name: pnameT(need.p) })}<Icon n="arrow-r" className="flip" /></button>}
             <button type="button" className="btn6 ghost" onClick={close} data-snd="none">{t('v6_lp_later')}</button>

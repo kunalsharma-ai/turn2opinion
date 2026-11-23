@@ -1,0 +1,121 @@
+/* Round 24 · Professional "Insight Observatory" and Teen "Quest Islands" (components/World.jsx).
+   They reuse the Kingdom frame (.kd, treasury, badges) and add their own scene and motion.
+   Motion is transform/opacity only, pauses off-screen (.off) and stops under reduced motion. */
+
+/* ------------------------------------------------------------ shared plot */
+#t2o .kd-svg .wp .wp-hit { fill: transparent; }
+#t2o .kd-svg .wp:focus-visible .wp-hit { fill: none; stroke: #5eead4; stroke-width: 3; stroke-dasharray: 4 4; }
+#t2o .kd-svg .wp .plot-art { transition: transform .25s var(--spring); transform-box: fill-box; transform-origin: 50% 50%; }
+#t2o .kd-svg .wp:hover .plot-art, #t2o .kd-svg .wp:focus-visible .plot-art { transform: scale(1.08); }
+#t2o .kd-svg .wp.st-locked .plot-art { opacity: 1; }
+
+/* ------------------------------------------------------------ observatory frame */
+#t2o .kd--observatory { background: linear-gradient(160deg, #eaf1ff, #e2fbf6); }
+:is(html[data-mb-mode="dark"],html[data-mb-mode="night"]) #t2o .kd--observatory { background: linear-gradient(160deg, #0b1433, #062a33); }
+#t2o .kd--observatory .kd-eyebrow { color: #04443c; background: linear-gradient(90deg, #a7f3d0, #5eead4); }
+#t2o .kd--observatory .kd-scene { background: #0a1230; }
+#t2o .kd--observatory .kd-stones i.on { background: linear-gradient(180deg, #99f6e4, #14b8a6); box-shadow: inset 0 -3px 0 rgb(4 80 70 / .3), 0 0 10px rgb(20 184 166 / .45); }
+#t2o .kd--observatory .seal.on .seal-e { background: radial-gradient(circle at 35% 30%, #7dd3fc, #1d4ed8 60%, #0b1f66); box-shadow: inset 0 -4px 0 rgb(0 0 0 / .2), 0 6px 14px rgb(29 78 216 / .35), 0 0 0 3px #5eead4; }
+#t2o .kd--observatory .tr-chest { background: linear-gradient(135deg, #0b1f4d, #0f3b57); color: #ccfbf1; }
+#t2o .kd--observatory .tr-chest small { color: #99f6e4; }
+
+/* observatory scene */
+#t2o .kd--observatory .kd-svg .kd-stars { opacity: 1; }
+#t2o .kd--observatory .ob-grid ellipse, #t2o .kd--observatory .ob-grid line { fill: none; stroke: #5eead4; stroke-opacity: .07; stroke-width: 1; }
+#t2o .kd--observatory .ob-sweepw { transform-box: view-box; transform-origin: 600px 548px; animation: ob-sweep 9s linear infinite; }
+#t2o .kd--observatory .ob-shoot line { stroke: #fff; stroke-width: 2; stroke-linecap: round; opacity: 0; animation: ob-shoot 7s ease-in 2s infinite; }
+#t2o .kd--observatory .ob-city { fill: #071026; }
+#t2o .kd--observatory .ob-cwin rect { fill: #ffd86b; opacity: .75; animation: blink 3.2s steps(2) infinite; animation-delay: var(--d); }
+#t2o .kd--observatory .ob-dome .ob-win { fill: #ffd86b; animation: blink 2.4s steps(2) infinite; animation-delay: var(--d, 0s); }
+#t2o .kd--observatory .ob-scope { transform-box: view-box; transform-origin: 0 -84px; animation: ob-scope 10s ease-in-out infinite; }
+#t2o .kd--observatory .ob-line { stroke: rgb(180 200 255 / .32); stroke-width: 1.4; stroke-dasharray: .015 .02; }
+#t2o .kd--observatory .ob-line.on { stroke: #99f6e4; stroke-opacity: .7; stroke-width: 2; stroke-dasharray: none; filter: drop-shadow(0 0 4px rgb(94 234 212 / .6)); }
+#t2o .kd--observatory .ob-line.draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: ob-draw 1.2s ease .9s forwards; }
+#t2o .kd--observatory .ob-halo { transform-box: fill-box; transform-origin: center; animation: ob-breathe 3.4s ease-in-out infinite; }
+#t2o .kd--observatory .ob-rays { transform-box: fill-box; transform-origin: center; animation: spin 24s linear infinite; }
+#t2o .kd--observatory .ob-core { filter: drop-shadow(0 0 6px #fff); }
+#t2o .kd--observatory .ob-orbit { transform-box: view-box; transform-origin: 0 0; animation: spin 9s linear infinite; }
+#t2o .kd--observatory .ob-tag { opacity: .95; }
+#t2o .kd--observatory .ob-twinkle { transform-box: fill-box; transform-origin: center; animation: twinkle 1.8s ease-in-out infinite; }
+#t2o .kd--observatory .ob-reticle { transform-box: view-box; transform-origin: 0 0; animation: spin 8s linear infinite; }
+#t2o .kd--observatory .ob-ping { transform-box: fill-box; transform-origin: center; animation: ob-ping 1.8s ease-out infinite; }
+#t2o .kd--observatory .plot.rise .plot-art { animation: ob-ignite 1.4s var(--spring) both; }
+#t2o .kd--observatory .ob-burst line { stroke: #fff6b0; stroke-width: 2.4; stroke-linecap: round; opacity: 0; animation: ob-burst 1s ease-out .25s both; }
+#t2o .kd--observatory .ob-beacon { fill: #5eead4; opacity: .25; transform-box: fill-box; transform-origin: 50% 100%; animation: ob-beacon 2.6s ease-in-out infinite; }
+#t2o .kd--observatory .ob-aurora { animation: ob-aurora 8s ease-in-out infinite alternate; }
+#t2o .kd--observatory .ob-sat { animation: ob-sat 26s linear infinite; }
+#t2o .kd--observatory .ob-comet line { stroke: #bfe9ff; stroke-width: 3; stroke-linecap: round; opacity: .7; }
+#t2o .kd--observatory .ob-comet { animation: ob-comet 14s linear infinite; }
+#t2o .kd--observatory .ob-met { stroke: #fff; stroke-width: 2; stroke-linecap: round; opacity: 0; animation: ob-met 3.6s ease-in infinite; animation-delay: var(--d); }
+#t2o .kd--observatory .sign { font-family: var(--fe); }
+#t2o .kd--observatory .ready-sign { animation: bob 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+
+@keyframes ob-sweep { from { transform: rotate(-70deg); } to { transform: rotate(290deg); } }
+@keyframes ob-shoot { 0%, 86% { opacity: 0; transform: translate(1100px, 40px); } 88% { opacity: 1; } 100% { opacity: 0; transform: translate(700px, 180px); } }
+@keyframes ob-scope { 0%, 100% { transform: rotate(-14deg); } 50% { transform: rotate(16deg); } }
+@keyframes ob-draw { to { stroke-dashoffset: 0; } }
+@keyframes ob-breathe { 0%, 100% { transform: scale(1); opacity: .22; } 50% { transform: scale(1.18); opacity: .32; } }
+@keyframes ob-ping { from { transform: scale(.7); opacity: .9; } to { transform: scale(2.1); opacity: 0; } }
+@keyframes ob-ignite { 0% { transform: scale(0) rotate(-90deg); opacity: 0; } 55% { transform: scale(1.5) rotate(10deg); opacity: 1; } 100% { transform: scale(1) rotate(0); } }
+@keyframes ob-burst { 0% { opacity: 0; transform: scale(.3); } 30% { opacity: 1; } 100% { opacity: 0; transform: scale(1.6); } }
+@keyframes ob-beacon { 0%, 100% { transform: scaleY(1); opacity: .22; } 50% { transform: scaleY(1.25); opacity: .4; } }
+@keyframes ob-aurora { from { transform: translateX(-30px); opacity: .7; } to { transform: translateX(30px); opacity: 1; } }
+@keyframes ob-sat { from { transform: translate(-60px, 230px); } to { transform: translate(1260px, 40px); } }
+@keyframes ob-comet { from { transform: translate(-120px, 60px); } to { transform: translate(1320px, 260px); } }
+@keyframes ob-met { 0% { opacity: 0; transform: translate(calc(var(--x) + 200px), 20px); } 10% { opacity: 1; } 40%, 100% { opacity: 0; transform: translate(var(--x), 160px); } }
+
+/* ------------------------------------------------------------ islands frame */
+#t2o .kd--islands { background: linear-gradient(160deg, #e6f9ff, #fff6dc); }
+:is(html[data-mb-mode="dark"],html[data-mb-mode="night"]) #t2o .kd--islands { background: linear-gradient(160deg, #06243a, #10183d); }
+#t2o .kd--islands .kd-eyebrow { color: #064e6b; background: linear-gradient(90deg, #a5f3fc, #67e8f9); }
+#t2o .kd--islands .kd-scene { background: #7fd3f2; }
+#t2o .kd--islands .kd-stones i.on { background: linear-gradient(180deg, #fde68a, #f59e0b); }
+#t2o .kd--islands .seal.on .seal-e { background: radial-gradient(circle at 35% 30%, #67e8f9, #0891b2 60%, #0e4f66); box-shadow: inset 0 -4px 0 rgb(0 0 0 / .2), 0 6px 14px rgb(8 145 178 / .35), 0 0 0 3px #fde047; }
+
+/* islands scene: day sea, night sea in dark mode */
+#t2o .kd--islands .is-sky0 { stop-color: #6cc6ff; } #t2o .kd--islands .is-sky1 { stop-color: #d9f3ff; }
+#t2o .kd--islands .is-sea0 { stop-color: #38bdf8; } #t2o .kd--islands .is-sea1 { stop-color: #0e7490; }
+:is(html[data-mb-mode="dark"],html[data-mb-mode="night"]) #t2o .kd--islands .is-sky0 { stop-color: #050a24; }
+:is(html[data-mb-mode="dark"],html[data-mb-mode="night"]) #t2o .kd--islands .is-sky1 { stop-color: #23306e; }
+:is(html[data-mb-mode="dark"],html[data-mb-mode="night"]) #t2o .kd--islands .is-sea0 { stop-color: #1d3f7a; }
+:is(html[data-mb-mode="dark"],html[data-mb-mode="night"]) #t2o .kd--islands .is-sea1 { stop-color: #0a1d3f; }
+#t2o .kd--islands .is-horizon { stroke: #fff; stroke-opacity: .5; stroke-width: 2; }
+#t2o .kd--islands .is-waves path { fill: none; stroke: #fff; stroke-opacity: .45; stroke-width: 2.2; stroke-linecap: round; animation: is-wave 4s ease-in-out infinite; animation-delay: var(--d); }
+#t2o .kd--islands .is-route { fill: none; stroke: #fff7d6; stroke-width: 4; stroke-dasharray: 2 12; stroke-linecap: round; opacity: .9; }
+#t2o .kd--islands .is-ripple ellipse { transform-box: fill-box; transform-origin: center; animation: is-ripple 3s ease-out infinite; animation-delay: var(--d, 0s); }
+#t2o .kd--islands .is-leaves { transform-box: fill-box; transform-origin: 50% 100%; animation: sway 3.4s ease-in-out infinite; animation-delay: var(--d, 0s); }
+#t2o .kd--islands .flag { animation: flagwave 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: 0 50%; }
+#t2o .kd--islands .is-glint { animation: twinkle 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+#t2o .kd--islands .is-x { transform-box: fill-box; transform-origin: center; animation: is-x 1.6s ease-in-out infinite; }
+#t2o .kd--islands .is-spark { transform-box: fill-box; transform-origin: center; animation: twinkle 1.4s ease-in-out infinite; }
+#t2o .kd--islands .is-fog { animation: is-fog 7s ease-in-out infinite alternate; }
+#t2o .kd--islands .is-lock { opacity: .7; }
+#t2o .kd--islands .is-bob { animation: is-bob 2.6s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+#t2o .kd--islands .sign { font-family: var(--fe); }
+#t2o .kd--islands .ready-sign { animation: bob 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+#t2o .kd--islands .plot.rise .plot-art { animation: is-rise 1.4s var(--spring) both; transform-origin: 50% 100%; }
+#t2o .kd--islands .is-splash circle { fill: #e0f7ff; animation: dust 1.4s ease-out both; transform-box: fill-box; transform-origin: center; }
+#t2o .kd--islands .is-splash circle:nth-child(2) { animation-delay: .1s; } #t2o .kd--islands .is-splash circle:nth-child(3) { animation-delay: .2s; }
+#t2o .kd--islands .is-ship { animation: is-ship 40s linear infinite; }
+#t2o .kd--islands .is-whale { animation: is-bob 4s ease-in-out infinite; }
+#t2o .kd--islands .is-spout { transform-box: fill-box; transform-origin: 50% 100%; animation: is-spout 3s ease-out infinite; }
+#t2o .kd--islands .is-balloon { animation: bob 6s ease-in-out infinite; }
+
+@keyframes is-wave { 0%, 100% { transform: translateX(0); opacity: .35; } 50% { transform: translateX(14px); opacity: .7; } }
+@keyframes is-ripple { from { transform: scale(.8); opacity: .8; } to { transform: scale(1.25); opacity: 0; } }
+@keyframes is-x { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+@keyframes is-fog { from { transform: translateX(-6px); } to { transform: translateX(6px); } }
+@keyframes is-bob { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-4px) rotate(3deg); } }
+@keyframes is-rise { 0% { transform: translateY(40px) scale(.6); opacity: 0; } 60% { transform: translateY(-8px) scale(1.08); opacity: 1; } 100% { transform: none; } }
+@keyframes is-ship { from { transform: translate(-80px, 182px); } to { transform: translate(1290px, 182px); } }
+@keyframes is-spout { 0%, 60%, 100% { transform: scaleY(0); opacity: 0; } 70% { transform: scaleY(1); opacity: 1; } 90% { transform: scaleY(1.1); opacity: 0; } }
+
+/* the completion celebration uses the member's world art */
+#t2o .cb-bld .ob-tag { display: none; }
+#t2o .cb-bld .ob-halo, #t2o .cb-bld .is-leaves, #t2o .cb-bld .is-glint { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  #t2o .kd--observatory *, #t2o .kd--islands * { animation: none !important; }
+  #t2o .kd--observatory .ob-line.draw { stroke-dashoffset: 0; }
+  #t2o .kd--observatory .ob-shoot line, #t2o .kd--observatory .ob-met, #t2o .kd--observatory .ob-burst line { opacity: 0; }
+}

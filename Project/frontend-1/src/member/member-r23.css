@@ -193,3 +193,87 @@
     order: 1;
   }
 }
+
+/* Round 24: the side menu scrolls on its own, so its rows must never shrink.
+   On shorter screens the "Your journey" label was squeezed to 8px and its text ran into Dashboard. */
+.mb-side > *,
+.mb-side .xnav,
+.mb-side .mb-nav {
+  flex-shrink: 0;
+}
+.xside__group {
+  margin: 0;
+  min-height: 19px;
+  line-height: 19px;
+  padding-bottom: 6px;
+}
+
+/* Round 24: dashboard window onto the member's reward world (components/WorldTeaser.jsx) */
+.wt {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid var(--mb-border);
+  background: var(--mb-card);
+  box-shadow: 0 10px 30px -18px var(--mb-shadow-ink, rgb(10 20 60 / 0.35));
+}
+.wt--skel { min-height: 168px; background: var(--mb-background-2); }
+.wt-art { position: relative; min-height: 168px; }
+.wt-art svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.wt--kingdom .wt-art { background: linear-gradient(180deg, #7cc8ff, #d9f1ff 70%, #bde7a6); }
+.wt--kingdom .wt-hill { fill: #86cf73; }
+.wt--observatory .wt-art { background: radial-gradient(120% 90% at 30% 20%, #173a7a, #0a1230 70%); }
+.wt--observatory .wt-link { fill: none; stroke: #99f6e4; stroke-opacity: 0.55; stroke-width: 1.4; }
+.wt--islands .wt-art { background: linear-gradient(180deg, #7fd0ff 0 42%, #38bdf8 42%, #0e7490); }
+.wt--islands .wt-sea { fill: transparent; }
+.wt-m.is-on { animation: wt-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; animation-delay: calc(var(--i) * 45ms); transform-box: fill-box; transform-origin: 50% 100%; }
+.wt-halo { fill: #5eead4; opacity: 0.3; animation: wt-glow 2.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.wt-win { animation: wt-glow 2.4s ease-in-out infinite; }
+.wt-text { display: flex; flex-direction: column; gap: 8px; padding: 18px 20px; min-width: 0; }
+.wt-eyebrow { margin: 0; font: 750 11.5px/1.2 'Inter', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mb-muted); }
+.wt-h { margin: 0; font-size: clamp(18px, 2vw, 22px); line-height: 1.15; color: var(--mb-text); overflow-wrap: anywhere; }
+.wt-sub { margin: 0; font-size: 13.5px; line-height: 1.45; color: var(--mb-muted); }
+.wt-bar { height: 8px; border-radius: 999px; background: var(--mb-background-2); overflow: hidden; }
+.wt-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #ffb020, #ff6a3d); transition: width 0.8s ease; }
+.wt--observatory .wt-bar i { background: linear-gradient(90deg, #5eead4, #3b82f6); }
+.wt--islands .wt-bar i { background: linear-gradient(90deg, #22d3ee, #facc15); }
+.wt-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 2px; }
+.wt-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; font-weight: 750; font-size: 14px; background: var(--mb-background-2); color: var(--mb-text); }
+.wt-pill small { font-weight: 600; color: var(--mb-muted); }
+.wt-pill i { width: 14px; height: 14px; border-radius: 50%; }
+.wt-pill--pts i { background: radial-gradient(circle at 35% 30%, #fff3b0, #f5b800 55%, #c98700); }
+.wt-pill--qs i { border-radius: 3px; clip-path: polygon(50% 100%, 0 38%, 22% 6%, 78% 6%, 100% 38%); background: linear-gradient(160deg, #5ee7ff, #7c5cff); }
+.wt-cta { margin-left: auto; }
+@keyframes wt-pop { from { transform: scale(0); opacity: 0; } }
+@keyframes wt-glow { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.85; } }
+@media (max-width: 760px) {
+  .wt { grid-template-columns: 1fr; }
+  .wt-art { min-height: 120px; }
+  .wt-cta { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wt-m.is-on, .wt-halo, .wt-win { animation: none; }
+}
+.wt-bgstars circle { fill: #fff; opacity: 0.5; }
+
+/* Round 24 sweep fixes */
+/* Profiles hero between 761 and 860px: the art moved above the text but the two-column grid stayed,
+   so the greeting, headline and buttons were squeezed into a narrow right column. */
+@media (max-width: 860px) {
+  #t2o .hero6 { grid-template-columns: minmax(0, 1fr); }
+  #t2o .h6-vis { min-height: 0; zoom: 0.5; margin: -16px 0 -30px !important; }
+}
+/* Referrals hero: in the compact text column the link box was crushed to a sliver beside Copy and Share.
+   The link now has its own row and the two buttons share the row below. */
+.xrf__link { grid-template-columns: repeat(2, minmax(0, max-content)); }
+.xrf__link input { grid-column: 1 / -1; min-width: 0; width: 100%; }
+/* Consumer hero loop: the dotted orbit ran straight through the station names; give them a soft halo */
+.xa-loop__label,
+.xa-loop__value {
+  text-shadow: 0 0 3px rgb(255 255 255 / 0.95), 0 0 8px rgb(255 255 255 / 0.85);
+}
+:is(html[data-mb-mode='dark'], html[data-mb-mode='night']) .xa-loop__label,
+:is(html[data-mb-mode='dark'], html[data-mb-mode='night']) .xa-loop__value {
+  text-shadow: 0 0 3px rgb(8 12 40 / 0.95), 0 0 8px rgb(8 12 40 / 0.85);
+}

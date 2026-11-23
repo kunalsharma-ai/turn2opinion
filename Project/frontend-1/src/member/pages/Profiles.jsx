@@ -1,6 +1,7 @@
 // /member/profiles/ in the v6 "Profiles & Surveys" design, on the member's real data:
 //   1. Hero greeting with the Opinion Galaxy
-//   2. {Name}'s Opinion Kingdom: a building per profile/survey, treasury (real points + quality), seals
+//   2. The member's reward world (Consumer Opinion Kingdom, Professional Insight Observatory, Teen Quest
+//      Islands): one building/star/island per profile, treasury (real points + quality), badges
 //   3. About you · Profiles (complete these first)
 //   4. Incomplete (pick up where you left off)
 //   5. Surveys: every other profile, black & white and sealed until About you is complete,
@@ -12,6 +13,8 @@ import { t as mt } from '../i18n/t.js';
 import { useStage, Stage } from '../v6/Stage.jsx';
 import Hero from '../v6/components/Hero.jsx';
 import Kingdom from '../v6/components/Kingdom.jsx';
+import World from '../v6/components/World.jsx';
+import { worldIdFor } from '../v6/lib/world.js';
 import ItemCard from '../v6/components/ItemCard.jsx';
 import { Icon } from '../v6/components/Icon.jsx';
 import { t, nf } from '../v6/i18n/index.js';
@@ -26,6 +29,12 @@ export function ProfilesPage() {
   useEffect(() => {
     if (!d.allProfiles) return;
     const a = readAnchor();
+    if (a === 'kingdom') {
+      // from the dashboard's world card: show the member's reward world
+      clearAnchor();
+      setTimeout(() => document.getElementById('kingdom')?.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' }), 350);
+      return;
+    }
     if (!a.startsWith('p-')) return;
     clearAnchor();
     s.openSlug(a.slice(2));
@@ -61,7 +70,11 @@ function Hub({ s, d }) {
       {loading ? (
         <div className="kd kd-skel" aria-hidden="true" />
       ) : (
-        <Kingdom items={items} state={state} name={name} hold={s.party != null} onOpen={s.open} onLocked={s.setLocked} points={pts} quality={qs} />
+        worldIdFor(me.type) === 'kingdom' ? (
+          <Kingdom items={items} state={state} name={name} hold={s.party != null} onOpen={s.open} onLocked={s.setLocked} points={pts} quality={qs} />
+        ) : (
+          <World kind={worldIdFor(me.type)} items={items} state={state} name={name} hold={s.party != null} onOpen={s.open} onLocked={s.setLocked} points={pts} quality={qs} />
+        )
       )}
 
       <section className="sec6 sec-about" aria-labelledby="h-about">

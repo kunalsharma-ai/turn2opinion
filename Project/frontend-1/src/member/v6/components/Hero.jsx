@@ -12,6 +12,7 @@ import { useGain } from '../../components/HeroBits.jsx';
 import { Icon } from './Icon.jsx';
 import Logo from './Logo.jsx';
 import { t, nf, useI18n } from '../i18n/index.js';
+import { world } from '../lib/world.js';
 import { reducedMotion } from '../lib/fx.js';
 import { pnameT } from '../lib/present.js';
 import { profileEmoji } from '../lib/emoji.js';
@@ -55,7 +56,7 @@ export default function Hero({ name, aboutDone, aboutTotal, pts, qs, next, onSta
             {WORDS.map((k, i) => <span key={k} className={'rot-w' + (i === w ? ' on' : '')} aria-hidden={i !== w}>{t(k)}</span>)}
           </span>
         </p>
-        <p className="h6-lead">{fresh ? t('v6_lead_new') : aboutDone < aboutTotal ? t('v6_lead_about', { left: aboutTotal - aboutDone }) : t('v6_lead_surveys')}</p>
+        <p className="h6-lead">{fresh ? t('v6_lead_new') : aboutDone < aboutTotal ? t('v6_lead_about', { left: aboutTotal - aboutDone }) : t(world().id === 'kingdom' ? 'v6_lead_surveys' : `${world().id === 'observatory' ? 'w_obs' : 'w_isl'}_lead`)}</p>
         <div className="h6-stats" role="list">
           <span className="h6-stat" role="listitem"><span aria-hidden="true">🙋</span><b>{nf(aboutDone)}/{nf(aboutTotal)}</b><small>{t('v6_about_you')}</small></span>
           <span className="h6-stat" role="listitem" id="pill-pts"><span aria-hidden="true" className="mini-coin" /><b><Counter value={pts || 0} duration={1200} /></b><small>{t('v6_pts')}</small>{gp && <span key={gp.k} className="hx-pop">+{nf(gp.d)}</span>}</span>
@@ -69,7 +70,7 @@ export default function Hero({ name, aboutDone, aboutTotal, pts, qs, next, onSta
               <Icon n="arrow-r" className="flip" />
             </button>
           )}
-          <button type="button" className="btn6 ghost big" onClick={onKingdom} data-snd="whoosh"><span aria-hidden="true">🏰</span>{t('v6_see_kingdom')}</button>
+          <button type="button" className="btn6 ghost big" onClick={onKingdom} data-snd="whoosh"><span aria-hidden="true">{world().e}</span>{t(world().see)}</button>
         </div>
       </div>
       <div className="h6-vis" aria-hidden="true">
