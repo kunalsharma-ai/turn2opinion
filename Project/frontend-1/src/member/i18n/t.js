@@ -5,8 +5,9 @@
 // so a language with no dictionary file yet is translated automatically.
 import base from './en.js';
 import extra from './en-x.js';
+import engage from './en-e.js';
 
-const en = { ...base, ...extra };
+const en = { ...base, ...extra, ...engage };
 
 const DICTS = { en };
 let active = 'en';

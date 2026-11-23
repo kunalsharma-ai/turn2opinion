@@ -5,6 +5,7 @@ import { Counter } from '../components/ui.jsx';
 import { OpinionLoop } from '../components/art.jsx';
 import { ActivityRibbon, BadgeShelf, JourneyRail, ProfileJourney, QualityTile, ReferralTile, SurveyDiscovery, VaultTile, useDash } from '../components/Sections.jsx';
 import { useAchievements } from '../components/Modules.jsx';
+import { EngageStrip, GemTiers, ImpactStories, LuckySpin, ProductTests, QuickPoll } from '../components/Engage.jsx';
 import XHero from './Hero.jsx';
 
 export default function ConsumerDashboard() {
@@ -53,13 +54,23 @@ export default function ConsumerDashboard() {
         }
       />
       <JourneyRail />
+      <EngageStrip />
       <ProfileJourney variant="road" />
+      <div className="xe-row xe-row--wide">
+        <LuckySpin />
+        <GemTiers />
+      </div>
       <SurveyDiscovery variant="deck" limit={5} />
+      <ProductTests />
       <div className="xbento xbento--consumer">
         <VaultTile />
         <QualityTile />
         <ReferralTile />
         <BadgeShelf list={ach} limit={4} />
+      </div>
+      <div className="xe-row">
+        <QuickPoll />
+        <ImpactStories limit={2} />
       </div>
       <ActivityRibbon />
     </div>

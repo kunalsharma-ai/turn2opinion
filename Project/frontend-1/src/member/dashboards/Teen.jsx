@@ -6,6 +6,7 @@ import { VoiceConstellation } from '../components/art.jsx';
 import { ActivityRibbon, BadgeShelf, ProfileJourney, SurveyDiscovery, XHead, XSkel, useDash } from '../components/Sections.jsx';
 import { useAchievements } from '../components/Modules.jsx';
 import { useSection } from '../data/MemberData.jsx';
+import { EngageStrip, GuardianSummary, ImpactStories, LearningBadges, QuickPoll, SeasonChallenge } from '../components/Engage.jsx';
 import XHero from './Hero.jsx';
 
 export default function TeenDashboard() {
@@ -35,12 +36,22 @@ export default function TeenDashboard() {
         ]}
         art={<VoiceConstellation voices={done + 3} label={tn('xt2.voices', done)} />}
       />
+      <SeasonChallenge />
+      <EngageStrip />
       <ProfileJourney variant="quests" />
       <SurveyDiscovery variant="missions" limit={6} />
+      <div className="xe-row">
+        <QuickPoll teen />
+        <LearningBadges />
+      </div>
       <div className="xbento xbento--teen">
         <BadgeShelf list={ach} title={t('xt2.shelf')} />
         <PointsJar />
         <GuardianPanel />
+      </div>
+      <div className="xe-row">
+        <GuardianSummary />
+        <ImpactStories limit={2} />
       </div>
       <ActivityRibbon title={t('xt2.timeline')} />
     </div>

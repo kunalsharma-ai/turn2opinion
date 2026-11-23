@@ -42,6 +42,19 @@ The header has a jump-to palette (Ctrl K), animated points and quality pills, an
 ring on the avatar. Files: `components/art.jsx`, `components/Sections.jsx`, `dashboards/*.jsx`,
 `member-x.css`, `member-xp.css`, `i18n/en-x.js`.
 
+## Round 17 engagement features
+
+Streaks, Quick Opinion polls, impact stories, monthly goals and instant alerts for everyone; gem
+tiers, product testing, lucky spin and a referral leaderboard for Consumers; expert badges, a
+benchmark report, charity donations and LinkedIn certificates for Professionals; learning badges,
+season challenges, Teen-only polls, a guardian summary and guardian-approved gift cards (never cash)
+for Teens. Files: `components/Engage.jsx`, `data/engage.js`, `member-xe.css`, `i18n/en-e.js`.
+
+None of these has a backend yet, except WhatsApp alerts (the existing `communication-methods`
+answer). `engageOn(id)` in `data/engage.js` returns true in the design preview and false on the live
+site, so every unbuilt block renders nothing for real members. To switch one on, add its API adapter
+and put its id in `LIVE`. The full list is in `BACKEND-DEPENDENCIES.md`, items 15 to 32.
+
 ## Layers
 
 ```

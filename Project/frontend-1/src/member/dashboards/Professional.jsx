@@ -4,6 +4,7 @@ import { t, tn, fmt, relTime } from '../i18n/t.js';
 import { Counter, Icon, MLink, cx } from '../components/ui.jsx';
 import { InsightPipeline } from '../components/art.jsx';
 import { Donut, ProfileJourney, QualityTile, Sparkline, StackBar, SurveyDiscovery, VaultTile, XEmpty, XError, XHead, XSkel, useDash, ABOUT_YOU } from '../components/Sections.jsx';
+import { BenchmarkReport, EngageStrip, ExpertBadges, ImpactStories, QuickPoll } from '../components/Engage.jsx';
 import XHero from './Hero.jsx';
 
 export default function ProfessionalDashboard() {
@@ -29,15 +30,22 @@ export default function ProfessionalDashboard() {
           />
         }
       />
+      <EngageStrip />
       <div className="xpro-row">
         <ProfileJourney variant="dossier" />
         <Analytics />
       </div>
+      <ExpertBadges />
       <SurveyDiscovery variant="briefs" limit={6} />
+      <BenchmarkReport />
       <div className="xbento xbento--pro">
         <Qualification />
         <QualityTile />
         <VaultTile />
+      </div>
+      <div className="xe-row">
+        <QuickPoll />
+        <ImpactStories limit={2} />
       </div>
       <ActivityLog />
     </div>

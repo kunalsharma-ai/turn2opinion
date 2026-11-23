@@ -1637,3 +1637,16 @@ html[data-mb-motion='reduce'] .mb-root .xcard {
     display: none;
   }
 }
+/* very narrow phones (360px): keep the header inside the screen */
+@media (max-width: 380px) {
+  .xhd .mb-header__right {
+    gap: 2px;
+  }
+  .xhd .mb-brand img {
+    width: 104px;
+    height: auto;
+  }
+  .xhd .xhd-pill--points {
+    padding-inline: 8px;
+  }
+}

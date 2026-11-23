@@ -12,6 +12,7 @@ import { t, tn, fmt, relTime } from '../i18n/t.js';
 import { useAchievements } from '../components/Modules.jsx';
 import { Badge, Button, Counter, Field, Icon, MLink, cx, useToast } from '../components/ui.jsx';
 import { QualityMeter, ReferralWeb, Vault } from '../components/art.jsx';
+import { CharityDonate, Certificates, GemTiers, GiftCards, ReferralLeaderboard } from '../components/Engage.jsx';
 import { ABOUT_YOU, BadgeShelf, XEmpty, XError, XHead, XSkel, useDash } from '../components/Sections.jsx';
 
 const money = (pts, rate) => {
@@ -143,6 +144,15 @@ export function RewardsPage() {
           })}
         </ol>
       </section>
+
+      {me.type === 'consumer' && <GemTiers full />}
+      {me.type === 'pro' && (
+        <div className="xe-row">
+          <CharityDonate />
+          <Certificates />
+        </div>
+      )}
+      {teen && <GiftCards />}
 
       <BadgeShelf list={ach} title={t('rw.badges')} />
 
@@ -431,6 +441,7 @@ export function ReferralsPage() {
         )}
       </PageHero>
 
+      {me.type === 'consumer' && <ReferralLeaderboard />}
       <section className="xs xs--journey" aria-labelledby="xs-rj">
         <XHead id="xs-rj" icon="route" eyebrow={t('rj.j.eyebrow')} title={t('rj.j.title')} sub={t('rj.j.sub')} />
         <ol className="xrj">
