@@ -142,11 +142,16 @@
 #t2o .icard.s-locked .ic-name {
   opacity: 0.85;
 }
-@media (max-width: 560px) {
+@media (max-width: 600px) {
   #t2o .grid6,
-  #t2o .g-about {
+  #t2o .g-about,
+  #t2o .g-surveys {
     grid-template-columns: minmax(0, 1fr);
     gap: 10px;
+  }
+  /* one card per row on phones, so the time fits again */
+  #t2o .g-surveys .ic-meta > span:last-child {
+    display: inline-flex;
   }
 }
 
