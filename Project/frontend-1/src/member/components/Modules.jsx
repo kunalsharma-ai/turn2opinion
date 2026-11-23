@@ -435,7 +435,7 @@ export function ReferralCard() {
 }
 
 /* =============== activity =============== */
-const ACT_ICON = { complete: 'check', terminate: 'x', dropout: 'clock', overquota: 'lock', invited: 'mail' };
+const ACT_ICON = { complete: 'check', terminate: 'close', dropout: 'clock', overquota: 'lock', invited: 'mail' };
 export function ActivityTimeline({ limit = 6, items, compact }) {
   const [list, status, retry] = useSection('activity');
   const data = items || list || [];

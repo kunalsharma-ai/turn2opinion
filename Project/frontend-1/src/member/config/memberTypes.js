@@ -22,7 +22,9 @@ export const ROUTES = {
   profile: { path: '/member/profile/', icon: 'user', label: 'nav.account' },
   profiles: { path: '/member/profiles/', icon: 'map', label: 'nav.profiles' },
   settings: { path: '/member/settings/', icon: 'gear', label: 'nav.settings' },
-  support: { path: '/member/support', icon: 'headset', label: 'nav.support', external: true },
+  help: { path: '/member/help/', icon: 'help', label: 'nav.help' },
+  // The old Support page is replaced by Help (FAQs, guides and "raise a query" on the same ticket API).
+  support: { path: '/member/help/#help-ask', icon: 'headset', label: 'nav.support' },
   myaccount: { path: '/member/myaccount', icon: 'wallet', label: 'ma.payment', external: true }
 };
 
@@ -32,8 +34,8 @@ export const surveyLink = (slug) => `${ROUTES.surveys.path}#start-${slug}`;
 
 // Sidebar (desktop) and bottom bar (phone). The bottom bar holds the four most used places plus "More".
 // Order follows the member journey: complete your profile -> participate -> earn -> improve -> track.
-export const NAV = ['dashboard', 'profiles', 'surveys', 'rewards', 'quality', 'referrals', 'activity', 'profile', 'settings'];
-export const BOTTOM_NAV = ['dashboard', 'profiles', 'surveys', 'rewards'];
+export const NAV = ['dashboard', 'profiles', 'surveys', 'rewards', 'quality', 'referrals', 'activity', 'profile', 'settings', 'help'];
+export const BOTTOM_NAV = ['dashboard', 'profiles', 'surveys', 'rewards', 'help'];
 
 // Dashboard composition. Module ids map to components in dashboards/Composer.jsx.
 //   wide: spans the main column;  side: right column on wide screens

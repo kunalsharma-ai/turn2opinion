@@ -245,6 +245,23 @@ export async function loadSection(name, ctx) {
 }
 
 // ---------------- actions (writes, all existing endpoints) ----------------
+/** A support ticket from /api/v1/support. */
+export function adaptTicket(d) {
+  if (!d) return null;
+  return { id: d._id || d.id || '', no: d.ticketNo || '', subject: d.subject || '', description: d.description || '', topic: d.category || '', status: String(d.status || 'new').toLowerCase(), at: d.createdAt || d.created?.At || null };
+}
+const demoTicketStore = [
+  { id: 'demo-1', no: 'T2O-2087', subject: 'Points for the coffee survey', description: 'I finished the coffee habits survey yesterday but the points are not showing yet.', topic: 'rewards', status: 'closed', at: new Date(Date.now() - 12 * 864e5).toISOString() },
+  { id: 'demo-2', no: 'T2O-2141', subject: 'Change my date of birth', description: 'My date of birth was entered wrong at sign-up.', topic: 'account', status: 'open', at: new Date(Date.now() - 2 * 864e5).toISOString() }
+];
+const demoTickets = () => demoTicketStore.map((x) => ({ ...x }));
+const demoTicketThread = (id) =>
+  id === 'demo-1'
+    ? [{ id: 'r1', message: 'Thanks for waiting. The survey was confirmed complete and 120 points are now in your balance.', by: 'Turn2Opinion Support', at: new Date(Date.now() - 11 * 864e5).toISOString() }]
+    : id === 'demo-2'
+      ? [{ id: 'r2', message: 'Thanks, we have your request. Our team is checking your sign-up details and will reply here and by email within 2 working days.', by: 'Turn2Opinion Support', at: new Date(Date.now() - 864e5).toISOString() }]
+      : [];
+
 export const actions = {
   async uploadPhoto(file) {
     if (ENV.DEMO_MODE) return demoSection('upload', { file });
@@ -330,6 +347,29 @@ export const actions = {
     const r = await api.patch('/api/v1/me/survey', { ...values, respID });
     if (!ok(r)) throw new Error(r?.message || 'error');
     return true;
+  },
+  // ---- Help: support tickets (existing /api/v1/support endpoints, same shapes as the old Support page) ----
+  async tickets(email) {
+    if (ENV.DEMO_MODE) return demoTickets();
+    const list = await call(() => api.post('/api/v1/support', { 'issueRaisedBy.email': email }));
+    return (Array.isArray(list) ? list : []).map(adaptTicket);
+  },
+  async raiseTicket({ topic, subject, description, type }) {
+    if (ENV.DEMO_MODE) {
+      const tk = { id: `demo-${Date.now()}`, no: `T2O-${String(Math.floor(Math.random() * 9000) + 1000)}`, subject, description, topic, status: 'new', at: new Date().toISOString() };
+      demoTicketStore.unshift(tk);
+      return { ticket: tk, message: 'Preview: no ticket was sent.' };
+    }
+    const r = await api.put('/api/v1/support', { subject, description, category: topic, department: 'member-help', priority: 'normal', tags: ['help-centre', type].filter(Boolean) });
+    if (!ok(r)) throw new Error(r?.message || 'error');
+    return { ticket: adaptTicket(r.data), message: r.message || '' };
+  },
+  async ticketThread(id) {
+    if (ENV.DEMO_MODE) return demoTicketThread(id);
+    const list = await call(() => api.get(`/api/v1/support/${encodeURIComponent(id)}/reply`));
+    return (Array.isArray(list) ? list : [])
+      .map((c) => ({ id: c._id, message: c.message || '', by: c.created?.By?.fullName || c.created?.By?.name?.first || 'Turn2Opinion Support', at: c.createdAt || c.created?.At || null }))
+      .reverse();
   },
   async country() {
     if (ENV.DEMO_MODE) return 'in';

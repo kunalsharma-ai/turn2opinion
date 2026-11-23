@@ -97,7 +97,7 @@ export function AvatarUpload() {
           <input ref={input} type="file" accept={TYPES.join(',')} className="mb-sr" tabIndex={-1} aria-hidden="true" onChange={(e) => pick(e.target.files?.[0])} />
           {err && (
             <p className="mb-field__error" role="alert">
-              <Icon name="x" size={13} /> {err}
+              <Icon name="close" size={13} /> {err}
             </p>
           )}
           <div className="mb-row" aria-live="polite">
@@ -129,7 +129,7 @@ export function AvatarUpload() {
                   {me.photo ? t('av.replace') : t('av.upload')}
                 </Button>
                 {me.photo && (
-                  <Button size="sm" variant="ghost" icon="x" onClick={remove}>
+                  <Button size="sm" variant="ghost" icon="close" onClick={remove}>
                     {t('av.remove')}
                   </Button>
                 )}

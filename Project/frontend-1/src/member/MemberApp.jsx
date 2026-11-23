@@ -16,15 +16,17 @@ import { ActivityPage, QualityPage, ReferralsPage, RewardsPage } from './pages/P
 import { ProfilePage, SettingsPage } from './pages/Account.jsx';
 import { ProfilesPage } from './pages/Profiles.jsx';
 import { SurveysPage } from './pages/Surveys.jsx';
+import { HelpPage } from './pages/Help.jsx';
 import baseCss from './member.css?inline';
 import xCss from './member-x.css?inline';
 import xpCss from './member-xp.css?inline';
 import xeCss from './member-xe.css?inline';
 import v6Css from './v6/v6.css?inline';
 import v6MemberCss from './v6/member-v6.css?inline';
+import helpCss from './member-help.css?inline';
 import { BrandLoader } from './components/art.jsx';
 
-const memberCss = `${baseCss}\n${xCss}\n${xpCss}\n${xeCss}\n${v6Css}\n${v6MemberCss}`;
+const memberCss = `${baseCss}\n${xCss}\n${xpCss}\n${xeCss}\n${v6Css}\n${v6MemberCss}\n${helpCss}`;
 
 const PAGES = {
   dashboard: DashboardPage,
@@ -35,7 +37,8 @@ const PAGES = {
   referrals: ReferralsPage,
   activity: ActivityPage,
   profile: ProfilePage,
-  settings: SettingsPage
+  settings: SettingsPage,
+  help: HelpPage
 };
 
 function useMemberStyles() {

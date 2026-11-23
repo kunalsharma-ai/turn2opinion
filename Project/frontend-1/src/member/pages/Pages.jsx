@@ -629,7 +629,7 @@ function SocialFollow() {
 
 /* ================= activity ================= */
 const RANGES = { 30: 30, 90: 90, 365: 365, all: null };
-const ACT_ICON = { complete: 'check', terminate: 'x', dropout: 'clock', overquota: 'lock' };
+const ACT_ICON = { complete: 'check', terminate: 'close', dropout: 'clock', overquota: 'lock' };
 export function ActivityPage() {
   const [list, status, retry] = useSection('activity');
   const [stats] = useSection('stats');

@@ -8,6 +8,7 @@ import { soundEnabled, setSoundPref, onSoundChange } from '../../utils/soundPref
 import { asset, ENV } from '../../config/env.js';
 import { store } from '../../utils/storage.js';
 import { NAV, BOTTOM_NAV, ROUTES } from '../config/memberTypes.js';
+import { PAGE_TOPIC } from '../data/help.js';
 import { useMe, useSection, profileCompletion, qualityTier } from '../data/MemberData.jsx';
 import { actions } from '../data/source.js';
 import { demoPrefs, setDemoPrefs } from '../data/demo.js';
@@ -224,7 +225,7 @@ export function NotificationCenter() {
         <div className="mb-drawer">
           <header className="mb-drawer__head">
             <h2>{t('nt.title')}</h2>
-            <IconButton icon="x" label={t('nt.close')} onClick={() => setOpen(false)} />
+            <IconButton icon="close" label={t('nt.close')} onClick={() => setOpen(false)} />
           </header>
           <div className="mb-drawer__bar">
             <Tabs
@@ -315,7 +316,7 @@ function UserMenu({ me }) {
               <Badge tone={me.type}>{t(`member.${me.type}`)}</Badge>
             </div>
           </div>
-          {['profile', 'profiles', 'settings', 'support'].map((id) => (
+          {['profile', 'profiles', 'settings', 'help'].map((id) => (
             <MLink key={id} to={id} role="menuitem" className="mb-menuitem" onClick={close}>
               <Icon name={ROUTES[id].icon} size={18} /> {t(ROUTES[id].label)}
               {ROUTES[id].external && <Icon name="external" size={14} className="mb-menuitem__ext" />}
@@ -340,7 +341,7 @@ function UserMenu({ me }) {
 
 /* ---------------- header ---------------- */
 // Each place has its own colour, used for its icon tile, active state and page accent.
-export const ROUTE_COLOR = { dashboard: '#1f5bff', profiles: '#7b5cff', surveys: '#0b8bd6', rewards: '#d49100', quality: '#0f9f6e', referrals: '#e23d8f', activity: '#ea6a12', profile: '#5b5bf0', settings: '#4f6b8a', support: '#64748b', myaccount: '#0f766e' };
+export const ROUTE_COLOR = { help: '#0ea5a4', dashboard: '#1f5bff', profiles: '#7b5cff', surveys: '#0b8bd6', rewards: '#d49100', quality: '#0f9f6e', referrals: '#e23d8f', activity: '#ea6a12', profile: '#5b5bf0', settings: '#4f6b8a', support: '#64748b', myaccount: '#0f766e' };
 
 /** Points pill: the number counts up whenever the balance changes and the coin flips. */
 function PointsPill({ points }) {
@@ -392,6 +393,18 @@ function ProgressAvatar({ me, size = 36 }) {
   );
 }
 
+/** Header Help button: opens Help on the topic of the page you are on. */
+function HelpButton() {
+  const path = usePath();
+  const slug = path.split('/').filter(Boolean)[1] || 'dashboard';
+  const topic = PAGE_TOPIC[slug];
+  return (
+    <MLink to={slug === 'help' ? '/member/help/' : `/member/help/${topic ? `#topic-${topic}` : ''}`} className={cx('mb-iconbtn xhd-help', slug === 'help' && 'is-on')} aria-label={t('nav.helpHere')} title={t('nav.helpHere')}>
+      <Icon name="help" size={21} />
+    </MLink>
+  );
+}
+
 function Header({ onMenu, onJump }) {
   const me = useMe();
   const [points] = useSection('points');
@@ -413,6 +426,7 @@ function Header({ onMenu, onJump }) {
       <div className="mb-header__right">
         <PointsPill points={points} />
         <QualityPill me={me} />
+        <HelpButton />
         <NotificationCenter />
         <span className="mb-hide-sm">
           <AppearanceMenu />
@@ -440,7 +454,7 @@ function CommandPalette({ open, onClose }) {
   }, [open]);
   const isLight = typeof document !== 'undefined' ? document.documentElement.dataset.mbMode === 'light' : appearance.mode === 'light';
   const items = useMemo(() => {
-    const pages = [...NAV, 'support', ...(me.type === 'teen' ? [] : ['myaccount'])].map((id) => ({
+    const pages = [...NAV, ...(me.type === 'teen' ? [] : ['myaccount'])].map((id) => ({
       id,
       kind: 'page',
       icon: ROUTES[id].icon,
@@ -567,7 +581,7 @@ function Sidebar({ path, collapsed, onToggle }) {
       )}
       <div className="mb-side__foot">
         <MLink to="support" className="mb-nav__item mb-nav__item--quiet" title={collapsed ? t('nav.support') : undefined}>
-          <Icon name="headset" size={20} />
+          <Icon name="chat" size={20} />
           <span className="mb-nav__label">{t('nav.support')}</span>
         </MLink>
         <button type="button" className="mb-nav__item mb-nav__item--quiet mb-side__collapse" onClick={onToggle} aria-label={collapsed ? t('nav.expand') : t('nav.collapse')}>
@@ -607,7 +621,7 @@ function Drawer({ open, onClose, path }) {
       <div className="mb-drawer mb-drawer--nav">
         <header className="mb-drawer__head">
           <Brand />
-          <IconButton icon="x" label={t('nav.close')} onClick={onClose} />
+          <IconButton icon="close" label={t('nav.close')} onClick={onClose} />
         </header>
         <div className="mb-usercard mb-usercard--drawer">
           <Avatar name={me.fullName} src={me.photo} size={44} />
@@ -627,7 +641,7 @@ function Drawer({ open, onClose, path }) {
             <LanguageSelector />
           </div>
           <MLink to="support" className="mb-pop__link" onClick={onClose}>
-            <Icon name="headset" size={18} /> {t('nav.support')}
+            <Icon name="chat" size={18} /> {t('nav.support')}
           </MLink>
         </div>
       </div>

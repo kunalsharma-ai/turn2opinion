@@ -111,3 +111,22 @@ and the guardian's consent part of `/parent-consent/`. Saving uses the same call
 | 65 | The package's consent record (record id, terms version, sections opened, language, time zone, timestamp per choice) | Shown to the member as their receipt, **not stored**: the API keeps only the ticked ids | A field or table to keep the full record if Legal needs it as evidence |
 | 66 | Declining the agreement | Consumer / Professional: the account is closed with `DELETE /api/v1/me` (as before). Teen: the guardian's "No" path is unchanged | None |
 | 67 | Legal text | Kept exactly as delivered. It names the legal operator and uses "minor" inside the legal clauses; Legal should confirm the operator name, effective dates and versions before launch | Legal review |
+
+## Round 21: Help centre (`/member/help/`)
+
+Help is a new member page (sidebar, header "?" button, phone bottom bar, phone menu and Jump to). It has
+searchable FAQs and step-by-step guides for every feature, tailored to Consumer, Professional and Teen, and
+"Still need help? Ask us" with a topic list ending in **Other**. Queries use the existing support-ticket API,
+with the same request shapes as the old `/member/support` page, which Help replaces.
+
+| # | Item | Status today | Backend change |
+| --- | --- | --- | --- |
+| 68 | Raise a query | **Live**: `PUT /api/v1/support { subject, description, category: <topic>, department: "member-help", priority: "normal", tags: ["help-centre", <type>] }` | None |
+| 69 | My queries | **Live**: `POST /api/v1/support { "issueRaisedBy.email": <member email> }` (same filter as the old page), replies from `GET /api/v1/support/:id/reply` | None |
+| 70 | Ticket emails | The "ticket created" email to the member is sent to a **hard-coded test Gmail address** in `backend/app/routes/api/Support.js`, not to the member (the member's address is commented out). Help tells members the reply comes by email | Send to `issueRaisedBy.email` before launch |
+| 71 | Ticket privacy | `GET /api/v1/support`, `POST /api/v1/support` with any filter and `GET /api/v1/support/:id` return any member's tickets to any signed-in user | Limit members to their own tickets (admins excepted) |
+| 72 | Member replies on a ticket | Not offered: `PUT /api/v1/support/:id/reply` sets the ticket status from the body, so a member reply without a status would clear it. Members raise a new query instead | Optional: a member reply endpoint that keeps the status |
+| 73 | "Was this helpful?" votes on answers | Shown on the page only, not stored | Optional: an endpoint to count votes per answer |
+| 74 | Answers about features not live yet (gift cards for Teens, donations, certificates, guardian summary) | Hidden automatically until the feature is switched on in `data/engage.js` | None |
+
+Going live: add `/member/help/` to the gateway rule in `README.md`. `/member/support` can redirect to `/member/help/#help-ask`.

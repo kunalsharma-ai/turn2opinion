@@ -329,7 +329,7 @@ export function Field({ label, hint, error, children, id }) {
       {hint && !error && <p className="mb-field__hint">{hint}</p>}
       {error && (
         <p className="mb-field__error" role="alert">
-          <Icon name="x" size={13} /> {error}
+          <Icon name="close" size={13} /> {error}
         </p>
       )}
     </div>
@@ -478,7 +478,7 @@ export function ToastProvider({ children }) {
       <div className="mb-toasts" role="status" aria-live="polite">
         {items.map((x) => (
           <div key={x.id} className={cx('mb-toast', `mb-toast--${x.tone}`)}>
-            <Icon name={x.tone === 'error' ? 'x' : x.tone === 'info' ? 'bell' : 'check'} size={16} />
+            <Icon name={x.tone === 'error' ? 'close' : x.tone === 'info' ? 'bell' : 'check'} size={16} />
             <span>{x.text}</span>
           </div>
         ))}

@@ -1056,7 +1056,7 @@ export function SurveyPrefs() {
           return (
             <li key={k}>
               <button type="button" className={cx('mb-chip', on && 'is-on')} aria-pressed={on} onClick={() => upd({ avoid: on ? v.avoid.filter((x) => x !== k) : [...v.avoid, k] })}>
-                {on && <Icon name="x" size={12} strokeWidth={3} />} {t(`g.pf.topic.${k}`)}
+                {on && <Icon name="close" size={12} strokeWidth={3} />} {t(`g.pf.topic.${k}`)}
               </button>
             </li>
           );

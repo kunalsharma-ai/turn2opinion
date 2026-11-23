@@ -14,14 +14,15 @@ It is one persistent React app mounted for every `/member/<page>/` route that fr
 | `/member/activity/` | Activity timeline |
 | `/member/profile/` | My account: photo upload, details, location, Teen guardian card |
 | `/member/settings/` | Appearance, sound, language, notifications, privacy, profile, account |
+| `/member/help/` | Help centre: search, topics, step-by-step guides, FAQs, raise a query (Other) and My queries |
 
 These pages stay on the existing member app (Project/frontend) and are linked from here with a full
 page load. Their approved designs and animations are not reproduced:
 
 - `/member/myaccount`: payment methods, pause and delete
-- `/member/support`
+- `/member/support` (replaced by `/member/help/`; redirect it to `/member/help/#help-ask`)
 
-**Going live needs one gateway rule.** Send the nine URLs above to frontend-1, and keep every other
+**Going live needs one gateway rule.** Send the ten URLs above to frontend-1, and keep every other
 `/member/*` URL on the existing app.
 
 ## Round 16 redesign
