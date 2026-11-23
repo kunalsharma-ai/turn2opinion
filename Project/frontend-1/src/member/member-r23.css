@@ -193,3 +193,17 @@
     order: 1;
   }
 }
+
+/* Round 24: the side menu scrolls on its own, so its rows must never shrink.
+   On shorter screens the "Your journey" label was squeezed to 8px and its text ran into Dashboard. */
+.mb-side > *,
+.mb-side .xnav,
+.mb-side .mb-nav {
+  flex-shrink: 0;
+}
+.xside__group {
+  margin: 0;
+  min-height: 19px;
+  line-height: 19px;
+  padding-bottom: 6px;
+}
