@@ -138,14 +138,14 @@ export function RewardGuide({ live, teenName = 'your teen', eligible }) {
 }
 
 // ------------------------------------------------------------------ card 1 (read view): every answer
-export function AnswersView({ answers, masked, emptyText = 'Not answered', skippedText = 'Skipped (optional section)' }) {
+export function AnswersView({ answers, masked, emptyText = 'Not answered', skippedText = 'Skipped (optional section)', openAll = false }) {
   const groups = answerRows(answers || {}, { masked });
   return (
     <div className="pgs-ans">
       {groups.map((s, i) => (
         <Fold
           key={s.name}
-          open={i === 0}
+          open={openAll || i === 0}
           icon={s.icon}
           title={s.name}
           badge={<small className="pgs-fold-n">{s.skipped ? 'Optional · skipped' : `${s.answered}/${s.rows.length}`}</small>}

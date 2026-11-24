@@ -19,6 +19,7 @@ import { Cards, Chip, HubStyles, Hero, Sheet, Workflow } from '../../components/
 import { AnswersView, ConsentDoc, RewardGuide } from '../../components/parent/ParentViews.jsx';
 import { CONSENT_FACTS, ONB_LABEL, CON_LABEL, onboardingProgress, workflow } from '../../components/parent/parentData.js';
 import Icon from '../../components/Icon.jsx';
+import { ParentRecordCard, ParentRecordSheet } from './ParentRecord.jsx';
 
 const fullName = (n = {}) => [n.first, n.middle, n.last].filter(Boolean).join(' ');
 const dateOf = (d) => {
@@ -55,7 +56,7 @@ export function useFamily() {
   return s;
 }
 
-const HASH = { onboarding: 'onboarding', guardian: 'onboarding', rewards: 'rewards', consent: 'consent', teen: 'consent' };
+const HASH = { record: 'record', onboarding: 'onboarding', guardian: 'record', rewards: 'rewards', consent: 'consent', teen: 'consent' };
 
 export function ParentSection() {
   const s = useFamily();
@@ -152,6 +153,10 @@ export function ParentSection() {
               </p>
             )}
           </Hero>
+          <div className="pgs-wrap-rec" id="family-record">
+            <ParentRecordCard state={s} onOpen={() => setOpen('record')} />
+          </div>
+          <ParentRecordSheet open={open === 'record'} onClose={() => setOpen(null)} state={s} onConsentForm={() => setOpen('consent')} />
           <Workflow mode="teen" status={status} teenName={d.teen?.name?.first ? d.teen.name.first : 'you'} />
           <Cards cards={cards} onOpen={setOpen} />
 
