@@ -349,7 +349,24 @@ export default mongooseModel(
             ip: { type: String }
         },
         registrationClosedAt: { type: Date },
-        registrationClosedReason: { type: String }
+        registrationClosedReason: { type: String },
+        // Marketing e-mail consent ("News and offers"). Unset means never asked: treat it as no. Only an explicit
+        // tick grants it; nothing opts existing members in. Teens can't opt in. See utils/marketing.js.
+        marketingOptIn: {
+            granted: { type: Boolean },
+            at: { type: Date },
+            source: { type: String, enum: ["signup", "profile", "admin"] },
+            wording: { type: String, trim: true }
+        },
+        // Every change to marketingOptIn, newest last (proof of consent). Capped in utils/marketing.js.
+        marketingOptInHistory: [{
+            _id: false,
+            granted: Boolean,
+            at: Date,
+            source: { type: String, enum: ["signup", "profile", "admin"] },
+            wording: String,
+            by: String
+        }]
     },
     [
         [

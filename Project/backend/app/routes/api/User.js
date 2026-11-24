@@ -38,6 +38,8 @@ import { requireAdmin, requireMember, selfOrAdmin } from "../../utils/access.js"
 import { checkQuery, isAdminRole, memberListQuery, omit, safeFilter, userUpdate } from "../../utils/memberAccess.js";
 import { captchaLimit, loginLimit, registerLimit, linkLimit } from "../../utils/limits.js";
 import { ageInYears } from "../../model/User.js";
+import * as Marketing from "../../utils/marketing.js";
+import UserModel from "../../model/User.js";
 import { Answers as answerModel, Response as responseModel, Tombstone as tombstoneModel } from "../../model/index.js";
 import {
     TEEN_REG_CONSENT_VERSION, GUARDIAN_TERMS_VERSION, TEEN_STATEMENTS, GUARDIAN_REQUIRED, GUARDIAN_OPTIONAL, DECLINE_REASONS,
@@ -296,9 +298,14 @@ router
                     if (userInfo.category === "minor") userInfo.category = "b2c";
                     if (userInfo.category === "minor patient") userInfo.category = "patient";
                 }
-                if (Array.isArray(userInfo.terms)) userInfo.terms = userInfo.terms.filter((t) => typeof t === "string").slice(0, 20);
+                if (Array.isArray(userInfo.terms)) userInfo.terms = Marketing.stripForTeen(userInfo, userInfo.terms.filter((t) => typeof t === "string").slice(0, 20));
+                // marketing consent is written only through utils/marketing.js, never straight from the form
+                const marketingOptIn = typeof userInfo.marketingOptIn === "boolean" ? userInfo.marketingOptIn : Array.isArray(userInfo.terms) && userInfo.terms.includes("marketing") ? true : null;
+                for (const k of Marketing.PROTECTED) delete userInfo[k];
                 let message = "";
                 let data = await userController.create(userInfo);
+                // "News and offers": recorded only for an explicit choice (unticked by default); a teen never opts in
+                if (marketingOptIn !== null && !(marketingOptIn && Marketing.isTeen(data))) await Marketing.setOptIn(data._id, req.origin, marketingOptIn, "signup", "member");
                 // Only contact/location answers here; every member answers the welcome questions after login.
                 try { await saveWelcome(req, Mutate(data), welcome, false); } catch { /* saved again after login */ }
 
@@ -1093,7 +1100,18 @@ router
                 let message = "";
                 const update = userUpdate(req.body, { isAdmin: req.isAdmin });
                 if (!Object.keys(update).length) throw new Error("Nothing to update");
+                // terms carry the consent kit's "marketing" id: keep User.marketingOptIn in step (teens never keep it)
+                let termsBefore = null;
+                if (Array.isArray(update.terms)) {
+                    const cur = await UserModel.findOne({ _id: req.params.id, origin: req.origin }).select("terms category").lean();
+                    termsBefore = cur?.terms || [];
+                    update.terms = Marketing.stripForTeen(cur, update.terms);
+                }
                 let data = await userController.update(req.params.id, update)
+                if (termsBefore) {
+                    const next = Marketing.termsChange(termsBefore, update.terms);
+                    if (next !== null) await Marketing.setOptIn(req.params.id, req.origin, next, req.isAdmin ? "admin" : "profile", req.isAdmin ? `admin:${req.user?._id || ""}` : "member");
+                }
                 return { message, data };
             },
             userController

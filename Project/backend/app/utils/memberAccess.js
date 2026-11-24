@@ -10,7 +10,7 @@ export const isAdminRole = (role) => ADMIN_ROLES.includes(String(role ?? "").tri
 // guardian data) is changed only by an admin or by its own dedicated flow.
 export const SELF_EDITABLE = ["terms", "notification", "consent", "socials", "profilePicture", "timezone", "paymentMethod"];
 // Fields an admin may never set through the generic update (they have their own flows).
-export const ADMIN_BLOCKED = ["password", "_id", "origin", "role", "createdAt", "updatedAt"];
+export const ADMIN_BLOCKED = ["password", "_id", "origin", "role", "createdAt", "updatedAt", "marketingOptIn", "marketingOptInHistory"];
 // What a member sees about the people who joined with their referral link.
 export const REFERRAL_FIELDS = "mail name isVerified createdAt";
 

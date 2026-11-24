@@ -18,7 +18,9 @@ export const MEMBER_FIELDS = [
     "address.country", "address.state", "address.city", "isVerified", "qualityScore", "isActive", "isDeleted",
     "createdAt", "updatedAt", "consent", "terms",
     "parent.consent", "parent.consentStatus", "parent.consentAt", "parent.consentVersion", "parent.decision",
-    "parent.decisionAt"
+    "parent.decisionAt",
+    // marketing e-mail consent (utils/marketing.js): MADP reads it as the email_marketing purpose
+    "marketingOptIn"
 ];
 export const memberProjection = () => `${MEMBER_FIELDS.join(" ")} +role`;
 

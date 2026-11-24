@@ -9,6 +9,8 @@ import {
     Profile as profileController
 } from "../../controller/index.js";
 import Category from "../../model/Category.js";
+import UserModel from "../../model/User.js";
+import * as Marketing from "../../utils/marketing.js";
 import { Profile as profileModel, Rewards as rewardsModel } from "../../model/index.js";
 import { PROFILE_REWARD, creditCompletedProfiles, sumCredited } from "../../utils/profileRewards.js";
 import {
@@ -123,7 +125,17 @@ router
     .put(expressRoute(
         async req => {
             const [message, data] = ["Updated successfully", []];
-            await userController.update(req.user._id, req.body);
+            const body = { ...(req.body || {}) };
+            for (const k of Marketing.PROTECTED) delete body[k]; // only through PUT /me/marketing or the terms below
+            // the consent kit's "marketing" id is the marketing e-mail opt-in: keep User.marketingOptIn in step
+            let termsBefore = null;
+            if (Array.isArray(body.terms)) {
+                const cur = await UserModel.findOne({ _id: req.user._id, origin: req.origin }).select("terms category").lean();
+                termsBefore = cur?.terms || [];
+                body.terms = Marketing.stripForTeen(cur, body.terms);
+            }
+            await userController.update(req.user._id, body);
+            if (termsBefore) await Marketing.syncFromTerms(req.user._id, req.origin, termsBefore, body.terms);
             return { message, data };
         },
         userController
@@ -134,6 +146,28 @@ router
         })
         return res.json({})
     })
+// "News and offers": the member's marketing e-mail consent (utils/marketing.js)
+router
+    .route("/marketing")
+    .get(expressRoute(
+        async req => {
+            const u = await UserModel.findOne({ _id: req.user._id, origin: req.origin }).select("marketingOptIn category").lean();
+            return { message: "", data: { ...Marketing.view(u), teen: Marketing.isTeen(u) } };
+        },
+        userController
+    ))
+    .put(expressRoute(
+        async req => {
+            const data = await Marketing.setOptIn(req.user._id, req.origin, req.body?.optIn, "profile", "member");
+            // keep the consent kit's "marketing" id in step, so Settings shows the same choice
+            const cur = await UserModel.findOne({ _id: req.user._id, origin: req.origin }).select("terms").lean();
+            const terms = (cur?.terms || []).filter((t) => t !== "marketing");
+            if (data.granted) terms.push("marketing");
+            await UserModel.updateOne({ _id: req.user._id, origin: req.origin }, { $set: { terms } });
+            return { message: "Saved", data };
+        },
+        userController
+    ));
 router
     .get("/points",
         expressRoute(
