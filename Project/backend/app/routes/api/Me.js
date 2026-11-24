@@ -1,4 +1,5 @@
 import express from "express";
+import { requireAdmin } from "../../utils/access.js";
 import { teenCategory } from "../../utils/goLiveSetup.js";
 import {
     Survey as surveyController,
@@ -244,7 +245,8 @@ router
             answerController
         )
     )
-    .patch("/change-category",
+    // members can't change their own segment (Consumer, Professional, Teen): admins only
+    .patch("/change-category", requireAdmin,
         expressRoute(
             async req => {
                 const [message, data] = [

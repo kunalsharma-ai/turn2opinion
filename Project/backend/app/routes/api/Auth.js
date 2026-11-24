@@ -17,7 +17,17 @@ router
     expressRoute(async (req) => {
       let { token } = req.query;
       if (!token) return { redirect: "/?signup=1" };
-      let info = JWT.verify(token, "8e2a8ad9aa0f57a3f8dd7ddda64da43745ee88dec1877a12bc639894937ac600b70721aa431ce6c778bc640b04fbfaecf8fdc68bfa989fb138bff5bfde2f647c");
+      // The sign-on service's key comes from the environment. It used to be written here in the code, so anyone who
+      // saw the code could make a token for any e-mail and be signed in as that member. Without the key social
+      // sign-on is off. Tokens must be HS256 and at most 15 minutes old.
+      const key = process.env.SOCIAL_JWT_SECRET;
+      if (!key || key.length < 32) return { redirect: "/?signup=1" };
+      let info;
+      try {
+        info = JWT.verify(String(token), key, { algorithms: ["HS256"], maxAge: "15m" });
+      } catch (e) {
+        return { redirect: "/?signup=1" };
+      }
       if (!info.email) {
         let searchParams = new URLSearchParams(info);
         return {

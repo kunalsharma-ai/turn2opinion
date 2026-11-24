@@ -26,8 +26,16 @@ import testimonialRouter from "./api/Testimonials.js";
 import meRouter from "./api/Me.js";
 import changeEmail from "./api/changeEmail.js"
 import changesRouter from "./api/Changes.js";
+import { requireAdmin } from "../utils/access.js";
+import { bindRequest } from "../utils/requestContext.js";
+import { securityHeaders, sanitizeInput } from "../utils/security.js";
 const router = express.Router();
 router
+    // every answer gets the browser security headers; member routes run in their own request context (so two
+    // requests can't swap brands or members while they wait for the database) and never see code-running Mongo
+    // operators
+    .use(securityHeaders)
+    .use("/api/v1", bindRequest, sanitizeInput)
     .use("/api/v1/testimonial", testimonialRouter)
     .use("/api/v1/llm", llmRouter)
     .use("/api/v1/newsletter", (r, s) => {
@@ -55,13 +63,15 @@ router
     .use("/api/v1/feasibility", feasibilityRouter)
     .use("/api/v1/filtered-users", feasibilityRouter)
     .use("/api/v1/cpi", cpiRouter)
-    .use("/api/v1/project-dev", projectRouter)
+    // projects, scheduled e-mail batches and the survey-tool answer import are admin tools (project-dev and
+    // integration had no sign-in at all; any member could create projects or schedule e-mails from the brand)
+    .use("/api/v1/project-dev", requireAdmin, projectRouter)
     .use("/api/v1/me", isAuthenticated, meRouter)
     .use("/api/v1/response", isAuthenticated, meResponse)
     .use("/api/v1/support", isAuthenticated, supportRouter)
-    .use("/api/v1/project", isAuthenticated, projectRouter)
-    .use("/api/v1/batch", isAuthenticated, batchRouter)
-    .use("/api/v1/integration", integrationRoutes)
+    .use("/api/v1/project", requireAdmin, projectRouter)
+    .use("/api/v1/batch", requireAdmin, batchRouter)
+    .use("/api/v1/integration", requireAdmin, integrationRoutes)
     .use("/api/v1/changes", changesRouter)
     .use("/api/v1/socials", socialsRouter)
     .use("/api/v1/follow-social", isAuthenticated, followSocialRouter)

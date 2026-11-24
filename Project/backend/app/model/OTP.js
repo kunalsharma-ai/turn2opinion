@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import crypto from "node:crypto";
 import { mongooseModel } from "../utils/index.js";
 
 const OTP = mongooseModel(
@@ -8,7 +9,8 @@ const OTP = mongooseModel(
     channel: { type: String, required: true },
     code: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
-    expiresAt: { type: Date, default: (Date.now() + 900) }
+    expiresAt: { type: Date, default: () => new Date(Date.now() + 15 * 60 * 1000) },
+    attempts: { type: Number, default: 0 }
   },
   [
     // One live code per member, channel and site. (This used to say `type`, a field the model does not have, so
@@ -37,7 +39,8 @@ const OTP = mongooseModel(
         await OTPModel.deleteOne({ _id: existing._id });
     }
 
-        const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+        // a cryptographic random number (the old pseudo-random codes could be predicted from earlier ones)
+        const otpCode = String(crypto.randomInt(100000, 1000000));
 
         const otpDoc = await OTPModel.create({
           user,

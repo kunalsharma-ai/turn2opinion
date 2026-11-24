@@ -1,6 +1,8 @@
 import express from "express";
 import { Category as categoryController } from "../../controller/index.js";
 import { expressRoute, expressView, isAuthenticated, fsLogger } from "../../utils/index.js"
+import { requireAdmin } from "../../utils/access.js";
+// Reading is public. Creating, changing and deleting is for admins only.
 
 const router = express.Router();
 router
@@ -23,7 +25,7 @@ router
         },
         categoryController
     ))
-    .put(expressRoute(
+    .put(requireAdmin, expressRoute(
         async req => {
             // Create new entry
             let message = "";
@@ -43,7 +45,7 @@ router
         },
         categoryController
     ))
-    .put(expressRoute(
+    .put(requireAdmin, expressRoute(
         async req => {
             // update single entry
             let message = "";
@@ -52,7 +54,7 @@ router
         },
         categoryController
     ))
-    .delete(expressRoute(
+    .delete(requireAdmin, expressRoute(
         async req => {
             // delete single entry
             let message = "";

@@ -37,6 +37,8 @@ import { createCaptcha, requireCaptcha } from "../../utils/captcha.js";
 import { requireAdmin, requireMember, selfOrAdmin } from "../../utils/access.js";
 import { checkQuery, isAdminRole, memberListQuery, omit, safeFilter, userUpdate } from "../../utils/memberAccess.js";
 import { captchaLimit, loginLimit, registerLimit, linkLimit } from "../../utils/limits.js";
+import { lockedFor, fail, clear, norm } from "../../utils/throttle.js";
+import { withRequest } from "../../utils/requestContext.js";
 import { ageInYears } from "../../model/User.js";
 import * as Marketing from "../../utils/marketing.js";
 import UserModel from "../../model/User.js";
@@ -469,10 +471,20 @@ router
             const message = "Login successful";
             let data = [];
             await requireCaptcha(req);
+            // strings only (an object here would be a database filter), and a per-account lock after 10 wrong
+            // passwords in 15 minutes, so a bot that keeps changing its address gets no further
+            const { mail, phone, password } = req.body || {};
+            if (typeof password !== "string" || !password || (typeof mail !== "string" && typeof phone !== "string"))
+                throw new Error("E-Mail id or Password is invalid");
+            const who = `login:${req.origin}:${norm(typeof mail === "string" && mail ? mail : phone)}`;
+            const wait = await lockedFor(who);
+            if (wait) throw new Error(`Too many wrong attempts. Please wait ${wait} minute${wait === 1 ? "" : "s"} or reset your password.`);
             let user;
             try {
-                user = await userController.login(req.body);
+                user = await userController.login(typeof mail === "string" && mail ? { mail, password } : { phone, password });
+                await clear(who);
             } catch (err) {
+                if (/invalid/i.test(err.message)) await fail(who, { max: 10, windowMin: 15, lockMin: 15 });
                 // A Teen awaiting consent has no password yet, so login stops at "Account is inactive".
                 // Say why instead (that message already shows the account exists, so nothing new leaks).
                 if (/inactive/i.test(err.message) && req.body.mail) {
@@ -910,8 +922,7 @@ router
             if (!user || !isTeenUser(user)) throw new Error("This page is for Teen panel members.");
             let answers = {};
             try {
-                answerController.request = { ...req, user: { _id: user._id }, origin: user.origin || req.origin };
-                answers = Mutate(await answerController.getAnswers({ user: String(user._id) })) || {};
+                answers = Mutate(await withRequest({ ...req, user: { _id: user._id }, origin: user.origin || req.origin }, () => answerController.getAnswers({ user: String(user._id) }))) || {};
             } catch { answers = {}; }
             const home = Array.isArray(user.address) && user.address[0] ? user.address[0] : {};
             const p = user.parent || {};
@@ -1053,8 +1064,7 @@ router
                     // What the teen submitted, for the parent to review (no password, no internal fields).
                     let answers = {};
                     try {
-                        answerController.request = { ...req, user: { _id: user._id }, origin: user.origin || req.origin };
-                        answers = Mutate(await answerController.getAnswers({ user: String(user._id) })) || {};
+                        answers = Mutate(await withRequest({ ...req, user: { _id: user._id }, origin: user.origin || req.origin }, () => answerController.getAnswers({ user: String(user._id) }))) || {};
                     } catch { answers = {}; }
                     const home = Array.isArray(user.address) && user.address[0] ? user.address[0] : {};
                     return {
