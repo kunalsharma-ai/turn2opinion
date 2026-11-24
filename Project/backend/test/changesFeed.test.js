@@ -87,3 +87,28 @@ test("answers are always lists of strings, and identifier questions are recognis
     for (const q of ["mail", "phone", "dob", "add-phone2", "add-whatsapp"]) assert.equal(isIdentifierQuestion(q), true, q);
     for (const q of ["gender", "education", "add-phones"]) assert.equal(isIdentifierQuestion(q), false, q);
 });
+
+test("reward rows keep remarks only for profile credits, where it is the profile slug", async () => {
+    const { toReward, REWARD_FIELDS } = await import("../app/utils/changesFeed.js");
+    const base = { _id: ID, user: ID, points: "50", status: undefined, createdAt: "c", updatedAt: "u" };
+    assert.deepEqual(toReward({ ...base, category: "profile", remarks: "household", title: "Household" }), {
+        _id: ID, user: ID, category: "profile", points: 50, title: "Household", status: "credited", profile: "household",
+        createdAt: "c", updatedAt: "u"
+    });
+    assert.equal(toReward({ ...base, category: "bonus", remarks: "note about this person" }).profile, null);
+    assert.equal(JSON.stringify(toReward({ ...base, category: "bonus", remarks: "secret" })).includes("secret"), false);
+    assert.equal(REWARD_FIELDS.includes("remarks"), true);
+});
+
+test("survey responses carry outcome and points, never telemetry or review notes", async () => {
+    const { toResponse, RESPONSE_FIELDS, clampLimit: clamp } = await import("../app/utils/changesFeed.js");
+    const r = toResponse({ _id: ID, user: ID, survey: { slug: "s1", name: "Survey" }, status: "complete", points: 120, loi: 12,
+        telemetry: [{ key: "ip", value: "1.2.3.4" }], forReview: { note: "x" }, timeline: { start: "a", end: "b" }, updatedAt: "u" });
+    assert.equal(r.survey, "s1");
+    assert.equal(r.points, 120);
+    assert.equal(r.isDeleted, false);
+    assert.equal(JSON.stringify(r).includes("1.2.3.4"), false);
+    for (const f of ["telemetry", "forReview", "rating"]) assert.equal(RESPONSE_FIELDS.includes(f), false, f);
+    assert.equal(clamp("5000", "rewards"), 1000);
+    assert.equal(clamp("5000", "responses"), 1000);
+});

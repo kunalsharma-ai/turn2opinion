@@ -7,7 +7,7 @@
 // still in flight when a page is read cannot land behind the cursor.
 
 export const SETTLE_MS = 5_000;
-export const MAX_LIMIT = { members: 500, answers: 1000, deletions: 1000 };
+export const MAX_LIMIT = { members: 500, answers: 1000, deletions: 1000, rewards: 1000, responses: 1000 };
 const DEFAULT_LIMIT = 200;
 
 // Member fields a feed reader gets. The guardian's own details (name, e-mail, phone, date of birth, IP address and
@@ -147,4 +147,43 @@ export function toAnswer(a = {}) {
 
 export function toTombstone(t = {}) {
     return { _id: String(t._id), kind: t.kind, user: String(t.user), at: t.updatedAt };
+}
+
+// Reward rows as the feed hands them out. `remarks` is free text written by admins, so it is left out, except for
+// profile-completion credits, where it is the profile slug (see utils/profileRewards.js).
+export const REWARD_FIELDS = "user category points title status remarks createdAt updatedAt";
+
+export function toReward(r = {}) {
+    return {
+        _id: String(r._id),
+        user: String(r.user),
+        category: r.category,
+        points: Number(r.points) || 0,
+        title: r.title ?? null,
+        status: r.status || "credited",
+        profile: r.category === "profile" ? (r.remarks ?? null) : null,
+        createdAt: r.createdAt,
+        updatedAt: r.updatedAt
+    };
+}
+
+// Survey responses: who took which survey, the outcome and the points it carries. Telemetry, review notes and
+// ratings are left out.
+export const RESPONSE_FIELDS = "user survey.slug status points loi source timeline.start timeline.end createdAt updatedAt +isDeleted";
+
+export function toResponse(r = {}) {
+    return {
+        _id: String(r._id),
+        user: String(r.user),
+        survey: r.survey?.slug ?? null,
+        status: r.status || "invited",
+        points: Number(r.points) || 0,
+        loi: Number(r.loi) || 0,
+        source: r.source ?? null,
+        startedAt: r.timeline?.start ?? null,
+        endedAt: r.timeline?.end ?? null,
+        isDeleted: r.isDeleted === true,
+        createdAt: r.createdAt,
+        updatedAt: r.updatedAt
+    };
 }
