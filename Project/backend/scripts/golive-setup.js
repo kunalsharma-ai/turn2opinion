@@ -3,14 +3,18 @@
 //
 //   mongodb=<connection string> node scripts/golive-setup.js --origin www.turn2opinion.com            # dry run
 //   mongodb=<connection string> node scripts/golive-setup.js --origin www.turn2opinion.com --apply    # write
+//   ... --categories "b2c,b2b,minor"   only when the panel's member types differ from what categoriesFor() picks
 //
 // --origin is the panel's host name exactly as the API sees it (req.origin, stored on every record).
 import mongoose from "mongoose";
-import { plan } from "../app/utils/goLiveSetup.js";
+import { categoriesFor, plan } from "../app/utils/goLiveSetup.js";
 
 const arg = (k) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : undefined; };
 const origin = arg("--origin");
 const apply = process.argv.includes("--apply");
+const names = arg("--categories")
+    ? arg("--categories").split(",").map((s) => s.trim().toLowerCase()).filter(Boolean)
+    : categoriesFor(origin);
 if (!process.env.mongodb || !origin) {
     console.error("Usage: mongodb=<connection string> node scripts/golive-setup.js --origin <host> [--apply]");
     process.exit(2);
@@ -21,7 +25,8 @@ const existing = {
     categories: await db.collection("Category").find({ isDeleted: { $ne: true } }, { projection: { name: 1, origin: 1 } }).toArray(),
     idconfigs: await db.collection("idconfig").find({ isDeleted: { $ne: true } }, { projection: { module: 1, origin: 1 } }).toArray(),
 };
-const todo = plan(existing, origin);
+const todo = plan(existing, origin, names);
+console.log(`Member types for ${origin}: ${names.join(", ")}`);
 console.log(`${apply ? "Adding" : "Would add (dry run, pass --apply to write)"} for ${origin}:`);
 console.log(`  Category: ${todo.categories.map((c) => c.name).join(", ") || "nothing missing"}`);
 console.log(`  Support ticket numbers: ${todo.idconfigs.map((c) => `${c.prefix}0001…`).join(", ") || "already set up"}`);

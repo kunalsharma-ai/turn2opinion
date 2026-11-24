@@ -75,6 +75,9 @@ test("a member record never carries the guardian's details, password or role", (
     assert.equal(m.parent.consentStatus, "approved");
     assert.deepEqual(m.address, [{ country: "in", state: "MH", city: "Pune" }]);
     for (const f of ["password", "role", "parent.email", "parent.phone"]) assert.equal(memberProjection().split(" ").includes(f), false, f);
+    assert.equal(m.isStaff, true);
+    assert.equal(toMember({ _id: ID, role: "respondent" }).isStaff, false);
+    assert.equal(toMember({ _id: ID }).isStaff, false);
 });
 
 test("answers are always lists of strings, and identifier questions are recognised", () => {
