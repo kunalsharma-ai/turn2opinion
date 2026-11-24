@@ -16,7 +16,7 @@ export function touchedQuestions(changes) {
     const n = new Set();
     for (const k of ["update", "insert", "remove"]) for (const o of changes.options[k]) n.add(o.question);
     for (const k of ["update", "remove"]) for (const q of changes.questions[k]) n.add(q.name);
-    for (const q of changes.questions.insert) { n.add(q.name); n.add(q.copyFrom); }
+    for (const q of changes.questions.insert) { n.add(q.name); if (q.copyFrom) n.add(q.copyFrom); }
     return [...n];
 }
 
@@ -92,6 +92,8 @@ export function plan(changes, existing, origin, now = new Date()) {
         for (const d of hits) {
             const set = {};
             for (const [k, v] of Object.entries(q.set)) if (s(d[k]) !== s(v)) set[k] = v;
+            // addCategory: the question now also serves this member type (e.g. household-income for Teens)
+            if (q.addCategory && !(d.category ?? []).includes(q.addCategory)) set.category = [...(d.category ?? []), q.addCategory];
             if (Object.keys(set).length) { writes.push({ collection: "Question", op: "update", _id: d._id, set }); bump("question updated"); }
             else bump("question already correct", "skipped");
         }
@@ -106,6 +108,12 @@ export function plan(changes, existing, origin, now = new Date()) {
     }
     for (const q of changes.questions.insert) {
         if (qs.some((d) => d.name === q.name && live(d))) { bump("question already there", "skipped"); continue; }
+        if (q.doc) {
+            // A brand-new question (Global Teen Panel bank): every field is given, nothing is copied.
+            writes.push({ collection: "Question", op: "insert", doc: { ...q.doc, name: q.name, label: q.label, parent: q.parent, origin, sortOrder: 0, isDeleted: false, isActive: true, createdAt: now, updatedAt: now } });
+            bump("question added");
+            continue;
+        }
         const templates = qs.filter((d) => d.name === q.copyFrom && live(d));
         if (!templates.length) { report.missing.push(`question ${q.copyFrom} (template for ${q.name})`); continue; }
         // One per category record of the template, so the new question reaches the same member types.
@@ -125,6 +133,12 @@ export function plan(changes, existing, origin, now = new Date()) {
             writes.push({ collection: "Profile", op: "update", _id: d._id, set: { pages: p.pages } });
             bump("profile pages updated");
         }
+    }
+    for (const p of changes.profiles.insert ?? []) {
+        if (existing.profiles.some((d) => d.slug === p.slug && d.category === p.category && live(d))) { bump("profile already there", "skipped"); continue; }
+        const last = Math.max(0, ...existing.profiles.filter((d) => d.category === p.category).map((d) => Number(d.sortOrder) || 0));
+        writes.push({ collection: "Profile", op: "insert", doc: { name: p.name, slug: p.slug, category: p.category, pages: p.pages, points: p.points ?? 50, icon: "", origin, sortOrder: last + 1 + (changes.profiles.insert.indexOf(p)), isActive: true, isDeleted: false, createdAt: now, updatedAt: now } });
+        bump("profile added");
     }
     for (const p of changes.profiles.remove) {
         for (const d of existing.profiles.filter((d) => !s(d.slug) && live(d) && sameList(d.pages, p.pages))) {

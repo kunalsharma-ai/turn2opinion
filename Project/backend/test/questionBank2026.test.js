@@ -8,7 +8,7 @@ const id = (n) => n.toString(16).padStart(24, "0");
 const changes = (over = {}) => ({
     questions: { update: [], insert: [], remove: [], ...over.questions },
     options: { update: [], insert: [], remove: [], ...over.options },
-    profiles: { setPages: [], remove: [], ...over.profiles },
+    profiles: { setPages: [], remove: [], insert: [], ...over.profiles },
 });
 
 test("changes.json is well formed and names every question it touches", () => {
@@ -16,7 +16,8 @@ test("changes.json is well formed and names every question it touches", () => {
     assert.ok(c.options.update.length && c.options.insert.length && c.options.remove.length);
     for (const o of [...c.options.update, ...c.options.remove]) assert.match(o._id, /^[0-9a-f]{24}$/);
     assert.ok(touchedQuestions(c).includes("pets-animal-care28"));
-    for (const q of c.questions.insert) assert.ok(q.copyFrom, q.name);
+    for (const q of c.questions.insert) assert.ok(q.copyFrom || q.doc?.type, q.name);
+    assert.ok(c.profiles.insert.length >= 28);
 });
 
 test("updates only the listed fields, found by _id", () => {
@@ -71,4 +72,24 @@ test("profiles: pages set by slug and category, empty header-only profile soft-d
     const { writes } = plan(c, { questions: [], options: [], profiles }, O);
     assert.deepEqual(writes.map((w) => w._id), [id(1), id(3)]);
     assert.equal(writes[1].set.isDeleted, true);
+});
+
+test("Teen bank: brand-new questions and profiles are inserted with their own fields; addCategory extends category once", () => {
+    const c = changes({
+        questions: {
+            insert: [{ name: "teen-p001", label: "Are you at least 18?", parent: "", doc: { type: "radio", category: ["minor"], description: "Asked to: Parent", isRequired: true } }],
+            update: [{ _id: id(4), name: "household-income", set: {}, addCategory: "minor" }],
+        },
+        profiles: { insert: [{ name: "teen parent verification", slug: "teen-parent-verification", category: "minor", pages: [["Parent verification", "teen-p001"]], points: 50 }] },
+    });
+    const existing = { options: [], questions: [{ _id: id(4), name: "household-income", category: ["b2c"] }], profiles: [{ _id: id(9), slug: "mr", category: "minor", sortOrder: 28 }] };
+    const { writes } = plan(c, existing, O);
+    const q = writes.find((w) => w.doc?.name === "teen-p001");
+    assert.equal(q.doc.type, "radio");
+    assert.deepEqual(q.doc.category, ["minor"]);
+    assert.deepEqual(writes.find((w) => w.collection === "Question" && w.op === "update").set, { category: ["b2c", "minor"] });
+    const p = writes.find((w) => w.collection === "Profile");
+    assert.equal(p.doc.sortOrder, 29);
+    const again = plan(c, { options: [], questions: [{ _id: id(4), name: "household-income", category: ["b2c", "minor"] }, { _id: id(5), name: "teen-p001" }], profiles: [...existing.profiles, { _id: id(6), slug: "teen-parent-verification", category: "minor" }] }, O);
+    assert.equal(again.writes.length, 0);
 });
