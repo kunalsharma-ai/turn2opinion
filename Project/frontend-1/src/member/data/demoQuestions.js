@@ -64,10 +64,11 @@ export async function demoProfileList(as) {
 // Starting answers per preview member. Identity comes from registration; then, for the "ready" preview,
 // the profiles listed in DONE are answered in full (first sensible option of every question the member
 // would see) and PART ones half-way, so the page shows done, in-progress and sealed items.
+// dob as the live server sends it: a full date-time (User.dob is a Date)
 const SEED = {
-  consumer: { firstname: 'Asha', lastname: 'Verma', mail: 'asha@example.com', phone: '919810012345', dob: '1994-05-12', gender: 'Female', country: 'IN', state: 'IN-MH', city: 'Pune', zipcode: '411001' },
-  pro: { firstname: 'Daniel', lastname: 'Okafor', mail: 'daniel@example.com', phone: '447700900123', dob: '1985-02-11', gender: 'Male', country: 'GB', state: 'GB-ENG', zipcode: 'M1 1AE', empstat: 'Employed full-time' },
-  teen: { firstname: 'Riya', lastname: 'Shah', dob: '2011-03-09', gender: 'Female', country: 'IN', state: 'IN-MH', city: 'Pune', zipcode: '411001' }
+  consumer: { firstname: 'Asha', lastname: 'Verma', mail: 'asha@example.com', phone: '919810012345', dob: '1994-05-12T00:00:00.000Z', gender: 'Female', country: 'IN', state: 'IN-MH', city: 'Pune', zipcode: '411001' },
+  pro: { firstname: 'Daniel', lastname: 'Okafor', mail: 'daniel@example.com', phone: '447700900123', dob: '1985-02-11T00:00:00.000Z', gender: 'Male', country: 'GB', state: 'GB-ENG', zipcode: 'M1 1AE', empstat: 'Employed full-time' },
+  teen: { firstname: 'Riya', lastname: 'Shah', dob: '2011-03-09T00:00:00.000Z', gender: 'Female', country: 'IN', state: 'IN-MH', city: 'Pune', zipcode: '411001' }
 };
 const DONE = { consumer: ['basic', 'educational', 'professional'], pro: ['basic', 'educational', 'professional', 'financial'], teen: ['basic', 'educational'] };
 const PART = { consumer: ['financial'], pro: ['parenting'], teen: ['shopping'] };

@@ -23,11 +23,10 @@ import ComboBox from './fields/ComboBox.jsx';
 import MultiCombo from './fields/MultiCombo.jsx';
 import TextField from './fields/TextField.jsx';
 import { t, nf } from '../i18n/index.js';
-import { CHOICE, filled, loadQuestion, maxHint, moneyLabel, normalise6, safeHtml, specFor, specifyLabel, validate6, withExtras } from '../questions.js';
+import { CHOICE, dateOnly, filled, loadOptions, loadQuestion, matchOption, maxHint, moneyLabel, normalise6, safeHtml, specFor, specifyLabel, validate6, withExtras } from '../questions.js';
 
-// Question types the admin can create (old member app, admin > questions) that this flow asks as text.
-const ASK_AS_TEXT = ['text', 'textarea', 'editor', 'address'];
-const NEVER_BLANK = ['document'];
+// Question types that can't be answered on this screen (a file upload): never shown, never saved as answered.
+const NEVER_BLANK = ['document', 'file'];
 
 const multi = (q) => q.type === 'multiselect' || q.type === 'checkbox';
 
@@ -108,7 +107,8 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
         if (!live) return;
         const v = {};
         all.forEach((n) => {
-          if (d && filled(d[n]) && n !== 'age') v[n] = d[n];
+          // dates come back as a full date-time: keep the "YYYY-MM-DD" the date field works with
+          if (d && filled(d[n]) && n !== 'age') v[n] = dateOnly(d[n]);
           if (d && filled(d[`${n}_specify`])) v[`${n}_specify`] = d[`${n}_specify`];
         });
         setValues(v);
@@ -132,14 +132,14 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
   // a question listed twice on a page (it happens in the question bank) is asked once
   const names = useMemo(() => (page != null ? [...new Set(pages[page]?.slice(1) || [])] : []), [page, pages]);
 
-  // every question's definition (cached), so "Question n of N" counts only questions that apply
+  // every question's definition (cached), so "Question n of N" counts only questions that apply. Asked at once,
+  // alongside the saved answers, instead of after them: the first question shows sooner.
   useEffect(() => {
-    if (!loaded) return;
     all.forEach((n) => {
       if (defs[n] !== undefined) return;
       loadQuestion(n).then((q) => alive.current && setDefs((d) => (d[n] !== undefined ? d : { ...d, [n]: q })));
     });
-  }, [loaded, all]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [all]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     names.forEach((n) => {
@@ -173,10 +173,10 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
     const A = { ...values };
     const c = A.country || me?.address?.country || '';
     A.country = c ? String(c).toUpperCase() : '';
-    if (!filled(A.dob) && me?.dob) A.dob = String(me.dob).slice(0, 10);
+    A.dob = filled(A.dob) ? dateOnly(A.dob) : me?.dob ? String(me.dob).slice(0, 10) : A.dob;
     // phones are kept as digits; the validators compare E.164 ("+<code><number>")
     Object.values(defs).forEach((d) => d && d.type === 'phone' && filled(A[d.name]) && (A[d.name] = '+' + String(A[d.name]).replace(/\D/g, '')));
-    return { A, country: A.country, state: A.state, category: me?.type === 'teen' ? 'minor' : 'b2c', prev: qq ? saved[qq.name] : undefined, guess };
+    return { A, country: A.country, state: A.state, category: me?.type === 'teen' ? 'minor' : 'b2c', prev: qq ? dateOnly(saved[qq.name]) : undefined, guess };
   };
   const optKey = (q) => `${q.name}::${q.parent ? JSON.stringify(values[q.parent] ?? null) : ''}`;
   useEffect(() => {
@@ -186,80 +186,120 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
       const key = optKey(q);
       if (opts[key] !== undefined) return;
       setOpts((o) => ({ ...o, [key]: 'loading' }));
-      actions
-        .options(q, q.parent ? values[q.parent] : undefined)
+      loadOptions(q, q.parent ? values[q.parent] : undefined)
         .then((r) => alive.current && setOpts((o) => ({ ...o, [key]: r ?? (CHOICE.includes(q.type) ? [] : null) })))
         .catch(() => alive.current && setOpts((o) => ({ ...o, [key]: CHOICE.includes(q.type) ? [] : null })));
     });
   }); // one request per question and parent answer (cached in opts)
 
-  const visible = names
-    .map((n) => defs[n])
-    .filter(Boolean)
-    .filter((q) => {
-      if (q.name === 'alternate-phone-whatsapp') return false;
-      if (q.name === 'alternate-phone' && !filled(values.phone)) return false;
-      if (q.parent && !filled(values[q.parent])) return false;
-      // payment details: only the fields for the method the member chose (same split as My account)
-      if (q.parent === 'payment-method' && !payFieldFor(values['payment-method']).includes(q.name)) return false;
-      const o = opts[optKey(q)];
-      if (CHOICE.includes(q.type)) return Array.isArray(o) && o.length > 0;
-      // every open-ended question is asked as text (a validation rule, when the API has one, only checks the
-      // answer). The admin also creates textarea, editor and address questions: before, those were treated as
-      // hidden, saved empty, and the profile counted as complete without the member seeing them.
-      if (ASK_AS_TEXT.includes(q.type)) return o !== undefined && o !== 'loading';
-      return ['phone', 'date'].includes(q.type);
-    });
-  const pageReady =
-    names.length > 0 &&
-    names.every((n) => {
-      const q = defs[n];
-      if (q === undefined) return false;
-      if (!q || (q.parent && !filled(values[q.parent])) || ['phone', 'date'].includes(q.type)) return true;
-      const o = opts[optKey(q)];
-      return o !== undefined && o !== 'loading';
-    });
-
-  // resolve the landing markers once the page's questions are known
+  // a saved choice answer written with other capitals than its option ("male" / "Male") is matched to the option,
+  // so it shows as picked and passes the check instead of blocking Continue
   useEffect(() => {
-    if (!pageReady || !cur || !cur.startsWith('<')) return;
-    if (!visible.length) {
-      // nothing to ask on this page (all hidden): record it as answered (so the profile can reach 100%), then
-      // move on in the same direction
-      if (kind === 'profile' && dir >= 0) {
-        const hv = hiddenValues();
-        if (Object.keys(hv).length) actions.saveProfile(hv).then(() => alive.current && setSaved((sv) => ({ ...sv, ...hv }))).catch(() => {});
+    const fix = {};
+    names.forEach((n) => {
+      const d = defs[n];
+      const o = d && CHOICE.includes(d.type) ? opts[optKey(d)] : null;
+      if (!Array.isArray(o) || !filled(values[n])) return;
+      const mv = matchOption(values[n], withExtras(d, o));
+      if (JSON.stringify(mv) !== JSON.stringify(values[n])) fix[n] = mv;
+    });
+    if (Object.keys(fix).length) setValues((p) => ({ ...p, ...fix }));
+  }); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Is a question on this page asked? 'show' | 'hide' | 'wait' (its definition or options are still loading).
+  // A question is shown as soon as IT is known: the card no longer waits for every question on the page
+  // (Basic has 19, each with its own requests), which kept it on the loading skeleton for a long time.
+  const vis = (n) => {
+    const q = defs[n];
+    if (q === undefined) return 'wait';
+    if (!q) return 'hide';
+    if (q.name === 'alternate-phone-whatsapp') return 'hide';
+    if (q.name === 'alternate-phone' && !filled(values.phone)) return 'hide';
+    if (q.parent && !filled(values[q.parent])) return 'hide';
+    // payment details: only the fields for the method the member chose (same split as My account)
+    if (q.parent === 'payment-method' && !payFieldFor(values['payment-method']).includes(q.name)) return 'hide';
+    if (NEVER_BLANK.includes(q.type)) return 'hide';
+    if (CHOICE.includes(q.type)) {
+      const o = opts[optKey(q)];
+      if (o === undefined || o === 'loading') return 'wait';
+      return Array.isArray(o) && o.length > 0 ? 'show' : 'hide';
+    }
+    // every other question (text, email, number, phone, date, textarea, address...) is asked as typed text. Before,
+    // types outside a short list (e.g. "email") were hidden, saved empty, and the profile counted as complete
+    // without the member seeing them. A text question's validation rule only checks the answer, so it is not
+    // waited for here (Continue waits for it when it is still loading).
+    return 'show';
+  };
+  const visible = names.filter((n) => vis(n) === 'show').map((n) => defs[n]);
+  const pageReady = names.length > 0 && names.every((n) => vis(n) !== 'wait');
+  /** The next question to ask from names[from] in direction step: a name, 'wait' (not known yet) or null (none). */
+  const scan = (from, step, unanswered) => {
+    for (let i = from; i >= 0 && i < names.length; i += step) {
+      const st = vis(names[i]);
+      if (st === 'wait') {
+        // an answered question would be passed over anyway; going back, the earlier questions are already known
+        if (step < 0 || (unanswered && filled(values[names[i]]))) continue;
+        return 'wait';
       }
-      if (dir < 0 && page > 0) {
-        setPage(page - 1);
-        setCur('<last>');
-      } else if (page < pages.length - 1) {
-        setPage(page + 1);
-        setCur('<first>');
-      } else finish();
+      if (st === 'show' && (!unanswered || !filled(values[names[i]]))) return names[i];
+    }
+    return null;
+  };
+
+  // resolve the landing markers as soon as the first question to show is known
+  useEffect(() => {
+    if (!cur || !cur.startsWith('<') || page === null) return;
+    let pick = cur === '<last>' ? scan(names.length - 1, -1) : scan(0, 1, cur === '<open>');
+    if (pick === 'wait') return;
+    // a started page where everything is answered opens on its first question
+    if (!pick && cur === '<open>') pick = scan(0, 1);
+    if (pick === 'wait' || (!pick && !pageReady)) return;
+    if (pick) {
+      setCur(pick);
+      setQKey((k) => k + 1);
+      shownAt.current = Date.now();
       return;
     }
-    const pick = cur === '<last>' ? visible[visible.length - 1] : cur === '<open>' ? visible.find((q) => !filled(values[q.name])) || visible[0] : visible[0];
-    setCur(pick.name);
-    setQKey((k) => k + 1);
-    shownAt.current = Date.now();
+    // nothing to ask on this page (all hidden): record it as answered (so the profile can reach 100%), then
+    // move on in the same direction
+    if (kind === 'profile' && dir >= 0) {
+      const hv = hiddenValues();
+      if (Object.keys(hv).length) actions.saveProfile(hv).then(() => alive.current && setSaved((sv) => ({ ...sv, ...hv }))).catch(() => {});
+    }
+    if (dir < 0 && page > 0) {
+      setPage(page - 1);
+      setCur('<last>');
+    } else if (page < pages.length - 1) {
+      setPage(page + 1);
+      setCur('<first>');
+    } else finish();
   }); // eslint-disable-line react-hooks/exhaustive-deps
 
   const idx = visible.findIndex((q) => q.name === cur);
   const q = idx >= 0 ? visible[idx] : null;
-  // "Question n of N": only questions that apply (a follow-up counts once its parent is answered)
+  // "Question n of N" starts from the same number as the profile's card and only goes DOWN, when a question turns
+  // out not to apply. A follow-up whose parent is still to come in this profile counts until that answer skips
+  // it (before, the total started lower than the card, e.g. 18 vs 19, and grew as follow-ups appeared). A
+  // follow-up of a question asked in another profile that has no answer is never asked, so it never counts.
+  const curAt = all.indexOf(cur);
   const applies = (n) => {
     const d = defs[n];
     if (d === undefined) return true;
-    if (!d || d.name === 'alternate-phone-whatsapp') return false;
-    return !(d.parent && !filled(values[d.parent]));
+    if (!d || d.name === 'alternate-phone-whatsapp' || NEVER_BLANK.includes(d.type)) return false;
+    const parent = d.parent || (n === 'alternate-phone' ? 'phone' : null); // the second phone follows the first
+    if (parent && !filled(values[parent])) {
+      const pAt = all.indexOf(parent);
+      return pAt >= 0 && (curAt < 0 || pAt >= curAt);
+    }
+    return names.includes(n) ? vis(n) !== 'hide' : true;
   };
   const beforeNames = [...new Set(pages.slice(0, page || 0).flatMap((p) => p.slice(1)))].filter((n) => !names.includes(n));
   const total = Math.max(1, all.filter(applies).length);
-  const pos = Math.min(total, beforeNames.filter(applies).length + Math.max(0, idx) + 1);
+  const at = names.indexOf(cur);
+  const pos = Math.min(total, beforeNames.filter(applies).length + (at > 0 ? names.slice(0, at).filter(applies).length : 0) + 1);
   const pct = done ? 100 : Math.round(((pos - 1) / total) * 100);
   const lastPage = page === pages.length - 1;
-  const lastQ = lastPage && idx === visible.length - 1;
+  const lastQ = lastPage && q != null && scan(at + 1, 1) === null;
 
   const show = (name, d) => {
     clearTimeout(timer.current);
@@ -362,11 +402,15 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
     const nv = normalise6(q, values, ctx);
     if (nv !== values[q.name]) setValues((p) => ({ ...p, [q.name]: nv }));
     if (specifyLabel(q, values[q.name], withExtras(q, o)) && !filled(values[`${q.name}_specify`])) return fail(mt('qz.specify.req'));
-    // wait for questions that depend on this answer before deciding what comes next
-    if (!pageReady) return setPending(true);
-    if (idx < visible.length - 1) {
+    // wait for this question's own rule, or for the next question (it may depend on this answer), to be known
+    if (waiting()) return setPending(true);
+    const nx = scan(at + 1, 1);
+    if (nx) {
+      // a profile keeps each answer as it goes (the page is also saved in full at its end), so leaving halfway
+      // through a long page like Basic no longer loses the answers given so far
+      if (kind === 'profile') actions.saveProfile(stepValues(q, nv)).catch(() => {});
       sound.click(world, 'next');
-      return show(visible[idx + 1].name, 1);
+      return show(nx, 1);
     }
     sound.prime();
     // end of the page: a profile saves this page now
@@ -394,8 +438,24 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
       if (alive.current) setBusy(false);
     }
   }
+  /** Continue has to wait: the current question's text rule, or the next question, is still loading. */
+  function waiting() {
+    if (!q) return false;
+    const o = opts[optKey(q)];
+    if (!CHOICE.includes(q.type) && (o === undefined || o === 'loading')) return true;
+    return scan(at + 1, 1) === 'wait';
+  }
+  /** One answer to keep now: the answer, its "please specify" text, and follow-ups this answer cleared. */
+  function stepValues(qq, v) {
+    const out = { [qq.name]: v ?? (multi(qq) ? [] : null) };
+    if (filled(values[`${qq.name}_specify`])) out[`${qq.name}_specify`] = values[`${qq.name}_specify`];
+    Object.values(defs).forEach((d) => {
+      if (d && d.parent === qq.name && d.name in values && !filled(values[d.name])) out[d.name] = multi(d) ? [] : null;
+    });
+    return out;
+  }
   useEffect(() => {
-    if (pending && pageReady) {
+    if (pending && !waiting()) {
       setPending(false);
       next();
     }
@@ -404,7 +464,8 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
   function back() {
     clearTimeout(timer.current);
     sound.click(world, 'back');
-    if (idx > 0) return show(visible[idx - 1].name, -1);
+    const pv = at > 0 ? scan(at - 1, -1) : null;
+    if (pv) return show(pv, -1);
     if (page > 0) {
       setDir(-1);
       setErr(null);
@@ -587,7 +648,7 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
           <div className="nav6">
             <button className="btn6 ghost" type="button" onClick={back} disabled={busy}>
               <Icon n="arrow-l" />
-              <span>{idx > 0 || page > 0 ? t('back') : t('v6_dashboard')}</span>
+              <span>{at > 0 || page > 0 ? t('back') : t('v6_dashboard')}</span>
             </button>
             <button className="btn6 primary" type="button" disabled={busy || pending} onClick={() => Date.now() - shownAt.current > 250 && next()}>
               {busy || pending ? <span className="spin6" /> : null}

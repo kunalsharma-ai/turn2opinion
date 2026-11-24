@@ -26,6 +26,42 @@ export function loadQuestion(name) {
   return QCACHE.get(name);
 }
 
+// options / validation rules per question and parent answer: fetched once per visit, so reopening a profile,
+// going back a page or re-picking the same parent answer is instant
+const OCACHE = new Map();
+export function loadOptions(q, parentValue) {
+  const key = `${q.name}::${q.parent ? JSON.stringify(parentValue ?? null) : ''}`;
+  if (!OCACHE.has(key)) {
+    const p = actions.options(q, parentValue);
+    OCACHE.set(key, p);
+    // a failed request is not kept, so the next visit asks again
+    p.catch(() => OCACHE.delete(key));
+  }
+  return OCACHE.get(key);
+}
+
+/** A date answer as the date field stores it ("YYYY-MM-DD"). The server keeps the member's date of birth as a
+ *  full date-time ("2005-01-14T00:00:00.000Z"); left like that the field showed the right date but the check
+ *  read it as unfinished ("Please enter a complete date") and the member could not move on. */
+export const DATE_TIME = /^(\d{4}-\d{2}-\d{2})T\d{2}:\d{2}/;
+export function dateOnly(v) {
+  const m = typeof v === 'string' ? DATE_TIME.exec(v) : null;
+  return m ? m[1] : v;
+}
+
+/** A saved choice answer written with other capitals than the option ("male" vs "Male"): the option's own value,
+ *  so the answer shows as picked and passes the "pick one of the options" check. */
+export function matchOption(v, list) {
+  if (!Array.isArray(list) || !list.length || !filled(v)) return v;
+  const one = (x) => {
+    if (list.some((o) => String(o.value) === String(x))) return x;
+    const k = String(x).trim().toLowerCase();
+    const hit = list.find((o) => String(o.value).trim().toLowerCase() === k) || list.find((o) => String(o.label).trim().toLowerCase() === k);
+    return hit ? hit.value : x;
+  };
+  return Array.isArray(v) ? v.map(one) : one(v);
+}
+
 /** Admin-written HTML (survey intro / thank-you): keep the formatting, drop anything active. */
 export function safeHtml(html) {
   if (!html || typeof DOMParser === 'undefined') return '';
@@ -111,7 +147,7 @@ const phoneText = (q, v) => (q.type === 'phone' ? '+' + String(v).replace(/\D/g,
  * opts: the choice list ({label, value}[]) or the API's text rule ({ pattern }).
  */
 export function validate6(q, values, opts, ctx, raw) {
-  const v = values[q.name];
+  const v = q.type === 'date' || q.name === 'dob' ? dateOnly(values[q.name]) : values[q.name];
   if (CHOICE.includes(q.type)) {
     if (raw && !filled(v)) return { level: 'block', text: t6('v_pick') };
     if (!filled(v)) return q.required ? { level: 'block', text: t6('v_choose') } : null;
@@ -143,7 +179,7 @@ export function validate6(q, values, opts, ctx, raw) {
 }
 /** The normalised value v6 stores (trimmed names, upper-case postcodes, E.164 phones kept as digits). */
 export function normalise6(q, values, ctx) {
-  const v = values[q.name];
+  const v = q.type === 'date' || q.name === 'dob' ? dateOnly(values[q.name]) : values[q.name];
   if (!filled(v) || typeof v !== 'string' || CHOICE.includes(q.type)) return v;
   try {
     const r = specFor(q).v(phoneText(q, v), ctx, q.name);
