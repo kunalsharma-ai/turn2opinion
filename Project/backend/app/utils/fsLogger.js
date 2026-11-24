@@ -1,5 +1,6 @@
 import {exec} from "child_process";
 import fs from "fs";
+import { dirname } from "path";
 
 function seconds(n) {
     if (!typeof n === "number") throw new Error("Number Required")
@@ -36,6 +37,8 @@ class fsLogger {
         if (fs.existsSync(path))
             await this.Archive();
         //*/
+        // Make sure the log folder exists (it may be an empty bind mount or missing in a fresh clone).
+        fs.mkdirSync(dirname(path), { recursive: true });
         if (!fs.existsSync(path)) {
             fs.writeFileSync(path, "", "utf-8");
         }
