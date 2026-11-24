@@ -15,7 +15,8 @@ const MEMBER_TITLES = {
   referrals: 'Referrals',
   activity: 'Activity',
   profile: 'My account',
-  settings: 'Settings'
+  settings: 'Settings',
+  help: 'Help'
 };
 const MEMBER_PAGES = Object.keys(MEMBER_TITLES);
 

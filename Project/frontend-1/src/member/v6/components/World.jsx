@@ -52,9 +52,13 @@ function obLayout(nAbout, nSurveys) {
 // Islands: a serpentine treasure route from the bottom left, up through three rows of islands.
 const IS_ROWS = [{ y: 488, s: 1 }, { y: 372, s: 0.84 }, { y: 268, s: 0.7 }];
 function isLayout(n) {
-  const w = [0.38, 0.33, 0.29], caps = w.map((f) => Math.max(1, Math.round(n * f)));
+  if (!(n > 0)) return [];
+  // A row keeps at least one island only when there are enough islands for every row; with one or two,
+  // a row may be empty, otherwise the balancing loop below could never finish (the Profiles page froze).
+  const min = n >= IS_ROWS.length ? 1 : 0;
+  const w = [0.38, 0.33, 0.29], caps = w.map((f) => Math.max(min, Math.round(n * f)));
   let d = n - caps.reduce((a, b) => a + b, 0);
-  for (let k = 0; d !== 0; k = (k + 1) % 3) { if (d > 0) { caps[k]++; d--; } else if (caps[k] > 1) { caps[k]--; d++; } }
+  for (let k = 0; d !== 0; k = (k + 1) % 3) { if (d > 0) { caps[k]++; d--; } else if (caps[k] > min) { caps[k]--; d++; } }
   const pts = [];
   IS_ROWS.forEach((r, ri) => {
     const c = caps[ri], x0 = 110 + ri * 40, x1 = VW - 110 - ri * 40;

@@ -31,8 +31,12 @@ const ROWS = [
 
 /** place n surveys: nearest to the castle first, so the kingdom grows outwards */
 function layout(n) {
-  const capT = ROWS.reduce((a, r) => a + r.cap, 0), caps = ROWS.map((r) => Math.max(1, Math.round(r.cap * n / capT)));
-  let d = n - caps.reduce((a, b) => a + b, 0); for (let k = caps.length - 1; d !== 0; k = (k + caps.length - 1) % caps.length) { if (d > 0) { caps[k]++; d--; } else if (caps[k] > 1) { caps[k]--; d++; } }
+  if (!(n > 0)) return [];
+  // Every row keeps at least one plot only when there are enough plots for all rows. With fewer (a member with
+  // one or two surveys), a row may be empty; otherwise the balancing loop below could never finish.
+  const min = n >= ROWS.length ? 1 : 0;
+  const capT = ROWS.reduce((a, r) => a + r.cap, 0), caps = ROWS.map((r) => Math.max(min, Math.round(r.cap * n / capT)));
+  let d = n - caps.reduce((a, b) => a + b, 0); for (let k = caps.length - 1; d !== 0; k = (k + caps.length - 1) % caps.length) { if (d > 0) { caps[k]++; d--; } else if (caps[k] > min) { caps[k]--; d++; } }
   const pts = [];
   ROWS.forEach((r, ri) => {
     const c = caps[ri]; if (!c) return;

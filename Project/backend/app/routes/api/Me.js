@@ -150,7 +150,8 @@ router
                     rewardPoints,
                     redeemPoints: 0,
                     totalPoints: (respPoints + rewardPoints - 0),
-                    threshold: category.thresholdPoints,
+                    // a panel without a Category record yet (a fresh database) uses the model's default threshold
+                    threshold: category?.thresholdPoints ?? Category.schema.path("thresholdPoints").defaultValue,
                     conversionRate: 0.001
                 }
                 return { message, data }

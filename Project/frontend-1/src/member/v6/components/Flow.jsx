@@ -25,6 +25,10 @@ import TextField from './fields/TextField.jsx';
 import { t, nf } from '../i18n/index.js';
 import { CHOICE, filled, loadQuestion, maxHint, moneyLabel, normalise6, safeHtml, specFor, specifyLabel, validate6, withExtras } from '../questions.js';
 
+// Question types the admin can create (old member app, admin > questions) that this flow asks as text.
+const ASK_AS_TEXT = ['text', 'textarea', 'editor', 'address'];
+const NEVER_BLANK = ['document'];
+
 const multi = (q) => q.type === 'multiselect' || q.type === 'checkbox';
 
 /**
@@ -189,8 +193,10 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
       if (q.parent && !filled(values[q.parent])) return false;
       const o = opts[optKey(q)];
       if (CHOICE.includes(q.type)) return Array.isArray(o) && o.length > 0;
-      // every text question is asked (a validation rule, when the API has one, only checks the answer)
-      if (q.type === 'text') return o !== undefined && o !== 'loading';
+      // every open-ended question is asked as text (a validation rule, when the API has one, only checks the
+      // answer). The admin also creates textarea, editor and address questions: before, those were treated as
+      // hidden, saved empty, and the profile counted as complete without the member seeing them.
+      if (ASK_AS_TEXT.includes(q.type)) return o !== undefined && o !== 'loading';
       return ['phone', 'date'].includes(q.type);
     });
   const pageReady =
@@ -280,6 +286,8 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
     const out = {};
     names.forEach((n) => {
       if (visible.some((x) => x.name === n)) return;
+      // a file upload can't be answered here: never record it as answered-empty (that would complete the profile)
+      if (defs[n] && NEVER_BLANK.includes(defs[n].type)) return;
       if (n in values) out[n] = values[n];
       else if (filled(saved[n])) return;
       else out[n] = defs[n] && multi(defs[n]) ? [] : null;
