@@ -359,7 +359,9 @@ export default mongooseModel(
             {
                 unique: true
             }
-        ]
+        ],
+        // changed-since feed (routes/api/Changes.js)
+        [{ origin: 1, updatedAt: 1, _id: 1 }]
     ],
     {
         virtuals: {

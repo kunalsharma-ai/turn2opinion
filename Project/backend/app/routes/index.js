@@ -25,6 +25,7 @@ import followSocialRouter from "./api/FollowSocial.js";
 import testimonialRouter from "./api/Testimonials.js";
 import meRouter from "./api/Me.js";
 import changeEmail from "./api/changeEmail.js"
+import changesRouter from "./api/Changes.js";
 const router = express.Router();
 router
     .use("/api/v1/testimonial", testimonialRouter)
@@ -61,6 +62,7 @@ router
     .use("/api/v1/project", isAuthenticated, projectRouter)
     .use("/api/v1/batch", isAuthenticated, batchRouter)
     .use("/api/v1/integration", integrationRoutes)
+    .use("/api/v1/changes", changesRouter)
     .use("/api/v1/socials", socialsRouter)
     .use("/api/v1/follow-social", isAuthenticated, followSocialRouter)
 // router
