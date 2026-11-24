@@ -27,9 +27,10 @@ import worldCss from './v6/world.css?inline';
 import helpCss from './member-help.css?inline';
 import polishCss from './member-polish.css?inline';
 import r23Css from './member-r23.css?inline';
+import hdrCss from './member-hdr.css?inline';
 import { BrandLoader } from './components/art.jsx';
 
-const memberCss = `${baseCss}\n${xCss}\n${xpCss}\n${xeCss}\n${v6Css}\n${v6MemberCss}\n${worldCss}\n${helpCss}\n${polishCss}\n${r23Css}`;
+const memberCss = `${baseCss}\n${xCss}\n${xpCss}\n${xeCss}\n${v6Css}\n${v6MemberCss}\n${worldCss}\n${helpCss}\n${polishCss}\n${r23Css}\n${hdrCss}`;
 
 const PAGES = {
   dashboard: DashboardPage,

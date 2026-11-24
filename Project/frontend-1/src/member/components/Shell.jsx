@@ -10,7 +10,7 @@ import { asset, ENV } from '../../config/env.js';
 import { store } from '../../utils/storage.js';
 import { NAV, BOTTOM_NAV, ROUTES } from '../config/memberTypes.js';
 import { PAGE_TOPIC } from '../data/help.js';
-import { useGain } from './HeroBits.jsx';
+import { PointsTrophy, QualityTrophy, playHeaderDemo } from './HeaderBits.jsx';
 import { useMe, useSection, profileCompletion, qualityTier } from '../data/MemberData.jsx';
 import { actions } from '../data/source.js';
 import { demoPrefs, setDemoPrefs } from '../data/demo.js';
@@ -18,7 +18,7 @@ import { useAppearance } from '../theme/AppearanceProvider.jsx';
 import { PALETTES } from '../theme/appearance.js';
 import { feedback } from '../theme/feedback.js';
 import { t, fmt, relTime } from '../i18n/t.js';
-import { Avatar, Badge, Button, Counter, Icon, IconButton, MLink, Modal, Segmented, Tabs, cx, useDismiss, useToast } from './ui.jsx';
+import { Avatar, Badge, Button, Icon, IconButton, MLink, Modal, Segmented, Tabs, cx, useDismiss, useToast } from './ui.jsx';
 
 const isActive = (path, id) => {
   const r = ROUTES[id];
@@ -177,7 +177,7 @@ function AppearanceMenu() {
   useDismiss(open, close, ref);
   return (
     <div className="mb-pop" ref={ref}>
-      <IconButton icon="layers" label={t('hdr.appearance')} aria-expanded={open} aria-haspopup="dialog" onClick={() => setOpen((v) => !v)} />
+      <IconButton icon="layers" className="hdi hdi--look" label={t('hdr.appearance')} aria-expanded={open} aria-haspopup="dialog" onClick={() => setOpen((v) => !v)} />
       {open && (
         <div className="mb-pop__panel mb-pop__panel--appearance" role="dialog" aria-label={t('hdr.appearance')}>
           <p className="mb-pop__title">{t('ap.mode')}</p>
@@ -222,7 +222,7 @@ export function NotificationCenter() {
   }, [status, unread.length]);
   return (
     <>
-      <IconButton icon="bell" label={unread.length ? `${t('hdr.notifications')} – ${t('hdr.unread', { n: unread.length })}` : t('hdr.notifications')} badge={unread.length} onClick={() => setOpen(true)} aria-haspopup="dialog" />
+      <IconButton icon="bell" className={cx('hdi hdi--bell', unread.length && 'has-new')} label={unread.length ? `${t('hdr.notifications')} – ${t('hdr.unread', { n: unread.length })}` : t('hdr.notifications')} badge={unread.length} onClick={() => setOpen(true)} aria-haspopup="dialog" />
       <Modal open={open} onClose={() => setOpen(false)} title={t('nt.title')} side="right">
         <div className="mb-drawer">
           <header className="mb-drawer__head">
@@ -345,59 +345,6 @@ function UserMenu({ me }) {
 // Each place has its own colour, used for its icon tile, active state and page accent.
 export const ROUTE_COLOR = { help: '#0ea5a4', dashboard: '#1f5bff', profiles: '#7b5cff', surveys: '#0b8bd6', rewards: '#d49100', quality: '#0f9f6e', referrals: '#e23d8f', activity: '#ea6a12', profile: '#5b5bf0', settings: '#4f6b8a', support: '#64748b', myaccount: '#0f766e' };
 
-/** Points pill: the number counts up whenever the balance changes and the coin flips. */
-function PointsPill({ points }) {
-  const gain = useGain(points?.total);
-  const [bump, setBump] = useState(false);
-  const prev = useRef(null);
-  useEffect(() => {
-    if (points && prev.current != null && prev.current !== points.total) {
-      setBump(true);
-      const id = setTimeout(() => setBump(false), 900);
-      return () => clearTimeout(id);
-    }
-    if (points) prev.current = points.total;
-    return undefined;
-  }, [points]);
-  return (
-    <MLink to="rewards" className={cx('xhd-pill xhd-pill--points', bump && 'is-bump')} title={t('nav.rewards')}>
-      <span className="xhd-coin" aria-hidden="true">
-        <span />
-      </span>
-      <span className="xhd-pill__num">{points ? <Counter value={points.total} duration={1200} still /> : '…'}</span>
-      <span className="mb-hide-xs xhd-pill__unit">{t('pts.balance')}</span>
-      {gain && (
-        <span key={gain.k} className="hx-pop hx-pop--hdr" aria-live="polite">
-          +{fmt(gain.d)}
-        </span>
-      )}
-    </MLink>
-  );
-}
-
-function QualityPill({ me }) {
-  const qGain = useGain(me.quality.score);
-  const tier = qualityTier(me.quality.score, me.quality.scale);
-  const p = Math.max(0, Math.min(1, me.quality.score / (me.quality.scale || 1)));
-  return (
-    <MLink to="quality" className={cx('xhd-pill xhd-pill--quality', `is-${tier}`)} title={`${t('nav.quality')}: ${t(`q.tier.${tier}`)}`} aria-label={`${t('nav.quality')} ${me.quality.score} ${t('q.of', { n: me.quality.scale })}, ${t(`q.tier.${tier}`)}`}>
-      <svg viewBox="0 0 36 36" className="xhd-ring" aria-hidden="true">
-        <circle cx="18" cy="18" r="15" />
-        <circle cx="18" cy="18" r="15" pathLength="100" style={{ strokeDasharray: `${p * 100} 100` }} />
-      </svg>
-      <span className="xhd-pill__num">
-        <Counter value={me.quality.score} duration={1200} still />
-      </span>
-      {qGain && (
-        <span key={qGain.k} className="hx-pop hx-pop--hdr hx-pop--q" aria-live="polite">
-          +{fmt(qGain.d)}
-        </span>
-      )}
-      <span className="mb-hide-md xhd-pill__unit">{t(`q.tier.${tier}`)}</span>
-    </MLink>
-  );
-}
-
 /** Avatar with a ring that shows how complete the profile is. */
 function ProgressAvatar({ me, size = 36 }) {
   const [profiles] = useSection('profiles');
@@ -415,7 +362,7 @@ function HelpButton() {
   const slug = path.split('/').filter(Boolean)[1] || 'dashboard';
   const topic = PAGE_TOPIC[slug];
   return (
-    <MLink to={slug === 'help' ? '/member/help/' : `/member/help/${topic ? `#topic-${topic}` : ''}`} className={cx('mb-iconbtn xhd-help', slug === 'help' && 'is-on')} aria-label={t('nav.helpHere')} title={t('nav.helpHere')}>
+    <MLink to={slug === 'help' ? '/member/help/' : `/member/help/${topic ? `#topic-${topic}` : ''}`} className={cx('mb-iconbtn xhd-help hdi hdi--help', slug === 'help' && 'is-on')} aria-label={t('nav.helpHere')} title={t('nav.helpHere')}>
       <Icon name="help" size={21} />
     </MLink>
   );
@@ -440,8 +387,8 @@ function Header({ onMenu, onJump }) {
         <kbd className="xhd-jump__kbd">Ctrl K</kbd>
       </button>
       <div className="mb-header__right">
-        <PointsPill points={points} />
-        <QualityPill me={me} />
+        <PointsTrophy points={points} teen={me.type === 'teen'} />
+        <QualityTrophy me={me} />
         <HelpButton />
         <NotificationCenter />
         <span className="mb-hide-sm">
@@ -695,6 +642,9 @@ function DemoBar() {
           <option value="show">Shown</option>
         </select>
       </label>
+      <button type="button" className="mb-demobar__btn" onClick={playHeaderDemo}>
+        Play header reward
+      </button>
     </div>
   );
 }
