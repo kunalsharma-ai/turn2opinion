@@ -4619,6 +4619,10 @@
   ],
   "remove": [
    {
+    "_id": "6aae17f83879e4a288873b74",
+    "name": ""
+   },
+   {
     "_id": "6ab3c58418968f07542c8c14",
     "name": "entertainment-media22"
    },
@@ -34982,6 +34986,32 @@
     ]
    },
    {
+    "slug": "home-pet",
+    "category": "b2c",
+    "pages": [
+     [
+      "homeowner",
+      "homeowner1",
+      "homeowner2",
+      "homeowner3",
+      "homeowner6",
+      "homeowner5",
+      "homeowner8",
+      "homeowner10",
+      "homeowner11",
+      "homeowner19",
+      "homeowner20",
+      "homeowner27",
+      "homeowner28",
+      "pet15",
+      "pet16",
+      "pet17",
+      "pet18",
+      "pet19"
+     ]
+    ]
+   },
+   {
     "slug": "shopping",
     "category": "b2c",
     "pages": [
@@ -34995,6 +35025,69 @@
       "shopping27",
       "shopping28",
       "shopping23"
+     ]
+    ]
+   },
+   {
+    "slug": "lifestyle-food",
+    "category": "b2c",
+    "pages": [
+     [
+      "lifestyle",
+      "fin_property_type",
+      "fin_rasidence_type",
+      "hobbies",
+      "lifestyle_1",
+      "lifestyle_3",
+      "lifestyle_5",
+      "lifestyle_6",
+      "lifestyle_7",
+      "smoking",
+      "cigratte_type",
+      "lifestyle_8",
+      "lifestyle_9",
+      "lifestyle_10",
+      "lifestyle_11",
+      "food2",
+      "food7",
+      "food8",
+      "food19",
+      "food4",
+      "food5",
+      "food6",
+      "food9",
+      "food10",
+      "food11",
+      "food12",
+      "food13",
+      "food14",
+      "food15",
+      "food16",
+      "food17",
+      "food18",
+      "food20"
+     ]
+    ]
+   },
+   {
+    "slug": "basic",
+    "category": "minor",
+    "pages": [
+     [
+      "basic",
+      "firstname",
+      "lastname",
+      "alternate-email",
+      "alternate-phone",
+      "dob",
+      "gender",
+      "country",
+      "state",
+      "city",
+      "zipcode",
+      "ethnicity",
+      "relationship",
+      "rural"
      ]
     ]
    },
