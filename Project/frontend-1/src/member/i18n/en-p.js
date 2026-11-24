@@ -26,6 +26,8 @@ export default {
   'qz.phone.ph': 'Country code and number',
   'qz.phone.hint': 'Include your country code, for example 91 for India.',
   'qz.phone.locked': 'Your number is verified. Contact support to change it.',
+  'qz.guardian.ask': 'Ask your parent or guardian to answer this one.',
+  'qz.guardian.together': 'You can answer this together with your parent or guardian.',
   'qz.specify': 'Please specify',
   'qz.specify.req': 'Please tell us a little more.',
   'qz.age': 'This age doesn’t match the date of birth on your account. Please check and try again.',
