@@ -44,6 +44,7 @@ import {
     linkFor, sigOk, maskEmail, registrationRef, cleanOnboarding, onboardingErrors, teenMail, brand
 } from "../../utils/teen.js";
 import { familyRecord } from "../../utils/teenFamily.js";
+import { guardianAnswers } from "../../utils/parentProfile.js";
 import { MINOR_CATEGORIES, isMinorCategory, teenCategory } from "../../utils/goLiveSetup.js";
 
 const TEEN_LINK_MS = 7 * 24 * 60 * 60 * 1000; // parent onboarding and teen activation links
@@ -126,6 +127,27 @@ async function guardianLink(req, id, body = req.body) {
     return { otp, user };
 }
 
+
+// ---------- parent profiling ----------
+// When the guardian gives consent, their onboarding answers that belong to the Teen bank (and the
+// ones worked out from Module 1, teen-p001..p007) become the Teen's own Answer records.
+async function saveGuardianAnswers(req, user) {
+    const answers = guardianAnswers(user?.parent?.onboarding, true);
+    const origin = user.origin || req.origin;
+    const ops = Object.entries(answers).map(([question, answer]) => ({
+        updateOne: {
+            filter: { question, user: String(user._id), origin },
+            update: { question, answer, user: String(user._id), origin },
+            upsert: true
+        }
+    }));
+    try {
+        if (ops.length) await answerModel.bulkWrite(ops, { ordered: false });
+    } catch (err) {
+        // Consent is recorded either way; the Teen panel then simply asks these questions.
+        console.error("guardian answers not saved", err?.message);
+    }
+}
 
 // ---------- welcome questionnaire ----------
 // Every member (Consumer, Professional and Teen) answers a few welcome questions after they log in
@@ -828,6 +850,7 @@ router
                 };
                 userController.request.user = {};
                 const user = Mutate(await userController.update(req.params.id, update));
+                await saveGuardianAnswers(req, { ...before, ...user, parent: { ...(before.parent || {}), ...(user?.parent || {}) } });
                 // Onboarding completion to the guardian.
                 await teenMail(req, user?.parent?.email, "minor-permitted-parent", `${brand()}: onboarding complete for ${user?.name?.first || "your teen"}`, teenMailData(req, user, { record }));
 

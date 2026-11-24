@@ -135,7 +135,7 @@ function Invite({ t, onYes, onNo }) {
             <b>1</b> Confirm you are {t.name?.first || 'the teen'}’s {rel}
           </li>
           <li>
-            <b>2</b> Onboarding form, about 3 minutes
+            <b>2</b> Onboarding form and family profile, about 6 minutes
           </li>
           <li>
             <b>3</b> Read the agreement, tick your permissions
@@ -293,6 +293,10 @@ function Onboarding({ t, a, setA, onDone, start = 0 }) {
         <h3 className="gdn-sheet-h">
           <span aria-hidden="true">{sec.icon}</span> {sec.name}
         </h3>
+        {sec.help && <p className="gdn-q-help">{sec.help}</p>}
+        {sec.bank && sIdx === sections.findIndex((x) => x.bank) && (
+          <p className="gdn-note">These answers go to {t.name?.first || 'your teen'}’s Teen panel profile, so they are not asked the same questions.</p>
+        )}
         {isHealth && healthIntro !== 'answer' ? (
           <div className="gdn-health">
             <p className="gdn-kicker">{sec.intro.kicker}</p>

@@ -2,6 +2,7 @@
 // rendered as an input. Question shape (src/data/teen/*.js):
 //   { n, q, help, kind?, o: [[label, value, emoji]], multi, other, exclusive, req, when(a), reqWhen(a), from }
 // kind: choice (default) · name · dob · country · region · language · timezone · email · phone · textarea
+//       · pick (long list, searchable, single or multi) · income (household-income options of the country in `from`)
 // Values: string, or string[] for multi; "Other" free text lives at `${n}-other`.
 import { useEffect, useMemo, useState } from 'react';
 import { CountryPicker, DateField, PhoneField } from '../FormFields.jsx';
@@ -11,6 +12,7 @@ import { LANGUAGES } from '../../data/teen/languages.js';
 import { exactAge } from '../../data/teen/registration.js';
 import { COUNTRIES } from '../../data/countries.js';
 import { formatDate } from '../FormFields.jsx';
+import { INCOME_BY_COUNTRY } from '../../data/teen/parentProfiling.js';
 
 // Region names for review screens: warmed on first use, codes (IN-MH) fall back to the code until loaded.
 let STATES = null;
@@ -21,7 +23,8 @@ const regionName = (cc, v) => {
   return hit ? (Array.isArray(hit) ? hit[0] : hit) : v;
 };
 
-export const isShown = (q, a) => (typeof q.when === 'function' ? !!q.when(a) : true);
+export const incomeOptions = (a, from = 'P01') => (INCOME_BY_COUNTRY[String(a[from] || '').toUpperCase()] || []).map((v) => [v, v]);
+export const isShown = (q, a) => (typeof q.when === 'function' ? !!q.when(a) : q.kind === 'income' ? incomeOptions(a, q.from).length > 0 : true);
 export const isRequired = (q, a) => !!q.req || (typeof q.reqWhen === 'function' && !!q.reqWhen(a));
 const empty = (v) => v == null || v === '' || (Array.isArray(v) && !v.length);
 
@@ -72,6 +75,26 @@ function RegionInput({ q, a, set, id, invalid }) {
   if (!list.length)
     return <input id={id} className="input" value={a[q.n] || ''} placeholder="Type your state, province or region" onChange={(e) => set(q.n, e.target.value.slice(0, 60))} aria-invalid={invalid} />;
   return <SearchSelect id={id} value={a[q.n] || ''} options={list} allowFree freeLabel="Use" placeholder="Search or type your region" invalid={invalid} onChange={(v) => set(q.n, v)} />;
+}
+
+function PickInput({ q, a, set, id, invalid }) {
+  const v = a[q.n];
+  if (!q.multi) return <SearchSelect id={id} value={v || ''} options={q.o} placeholder="Search the list" invalid={invalid} onChange={(x) => set(q.n, x)} />;
+  const list = Array.isArray(v) ? v : v ? [v] : [];
+  return (
+    <>
+      {list.length > 0 && (
+        <div className="qi-picked">
+          {list.map((x) => (
+            <button key={x} type="button" className="chip is-on" onClick={() => set(q.n, list.filter((y) => y !== x))} aria-label={`Remove ${x}`}>
+              {x} ×
+            </button>
+          ))}
+        </div>
+      )}
+      <SearchSelect id={id} value="" options={q.o.filter((o) => !list.includes(o[1]))} placeholder={list.length ? 'Add another' : 'Search the list'} invalid={invalid} onChange={(x) => x && set(q.n, [...list, x].slice(0, 40))} />
+    </>
+  );
 }
 
 function LanguageInput({ q, a, set, id, invalid }) {
@@ -142,9 +165,13 @@ export default function QInput({ q, a, set, skin = 'qi', invalid = false, locked
       return <DateField id={id} value={a[q.n] || ''} maxDate={max} onChange={(v) => set(q.n, v)} invalid={invalid} />;
     }
     case 'country':
-      return <CountryPicker id={id} value={String(a[q.n] || '').toUpperCase()} onChange={(c) => { set(q.n, c); if (q.n === 'P01') set('P02', ''); if (q.n === 'D02') set('D03', ''); }} invalid={invalid} />;
+      return <CountryPicker id={id} value={String(a[q.n] || '').toUpperCase()} onChange={(c) => { set(q.n, c); if (q.n === 'P01') { set('P02', ''); set('household-income', ''); } if (q.n === 'D02') set('D03', ''); }} invalid={invalid} />;
     case 'region':
       return <RegionInput q={q} a={a} set={set} id={id} invalid={invalid} />;
+    case 'pick':
+      return <PickInput q={q} a={a} set={set} id={id} invalid={invalid} />;
+    case 'income':
+      return <SearchSelect id={id} value={a[q.n] || ''} options={incomeOptions(a, q.from)} placeholder="Choose a range" invalid={invalid} onChange={(v) => set(q.n, v)} />;
     case 'language':
       return <LanguageInput q={q} a={a} set={set} id={id} invalid={invalid} />;
     case 'timezone':

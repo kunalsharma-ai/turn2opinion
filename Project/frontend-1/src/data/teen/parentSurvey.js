@@ -22,6 +22,8 @@
  * question and chosen for that answer (tests/data.test.mjs enforces both).
  */
 
+import { PARENT_PROFILING_SECTIONS } from './parentProfiling.js';
+
 export const PARENT_SURVEY = {
   id: 'parent__registration',
   owner: 'parent',
@@ -183,6 +185,10 @@ export const PARENT_SURVEY = {
         },
       ],
     },
+
+    // ───────── parent profiling: the Teen bank's "Asked to: Parent" questions ─────────
+    // Saved to the Teen's profile when consent is given (backend utils/parentProfile.js).
+    ...PARENT_PROFILING_SECTIONS,
 
     // ─────────────────── optional: teen health & caregiving ───────────────────
     {

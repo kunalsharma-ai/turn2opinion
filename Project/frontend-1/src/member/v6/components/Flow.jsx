@@ -491,6 +491,7 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
           <h2 className="qt6" id="qh" tabIndex={-1}>
             {q.label}
           </h2>
+          {me?.type === 'teen' && /^asked to: parent/i.test(q.description || '') ? <p className="hint6">{mt(/teen/i.test(q.description) ? 'qz.guardian.together' : 'qz.guardian.ask')}</p> : null}
           {kind === 'survey' && page === 0 && idx === 0 && source.description ? <div className="hint6 html6" dangerouslySetInnerHTML={{ __html: safeHtml(source.description) }} /> : null}
           {multi(q) && <p className="hint6">{q.max > 0 ? maxHint(q.max) : t('select_all')}</p>}
           <div id="fld" className="fld6">
