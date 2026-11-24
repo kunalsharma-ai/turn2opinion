@@ -38,7 +38,7 @@ import "react-phone-input-2/lib/material.css";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useTelemetry } from "@/Context";
 import { useToast } from "@/hooks";
-import Captcha from "./Captcha";
+import HumanCheck from "@/components/HumanCheck";
 
 const socialIcons = {
   linkedin: <LinkedIn sx={{ color: "#0077B5", fontSize: "28px" }} />,
@@ -155,6 +155,7 @@ function LoginCard({ onClose, setCardType, setOpenSignUp, socials }) {
   const [loginType, setLoginType] = React.useState("mail");
   const [phone, setPhone] = React.useState("");
   const [btnDisabled, setBtnDisabled] = React.useState(true);
+  const [captchaTries, setCaptchaTries] = React.useState(0);
 
   const [providers, setProviders] = React.useState([]);
   useEffect(() => {
@@ -253,13 +254,13 @@ fetch("/api/v1/me").then(r => r.json()).then(d => console.log("ME RESPONSE:", d)
                 break;
 
               default:
-                setErrorMessage(resp.message);
+                setErrorMessage(resp.message); setCaptchaTries((n) => n + 1);
                 setLoading(false);
                 break;
             }
           } catch (error) {
             console.log({ error });
-            setErrorMessage("Something went wrong.");
+            setErrorMessage("Something went wrong."); setCaptchaTries((n) => n + 1);
             setLoading(false);
           }
         }}
@@ -394,11 +395,7 @@ fetch("/api/v1/me").then(r => r.json()).then(d => console.log("ME RESPONSE:", d)
           </Box>
         </Grid>
 
-        <Captcha
-          onVerified={() => {
-            setBtnDisabled(false);
-          }}
-        />
+        <HumanCheck resetKey={captchaTries} onChange={(v) => setBtnDisabled(!v)} />
 
         {errorMessage && <Page.Error message={errorMessage} />}
 
