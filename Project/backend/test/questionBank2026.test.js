@@ -93,3 +93,11 @@ test("Teen bank: brand-new questions and profiles are inserted with their own fi
     const again = plan(c, { options: [], questions: [{ _id: id(4), name: "household-income", category: ["b2c", "minor"] }, { _id: id(5), name: "teen-p001" }], profiles: [...existing.profiles, { _id: id(6), slug: "teen-parent-verification", category: "minor" }] }, O);
     assert.equal(again.writes.length, 0);
 });
+
+test("retires an old profile by slug + category only, leaving the other panel's profile alone", () => {
+    const profiles = [{ _id: id(1), slug: "shopping", category: "minor", pages: [] }, { _id: id(2), slug: "shopping", category: "b2c", pages: [] }];
+    const c = changes({ profiles: { remove: [{ slug: "shopping", category: "minor", name: "shopping & retails" }] } });
+    const { writes } = plan(c, { questions: [], options: [], profiles }, O);
+    assert.deepEqual(writes.map((w) => w._id), [id(1)]);
+    assert.equal(plan(c, { questions: [], options: [], profiles: [{ ...profiles[0], isDeleted: true }, profiles[1]] }, O).writes.length, 0);
+});

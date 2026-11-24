@@ -141,9 +141,13 @@ export function plan(changes, existing, origin, now = new Date()) {
         bump("profile added");
     }
     for (const p of changes.profiles.remove) {
-        for (const d of existing.profiles.filter((d) => !s(d.slug) && live(d) && sameList(d.pages, p.pages))) {
+        // by slug + category (old Teen surveys replaced by the Global Teen Panel bank), or the empty header-only row
+        const hits = p.slug
+            ? existing.profiles.filter((d) => d.slug === p.slug && d.category === p.category && live(d))
+            : existing.profiles.filter((d) => !s(d.slug) && live(d) && sameList(d.pages, p.pages));
+        for (const d of hits) {
             writes.push({ collection: "Profile", op: "update", _id: d._id, set: { isDeleted: true, "deleted.At": now } });
-            bump("empty profile removed");
+            bump(p.slug ? "old profile retired" : "empty profile removed");
         }
     }
     return { writes, report };

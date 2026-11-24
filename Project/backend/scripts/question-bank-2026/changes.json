@@ -30551,42 +30551,6 @@
     ]
    },
    {
-    "slug": "health",
-    "category": "minor",
-    "pages": [
-     [
-      "health",
-      "health2",
-      "health4",
-      "health8",
-      "health9",
-      "health11",
-      "health12",
-      "health14",
-      "health18",
-      "health21",
-      "health23",
-      "health24",
-      "health22",
-      "disabled",
-      "disabled_visual",
-      "disabled_hearing",
-      "disabled_mobility",
-      "disabled_neurological",
-      "disabled_intellectual",
-      "disabled_development",
-      "disabled_speech",
-      "disabled_mental",
-      "disabled_cognitive",
-      "disabled_chronic",
-      "disabled_sensory",
-      "disabled_autoimmune",
-      "disabled_genetic",
-      "disabled_other"
-     ]
-    ]
-   },
-   {
     "slug": "luxury-premium",
     "category": "b2c",
     "pages": [
@@ -30951,6 +30915,61 @@
   ],
   "remove": [
    {
+    "slug": "home-pet",
+    "category": "minor",
+    "name": "home and pet ownership"
+   },
+   {
+    "slug": "shopping",
+    "category": "minor",
+    "name": "shopping & retails"
+   },
+   {
+    "slug": "lifestyle-food",
+    "category": "minor",
+    "name": "lifestyle and food"
+   },
+   {
+    "slug": "travel",
+    "category": "minor",
+    "name": "travel"
+   },
+   {
+    "slug": "automobile",
+    "category": "minor",
+    "name": "automobile"
+   },
+   {
+    "slug": "health",
+    "category": "minor",
+    "name": "health"
+   },
+   {
+    "slug": "beauty",
+    "category": "minor",
+    "name": "beauty & fashion"
+   },
+   {
+    "slug": "tech",
+    "category": "minor",
+    "name": "media, electronics, mobile & technology"
+   },
+   {
+    "slug": "sports",
+    "category": "minor",
+    "name": "sports"
+   },
+   {
+    "slug": "game",
+    "category": "minor",
+    "name": "gaming"
+   },
+   {
+    "slug": "mr",
+    "category": "minor",
+    "name": "survey and rewards"
+   },
+   {
     "slug": "",
     "name": "",
     "pages": [
@@ -31027,7 +31046,10 @@
       "teen-h004",
       "teen-h005",
       "teen-h006",
-      "teen-h007"
+      "teen-h007",
+      "homeowner10",
+      "homeowner11",
+      "homeowner28"
      ]
     ],
     "points": 50
@@ -31082,7 +31104,14 @@
       "teen-d006",
       "teen-d007",
       "teen-d008",
-      "teen-d009"
+      "teen-d009",
+      "tech_computer",
+      "tech_computer_brands",
+      "tech_computer_os",
+      "tech_office_suite",
+      "media9",
+      "media13",
+      "media14"
      ]
     ],
     "points": 50
@@ -31156,7 +31185,8 @@
       "teen-en004",
       "teen-en005",
       "teen-en006",
-      "teen-en007"
+      "teen-en007",
+      "media7"
      ]
     ],
     "points": 50
@@ -31173,7 +31203,8 @@
       "teen-mu003",
       "teen-mu004",
       "teen-mu005",
-      "teen-mu006"
+      "teen-mu006",
+      "lifestyle_5"
      ]
     ],
     "points": 50
@@ -31191,7 +31222,11 @@
       "teen-sp004",
       "teen-sp005",
       "teen-sp006",
-      "teen-sp007"
+      "teen-sp007",
+      "sports28",
+      "sports29",
+      "sports30",
+      "sports34"
      ]
     ],
     "points": 50
@@ -31208,7 +31243,8 @@
       "teen-hb003",
       "teen-hb004",
       "teen-hb005",
-      "teen-hb006"
+      "teen-hb006",
+      "lifestyle_10"
      ]
     ],
     "points": 50
@@ -31227,7 +31263,13 @@
       "teen-fd005",
       "teen-fd006",
       "teen-fd007",
-      "teen-fd008"
+      "teen-fd008",
+      "food2",
+      "food4",
+      "food5",
+      "food11",
+      "food12",
+      "food13"
      ]
     ],
     "points": 50
@@ -31261,7 +31303,14 @@
       "teen-pc002",
       "teen-pc003",
       "teen-pc004",
-      "teen-pc005"
+      "teen-pc005",
+      "beauty1",
+      "beauty2",
+      "beauty4",
+      "beauty7",
+      "beauty9",
+      "beauty10",
+      "beauty12"
      ]
     ],
     "points": 50
@@ -31279,7 +31328,9 @@
       "teen-sh004",
       "teen-sh005",
       "teen-sh006",
-      "teen-sh007"
+      "teen-sh007",
+      "shopping24",
+      "shopping28"
      ]
     ],
     "points": 50
@@ -31384,7 +31435,11 @@
       "teen-tr002",
       "teen-tr003",
       "teen-tr004",
-      "teen-tr005"
+      "teen-tr005",
+      "travel1",
+      "travel6",
+      "travel7",
+      "travel13"
      ]
     ],
     "points": 50
@@ -31450,7 +31505,9 @@
       "teen-rp005",
       "teen-rp006",
       "teen-rp007",
-      "teen-rp008"
+      "teen-rp008",
+      "tech_computer_webcam",
+      "tech_computer_webcam_accept"
      ]
     ],
     "points": 50
