@@ -1,7 +1,8 @@
 // "Parent & guardian profile" cards on the Teen member's Profiles page (/member/profiles/), 23 Nov 2026.
 // One card per group of information collected from the parent or legal guardian, with a slot for every
 // field, shown as filled or not filled. Slots the onboarding form does not ask yet (occupation,
-// employment, education, reward preferences) are shown as "Not collected yet", never filled in.
+// reward preferences) are shown as "Not collected yet", never filled in. Employment, education and the
+// home & family slots come from the parent profiling sections (Teen bank questions, 24 Nov 2026).
 // Data: the same GET /api/v1/user/teen-profile -> family record as FamilyRecord.jsx (sent only after the
 // guardian approved and finished onboarding). Before that every slot shows "Waiting for your guardian".
 import { useFamily } from './FamilyRecord.jsx';
@@ -42,8 +43,8 @@ function cards(d, points) {
         ['Age band', a.P05],
         ['Marital status', ans('parent-marital')],
         ['Occupation', NOT_ASKED],
-        ['Employment status', NOT_ASKED],
-        ['Highest education', NOT_ASKED]
+        ['Employment status', ans('teen-s001')],
+        ['Highest education', ans('teen-s002')]
       ]
     },
     {
@@ -54,6 +55,19 @@ function cards(d, points) {
         ['Children aged 13–17 they parent', ans('P11')],
         ['Country', ans('P01')],
         ['State or region', ans('P02')]
+      ]
+    },
+    {
+      id: 'onboarding', icon: '🏠', tone: 'violet', title: 'Home & family profile', sub: 'Answered by your guardian for the Teen panel',
+      slots: [
+        ['Area you live in', ans('teen-g003')],
+        ['Time lived in this country', ans('teen-g004')],
+        ['Household size', ans('teen-h001')],
+        ['Children under 18', ans('teen-h002')],
+        ['Siblings', ans('teen-h004')],
+        ['Home', ans('teen-h005')],
+        ['Pets', ans('teen-h006')],
+        ['Household income', ans('household-income')]
       ]
     },
     {

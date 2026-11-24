@@ -2,6 +2,7 @@
 // Used by routes/api/User.js. Nothing here talks to the database directly.
 import crypto from "crypto";
 import { getMailer, sendMail } from "./index.js";
+import { cleanProfilingAnswer, isProfilingKey } from "./parentProfile.js";
 
 // Version strings stored with every consent record. Bump when the wording changes.
 export const TEEN_REG_CONSENT_VERSION = "T2O-TEEN-REG-2026.11";   // the teen's own step-3 confirmations
@@ -49,11 +50,18 @@ export const registrationRef = (u) => (u && u._id ? `T2O-TN-${String(u._id).slic
 // ---------- answers from the guardian onboarding form ----------
 // Keys follow the questionnaire (P01..P12, HQ1/HQ2/HQ4, parent-*). Only strings and string lists,
 // trimmed and capped; "Other" free text is kept under <key>-other.
+// The parent profiling questions (Teen bank names such as teen-h001, household-income) are kept only
+// with values the bank holds (utils/parentProfile.js).
 const KEY = /^(P\d{2}|HQ\d|parent-[a-z-]{2,30})(-other)?$/;
 export function cleanOnboarding(a) {
     if (!a || typeof a !== "object" || Array.isArray(a)) return null;
     const out = {};
-    for (const [k, v] of Object.entries(a).slice(0, 60)) {
+    for (const [k, v] of Object.entries(a).slice(0, 120)) {
+        if (isProfilingKey(k)) {
+            const p = cleanProfilingAnswer(k, v, a.P01);
+            if (p) out[k] = p;
+            continue;
+        }
         if (!KEY.test(k)) continue;
         if (Array.isArray(v)) {
             const list = v.filter((x) => typeof x === "string").map((x) => x.trim().slice(0, 120)).filter(Boolean).slice(0, 20);

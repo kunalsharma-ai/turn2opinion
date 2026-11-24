@@ -2599,3 +2599,20 @@ main :is(.join, .gdn, .gdc, .gdx, .twl, .tpr, .u13, .agr) :is(.field-error, .fie
   opacity: 0.75;
   font-weight: 500;
 }
+
+/* parent profiling: chosen items of a long searchable list */
+.qi-picked {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.qi-picked .chip {
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.9em;
+  cursor: pointer;
+}

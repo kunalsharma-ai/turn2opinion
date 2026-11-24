@@ -7,7 +7,8 @@
 //     and after a withdrawal, only the stage is returned, never the answers.
 //   - The guardian's contact details stay masked: email as m••••a@e•••••.com, mobile as its last
 //     three digits. The IP address and browser stored with the consent record are never returned.
-//   - Every other onboarding answer is returned as stored (keys P01..P12, HQ1/HQ2/HQ4, parent-*),
+//   - Every other onboarding answer is returned as stored (keys P01..P12, HQ1/HQ2/HQ4, parent-*, and the
+//     parent profiling answers under their Teen bank names, e.g. teen-h001, household-income),
 //     so the member area can show each question with its answer.
 
 export const maskEmailT = (v) => {
@@ -52,8 +53,8 @@ export function familyRecord(u) {
     if (state === "approved") {
         onboarding = {};
         for (const [k, v] of Object.entries(p.onboarding)) {
-            if (!/^(P\d{2}|HQ\d|parent-[a-z-]{2,30})(-other)?$/.test(k)) continue;
-            if (Array.isArray(v)) onboarding[k] = v.filter((x) => typeof x === "string").slice(0, 20);
+            if (!/^(P\d{2}|HQ\d|parent-[a-z-]{2,30}|teen-[a-z0-9-]{2,40}|household-income)(-other)?$/.test(k)) continue;
+            if (Array.isArray(v)) onboarding[k] = v.filter((x) => typeof x === "string").slice(0, 40);
             else if (typeof v === "string" || typeof v === "number") onboarding[k] = String(v);
         }
         if (onboarding.P08) onboarding.P08 = maskEmailT(onboarding.P08);
