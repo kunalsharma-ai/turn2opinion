@@ -15,6 +15,7 @@ import { setOrigin, expressRoute, fsLogger,loadModule } from "./utils/index.js";
     await mongoose.connect(env.db);
     const app = express();
     app
+        .disable("x-powered-by")
         .set("view-engine", "twig")
         .set('views', "views")
         .use([

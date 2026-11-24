@@ -2,6 +2,7 @@ import fs from 'fs';
 import mongoose from 'mongoose';
 import { compare } from "./password.js"
 import fsLogger from './fsLogger.js';
+import { currentRequest } from './requestContext.js';
 export default class CrudController {
     #model;
     #request;
@@ -16,11 +17,19 @@ export default class CrudController {
         }
     }
 
+    // {_id} for a lookup by id. Inside a member request it also names the request's brand, so an id from another
+    // brand is "not found" (all three brands share one database). Jobs run outside a request and keep the old lookup.
+    byId(id) {
+        if (id === undefined) id = null; // as findById does: a missing id finds nothing (an empty filter would match any record)
+        const req = currentRequest();
+        return req?.origin ? { _id: id, origin: req.origin } : { _id: id };
+    }
     set request(req) {
         this.#request = req;
     }
     get request() {
-        return this.#request;
+        // the request this code is running for (see requestContext.js); the shared field only outside a request
+        return currentRequest() ?? this.#request;
     }
     get model() {
         return this.#model;
@@ -73,8 +82,8 @@ export default class CrudController {
 
             let temp = {
                 created: {
-                    By: this.request.user._id,
-                    From: this.request.clientIP
+                    By: this.request.user?._id,
+                    From: this.request?.clientIP
                 },
                 ...data,
                 origin: this.request.origin,
@@ -91,9 +100,9 @@ export default class CrudController {
         try {
             let item
             if (!populateFields)
-                item = await this.#model.findById(id).select("+sortOrder");
+                item = await this.#model.findOne(this.byId(id)).select("+sortOrder");
             else
-                item = await this.#model.findById(id).select("+sortOrder").populate(populateFields);
+                item = await this.#model.findOne(this.byId(id)).select("+sortOrder").populate(populateFields);
             if (!item) {
                 throw new Error('Item not found');
             }
@@ -105,7 +114,7 @@ export default class CrudController {
 
     async update(id, data) {
         try {
-            const updatedItem = await this.#model.findByIdAndUpdate(id, { ...data, updated: { By: this.request.user._id, From: this.request.clientIP } }, { new: true });
+            const updatedItem = await this.#model.findOneAndUpdate(this.byId(id), { ...data, updated: { By: this.request.user?._id, From: this.request?.clientIP } }, { new: true });
             if (!updatedItem) {
                 throw new Error('Item not found');
             }
@@ -115,14 +124,14 @@ export default class CrudController {
         }
     }
     async activate(id) {
-        const activatedItem = await this.#model.findByIdAndUpdate(id, { isActive: true, updated: { By: this.request.user._id, From: this.request.clientIP } });
+        const activatedItem = await this.#model.findOneAndUpdate(this.byId(id), { isActive: true, updated: { By: this.request.user?._id, From: this.request?.clientIP } });
         if (!activatedItem) {
             throw new Error('Item not found');
         }
         return activatedItem;
     }
     async deactivate(id) {
-        const deactivatedItem = await this.#model.findByIdAndUpdate(id, { isActive: false, updated: { By: this.request.user._id, From: this.request.clientIP } });
+        const deactivatedItem = await this.#model.findOneAndUpdate(this.byId(id), { isActive: false, updated: { By: this.request.user?._id, From: this.request?.clientIP } });
         if (!deactivatedItem) {
             throw new Error('Item not found');
         }
@@ -132,9 +141,9 @@ export default class CrudController {
         try {
             if (!this.request || !this.request.body || !this.request.body.password) throw new Error(`Password required to delete`);
             const UserModel = mongoose.models.User ?? mongoose.model("User", new mongoose.Schema({}, { collection: "User", strict: false }));
-            const user = await UserModel.findById(this.request.user._id);
+            const user = await UserModel.findById(this.request.user?._id);
             if (!await compare(this.request.body.password, user.password)) throw new Error("Cannot delete, Invalid password.");
-            const deletedItem = await this.#model.findByIdAndUpdate(id, { isDeleted: true, deleted: { At: new Date(), By: this.request.user._id } });
+            const deletedItem = await this.#model.findOneAndUpdate(this.byId(id), { isDeleted: true, deleted: { At: new Date(), By: this.request.user?._id } });
             if (!deletedItem) {
                 throw new Error('Item not found');
             }
@@ -145,7 +154,7 @@ export default class CrudController {
     }
     async delete(id) {
         try {
-            const deletedItem = await this.#model.findByIdAndDelete(id);
+            const deletedItem = await this.#model.findOneAndDelete(this.byId(id));
             if (!deletedItem) {
                 throw new Error('Item not found');
             }
