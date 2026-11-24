@@ -6099,8 +6099,7 @@
     "value": "Debit Card",
     "label": "Debit Card",
     "set": {
-     "label": "Debit card",
-     "value": "Debit card"
+     "label": "Debit card"
     }
    },
    {
@@ -6109,8 +6108,7 @@
     "value": "Credit Card",
     "label": "Credit Card",
     "set": {
-     "label": "Credit card",
-     "value": "Credit card"
+     "label": "Credit card"
     }
    },
    {
