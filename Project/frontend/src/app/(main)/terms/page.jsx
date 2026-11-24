@@ -1,5 +1,6 @@
 import React from "react";
 import data from "@/data/data.json";
+import ConsoleContent from "@/components/ConsoleContent";
 import { Grid, Container } from "@mui/material";
 import SubHeader from "@/componentsMHO/SubHeader";
 function page() {
@@ -37,7 +38,7 @@ function page() {
             },
           }}
         >
-          <div dangerouslySetInnerHTML={{ __html: data.terms }} />
+          <ConsoleContent pageKey="terms"><div dangerouslySetInnerHTML={{ __html: data.terms }} /></ConsoleContent>
         </Container>
       </Grid>
     </div>

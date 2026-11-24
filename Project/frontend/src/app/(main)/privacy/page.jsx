@@ -1,5 +1,6 @@
 import React from "react";
 import data from "@/data/data.json";
+import ConsoleContent from "@/components/ConsoleContent";
 import { Grid, Container, Typography, Box } from "@mui/material";
 import SubHeader from "@/componentsMHO/SubHeader";
 function page() {
@@ -43,7 +44,7 @@ function page() {
             },
           }}
         >
-          <div dangerouslySetInnerHTML={{ __html: data.privacy }} />
+          <ConsoleContent pageKey="privacy" headings={["h5", "h6"]}><div dangerouslySetInnerHTML={{ __html: data.privacy }} /></ConsoleContent>
         </Container>
       </Grid>
     </div>

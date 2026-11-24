@@ -25,6 +25,7 @@ import followSocialRouter from "./api/FollowSocial.js";
 import testimonialRouter from "./api/Testimonials.js";
 import meRouter from "./api/Me.js";
 import changeEmail from "./api/changeEmail.js"
+import contentRouter from "./api/Content.js";
 import changesRouter from "./api/Changes.js";
 import { requireAdmin } from "../utils/access.js";
 import { bindRequest } from "../utils/requestContext.js";
@@ -56,6 +57,7 @@ router
     .use("/api/v1/option", optionRouter)
     .use("/api/v1/options", optionsRouter)
     .use("/api/v1/validation", validationRoutes)
+    .use("/api/v1/content", contentRouter)
     .use("/api/v1/user", userRouter)
     .use("/api/v1/profile", profileRouter)
     .use("/api/v1/forgot-password", forgotPassword)

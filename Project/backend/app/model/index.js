@@ -25,3 +25,4 @@ export { default as ProfileQuestions } from "./ProfileQuestions.js";
 export { default as ProfileOptions } from "./ProfileOptions.js";
 
 //*/
+export { default as ContentPage } from "./ContentPage.js";
