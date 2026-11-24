@@ -3,9 +3,9 @@
 // field, shown as filled or not filled. Slots the onboarding form does not ask yet (occupation,
 // reward preferences) are shown as "Not collected yet", never filled in. Employment, education and the
 // home & family slots come from the parent profiling sections (Teen bank questions, 24 Nov 2026).
-// Data: the same GET /api/v1/user/teen-profile -> family record as FamilyRecord.jsx (sent only after the
+// Data: the same GET /api/v1/user/teen-profile -> family record as ParentSection.jsx (sent only after the
 // guardian approved and finished onboarding). Before that every slot shows "Waiting for your guardian".
-import { useFamily } from './FamilyRecord.jsx';
+import { useFamily } from './ParentSection.jsx';
 import { Icon, cx } from './ui.jsx';
 import { useSection } from '../data/MemberData.jsx';
 import { fmt } from '../i18n/t.js';
