@@ -794,7 +794,7 @@
    {
     "name": "teen-e002",
     "label": "Current grade or year?",
-    "parent": "",
+    "parent": "country",
     "doc": {
      "type": "select",
      "category": [
@@ -3144,7 +3144,7 @@
    {
     "name": "teen-fm003",
     "label": "Monthly pocket money range?",
-    "parent": "teen-fm001",
+    "parent": "country",
     "doc": {
      "type": "select",
      "category": [
@@ -29793,6 +29793,4454 @@
     "value": "Prefer not to answer",
     "label": "Prefer not to answer",
     "parentValue": []
+   },
+   {
+    "question": "teen-e002",
+    "value": "Year 8",
+    "label": "Year 8",
+    "parentValue": [
+     "AU",
+     "GB",
+     "NZ"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Year 9",
+    "label": "Year 9",
+    "parentValue": [
+     "AU",
+     "GB",
+     "NZ"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Year 10",
+    "label": "Year 10",
+    "parentValue": [
+     "AU",
+     "GB",
+     "NZ"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Year 11",
+    "label": "Year 11",
+    "parentValue": [
+     "AU",
+     "GB",
+     "NZ"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Year 12",
+    "label": "Year 12",
+    "parentValue": [
+     "AU",
+     "GB",
+     "NZ"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Year 13",
+    "label": "Year 13",
+    "parentValue": [
+     "GB",
+     "NZ"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Year 7",
+    "label": "Year 7",
+    "parentValue": [
+     "AU"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "1st Year (secondary)",
+    "label": "1st Year (secondary)",
+    "parentValue": [
+     "IE"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "2nd Year (secondary)",
+    "label": "2nd Year (secondary)",
+    "parentValue": [
+     "IE"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "3rd Year (secondary)",
+    "label": "3rd Year (secondary)",
+    "parentValue": [
+     "IE"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "4th Year (secondary)",
+    "label": "4th Year (secondary)",
+    "parentValue": [
+     "IE"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "5th Year (secondary)",
+    "label": "5th Year (secondary)",
+    "parentValue": [
+     "IE"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "6th Year (secondary)",
+    "label": "6th Year (secondary)",
+    "parentValue": [
+     "IE"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Class 7",
+    "label": "Class 7",
+    "parentValue": [
+     "IN"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Class 8",
+    "label": "Class 8",
+    "parentValue": [
+     "IN"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Class 9",
+    "label": "Class 9",
+    "parentValue": [
+     "IN"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Class 10",
+    "label": "Class 10",
+    "parentValue": [
+     "IN"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Class 11",
+    "label": "Class 11",
+    "parentValue": [
+     "IN"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Class 12",
+    "label": "Class 12",
+    "parentValue": [
+     "IN"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "JSS 1",
+    "label": "JSS 1",
+    "parentValue": [
+     "NG"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "JSS 2",
+    "label": "JSS 2",
+    "parentValue": [
+     "NG"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "JSS 3",
+    "label": "JSS 3",
+    "parentValue": [
+     "NG"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "SS 1",
+    "label": "SS 1",
+    "parentValue": [
+     "NG"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "SS 2",
+    "label": "SS 2",
+    "parentValue": [
+     "NG"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "SS 3",
+    "label": "SS 3",
+    "parentValue": [
+     "NG"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Secondary 1",
+    "label": "Secondary 1",
+    "parentValue": [
+     "HK",
+     "SG"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Secondary 2",
+    "label": "Secondary 2",
+    "parentValue": [
+     "HK",
+     "SG"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Secondary 3",
+    "label": "Secondary 3",
+    "parentValue": [
+     "HK",
+     "SG"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Secondary 4",
+    "label": "Secondary 4",
+    "parentValue": [
+     "HK",
+     "SG"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Secondary 5",
+    "label": "Secondary 5",
+    "parentValue": [
+     "HK",
+     "SG"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Junior College 1",
+    "label": "Junior College 1",
+    "parentValue": [
+     "SG"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Junior College 2",
+    "label": "Junior College 2",
+    "parentValue": [
+     "SG"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Form 1",
+    "label": "Form 1",
+    "parentValue": [
+     "MY"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Form 2",
+    "label": "Form 2",
+    "parentValue": [
+     "MY"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Form 3",
+    "label": "Form 3",
+    "parentValue": [
+     "MY"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Form 4",
+    "label": "Form 4",
+    "parentValue": [
+     "MY"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Form 5",
+    "label": "Form 5",
+    "parentValue": [
+     "MY"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Form 6",
+    "label": "Form 6",
+    "parentValue": [
+     "MY"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Secondary 6",
+    "label": "Secondary 6",
+    "parentValue": [
+     "HK"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Junior high school, year 1",
+    "label": "Junior high school, year 1",
+    "parentValue": [
+     "CN",
+     "JP",
+     "KR",
+     "TW"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Junior high school, year 2",
+    "label": "Junior high school, year 2",
+    "parentValue": [
+     "CN",
+     "JP",
+     "KR",
+     "TW"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Junior high school, year 3",
+    "label": "Junior high school, year 3",
+    "parentValue": [
+     "CN",
+     "JP",
+     "KR",
+     "TW"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Senior high school, year 1",
+    "label": "Senior high school, year 1",
+    "parentValue": [
+     "CN",
+     "JP",
+     "KR",
+     "TW"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Senior high school, year 2",
+    "label": "Senior high school, year 2",
+    "parentValue": [
+     "CN",
+     "JP",
+     "KR",
+     "TW"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Senior high school, year 3",
+    "label": "Senior high school, year 3",
+    "parentValue": [
+     "CN",
+     "JP",
+     "KR",
+     "TW"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "5e (Cinquième)",
+    "label": "5e (Cinquième)",
+    "parentValue": [
+     "FR"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "4e (Quatrième)",
+    "label": "4e (Quatrième)",
+    "parentValue": [
+     "FR"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "3e (Troisième)",
+    "label": "3e (Troisième)",
+    "parentValue": [
+     "FR"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Seconde",
+    "label": "Seconde",
+    "parentValue": [
+     "FR"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Première",
+    "label": "Première",
+    "parentValue": [
+     "FR"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Terminale",
+    "label": "Terminale",
+    "parentValue": [
+     "FR"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Klasse 7",
+    "label": "Klasse 7",
+    "parentValue": [
+     "AT",
+     "CH",
+     "DE"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Klasse 8",
+    "label": "Klasse 8",
+    "parentValue": [
+     "AT",
+     "CH",
+     "DE"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Klasse 9",
+    "label": "Klasse 9",
+    "parentValue": [
+     "AT",
+     "CH",
+     "DE"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Klasse 10",
+    "label": "Klasse 10",
+    "parentValue": [
+     "AT",
+     "CH",
+     "DE"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Klasse 11",
+    "label": "Klasse 11",
+    "parentValue": [
+     "AT",
+     "CH",
+     "DE"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Klasse 12",
+    "label": "Klasse 12",
+    "parentValue": [
+     "AT",
+     "CH",
+     "DE"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Klasse 13",
+    "label": "Klasse 13",
+    "parentValue": [
+     "AT",
+     "CH",
+     "DE"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "ESO 1",
+    "label": "ESO 1",
+    "parentValue": [
+     "ES"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "ESO 2",
+    "label": "ESO 2",
+    "parentValue": [
+     "ES"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "ESO 3",
+    "label": "ESO 3",
+    "parentValue": [
+     "ES"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "ESO 4",
+    "label": "ESO 4",
+    "parentValue": [
+     "ES"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Bachillerato 1",
+    "label": "Bachillerato 1",
+    "parentValue": [
+     "ES"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Bachillerato 2",
+    "label": "Bachillerato 2",
+    "parentValue": [
+     "ES"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Scuola media, year 2",
+    "label": "Scuola media, year 2",
+    "parentValue": [
+     "IT"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Scuola media, year 3",
+    "label": "Scuola media, year 3",
+    "parentValue": [
+     "IT"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Scuola superiore, year 1",
+    "label": "Scuola superiore, year 1",
+    "parentValue": [
+     "IT"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Scuola superiore, year 2",
+    "label": "Scuola superiore, year 2",
+    "parentValue": [
+     "IT"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Scuola superiore, year 3",
+    "label": "Scuola superiore, year 3",
+    "parentValue": [
+     "IT"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Scuola superiore, year 4",
+    "label": "Scuola superiore, year 4",
+    "parentValue": [
+     "IT"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Scuola superiore, year 5",
+    "label": "Scuola superiore, year 5",
+    "parentValue": [
+     "IT"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Grade 7",
+    "label": "Grade 7",
+    "parentValue": [
+     "AD",
+     "AE",
+     "AF",
+     "AG",
+     "AI",
+     "AL",
+     "AM",
+     "AO",
+     "AQ",
+     "AR",
+     "AS",
+     "AW",
+     "AX",
+     "AZ",
+     "BA",
+     "BB",
+     "BD",
+     "BE",
+     "BF",
+     "BG",
+     "BH",
+     "BI",
+     "BJ",
+     "BL",
+     "BM",
+     "BN",
+     "BO",
+     "BQ",
+     "BR",
+     "BS",
+     "BT",
+     "BV",
+     "BW",
+     "BY",
+     "BZ",
+     "CA",
+     "CC",
+     "CD",
+     "CF",
+     "CG",
+     "CI",
+     "CK",
+     "CL",
+     "CM",
+     "CO",
+     "CR",
+     "CU",
+     "CV",
+     "CW",
+     "CX",
+     "CY",
+     "CZ",
+     "DJ",
+     "DK",
+     "DM",
+     "DO",
+     "DZ",
+     "EC",
+     "EE",
+     "EG",
+     "EH",
+     "ER",
+     "ET",
+     "FI",
+     "FJ",
+     "FK",
+     "FM",
+     "FO",
+     "GA",
+     "GD",
+     "GE",
+     "GF",
+     "GG",
+     "GH",
+     "GI",
+     "GL",
+     "GM",
+     "GN",
+     "GP",
+     "GQ",
+     "GR",
+     "GS",
+     "GT",
+     "GU",
+     "GW",
+     "GY",
+     "HM",
+     "HN",
+     "HR",
+     "HT",
+     "HU",
+     "ID",
+     "IL",
+     "IM",
+     "IO",
+     "IQ",
+     "IR",
+     "IS",
+     "JE",
+     "JM",
+     "JO",
+     "KE",
+     "KG",
+     "KH",
+     "KI",
+     "KM",
+     "KN",
+     "KP",
+     "KW",
+     "KY",
+     "KZ",
+     "LA",
+     "LB",
+     "LC",
+     "LI",
+     "LK",
+     "LR",
+     "LS",
+     "LT",
+     "LU",
+     "LV",
+     "LY",
+     "MA",
+     "MC",
+     "MD",
+     "ME",
+     "MF",
+     "MG",
+     "MH",
+     "MK",
+     "ML",
+     "MM",
+     "MN",
+     "MO",
+     "MP",
+     "MQ",
+     "MR",
+     "MS",
+     "MT",
+     "MU",
+     "MV",
+     "MW",
+     "MX",
+     "MZ",
+     "NA",
+     "NC",
+     "NE",
+     "NF",
+     "NI",
+     "NL",
+     "NO",
+     "NP",
+     "NR",
+     "NU",
+     "OM",
+     "PA",
+     "PE",
+     "PF",
+     "PG",
+     "PH",
+     "PK",
+     "PL",
+     "PM",
+     "PN",
+     "PR",
+     "PS",
+     "PT",
+     "PW",
+     "PY",
+     "QA",
+     "RE",
+     "RO",
+     "RS",
+     "RU",
+     "RW",
+     "SA",
+     "SB",
+     "SC",
+     "SD",
+     "SE",
+     "SH",
+     "SI",
+     "SJ",
+     "SK",
+     "SL",
+     "SM",
+     "SN",
+     "SO",
+     "SR",
+     "SS",
+     "ST",
+     "SV",
+     "SX",
+     "SY",
+     "SZ",
+     "TC",
+     "TD",
+     "TF",
+     "TG",
+     "TH",
+     "TJ",
+     "TK",
+     "TL",
+     "TM",
+     "TN",
+     "TO",
+     "TR",
+     "TT",
+     "TV",
+     "TZ",
+     "UA",
+     "UG",
+     "UM",
+     "US",
+     "UY",
+     "UZ",
+     "VA",
+     "VC",
+     "VE",
+     "VG",
+     "VI",
+     "VN",
+     "VU",
+     "WF",
+     "WS",
+     "XK",
+     "YE",
+     "YT",
+     "ZA",
+     "ZM",
+     "ZW"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Grade 8",
+    "label": "Grade 8",
+    "parentValue": [
+     "AD",
+     "AE",
+     "AF",
+     "AG",
+     "AI",
+     "AL",
+     "AM",
+     "AO",
+     "AQ",
+     "AR",
+     "AS",
+     "AW",
+     "AX",
+     "AZ",
+     "BA",
+     "BB",
+     "BD",
+     "BE",
+     "BF",
+     "BG",
+     "BH",
+     "BI",
+     "BJ",
+     "BL",
+     "BM",
+     "BN",
+     "BO",
+     "BQ",
+     "BR",
+     "BS",
+     "BT",
+     "BV",
+     "BW",
+     "BY",
+     "BZ",
+     "CA",
+     "CC",
+     "CD",
+     "CF",
+     "CG",
+     "CI",
+     "CK",
+     "CL",
+     "CM",
+     "CO",
+     "CR",
+     "CU",
+     "CV",
+     "CW",
+     "CX",
+     "CY",
+     "CZ",
+     "DJ",
+     "DK",
+     "DM",
+     "DO",
+     "DZ",
+     "EC",
+     "EE",
+     "EG",
+     "EH",
+     "ER",
+     "ET",
+     "FI",
+     "FJ",
+     "FK",
+     "FM",
+     "FO",
+     "GA",
+     "GD",
+     "GE",
+     "GF",
+     "GG",
+     "GH",
+     "GI",
+     "GL",
+     "GM",
+     "GN",
+     "GP",
+     "GQ",
+     "GR",
+     "GS",
+     "GT",
+     "GU",
+     "GW",
+     "GY",
+     "HM",
+     "HN",
+     "HR",
+     "HT",
+     "HU",
+     "ID",
+     "IL",
+     "IM",
+     "IO",
+     "IQ",
+     "IR",
+     "IS",
+     "JE",
+     "JM",
+     "JO",
+     "KE",
+     "KG",
+     "KH",
+     "KI",
+     "KM",
+     "KN",
+     "KP",
+     "KW",
+     "KY",
+     "KZ",
+     "LA",
+     "LB",
+     "LC",
+     "LI",
+     "LK",
+     "LR",
+     "LS",
+     "LT",
+     "LU",
+     "LV",
+     "LY",
+     "MA",
+     "MC",
+     "MD",
+     "ME",
+     "MF",
+     "MG",
+     "MH",
+     "MK",
+     "ML",
+     "MM",
+     "MN",
+     "MO",
+     "MP",
+     "MQ",
+     "MR",
+     "MS",
+     "MT",
+     "MU",
+     "MV",
+     "MW",
+     "MX",
+     "MZ",
+     "NA",
+     "NC",
+     "NE",
+     "NF",
+     "NI",
+     "NL",
+     "NO",
+     "NP",
+     "NR",
+     "NU",
+     "OM",
+     "PA",
+     "PE",
+     "PF",
+     "PG",
+     "PH",
+     "PK",
+     "PL",
+     "PM",
+     "PN",
+     "PR",
+     "PS",
+     "PT",
+     "PW",
+     "PY",
+     "QA",
+     "RE",
+     "RO",
+     "RS",
+     "RU",
+     "RW",
+     "SA",
+     "SB",
+     "SC",
+     "SD",
+     "SE",
+     "SH",
+     "SI",
+     "SJ",
+     "SK",
+     "SL",
+     "SM",
+     "SN",
+     "SO",
+     "SR",
+     "SS",
+     "ST",
+     "SV",
+     "SX",
+     "SY",
+     "SZ",
+     "TC",
+     "TD",
+     "TF",
+     "TG",
+     "TH",
+     "TJ",
+     "TK",
+     "TL",
+     "TM",
+     "TN",
+     "TO",
+     "TR",
+     "TT",
+     "TV",
+     "TZ",
+     "UA",
+     "UG",
+     "UM",
+     "US",
+     "UY",
+     "UZ",
+     "VA",
+     "VC",
+     "VE",
+     "VG",
+     "VI",
+     "VN",
+     "VU",
+     "WF",
+     "WS",
+     "XK",
+     "YE",
+     "YT",
+     "ZA",
+     "ZM",
+     "ZW"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Grade 9",
+    "label": "Grade 9",
+    "parentValue": [
+     "AD",
+     "AE",
+     "AF",
+     "AG",
+     "AI",
+     "AL",
+     "AM",
+     "AO",
+     "AQ",
+     "AR",
+     "AS",
+     "AW",
+     "AX",
+     "AZ",
+     "BA",
+     "BB",
+     "BD",
+     "BE",
+     "BF",
+     "BG",
+     "BH",
+     "BI",
+     "BJ",
+     "BL",
+     "BM",
+     "BN",
+     "BO",
+     "BQ",
+     "BR",
+     "BS",
+     "BT",
+     "BV",
+     "BW",
+     "BY",
+     "BZ",
+     "CA",
+     "CC",
+     "CD",
+     "CF",
+     "CG",
+     "CI",
+     "CK",
+     "CL",
+     "CM",
+     "CO",
+     "CR",
+     "CU",
+     "CV",
+     "CW",
+     "CX",
+     "CY",
+     "CZ",
+     "DJ",
+     "DK",
+     "DM",
+     "DO",
+     "DZ",
+     "EC",
+     "EE",
+     "EG",
+     "EH",
+     "ER",
+     "ET",
+     "FI",
+     "FJ",
+     "FK",
+     "FM",
+     "FO",
+     "GA",
+     "GD",
+     "GE",
+     "GF",
+     "GG",
+     "GH",
+     "GI",
+     "GL",
+     "GM",
+     "GN",
+     "GP",
+     "GQ",
+     "GR",
+     "GS",
+     "GT",
+     "GU",
+     "GW",
+     "GY",
+     "HM",
+     "HN",
+     "HR",
+     "HT",
+     "HU",
+     "ID",
+     "IL",
+     "IM",
+     "IO",
+     "IQ",
+     "IR",
+     "IS",
+     "JE",
+     "JM",
+     "JO",
+     "KE",
+     "KG",
+     "KH",
+     "KI",
+     "KM",
+     "KN",
+     "KP",
+     "KW",
+     "KY",
+     "KZ",
+     "LA",
+     "LB",
+     "LC",
+     "LI",
+     "LK",
+     "LR",
+     "LS",
+     "LT",
+     "LU",
+     "LV",
+     "LY",
+     "MA",
+     "MC",
+     "MD",
+     "ME",
+     "MF",
+     "MG",
+     "MH",
+     "MK",
+     "ML",
+     "MM",
+     "MN",
+     "MO",
+     "MP",
+     "MQ",
+     "MR",
+     "MS",
+     "MT",
+     "MU",
+     "MV",
+     "MW",
+     "MX",
+     "MZ",
+     "NA",
+     "NC",
+     "NE",
+     "NF",
+     "NI",
+     "NL",
+     "NO",
+     "NP",
+     "NR",
+     "NU",
+     "OM",
+     "PA",
+     "PE",
+     "PF",
+     "PG",
+     "PH",
+     "PK",
+     "PL",
+     "PM",
+     "PN",
+     "PR",
+     "PS",
+     "PT",
+     "PW",
+     "PY",
+     "QA",
+     "RE",
+     "RO",
+     "RS",
+     "RU",
+     "RW",
+     "SA",
+     "SB",
+     "SC",
+     "SD",
+     "SE",
+     "SH",
+     "SI",
+     "SJ",
+     "SK",
+     "SL",
+     "SM",
+     "SN",
+     "SO",
+     "SR",
+     "SS",
+     "ST",
+     "SV",
+     "SX",
+     "SY",
+     "SZ",
+     "TC",
+     "TD",
+     "TF",
+     "TG",
+     "TH",
+     "TJ",
+     "TK",
+     "TL",
+     "TM",
+     "TN",
+     "TO",
+     "TR",
+     "TT",
+     "TV",
+     "TZ",
+     "UA",
+     "UG",
+     "UM",
+     "US",
+     "UY",
+     "UZ",
+     "VA",
+     "VC",
+     "VE",
+     "VG",
+     "VI",
+     "VN",
+     "VU",
+     "WF",
+     "WS",
+     "XK",
+     "YE",
+     "YT",
+     "ZA",
+     "ZM",
+     "ZW"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Grade 10",
+    "label": "Grade 10",
+    "parentValue": [
+     "AD",
+     "AE",
+     "AF",
+     "AG",
+     "AI",
+     "AL",
+     "AM",
+     "AO",
+     "AQ",
+     "AR",
+     "AS",
+     "AW",
+     "AX",
+     "AZ",
+     "BA",
+     "BB",
+     "BD",
+     "BE",
+     "BF",
+     "BG",
+     "BH",
+     "BI",
+     "BJ",
+     "BL",
+     "BM",
+     "BN",
+     "BO",
+     "BQ",
+     "BR",
+     "BS",
+     "BT",
+     "BV",
+     "BW",
+     "BY",
+     "BZ",
+     "CA",
+     "CC",
+     "CD",
+     "CF",
+     "CG",
+     "CI",
+     "CK",
+     "CL",
+     "CM",
+     "CO",
+     "CR",
+     "CU",
+     "CV",
+     "CW",
+     "CX",
+     "CY",
+     "CZ",
+     "DJ",
+     "DK",
+     "DM",
+     "DO",
+     "DZ",
+     "EC",
+     "EE",
+     "EG",
+     "EH",
+     "ER",
+     "ET",
+     "FI",
+     "FJ",
+     "FK",
+     "FM",
+     "FO",
+     "GA",
+     "GD",
+     "GE",
+     "GF",
+     "GG",
+     "GH",
+     "GI",
+     "GL",
+     "GM",
+     "GN",
+     "GP",
+     "GQ",
+     "GR",
+     "GS",
+     "GT",
+     "GU",
+     "GW",
+     "GY",
+     "HM",
+     "HN",
+     "HR",
+     "HT",
+     "HU",
+     "ID",
+     "IL",
+     "IM",
+     "IO",
+     "IQ",
+     "IR",
+     "IS",
+     "JE",
+     "JM",
+     "JO",
+     "KE",
+     "KG",
+     "KH",
+     "KI",
+     "KM",
+     "KN",
+     "KP",
+     "KW",
+     "KY",
+     "KZ",
+     "LA",
+     "LB",
+     "LC",
+     "LI",
+     "LK",
+     "LR",
+     "LS",
+     "LT",
+     "LU",
+     "LV",
+     "LY",
+     "MA",
+     "MC",
+     "MD",
+     "ME",
+     "MF",
+     "MG",
+     "MH",
+     "MK",
+     "ML",
+     "MM",
+     "MN",
+     "MO",
+     "MP",
+     "MQ",
+     "MR",
+     "MS",
+     "MT",
+     "MU",
+     "MV",
+     "MW",
+     "MX",
+     "MZ",
+     "NA",
+     "NC",
+     "NE",
+     "NF",
+     "NI",
+     "NL",
+     "NO",
+     "NP",
+     "NR",
+     "NU",
+     "OM",
+     "PA",
+     "PE",
+     "PF",
+     "PG",
+     "PH",
+     "PK",
+     "PL",
+     "PM",
+     "PN",
+     "PR",
+     "PS",
+     "PT",
+     "PW",
+     "PY",
+     "QA",
+     "RE",
+     "RO",
+     "RS",
+     "RU",
+     "RW",
+     "SA",
+     "SB",
+     "SC",
+     "SD",
+     "SE",
+     "SH",
+     "SI",
+     "SJ",
+     "SK",
+     "SL",
+     "SM",
+     "SN",
+     "SO",
+     "SR",
+     "SS",
+     "ST",
+     "SV",
+     "SX",
+     "SY",
+     "SZ",
+     "TC",
+     "TD",
+     "TF",
+     "TG",
+     "TH",
+     "TJ",
+     "TK",
+     "TL",
+     "TM",
+     "TN",
+     "TO",
+     "TR",
+     "TT",
+     "TV",
+     "TZ",
+     "UA",
+     "UG",
+     "UM",
+     "US",
+     "UY",
+     "UZ",
+     "VA",
+     "VC",
+     "VE",
+     "VG",
+     "VI",
+     "VN",
+     "VU",
+     "WF",
+     "WS",
+     "XK",
+     "YE",
+     "YT",
+     "ZA",
+     "ZM",
+     "ZW"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Grade 11",
+    "label": "Grade 11",
+    "parentValue": [
+     "AD",
+     "AE",
+     "AF",
+     "AG",
+     "AI",
+     "AL",
+     "AM",
+     "AO",
+     "AQ",
+     "AR",
+     "AS",
+     "AW",
+     "AX",
+     "AZ",
+     "BA",
+     "BB",
+     "BD",
+     "BE",
+     "BF",
+     "BG",
+     "BH",
+     "BI",
+     "BJ",
+     "BL",
+     "BM",
+     "BN",
+     "BO",
+     "BQ",
+     "BR",
+     "BS",
+     "BT",
+     "BV",
+     "BW",
+     "BY",
+     "BZ",
+     "CA",
+     "CC",
+     "CD",
+     "CF",
+     "CG",
+     "CI",
+     "CK",
+     "CL",
+     "CM",
+     "CO",
+     "CR",
+     "CU",
+     "CV",
+     "CW",
+     "CX",
+     "CY",
+     "CZ",
+     "DJ",
+     "DK",
+     "DM",
+     "DO",
+     "DZ",
+     "EC",
+     "EE",
+     "EG",
+     "EH",
+     "ER",
+     "ET",
+     "FI",
+     "FJ",
+     "FK",
+     "FM",
+     "FO",
+     "GA",
+     "GD",
+     "GE",
+     "GF",
+     "GG",
+     "GH",
+     "GI",
+     "GL",
+     "GM",
+     "GN",
+     "GP",
+     "GQ",
+     "GR",
+     "GS",
+     "GT",
+     "GU",
+     "GW",
+     "GY",
+     "HM",
+     "HN",
+     "HR",
+     "HT",
+     "HU",
+     "ID",
+     "IL",
+     "IM",
+     "IO",
+     "IQ",
+     "IR",
+     "IS",
+     "JE",
+     "JM",
+     "JO",
+     "KE",
+     "KG",
+     "KH",
+     "KI",
+     "KM",
+     "KN",
+     "KP",
+     "KW",
+     "KY",
+     "KZ",
+     "LA",
+     "LB",
+     "LC",
+     "LI",
+     "LK",
+     "LR",
+     "LS",
+     "LT",
+     "LU",
+     "LV",
+     "LY",
+     "MA",
+     "MC",
+     "MD",
+     "ME",
+     "MF",
+     "MG",
+     "MH",
+     "MK",
+     "ML",
+     "MM",
+     "MN",
+     "MO",
+     "MP",
+     "MQ",
+     "MR",
+     "MS",
+     "MT",
+     "MU",
+     "MV",
+     "MW",
+     "MX",
+     "MZ",
+     "NA",
+     "NC",
+     "NE",
+     "NF",
+     "NI",
+     "NL",
+     "NO",
+     "NP",
+     "NR",
+     "NU",
+     "OM",
+     "PA",
+     "PE",
+     "PF",
+     "PG",
+     "PH",
+     "PK",
+     "PL",
+     "PM",
+     "PN",
+     "PR",
+     "PS",
+     "PT",
+     "PW",
+     "PY",
+     "QA",
+     "RE",
+     "RO",
+     "RS",
+     "RU",
+     "RW",
+     "SA",
+     "SB",
+     "SC",
+     "SD",
+     "SE",
+     "SH",
+     "SI",
+     "SJ",
+     "SK",
+     "SL",
+     "SM",
+     "SN",
+     "SO",
+     "SR",
+     "SS",
+     "ST",
+     "SV",
+     "SX",
+     "SY",
+     "SZ",
+     "TC",
+     "TD",
+     "TF",
+     "TG",
+     "TH",
+     "TJ",
+     "TK",
+     "TL",
+     "TM",
+     "TN",
+     "TO",
+     "TR",
+     "TT",
+     "TV",
+     "TZ",
+     "UA",
+     "UG",
+     "UM",
+     "US",
+     "UY",
+     "UZ",
+     "VA",
+     "VC",
+     "VE",
+     "VG",
+     "VI",
+     "VN",
+     "VU",
+     "WF",
+     "WS",
+     "XK",
+     "YE",
+     "YT",
+     "ZA",
+     "ZM",
+     "ZW"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Grade 12",
+    "label": "Grade 12",
+    "parentValue": [
+     "AD",
+     "AE",
+     "AF",
+     "AG",
+     "AI",
+     "AL",
+     "AM",
+     "AO",
+     "AQ",
+     "AR",
+     "AS",
+     "AW",
+     "AX",
+     "AZ",
+     "BA",
+     "BB",
+     "BD",
+     "BE",
+     "BF",
+     "BG",
+     "BH",
+     "BI",
+     "BJ",
+     "BL",
+     "BM",
+     "BN",
+     "BO",
+     "BQ",
+     "BR",
+     "BS",
+     "BT",
+     "BV",
+     "BW",
+     "BY",
+     "BZ",
+     "CA",
+     "CC",
+     "CD",
+     "CF",
+     "CG",
+     "CI",
+     "CK",
+     "CL",
+     "CM",
+     "CO",
+     "CR",
+     "CU",
+     "CV",
+     "CW",
+     "CX",
+     "CY",
+     "CZ",
+     "DJ",
+     "DK",
+     "DM",
+     "DO",
+     "DZ",
+     "EC",
+     "EE",
+     "EG",
+     "EH",
+     "ER",
+     "ET",
+     "FI",
+     "FJ",
+     "FK",
+     "FM",
+     "FO",
+     "GA",
+     "GD",
+     "GE",
+     "GF",
+     "GG",
+     "GH",
+     "GI",
+     "GL",
+     "GM",
+     "GN",
+     "GP",
+     "GQ",
+     "GR",
+     "GS",
+     "GT",
+     "GU",
+     "GW",
+     "GY",
+     "HM",
+     "HN",
+     "HR",
+     "HT",
+     "HU",
+     "ID",
+     "IL",
+     "IM",
+     "IO",
+     "IQ",
+     "IR",
+     "IS",
+     "JE",
+     "JM",
+     "JO",
+     "KE",
+     "KG",
+     "KH",
+     "KI",
+     "KM",
+     "KN",
+     "KP",
+     "KW",
+     "KY",
+     "KZ",
+     "LA",
+     "LB",
+     "LC",
+     "LI",
+     "LK",
+     "LR",
+     "LS",
+     "LT",
+     "LU",
+     "LV",
+     "LY",
+     "MA",
+     "MC",
+     "MD",
+     "ME",
+     "MF",
+     "MG",
+     "MH",
+     "MK",
+     "ML",
+     "MM",
+     "MN",
+     "MO",
+     "MP",
+     "MQ",
+     "MR",
+     "MS",
+     "MT",
+     "MU",
+     "MV",
+     "MW",
+     "MX",
+     "MZ",
+     "NA",
+     "NC",
+     "NE",
+     "NF",
+     "NI",
+     "NL",
+     "NO",
+     "NP",
+     "NR",
+     "NU",
+     "OM",
+     "PA",
+     "PE",
+     "PF",
+     "PG",
+     "PH",
+     "PK",
+     "PL",
+     "PM",
+     "PN",
+     "PR",
+     "PS",
+     "PT",
+     "PW",
+     "PY",
+     "QA",
+     "RE",
+     "RO",
+     "RS",
+     "RU",
+     "RW",
+     "SA",
+     "SB",
+     "SC",
+     "SD",
+     "SE",
+     "SH",
+     "SI",
+     "SJ",
+     "SK",
+     "SL",
+     "SM",
+     "SN",
+     "SO",
+     "SR",
+     "SS",
+     "ST",
+     "SV",
+     "SX",
+     "SY",
+     "SZ",
+     "TC",
+     "TD",
+     "TF",
+     "TG",
+     "TH",
+     "TJ",
+     "TK",
+     "TL",
+     "TM",
+     "TN",
+     "TO",
+     "TR",
+     "TT",
+     "TV",
+     "TZ",
+     "UA",
+     "UG",
+     "UM",
+     "US",
+     "UY",
+     "UZ",
+     "VA",
+     "VC",
+     "VE",
+     "VG",
+     "VI",
+     "VN",
+     "VU",
+     "WF",
+     "WS",
+     "XK",
+     "YE",
+     "YT",
+     "ZA",
+     "ZM",
+     "ZW"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Not in school",
+    "label": "Not in school",
+    "parentValue": [
+     "AD",
+     "AE",
+     "AF",
+     "AG",
+     "AI",
+     "AL",
+     "AM",
+     "AO",
+     "AQ",
+     "AR",
+     "AS",
+     "AT",
+     "AU",
+     "AW",
+     "AX",
+     "AZ",
+     "BA",
+     "BB",
+     "BD",
+     "BE",
+     "BF",
+     "BG",
+     "BH",
+     "BI",
+     "BJ",
+     "BL",
+     "BM",
+     "BN",
+     "BO",
+     "BQ",
+     "BR",
+     "BS",
+     "BT",
+     "BV",
+     "BW",
+     "BY",
+     "BZ",
+     "CA",
+     "CC",
+     "CD",
+     "CF",
+     "CG",
+     "CH",
+     "CI",
+     "CK",
+     "CL",
+     "CM",
+     "CN",
+     "CO",
+     "CR",
+     "CU",
+     "CV",
+     "CW",
+     "CX",
+     "CY",
+     "CZ",
+     "DE",
+     "DJ",
+     "DK",
+     "DM",
+     "DO",
+     "DZ",
+     "EC",
+     "EE",
+     "EG",
+     "EH",
+     "ER",
+     "ES",
+     "ET",
+     "FI",
+     "FJ",
+     "FK",
+     "FM",
+     "FO",
+     "FR",
+     "GA",
+     "GB",
+     "GD",
+     "GE",
+     "GF",
+     "GG",
+     "GH",
+     "GI",
+     "GL",
+     "GM",
+     "GN",
+     "GP",
+     "GQ",
+     "GR",
+     "GS",
+     "GT",
+     "GU",
+     "GW",
+     "GY",
+     "HK",
+     "HM",
+     "HN",
+     "HR",
+     "HT",
+     "HU",
+     "ID",
+     "IE",
+     "IL",
+     "IM",
+     "IN",
+     "IO",
+     "IQ",
+     "IR",
+     "IS",
+     "IT",
+     "JE",
+     "JM",
+     "JO",
+     "JP",
+     "KE",
+     "KG",
+     "KH",
+     "KI",
+     "KM",
+     "KN",
+     "KP",
+     "KR",
+     "KW",
+     "KY",
+     "KZ",
+     "LA",
+     "LB",
+     "LC",
+     "LI",
+     "LK",
+     "LR",
+     "LS",
+     "LT",
+     "LU",
+     "LV",
+     "LY",
+     "MA",
+     "MC",
+     "MD",
+     "ME",
+     "MF",
+     "MG",
+     "MH",
+     "MK",
+     "ML",
+     "MM",
+     "MN",
+     "MO",
+     "MP",
+     "MQ",
+     "MR",
+     "MS",
+     "MT",
+     "MU",
+     "MV",
+     "MW",
+     "MX",
+     "MY",
+     "MZ",
+     "NA",
+     "NC",
+     "NE",
+     "NF",
+     "NG",
+     "NI",
+     "NL",
+     "NO",
+     "NP",
+     "NR",
+     "NU",
+     "NZ",
+     "OM",
+     "PA",
+     "PE",
+     "PF",
+     "PG",
+     "PH",
+     "PK",
+     "PL",
+     "PM",
+     "PN",
+     "PR",
+     "PS",
+     "PT",
+     "PW",
+     "PY",
+     "QA",
+     "RE",
+     "RO",
+     "RS",
+     "RU",
+     "RW",
+     "SA",
+     "SB",
+     "SC",
+     "SD",
+     "SE",
+     "SG",
+     "SH",
+     "SI",
+     "SJ",
+     "SK",
+     "SL",
+     "SM",
+     "SN",
+     "SO",
+     "SR",
+     "SS",
+     "ST",
+     "SV",
+     "SX",
+     "SY",
+     "SZ",
+     "TC",
+     "TD",
+     "TF",
+     "TG",
+     "TH",
+     "TJ",
+     "TK",
+     "TL",
+     "TM",
+     "TN",
+     "TO",
+     "TR",
+     "TT",
+     "TV",
+     "TW",
+     "TZ",
+     "UA",
+     "UG",
+     "UM",
+     "US",
+     "UY",
+     "UZ",
+     "VA",
+     "VC",
+     "VE",
+     "VG",
+     "VI",
+     "VN",
+     "VU",
+     "WF",
+     "WS",
+     "XK",
+     "YE",
+     "YT",
+     "ZA",
+     "ZM",
+     "ZW"
+    ]
+   },
+   {
+    "question": "teen-e002",
+    "value": "Prefer not to answer",
+    "label": "Prefer not to answer",
+    "parentValue": [
+     "AD",
+     "AE",
+     "AF",
+     "AG",
+     "AI",
+     "AL",
+     "AM",
+     "AO",
+     "AQ",
+     "AR",
+     "AS",
+     "AT",
+     "AU",
+     "AW",
+     "AX",
+     "AZ",
+     "BA",
+     "BB",
+     "BD",
+     "BE",
+     "BF",
+     "BG",
+     "BH",
+     "BI",
+     "BJ",
+     "BL",
+     "BM",
+     "BN",
+     "BO",
+     "BQ",
+     "BR",
+     "BS",
+     "BT",
+     "BV",
+     "BW",
+     "BY",
+     "BZ",
+     "CA",
+     "CC",
+     "CD",
+     "CF",
+     "CG",
+     "CH",
+     "CI",
+     "CK",
+     "CL",
+     "CM",
+     "CN",
+     "CO",
+     "CR",
+     "CU",
+     "CV",
+     "CW",
+     "CX",
+     "CY",
+     "CZ",
+     "DE",
+     "DJ",
+     "DK",
+     "DM",
+     "DO",
+     "DZ",
+     "EC",
+     "EE",
+     "EG",
+     "EH",
+     "ER",
+     "ES",
+     "ET",
+     "FI",
+     "FJ",
+     "FK",
+     "FM",
+     "FO",
+     "FR",
+     "GA",
+     "GB",
+     "GD",
+     "GE",
+     "GF",
+     "GG",
+     "GH",
+     "GI",
+     "GL",
+     "GM",
+     "GN",
+     "GP",
+     "GQ",
+     "GR",
+     "GS",
+     "GT",
+     "GU",
+     "GW",
+     "GY",
+     "HK",
+     "HM",
+     "HN",
+     "HR",
+     "HT",
+     "HU",
+     "ID",
+     "IE",
+     "IL",
+     "IM",
+     "IN",
+     "IO",
+     "IQ",
+     "IR",
+     "IS",
+     "IT",
+     "JE",
+     "JM",
+     "JO",
+     "JP",
+     "KE",
+     "KG",
+     "KH",
+     "KI",
+     "KM",
+     "KN",
+     "KP",
+     "KR",
+     "KW",
+     "KY",
+     "KZ",
+     "LA",
+     "LB",
+     "LC",
+     "LI",
+     "LK",
+     "LR",
+     "LS",
+     "LT",
+     "LU",
+     "LV",
+     "LY",
+     "MA",
+     "MC",
+     "MD",
+     "ME",
+     "MF",
+     "MG",
+     "MH",
+     "MK",
+     "ML",
+     "MM",
+     "MN",
+     "MO",
+     "MP",
+     "MQ",
+     "MR",
+     "MS",
+     "MT",
+     "MU",
+     "MV",
+     "MW",
+     "MX",
+     "MY",
+     "MZ",
+     "NA",
+     "NC",
+     "NE",
+     "NF",
+     "NG",
+     "NI",
+     "NL",
+     "NO",
+     "NP",
+     "NR",
+     "NU",
+     "NZ",
+     "OM",
+     "PA",
+     "PE",
+     "PF",
+     "PG",
+     "PH",
+     "PK",
+     "PL",
+     "PM",
+     "PN",
+     "PR",
+     "PS",
+     "PT",
+     "PW",
+     "PY",
+     "QA",
+     "RE",
+     "RO",
+     "RS",
+     "RU",
+     "RW",
+     "SA",
+     "SB",
+     "SC",
+     "SD",
+     "SE",
+     "SG",
+     "SH",
+     "SI",
+     "SJ",
+     "SK",
+     "SL",
+     "SM",
+     "SN",
+     "SO",
+     "SR",
+     "SS",
+     "ST",
+     "SV",
+     "SX",
+     "SY",
+     "SZ",
+     "TC",
+     "TD",
+     "TF",
+     "TG",
+     "TH",
+     "TJ",
+     "TK",
+     "TL",
+     "TM",
+     "TN",
+     "TO",
+     "TR",
+     "TT",
+     "TV",
+     "TW",
+     "TZ",
+     "UA",
+     "UG",
+     "UM",
+     "US",
+     "UY",
+     "UZ",
+     "VA",
+     "VC",
+     "VE",
+     "VG",
+     "VI",
+     "VN",
+     "VU",
+     "WF",
+     "WS",
+     "XK",
+     "YE",
+     "YT",
+     "ZA",
+     "ZM",
+     "ZW"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under USD 10",
+    "label": "Under USD 10",
+    "parentValue": [
+     "KH",
+     "US"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "USD 10 to under 20",
+    "label": "USD 10 to under 20",
+    "parentValue": [
+     "KH",
+     "US"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "USD 20 to under 40",
+    "label": "USD 20 to under 40",
+    "parentValue": [
+     "KH",
+     "US"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "USD 40 to under 80",
+    "label": "USD 40 to under 80",
+    "parentValue": [
+     "KH",
+     "US"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "USD 80 or more",
+    "label": "USD 80 or more",
+    "parentValue": [
+     "KH",
+     "US"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under CAD 15",
+    "label": "Under CAD 15",
+    "parentValue": [
+     "CA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CAD 15 to under 30",
+    "label": "CAD 15 to under 30",
+    "parentValue": [
+     "CA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CAD 30 to under 60",
+    "label": "CAD 30 to under 60",
+    "parentValue": [
+     "CA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CAD 60 to under 120",
+    "label": "CAD 60 to under 120",
+    "parentValue": [
+     "CA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CAD 120 or more",
+    "label": "CAD 120 or more",
+    "parentValue": [
+     "CA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under AUD 15",
+    "label": "Under AUD 15",
+    "parentValue": [
+     "AU"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "AUD 15 to under 30",
+    "label": "AUD 15 to under 30",
+    "parentValue": [
+     "AU"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "AUD 30 to under 60",
+    "label": "AUD 30 to under 60",
+    "parentValue": [
+     "AU"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "AUD 60 to under 120",
+    "label": "AUD 60 to under 120",
+    "parentValue": [
+     "AU"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "AUD 120 or more",
+    "label": "AUD 120 or more",
+    "parentValue": [
+     "AU"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under NZD 15",
+    "label": "Under NZD 15",
+    "parentValue": [
+     "NZ"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "NZD 15 to under 30",
+    "label": "NZD 15 to under 30",
+    "parentValue": [
+     "NZ"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "NZD 30 to under 60",
+    "label": "NZD 30 to under 60",
+    "parentValue": [
+     "NZ"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "NZD 60 to under 120",
+    "label": "NZD 60 to under 120",
+    "parentValue": [
+     "NZ"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "NZD 120 or more",
+    "label": "NZD 120 or more",
+    "parentValue": [
+     "NZ"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under GBP 10",
+    "label": "Under GBP 10",
+    "parentValue": [
+     "GB"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "GBP 10 to under 20",
+    "label": "GBP 10 to under 20",
+    "parentValue": [
+     "GB"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "GBP 20 to under 40",
+    "label": "GBP 20 to under 40",
+    "parentValue": [
+     "GB"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "GBP 40 to under 80",
+    "label": "GBP 40 to under 80",
+    "parentValue": [
+     "GB"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "GBP 80 or more",
+    "label": "GBP 80 or more",
+    "parentValue": [
+     "GB"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under EUR 10",
+    "label": "Under EUR 10",
+    "parentValue": [
+     "AT",
+     "BE",
+     "BG",
+     "DE",
+     "ES",
+     "FR",
+     "IE",
+     "IT",
+     "NL",
+     "PT"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "EUR 10 to under 20",
+    "label": "EUR 10 to under 20",
+    "parentValue": [
+     "AT",
+     "BE",
+     "BG",
+     "DE",
+     "ES",
+     "FR",
+     "IE",
+     "IT",
+     "NL",
+     "PT"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "EUR 20 to under 40",
+    "label": "EUR 20 to under 40",
+    "parentValue": [
+     "AT",
+     "BE",
+     "BG",
+     "DE",
+     "ES",
+     "FR",
+     "IE",
+     "IT",
+     "NL",
+     "PT"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "EUR 40 to under 80",
+    "label": "EUR 40 to under 80",
+    "parentValue": [
+     "AT",
+     "BE",
+     "BG",
+     "DE",
+     "ES",
+     "FR",
+     "IE",
+     "IT",
+     "NL",
+     "PT"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "EUR 80 or more",
+    "label": "EUR 80 or more",
+    "parentValue": [
+     "AT",
+     "BE",
+     "BG",
+     "DE",
+     "ES",
+     "FR",
+     "IE",
+     "IT",
+     "NL",
+     "PT"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under CHF 10",
+    "label": "Under CHF 10",
+    "parentValue": [
+     "CH"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CHF 10 to under 20",
+    "label": "CHF 10 to under 20",
+    "parentValue": [
+     "CH"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CHF 20 to under 40",
+    "label": "CHF 20 to under 40",
+    "parentValue": [
+     "CH"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CHF 40 to under 80",
+    "label": "CHF 40 to under 80",
+    "parentValue": [
+     "CH"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CHF 80 or more",
+    "label": "CHF 80 or more",
+    "parentValue": [
+     "CH"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under DKK 75",
+    "label": "Under DKK 75",
+    "parentValue": [
+     "DK"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "DKK 75 to under 150",
+    "label": "DKK 75 to under 150",
+    "parentValue": [
+     "DK"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "DKK 150 to under 300",
+    "label": "DKK 150 to under 300",
+    "parentValue": [
+     "DK"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "DKK 300 to under 600",
+    "label": "DKK 300 to under 600",
+    "parentValue": [
+     "DK"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "DKK 600 or more",
+    "label": "DKK 600 or more",
+    "parentValue": [
+     "DK"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under NOK 100",
+    "label": "Under NOK 100",
+    "parentValue": [
+     "NO"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "NOK 100 to under 200",
+    "label": "NOK 100 to under 200",
+    "parentValue": [
+     "NO"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "NOK 200 to under 400",
+    "label": "NOK 200 to under 400",
+    "parentValue": [
+     "NO"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "NOK 400 to under 800",
+    "label": "NOK 400 to under 800",
+    "parentValue": [
+     "NO"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "NOK 800 or more",
+    "label": "NOK 800 or more",
+    "parentValue": [
+     "NO"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under SEK 100",
+    "label": "Under SEK 100",
+    "parentValue": [
+     "SE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "SEK 100 to under 200",
+    "label": "SEK 100 to under 200",
+    "parentValue": [
+     "SE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "SEK 200 to under 400",
+    "label": "SEK 200 to under 400",
+    "parentValue": [
+     "SE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "SEK 400 to under 800",
+    "label": "SEK 400 to under 800",
+    "parentValue": [
+     "SE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "SEK 800 or more",
+    "label": "SEK 800 or more",
+    "parentValue": [
+     "SE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under PLN 40",
+    "label": "Under PLN 40",
+    "parentValue": [
+     "PL"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "PLN 40 to under 80",
+    "label": "PLN 40 to under 80",
+    "parentValue": [
+     "PL"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "PLN 80 to under 160",
+    "label": "PLN 80 to under 160",
+    "parentValue": [
+     "PL"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "PLN 160 to under 320",
+    "label": "PLN 160 to under 320",
+    "parentValue": [
+     "PL"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "PLN 320 or more",
+    "label": "PLN 320 or more",
+    "parentValue": [
+     "PL"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under CZK 250",
+    "label": "Under CZK 250",
+    "parentValue": [
+     "CZ"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CZK 250 to under 500",
+    "label": "CZK 250 to under 500",
+    "parentValue": [
+     "CZ"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CZK 500 to under 1,000",
+    "label": "CZK 500 to under 1,000",
+    "parentValue": [
+     "CZ"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CZK 1,000 to under 2,000",
+    "label": "CZK 1,000 to under 2,000",
+    "parentValue": [
+     "CZ"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CZK 2,000 or more",
+    "label": "CZK 2,000 or more",
+    "parentValue": [
+     "CZ"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under RON 50",
+    "label": "Under RON 50",
+    "parentValue": [
+     "RO"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "RON 50 to under 100",
+    "label": "RON 50 to under 100",
+    "parentValue": [
+     "RO"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "RON 100 to under 200",
+    "label": "RON 100 to under 200",
+    "parentValue": [
+     "RO"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "RON 200 to under 400",
+    "label": "RON 200 to under 400",
+    "parentValue": [
+     "RO"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "RON 400 or more",
+    "label": "RON 400 or more",
+    "parentValue": [
+     "RO"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under UAH 400",
+    "label": "Under UAH 400",
+    "parentValue": [
+     "UA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "UAH 400 to under 800",
+    "label": "UAH 400 to under 800",
+    "parentValue": [
+     "UA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "UAH 800 to under 1,600",
+    "label": "UAH 800 to under 1,600",
+    "parentValue": [
+     "UA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "UAH 1,600 to under 3,200",
+    "label": "UAH 1,600 to under 3,200",
+    "parentValue": [
+     "UA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "UAH 3,200 or more",
+    "label": "UAH 3,200 or more",
+    "parentValue": [
+     "UA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under RUB 1,000",
+    "label": "Under RUB 1,000",
+    "parentValue": [
+     "RU"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "RUB 1,000 to under 2,000",
+    "label": "RUB 1,000 to under 2,000",
+    "parentValue": [
+     "RU"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "RUB 2,000 to under 4,000",
+    "label": "RUB 2,000 to under 4,000",
+    "parentValue": [
+     "RU"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "RUB 4,000 to under 8,000",
+    "label": "RUB 4,000 to under 8,000",
+    "parentValue": [
+     "RU"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "RUB 8,000 or more",
+    "label": "RUB 8,000 or more",
+    "parentValue": [
+     "RU"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under ILS 40",
+    "label": "Under ILS 40",
+    "parentValue": [
+     "IL"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "ILS 40 to under 80",
+    "label": "ILS 40 to under 80",
+    "parentValue": [
+     "IL"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "ILS 80 to under 160",
+    "label": "ILS 80 to under 160",
+    "parentValue": [
+     "IL"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "ILS 160 to under 320",
+    "label": "ILS 160 to under 320",
+    "parentValue": [
+     "IL"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "ILS 320 or more",
+    "label": "ILS 320 or more",
+    "parentValue": [
+     "IL"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under AED 40",
+    "label": "Under AED 40",
+    "parentValue": [
+     "AE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "AED 40 to under 80",
+    "label": "AED 40 to under 80",
+    "parentValue": [
+     "AE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "AED 80 to under 160",
+    "label": "AED 80 to under 160",
+    "parentValue": [
+     "AE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "AED 160 to under 320",
+    "label": "AED 160 to under 320",
+    "parentValue": [
+     "AE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "AED 320 or more",
+    "label": "AED 320 or more",
+    "parentValue": [
+     "AE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under SAR 40",
+    "label": "Under SAR 40",
+    "parentValue": [
+     "SA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "SAR 40 to under 80",
+    "label": "SAR 40 to under 80",
+    "parentValue": [
+     "SA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "SAR 80 to under 160",
+    "label": "SAR 80 to under 160",
+    "parentValue": [
+     "SA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "SAR 160 to under 320",
+    "label": "SAR 160 to under 320",
+    "parentValue": [
+     "SA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "SAR 320 or more",
+    "label": "SAR 320 or more",
+    "parentValue": [
+     "SA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under KWD 3",
+    "label": "Under KWD 3",
+    "parentValue": [
+     "KW"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "KWD 3 to under 6",
+    "label": "KWD 3 to under 6",
+    "parentValue": [
+     "KW"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "KWD 6 to under 12",
+    "label": "KWD 6 to under 12",
+    "parentValue": [
+     "KW"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "KWD 12 to under 24",
+    "label": "KWD 12 to under 24",
+    "parentValue": [
+     "KW"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "KWD 24 or more",
+    "label": "KWD 24 or more",
+    "parentValue": [
+     "KW"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under QAR 40",
+    "label": "Under QAR 40",
+    "parentValue": [
+     "QA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "QAR 40 to under 80",
+    "label": "QAR 40 to under 80",
+    "parentValue": [
+     "QA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "QAR 80 to under 160",
+    "label": "QAR 80 to under 160",
+    "parentValue": [
+     "QA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "QAR 160 to under 320",
+    "label": "QAR 160 to under 320",
+    "parentValue": [
+     "QA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "QAR 320 or more",
+    "label": "QAR 320 or more",
+    "parentValue": [
+     "QA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under EGP 500",
+    "label": "Under EGP 500",
+    "parentValue": [
+     "EG"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "EGP 500 to under 1,000",
+    "label": "EGP 500 to under 1,000",
+    "parentValue": [
+     "EG"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "EGP 1,000 to under 2,000",
+    "label": "EGP 1,000 to under 2,000",
+    "parentValue": [
+     "EG"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "EGP 2,000 to under 4,000",
+    "label": "EGP 2,000 to under 4,000",
+    "parentValue": [
+     "EG"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "EGP 4,000 or more",
+    "label": "EGP 4,000 or more",
+    "parentValue": [
+     "EG"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under DZD 1,500",
+    "label": "Under DZD 1,500",
+    "parentValue": [
+     "DZ"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "DZD 1,500 to under 3,000",
+    "label": "DZD 1,500 to under 3,000",
+    "parentValue": [
+     "DZ"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "DZD 3,000 to under 6,000",
+    "label": "DZD 3,000 to under 6,000",
+    "parentValue": [
+     "DZ"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "DZD 6,000 to under 12,000",
+    "label": "DZD 6,000 to under 12,000",
+    "parentValue": [
+     "DZ"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "DZD 12,000 or more",
+    "label": "DZD 12,000 or more",
+    "parentValue": [
+     "DZ"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under NGN 10,000",
+    "label": "Under NGN 10,000",
+    "parentValue": [
+     "NG"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "NGN 10,000 to under 20,000",
+    "label": "NGN 10,000 to under 20,000",
+    "parentValue": [
+     "NG"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "NGN 20,000 to under 40,000",
+    "label": "NGN 20,000 to under 40,000",
+    "parentValue": [
+     "NG"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "NGN 40,000 to under 80,000",
+    "label": "NGN 40,000 to under 80,000",
+    "parentValue": [
+     "NG"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "NGN 80,000 or more",
+    "label": "NGN 80,000 or more",
+    "parentValue": [
+     "NG"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under KES 1,000",
+    "label": "Under KES 1,000",
+    "parentValue": [
+     "KE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "KES 1,000 to under 2,000",
+    "label": "KES 1,000 to under 2,000",
+    "parentValue": [
+     "KE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "KES 2,000 to under 4,000",
+    "label": "KES 2,000 to under 4,000",
+    "parentValue": [
+     "KE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "KES 4,000 to under 8,000",
+    "label": "KES 4,000 to under 8,000",
+    "parentValue": [
+     "KE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "KES 8,000 or more",
+    "label": "KES 8,000 or more",
+    "parentValue": [
+     "KE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under ZAR 200",
+    "label": "Under ZAR 200",
+    "parentValue": [
+     "ZA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "ZAR 200 to under 400",
+    "label": "ZAR 200 to under 400",
+    "parentValue": [
+     "ZA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "ZAR 400 to under 800",
+    "label": "ZAR 400 to under 800",
+    "parentValue": [
+     "ZA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "ZAR 800 to under 1,600",
+    "label": "ZAR 800 to under 1,600",
+    "parentValue": [
+     "ZA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "ZAR 1,600 or more",
+    "label": "ZAR 1,600 or more",
+    "parentValue": [
+     "ZA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under INR 500",
+    "label": "Under INR 500",
+    "parentValue": [
+     "IN"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "INR 500 to under 1,000",
+    "label": "INR 500 to under 1,000",
+    "parentValue": [
+     "IN"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "INR 1,000 to under 2,000",
+    "label": "INR 1,000 to under 2,000",
+    "parentValue": [
+     "IN"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "INR 2,000 to under 4,000",
+    "label": "INR 2,000 to under 4,000",
+    "parentValue": [
+     "IN"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "INR 4,000 or more",
+    "label": "INR 4,000 or more",
+    "parentValue": [
+     "IN"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under IDR 100,000",
+    "label": "Under IDR 100,000",
+    "parentValue": [
+     "ID"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "IDR 100,000 to under 200,000",
+    "label": "IDR 100,000 to under 200,000",
+    "parentValue": [
+     "ID"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "IDR 200,000 to under 400,000",
+    "label": "IDR 200,000 to under 400,000",
+    "parentValue": [
+     "ID"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "IDR 400,000 to under 800,000",
+    "label": "IDR 400,000 to under 800,000",
+    "parentValue": [
+     "ID"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "IDR 800,000 or more",
+    "label": "IDR 800,000 or more",
+    "parentValue": [
+     "ID"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under MYR 50",
+    "label": "Under MYR 50",
+    "parentValue": [
+     "MY"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "MYR 50 to under 100",
+    "label": "MYR 50 to under 100",
+    "parentValue": [
+     "MY"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "MYR 100 to under 200",
+    "label": "MYR 100 to under 200",
+    "parentValue": [
+     "MY"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "MYR 200 to under 400",
+    "label": "MYR 200 to under 400",
+    "parentValue": [
+     "MY"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "MYR 400 or more",
+    "label": "MYR 400 or more",
+    "parentValue": [
+     "MY"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under SGD 15",
+    "label": "Under SGD 15",
+    "parentValue": [
+     "SG"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "SGD 15 to under 30",
+    "label": "SGD 15 to under 30",
+    "parentValue": [
+     "SG"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "SGD 30 to under 60",
+    "label": "SGD 30 to under 60",
+    "parentValue": [
+     "SG"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "SGD 60 to under 120",
+    "label": "SGD 60 to under 120",
+    "parentValue": [
+     "SG"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "SGD 120 or more",
+    "label": "SGD 120 or more",
+    "parentValue": [
+     "SG"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under THB 300",
+    "label": "Under THB 300",
+    "parentValue": [
+     "TH"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "THB 300 to under 600",
+    "label": "THB 300 to under 600",
+    "parentValue": [
+     "TH"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "THB 600 to under 1,200",
+    "label": "THB 600 to under 1,200",
+    "parentValue": [
+     "TH"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "THB 1,200 to under 2,400",
+    "label": "THB 1,200 to under 2,400",
+    "parentValue": [
+     "TH"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "THB 2,400 or more",
+    "label": "THB 2,400 or more",
+    "parentValue": [
+     "TH"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under VND 200,000",
+    "label": "Under VND 200,000",
+    "parentValue": [
+     "VN"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "VND 200,000 to under 400,000",
+    "label": "VND 200,000 to under 400,000",
+    "parentValue": [
+     "VN"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "VND 400,000 to under 800,000",
+    "label": "VND 400,000 to under 800,000",
+    "parentValue": [
+     "VN"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "VND 800,000 to under 1,600,000",
+    "label": "VND 800,000 to under 1,600,000",
+    "parentValue": [
+     "VN"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "VND 1,600,000 or more",
+    "label": "VND 1,600,000 or more",
+    "parentValue": [
+     "VN"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under PHP 500",
+    "label": "Under PHP 500",
+    "parentValue": [
+     "PH"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "PHP 500 to under 1,000",
+    "label": "PHP 500 to under 1,000",
+    "parentValue": [
+     "PH"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "PHP 1,000 to under 2,000",
+    "label": "PHP 1,000 to under 2,000",
+    "parentValue": [
+     "PH"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "PHP 2,000 to under 4,000",
+    "label": "PHP 2,000 to under 4,000",
+    "parentValue": [
+     "PH"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "PHP 4,000 or more",
+    "label": "PHP 4,000 or more",
+    "parentValue": [
+     "PH"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under CNY 100",
+    "label": "Under CNY 100",
+    "parentValue": [
+     "CN"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CNY 100 to under 200",
+    "label": "CNY 100 to under 200",
+    "parentValue": [
+     "CN"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CNY 200 to under 400",
+    "label": "CNY 200 to under 400",
+    "parentValue": [
+     "CN"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CNY 400 to under 800",
+    "label": "CNY 400 to under 800",
+    "parentValue": [
+     "CN"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CNY 800 or more",
+    "label": "CNY 800 or more",
+    "parentValue": [
+     "CN"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under HKD 100",
+    "label": "Under HKD 100",
+    "parentValue": [
+     "HK"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "HKD 100 to under 200",
+    "label": "HKD 100 to under 200",
+    "parentValue": [
+     "HK"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "HKD 200 to under 400",
+    "label": "HKD 200 to under 400",
+    "parentValue": [
+     "HK"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "HKD 400 to under 800",
+    "label": "HKD 400 to under 800",
+    "parentValue": [
+     "HK"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "HKD 800 or more",
+    "label": "HKD 800 or more",
+    "parentValue": [
+     "HK"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under TWD 300",
+    "label": "Under TWD 300",
+    "parentValue": [
+     "TW"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "TWD 300 to under 600",
+    "label": "TWD 300 to under 600",
+    "parentValue": [
+     "TW"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "TWD 600 to under 1,200",
+    "label": "TWD 600 to under 1,200",
+    "parentValue": [
+     "TW"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "TWD 1,200 to under 2,400",
+    "label": "TWD 1,200 to under 2,400",
+    "parentValue": [
+     "TW"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "TWD 2,400 or more",
+    "label": "TWD 2,400 or more",
+    "parentValue": [
+     "TW"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under JPY 3,000",
+    "label": "Under JPY 3,000",
+    "parentValue": [
+     "JP"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "JPY 3,000 to under 6,000",
+    "label": "JPY 3,000 to under 6,000",
+    "parentValue": [
+     "JP"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "JPY 6,000 to under 12,000",
+    "label": "JPY 6,000 to under 12,000",
+    "parentValue": [
+     "JP"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "JPY 12,000 to under 24,000",
+    "label": "JPY 12,000 to under 24,000",
+    "parentValue": [
+     "JP"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "JPY 24,000 or more",
+    "label": "JPY 24,000 or more",
+    "parentValue": [
+     "JP"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under KRW 30,000",
+    "label": "Under KRW 30,000",
+    "parentValue": [
+     "KR"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "KRW 30,000 to under 60,000",
+    "label": "KRW 30,000 to under 60,000",
+    "parentValue": [
+     "KR"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "KRW 60,000 to under 120,000",
+    "label": "KRW 60,000 to under 120,000",
+    "parentValue": [
+     "KR"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "KRW 120,000 to under 240,000",
+    "label": "KRW 120,000 to under 240,000",
+    "parentValue": [
+     "KR"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "KRW 240,000 or more",
+    "label": "KRW 240,000 or more",
+    "parentValue": [
+     "KR"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under BRL 50",
+    "label": "Under BRL 50",
+    "parentValue": [
+     "BR"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "BRL 50 to under 100",
+    "label": "BRL 50 to under 100",
+    "parentValue": [
+     "BR"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "BRL 100 to under 200",
+    "label": "BRL 100 to under 200",
+    "parentValue": [
+     "BR"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "BRL 200 to under 400",
+    "label": "BRL 200 to under 400",
+    "parentValue": [
+     "BR"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "BRL 400 or more",
+    "label": "BRL 400 or more",
+    "parentValue": [
+     "BR"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under CLP 10,000",
+    "label": "Under CLP 10,000",
+    "parentValue": [
+     "CL"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CLP 10,000 to under 20,000",
+    "label": "CLP 10,000 to under 20,000",
+    "parentValue": [
+     "CL"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CLP 20,000 to under 40,000",
+    "label": "CLP 20,000 to under 40,000",
+    "parentValue": [
+     "CL"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CLP 40,000 to under 80,000",
+    "label": "CLP 40,000 to under 80,000",
+    "parentValue": [
+     "CL"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CLP 80,000 or more",
+    "label": "CLP 80,000 or more",
+    "parentValue": [
+     "CL"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under COP 40,000",
+    "label": "Under COP 40,000",
+    "parentValue": [
+     "CO"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "COP 40,000 to under 80,000",
+    "label": "COP 40,000 to under 80,000",
+    "parentValue": [
+     "CO"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "COP 80,000 to under 160,000",
+    "label": "COP 80,000 to under 160,000",
+    "parentValue": [
+     "CO"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "COP 160,000 to under 320,000",
+    "label": "COP 160,000 to under 320,000",
+    "parentValue": [
+     "CO"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "COP 320,000 or more",
+    "label": "COP 320,000 or more",
+    "parentValue": [
+     "CO"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under CRC 5,000",
+    "label": "Under CRC 5,000",
+    "parentValue": [
+     "CR"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CRC 5,000 to under 10,000",
+    "label": "CRC 5,000 to under 10,000",
+    "parentValue": [
+     "CR"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CRC 10,000 to under 20,000",
+    "label": "CRC 10,000 to under 20,000",
+    "parentValue": [
+     "CR"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CRC 20,000 to under 40,000",
+    "label": "CRC 20,000 to under 40,000",
+    "parentValue": [
+     "CR"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "CRC 40,000 or more",
+    "label": "CRC 40,000 or more",
+    "parentValue": [
+     "CR"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under MXN 200",
+    "label": "Under MXN 200",
+    "parentValue": [
+     "MX"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "MXN 200 to under 400",
+    "label": "MXN 200 to under 400",
+    "parentValue": [
+     "MX"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "MXN 400 to under 800",
+    "label": "MXN 400 to under 800",
+    "parentValue": [
+     "MX"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "MXN 800 to under 1,600",
+    "label": "MXN 800 to under 1,600",
+    "parentValue": [
+     "MX"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "MXN 1,600 or more",
+    "label": "MXN 1,600 or more",
+    "parentValue": [
+     "MX"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Under PEN 40",
+    "label": "Under PEN 40",
+    "parentValue": [
+     "PE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "PEN 40 to under 80",
+    "label": "PEN 40 to under 80",
+    "parentValue": [
+     "PE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "PEN 80 to under 160",
+    "label": "PEN 80 to under 160",
+    "parentValue": [
+     "PE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "PEN 160 to under 320",
+    "label": "PEN 160 to under 320",
+    "parentValue": [
+     "PE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "PEN 320 or more",
+    "label": "PEN 320 or more",
+    "parentValue": [
+     "PE"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "I do not get pocket money",
+    "label": "I do not get pocket money",
+    "parentValue": [
+     "AE",
+     "AT",
+     "AU",
+     "BE",
+     "BG",
+     "BR",
+     "CA",
+     "CH",
+     "CL",
+     "CN",
+     "CO",
+     "CR",
+     "CZ",
+     "DE",
+     "DK",
+     "DZ",
+     "EG",
+     "ES",
+     "FR",
+     "GB",
+     "HK",
+     "ID",
+     "IE",
+     "IL",
+     "IN",
+     "IT",
+     "JP",
+     "KE",
+     "KH",
+     "KR",
+     "KW",
+     "MX",
+     "MY",
+     "NG",
+     "NL",
+     "NO",
+     "NZ",
+     "PE",
+     "PH",
+     "PL",
+     "PT",
+     "QA",
+     "RO",
+     "RU",
+     "SA",
+     "SE",
+     "SG",
+     "TH",
+     "TW",
+     "UA",
+     "US",
+     "VN",
+     "ZA"
+    ]
+   },
+   {
+    "question": "teen-fm003",
+    "value": "Prefer not to answer",
+    "label": "Prefer not to answer",
+    "parentValue": [
+     "AE",
+     "AT",
+     "AU",
+     "BE",
+     "BG",
+     "BR",
+     "CA",
+     "CH",
+     "CL",
+     "CN",
+     "CO",
+     "CR",
+     "CZ",
+     "DE",
+     "DK",
+     "DZ",
+     "EG",
+     "ES",
+     "FR",
+     "GB",
+     "HK",
+     "ID",
+     "IE",
+     "IL",
+     "IN",
+     "IT",
+     "JP",
+     "KE",
+     "KH",
+     "KR",
+     "KW",
+     "MX",
+     "MY",
+     "NG",
+     "NL",
+     "NO",
+     "NZ",
+     "PE",
+     "PH",
+     "PL",
+     "PT",
+     "QA",
+     "RO",
+     "RU",
+     "SA",
+     "SE",
+     "SG",
+     "TH",
+     "TW",
+     "UA",
+     "US",
+     "VN",
+     "ZA"
+    ]
    }
   ],
   "remove": [
