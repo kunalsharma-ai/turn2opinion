@@ -37,6 +37,15 @@ const multi = (q) => q.type === 'multiselect' || q.type === 'checkbox';
  * onHome(): back to the dashboard (answers are already saved page by page)
  * onDone({ first }): a profile was completed (first = it was not complete before)
  */
+// The detail fields of each payment method (option values of `payment-method`), as in PaymentMethods.jsx.
+const PAY_FIELDS = [
+  [/amazon/i, ['payment-method-amazon']],
+  [/paypal/i, ['payment-method-paypal']],
+  [/upi|unified payment/i, ['payment-method-upi']],
+  [/wire|bank/i, ['payment-method-bank-name', 'payment-method-bank-ifsc', 'payment-method-bank-account']]
+];
+const payFieldFor = (v) => PAY_FIELDS.filter(([re]) => (Array.isArray(v) ? v : [v]).some((x) => re.test(String(x || '')))).flatMap(([, f]) => f);
+
 export default function Flow({ kind, source, wasDone, onHome, onDone }) {
   const me = useMe();
   const toast = useToast();
@@ -191,6 +200,8 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
       if (q.name === 'alternate-phone-whatsapp') return false;
       if (q.name === 'alternate-phone' && !filled(values.phone)) return false;
       if (q.parent && !filled(values[q.parent])) return false;
+      // payment details: only the fields for the method the member chose (same split as My account)
+      if (q.parent === 'payment-method' && !payFieldFor(values['payment-method']).includes(q.name)) return false;
       const o = opts[optKey(q)];
       if (CHOICE.includes(q.type)) return Array.isArray(o) && o.length > 0;
       // every open-ended question is asked as text (a validation rule, when the API has one, only checks the
