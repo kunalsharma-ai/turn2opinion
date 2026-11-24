@@ -64,6 +64,97 @@
     "name": "household-income",
     "set": {},
     "addCategory": "minor"
+   },
+   {
+    "_id": "6a3ccd82740da020fc6674b8",
+    "name": "payment-method",
+    "set": {
+     "isRequired": true
+    }
+   },
+   {
+    "_id": "6a3cd042740da020fc6674be",
+    "name": "payment-method-upi",
+    "set": {
+     "isRequired": true
+    }
+   },
+   {
+    "_id": "6a3cd042740da020fc6674c1",
+    "name": "payment-method-amazon",
+    "set": {
+     "isRequired": true
+    }
+   },
+   {
+    "_id": "6a3cd043740da020fc6674c4",
+    "name": "payment-method-paypal",
+    "set": {
+     "isRequired": true
+    }
+   },
+   {
+    "_id": "6a3cd043740da020fc6674c7",
+    "name": "payment-method-bank-name",
+    "set": {
+     "isRequired": true
+    }
+   },
+   {
+    "_id": "6a3cd043740da020fc6674ca",
+    "name": "payment-method-bank-ifsc",
+    "set": {
+     "isRequired": true
+    }
+   },
+   {
+    "_id": "6a3cd043740da020fc6674cd",
+    "name": "payment-method-bank-account",
+    "set": {
+     "isRequired": true
+    }
+   },
+   {
+    "_id": "6a3cd043740da020fc6674d0",
+    "name": "social-media-whatsapp",
+    "set": {
+     "isRequired": false
+    }
+   },
+   {
+    "_id": "6a3cd044740da020fc6674d3",
+    "name": "social-media-instagram",
+    "set": {
+     "isRequired": false
+    }
+   },
+   {
+    "_id": "6a3cd044740da020fc6674d6",
+    "name": "social-media-facebook",
+    "set": {
+     "isRequired": false
+    }
+   },
+   {
+    "_id": "6a3cd044740da020fc6674d9",
+    "name": "social-media-linkedin",
+    "set": {
+     "isRequired": false
+    }
+   },
+   {
+    "_id": "6a3cd044740da020fc6674dc",
+    "name": "social-media-youtube",
+    "set": {
+     "isRequired": false
+    }
+   },
+   {
+    "_id": "6a3cd044740da020fc6674df",
+    "name": "social-media-x",
+    "set": {
+     "isRequired": false
+    }
    }
   ],
   "insert": [
@@ -4618,6 +4709,42 @@
    }
   ],
   "remove": [
+   {
+    "_id": "69830d6051fc340e5d1993b6",
+    "name": "survey-participation-history"
+   },
+   {
+    "_id": "69830d9551fc340e5d1993d5",
+    "name": "survey-participation-frequency"
+   },
+   {
+    "_id": "69830dc751fc340e5d1993f4",
+    "name": "survey-participation-category"
+   },
+   {
+    "_id": "69830df151fc340e5d199413",
+    "name": "other-survey-panel"
+   },
+   {
+    "_id": "69830e1f51fc340e5d199432",
+    "name": "survey-mode"
+   },
+   {
+    "_id": "69830e4451fc340e5d199451",
+    "name": "survey-participation-time-duration"
+   },
+   {
+    "_id": "69830e8b51fc340e5d199470",
+    "name": "survey-participation-motivation"
+   },
+   {
+    "_id": "69830eb051fc340e5d19948f",
+    "name": "video-survey-participation-consent"
+   },
+   {
+    "_id": "69830ed551fc340e5d1994ae",
+    "name": "survey-participation-timeslot"
+   },
    {
     "_id": "6aae17f83879e4a288873b74",
     "name": ""
@@ -34597,6 +34724,192 @@
     "label": "Seasonal"
    },
    {
+    "_id": "69830fab7a2178a2947b492a",
+    "question": "other-survey-panel",
+    "value": "No",
+    "label": "No"
+   },
+   {
+    "_id": "69830fab7a2178a2947b492b",
+    "question": "other-survey-panel",
+    "value": "Yes",
+    "label": "Yes"
+   },
+   {
+    "_id": "69830fab7a2178a2947b492c",
+    "question": "survey-mode",
+    "value": "In-person interview",
+    "label": "In-person interview "
+   },
+   {
+    "_id": "69830fab7a2178a2947b492d",
+    "question": "survey-mode",
+    "value": "Mobile app",
+    "label": "Mobile app "
+   },
+   {
+    "_id": "69830fab7a2178a2947b492e",
+    "question": "survey-mode",
+    "value": "Online (via link or email)",
+    "label": "Online (via link or email) "
+   },
+   {
+    "_id": "69830fab7a2178a2947b492f",
+    "question": "survey-mode",
+    "value": "Telephone / CATI",
+    "label": "Telephone / CATI "
+   },
+   {
+    "_id": "69830fab7a2178a2947b4930",
+    "question": "survey-participation-category",
+    "value": "Consumer / Product feedback",
+    "label": "Consumer / Product feedback "
+   },
+   {
+    "_id": "69830fab7a2178a2947b4931",
+    "question": "survey-participation-category",
+    "value": "Healthcare / Patient-related",
+    "label": "Healthcare / Patient-related "
+   },
+   {
+    "_id": "69830fab7a2178a2947b4932",
+    "question": "survey-participation-category",
+    "value": "In-person / Telephone interviews",
+    "label": "In-person / Telephone interviews "
+   },
+   {
+    "_id": "69830fab7a2178a2947b4933",
+    "question": "survey-participation-category",
+    "value": "Online opinion polls",
+    "label": "Online opinion polls "
+   },
+   {
+    "_id": "69830fab7a2178a2947b4934",
+    "question": "survey-participation-category",
+    "value": "Other",
+    "label": "Other"
+   },
+   {
+    "_id": "69830fab7a2178a2947b4935",
+    "question": "survey-participation-frequency",
+    "value": "As available",
+    "label": "As available"
+   },
+   {
+    "_id": "69830fab7a2178a2947b4936",
+    "question": "survey-participation-frequency",
+    "value": "Bi-Weekly",
+    "label": "Bi-Weekly"
+   },
+   {
+    "_id": "69830fab7a2178a2947b4937",
+    "question": "survey-participation-frequency",
+    "value": "Monthly",
+    "label": "Monthly"
+   },
+   {
+    "_id": "69830fab7a2178a2947b4938",
+    "question": "survey-participation-frequency",
+    "value": "weekly",
+    "label": "Weekly"
+   },
+   {
+    "_id": "69830fab7a2178a2947b4939",
+    "question": "survey-participation-history",
+    "value": "no",
+    "label": "No"
+   },
+   {
+    "_id": "69830fab7a2178a2947b493a",
+    "question": "survey-participation-history",
+    "value": "yes",
+    "label": "Yes"
+   },
+   {
+    "_id": "69830fab7a2178a2947b493b",
+    "question": "survey-participation-motivation",
+    "value": "Helping improve healthcare / products",
+    "label": "Helping improve healthcare / products "
+   },
+   {
+    "_id": "69830fab7a2178a2947b493c",
+    "question": "survey-participation-motivation",
+    "value": "Learning new information",
+    "label": "Learning new information "
+   },
+   {
+    "_id": "69830fab7a2178a2947b493d",
+    "question": "survey-participation-motivation",
+    "value": "Other",
+    "label": "Other"
+   },
+   {
+    "_id": "69830fab7a2178a2947b493e",
+    "question": "survey-participation-motivation",
+    "value": "Receiving rewards or incentives",
+    "label": "Receiving rewards or incentives "
+   },
+   {
+    "_id": "69830fab7a2178a2947b493f",
+    "question": "survey-participation-motivation",
+    "value": "Sharing my opinion",
+    "label": "Sharing my opinion "
+   },
+   {
+    "_id": "69830fab7a2178a2947b4940",
+    "question": "survey-participation-time-duration",
+    "value": "10-20 minutes",
+    "label": "10-20 minutes "
+   },
+   {
+    "_id": "69830fab7a2178a2947b4941",
+    "question": "survey-participation-time-duration",
+    "value": "20 minutes or more",
+    "label": "20 minutes or more "
+   },
+   {
+    "_id": "69830fab7a2178a2947b4942",
+    "question": "survey-participation-time-duration",
+    "value": "5-10 minutes",
+    "label": "5-10 minutes "
+   },
+   {
+    "_id": "69830fab7a2178a2947b4943",
+    "question": "survey-participation-time-duration",
+    "value": "Less than 5 minutes",
+    "label": "Less than 5 minutes "
+   },
+   {
+    "_id": "69830fab7a2178a2947b4944",
+    "question": "survey-participation-timeslot",
+    "value": "Afternoon",
+    "label": "Afternoon"
+   },
+   {
+    "_id": "69830fab7a2178a2947b4945",
+    "question": "survey-participation-timeslot",
+    "value": "Evening",
+    "label": "Evening"
+   },
+   {
+    "_id": "69830fab7a2178a2947b4946",
+    "question": "survey-participation-timeslot",
+    "value": "Morning",
+    "label": "Morning"
+   },
+   {
+    "_id": "69830fab7a2178a2947b4947",
+    "question": "video-survey-participation-consent",
+    "value": "No",
+    "label": "No"
+   },
+   {
+    "_id": "69830fab7a2178a2947b4948",
+    "question": "video-survey-participation-consent",
+    "value": "Yes",
+    "label": "Yes"
+   },
+   {
     "_id": "6ab122f2f86f876429bf743d",
     "question": "unemp-jobtype",
     "value": "Application Security Engineer",
@@ -34937,6 +35250,44 @@
  "profiles": {
   "setPages": [
    {
+    "slug": "basic",
+    "category": "b2c",
+    "pages": [
+     [
+      "basic",
+      "firstname",
+      "lastname",
+      "mail",
+      "alternate-email",
+      "phone",
+      "alternate-phone",
+      "dob",
+      "gender",
+      "country",
+      "state",
+      "city",
+      "zipcode",
+      "ethnicity",
+      "religion",
+      "relationship",
+      "rural",
+      "personal-income",
+      "household-income",
+      "children-num"
+     ],
+     [
+      "payment",
+      "payment-method",
+      "payment-method-upi",
+      "payment-method-paypal",
+      "payment-method-amazon",
+      "payment-method-bank-name",
+      "payment-method-bank-ifsc",
+      "payment-method-bank-account"
+     ]
+    ]
+   },
+   {
     "slug": "parenting",
     "category": "b2c",
     "pages": [
@@ -35134,6 +35485,41 @@
       "beverages10",
       "beverages11",
       "beverages12"
+     ]
+    ]
+   },
+   {
+    "slug": "technology-digital-services",
+    "category": "b2c",
+    "pages": [
+     [
+      "Technology & Digital Services",
+      "technology-digital-services1",
+      "technology-digital-services2",
+      "technology-digital-services3",
+      "technology-digital-services4",
+      "technology-digital-services5",
+      "technology-digital-services6",
+      "technology-digital-services7",
+      "technology-digital-services8",
+      "technology-digital-services9",
+      "technology-digital-services10",
+      "technology-digital-services11",
+      "technology-digital-services12",
+      "technology-digital-services13",
+      "technology-digital-services14",
+      "technology-digital-services15",
+      "technology-digital-services16",
+      "technology-digital-services17"
+     ],
+     [
+      "Your social accounts",
+      "social-media-whatsapp",
+      "social-media-instagram",
+      "social-media-facebook",
+      "social-media-linkedin",
+      "social-media-x",
+      "social-media-youtube"
      ]
     ]
    },
