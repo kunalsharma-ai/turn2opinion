@@ -11,7 +11,8 @@ export const MAX_LIMIT = { members: 500, answers: 1000, deletions: 1000 };
 const DEFAULT_LIMIT = 200;
 
 // Member fields a feed reader gets. The guardian's own details (name, e-mail, phone, date of birth, IP address and
-// onboarding answers) are never included: only the status of their consent.
+// onboarding answers) are never included: only the status of their consent. The role is read only to set isStaff
+// (admin and integration accounts), and is not sent.
 export const MEMBER_FIELDS = [
     "_id", "respondentID", "category", "mail", "phone", "name.first", "name.last", "gender", "dob", "timezone",
     "address.country", "address.state", "address.city", "isVerified", "qualityScore", "isActive", "isDeleted",
@@ -19,7 +20,7 @@ export const MEMBER_FIELDS = [
     "parent.consent", "parent.consentStatus", "parent.consentAt", "parent.consentVersion", "parent.decision",
     "parent.decisionAt"
 ];
-export const memberProjection = () => MEMBER_FIELDS.join(" ");
+export const memberProjection = () => `${MEMBER_FIELDS.join(" ")} +role`;
 
 // Profile questions whose answers are contact details or direct identifiers. They are already on the member
 // record, so the answers feed leaves them out rather than handing out a second, unprotected copy.
@@ -98,6 +99,8 @@ export function pageOf(docs, limit, incomingCursor, map = (d) => d) {
 }
 
 // A member record as the feed hands it out: only MEMBER_FIELDS, whatever the query returned.
+const STAFF_ROLES = ["administrator", "admin", "superadmin", "root"];
+
 export function toMember(u = {}) {
     const p = u.parent || {};
     const out = {
@@ -115,6 +118,7 @@ export function toMember(u = {}) {
         qualityScore: u.qualityScore,
         isActive: u.isActive !== false,
         isDeleted: u.isDeleted === true,
+        isStaff: STAFF_ROLES.includes(String(u.role ?? "").trim().toLowerCase()),
         createdAt: u.createdAt,
         updatedAt: u.updatedAt,
         consent: u.consent,

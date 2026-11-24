@@ -1,4 +1,5 @@
 import express from "express";
+import { teenCategory } from "../../utils/goLiveSetup.js";
 import {
     Survey as surveyController,
     User as userController,
@@ -236,7 +237,8 @@ router
     .patch("/parent-details",
         expressRoute(
             async req => {
-                const body = { ...req.body, category: "minor" };
+                const current = await userController.read(req.user._id);
+                const body = { ...req.body, category: teenCategory(current?.category) };
                 if (body.parent && typeof body.parent === "object")
                     body.parent = { ...body.parent, consent: null, consentStatus: "pending", submittedAt: new Date() };
                 await userController.update(req.user._id, body);

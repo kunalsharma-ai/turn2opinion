@@ -35,7 +35,7 @@ import {
 } from "../../utils/index.js"
 import { createCaptcha, requireCaptcha } from "../../utils/captcha.js";
 import { requireAdmin, requireMember, selfOrAdmin } from "../../utils/access.js";
-import { checkQuery, memberListQuery, omit, safeFilter, userUpdate } from "../../utils/memberAccess.js";
+import { checkQuery, isAdminRole, memberListQuery, omit, safeFilter, userUpdate } from "../../utils/memberAccess.js";
 import { captchaLimit, loginLimit, registerLimit, linkLimit } from "../../utils/limits.js";
 import { ageInYears } from "../../model/User.js";
 import { Answers as answerModel, Response as responseModel, Tombstone as tombstoneModel } from "../../model/index.js";
@@ -44,6 +44,7 @@ import {
     linkFor, sigOk, maskEmail, registrationRef, cleanOnboarding, onboardingErrors, teenMail, brand
 } from "../../utils/teen.js";
 import { familyRecord } from "../../utils/teenFamily.js";
+import { MINOR_CATEGORIES, isMinorCategory, teenCategory } from "../../utils/goLiveSetup.js";
 
 const TEEN_LINK_MS = 7 * 24 * 60 * 60 * 1000; // parent onboarding and teen activation links
 const TEEN_CONSENT_VERSION = "teen-consent-2026-11";
@@ -51,7 +52,7 @@ const PARENT_RELATIONS = ["mother", "father", "guardian"];
 const isTeenUser = (u) => {
     if (!u) return false;
     const a = ageInYears(u.dob);
-    return u.category === "minor" || (a !== null && a < 18);
+    return isMinorCategory(u.category) || (a !== null && a < 18);
 };
 // A deletion readers of GET /api/v1/changes/deletions must see. The member's id only, never their details.
 const tombstone = (kind, user) => tombstoneModel.create({ kind, user: String(user._id ?? user), origin: user.origin });
@@ -183,9 +184,10 @@ router
         requireAdmin,
         expressRoute(
             async req => {
-                // Read all entries
+                // Read all entries. isStaff marks admin and integration accounts, so a reader such as MADP can leave
+                // them out of member counts; the role itself is not sent.
                 let message = "";
-                let data = await userController.list()
+                let data = Mutate(await userController.list({}, null, {}, "+role")).map(({ role, ...u }) => ({ ...u, isStaff: isAdminRole(role) }));
                 return { message, data };
             },
             userController
@@ -245,11 +247,11 @@ router
                 }
                 // Panel by date of birth, decided here so a changed form value can't bypass it.
                 const age = ageInYears(userInfo.dob);
-                if (age !== null && age < 13) throw new Error("Turn2Opinion members must be at least 13 years old.");
+                if (age !== null && age < 13) throw new Error(`${brand()} members must be at least 13 years old.`);
                 const isTeen = age !== null && age < 18;
                 let teenWithParent = false;
                 if (isTeen) {
-                    userInfo.category = "minor";
+                    userInfo.category = teenCategory(userInfo.category);
                     if (userInfo.parent && userInfo.parent.email) {
                         const parent = cleanParent(userInfo.parent);
                         checkParent(parent, userInfo.mail);
@@ -270,6 +272,7 @@ router
                     delete userInfo.parent;
                     delete userInfo.teenConsent;
                     if (userInfo.category === "minor") userInfo.category = "b2c";
+                    if (userInfo.category === "minor patient") userInfo.category = "patient";
                 }
                 if (Array.isArray(userInfo.terms)) userInfo.terms = userInfo.terms.filter((t) => typeof t === "string").slice(0, 20);
                 let message = "";
@@ -939,7 +942,7 @@ router.post("/teen-reminders", expressRoute(
         if (!key || req.headers["x-cron-key"] !== key) throw new Error("Not allowed");
         const now = Date.now();
         const DAY = 24 * 3600 * 1000;
-        const open = (await userController.list({ category: "minor", "parent.consentStatus": { $in: ["pending", "expired"] } })).map(Mutate);
+        const open = (await userController.list({ category: { $in: MINOR_CATEGORIES }, "parent.consentStatus": { $in: ["pending", "expired"] } })).map(Mutate);
         const sent = { reminders: 0, renewals: 0 };
         for (const u of open) {
             const p = u.parent || {};

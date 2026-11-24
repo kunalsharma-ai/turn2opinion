@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import dns from "dns";
 import { promisify } from "util"
 import { parsePhoneNumberFromString } from "libphonenumber-js"
+import { isMinorCategory } from "../utils/goLiveSetup.js";
 
 
 const resolveMx = promisify(dns.resolveMx)
@@ -386,7 +387,7 @@ export default mongooseModel(
             registrationStatus: function () {
                 const verified = this.isVerified?.email === "verified";
                 const years = ageInYears(this.dob);
-                const isTeen = this.category === "minor" || (years !== null && years < 18);
+                const isTeen = isMinorCategory(this.category) || (years !== null && years < 18);
                 if (!isTeen) return verified ? "account-active" : "email-verification-pending";
                 const p = this.parent || {};
                 if (!p.email) return verified ? "parent-details-needed" : "registration-started";
