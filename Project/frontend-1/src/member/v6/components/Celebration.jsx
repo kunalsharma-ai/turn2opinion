@@ -78,7 +78,7 @@ export default function Celebration({ i, points = 0, next, onClose, onNext }) {
     const pp = document.getElementById('pill-pts'), pq = document.getElementById('pill-qs');
     sound.ui('whoosh');
     const d = dlg.current; if (d) d.classList.add('leaving');
-    // only the points the server credited fly to the header (the quality score has no per-profile rule)
+    // only the points the server credited fly to the header; the +1 quality score (issue #40) arrives with the refreshed member record
     if (points > 0) await fly(coinRef.current, pp, 'coin', '<i class="mini-coin"></i><b>+' + nf(points) + '</b>', d);
     markPaid(key); if (points > 0) { pop(pp); sound.ui('coin'); } void pq;
     if (d && d.open) d.close();

@@ -632,7 +632,7 @@ function SocialFollow() {
 
 /* ================= activity ================= */
 const RANGES = { 30: 30, 90: 90, 365: 365, all: null };
-const ACT_ICON = { complete: 'check', terminate: 'close', dropout: 'clock', overquota: 'lock' };
+const ACT_ICON = { complete: 'check', terminate: 'close', dropout: 'clock', overquota: 'lock', profile: 'user', reward: 'gift', referral: 'users' };
 export function ActivityPage() {
   const [list, status, retry] = useSection('activity');
   const [stats] = useSection('stats');
@@ -702,7 +702,7 @@ export function ActivityPage() {
         <XHead id="xs-river" icon="pulse" title={t('ac.title')} sub={items.length ? t('av2.summary', { n: items.length, p: fmt(earnedPts) }) : undefined} />
         <div className="xriver__tools">
           <div className="xs-filters" role="group" aria-label={t('ac.title')}>
-            {['all', 'complete', 'terminate', 'dropout'].map((v) => (
+            {['all', 'complete', 'terminate', 'dropout', 'profile', 'referral'].map((v) => (
               <button key={v} type="button" className={cx('xs-chip', filter === v && 'is-on')} aria-pressed={filter === v} onClick={() => setFilter(v)}>
                 {t(`ac.filter.${v}`)}
               </button>

@@ -152,11 +152,17 @@ export function adaptOptions(list) {
   );
 }
 
-export function adaptActivity(list) {
-  return (Array.isArray(list) ? list : [])
+/**
+ * The member's activity feed: survey responses, plus finished profiles (GET /me/rewards history, issues #41 and #42)
+ * and referral invitations sent (GET /me/invite, issue #41). Every row has a `kind` (survey, profile, reward, referral);
+ * rows with points > 0 are what the Rewards history and points cards list.
+ */
+export function adaptActivity(list, rewards, invites) {
+  const surveys = (Array.isArray(list) ? list : [])
     .filter((r) => r.status !== 'invited')
     .map((r) => ({
       id: r._id,
+      kind: 'survey',
       status: r.status || 'other',
       name: r.survey?.name || 'Survey',
       slug: r.survey?.slug,
@@ -166,8 +172,30 @@ export function adaptActivity(list) {
       loi: num(r.survey?.loi),
       start: r.timeline?.start || null,
       date: r.timeline?.end || r.updatedAt || r.timeline?.start || r.createdAt
-    }))
-    .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+    }));
+  const hist = Array.isArray(rewards) ? rewards : Array.isArray(rewards?.history) ? rewards.history : [];
+  const credits = hist
+    .filter((r) => r && (r.status || 'credited') === 'credited')
+    .map((r) => {
+      const profile = r.category === 'profile';
+      return {
+        id: `rw-${r.id || r._id || r.slug}`,
+        kind: profile ? 'profile' : 'reward',
+        status: profile ? 'profile' : 'reward',
+        name: profile ? title(r.title || r.slug || '') : r.title || r.slug || '',
+        slug: r.slug || '',
+        category: '',
+        source: '',
+        points: num(r.points),
+        loi: 0,
+        start: null,
+        date: r.at || r.createdAt || null
+      };
+    });
+  const sent = (Array.isArray(invites) ? invites : [])
+    .filter((i) => i && i.email)
+    .map((i) => ({ id: `rf-${i._id || i.email}`, kind: 'referral', status: 'referral', name: i.email, slug: '', category: '', source: '', points: 0, loi: 0, start: null, date: i.createdAt || null }));
+  return [...surveys, ...credits, ...sent].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 }
 
 export function adaptReferrals(invites, joined, me) {
@@ -222,7 +250,15 @@ export const LOADERS = {
   stats: async () => adaptStats(await call(() => api.get('/api/v1/me/statistics'))),
   surveys: async () => adaptSurveys(await call(() => api.post('/api/v1/me/survey', { status: 'active' }))),
   profiles: async (ctx) => adaptProfiles(await call(() => api.post('/api/v1/profile', { category: ctx.me?.category }))),
-  activity: async () => adaptActivity(await call(() => api.post('/api/v1/response', { status: { $nin: ['invited'] } }))),
+  activity: async () => {
+    // surveys must load; the profile credits and referral invitations are added when they load
+    const [list, rewards, invites] = await Promise.all([
+      call(() => api.post('/api/v1/response', { status: { $nin: ['invited'] } })),
+      call(() => api.get('/api/v1/me/rewards')).catch(() => null),
+      call(() => api.get('/api/v1/me/invite')).catch(() => [])
+    ]);
+    return adaptActivity(list, rewards, invites);
+  },
   referrals: async (ctx) => {
     const [inv, reg] = await Promise.all([call(() => api.get('/api/v1/me/invite')), call(() => api.post('/api/v1/user', { referredBy: ctx.me?.id })).catch(() => [])]);
     return adaptReferrals(inv, reg, ctx.me);

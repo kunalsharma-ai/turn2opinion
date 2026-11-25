@@ -90,7 +90,7 @@ points to confirm or small improvements:
 | 54 | Profile and survey answers | **Live** on `POST /api/v1/question`, `/api/v1/option`, `/api/v1/validation`, `POST /api/v1/me`, `PATCH /api/v1/me/profile` | None |
 | 55 | Opening and finishing a survey | **Live** on `PUT` / `PATCH /api/v1/me/survey` | None |
 | 56 | Phone format | Saved as digits with country code (for example `919810012345`), the format `react-phone-input-2` sends today | Confirm the format |
-| 57 | Money ranges (`isMoney`) | Labels like `300001 - 600000` are shown in the member's currency; anything else is shown as sent | None |
+| 57 | Money ranges (`isMoney`) | Labels like `300001 - 600000`, `up to 30000`, `250000 and above`, `Less than 500` are shown in the member's currency (country list as the old site) and sorted lowest first; hours, minutes, percentages and labels that already carry a symbol are shown as sent | None |
 | 58 | Kingdom buildings | One building per profile on `GET /api/v1/profile`, raised when its status reaches 100. Treasury shows the real points and quality score | None |
 | 59 | Survey feedback column (`svfeedback`) | Preview only (gem rating kept on the device) | An endpoint to store a 1-5 rating and comment per response |
 | 60 | Profile length | Minutes shown as questions ÷ 7 | Optional: a real median time per profile |
