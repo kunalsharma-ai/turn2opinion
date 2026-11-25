@@ -103,7 +103,9 @@ export function adaptProfiles(list) {
   return (Array.isArray(list) ? list : []).map((p) => {
     // pages: [[pageTitle, questionName, ...], ...] (same shape the existing profile flow reads)
     const pages = (Array.isArray(p.pages) ? p.pages : []).filter((pg) => Array.isArray(pg) && pg.length > 1);
-    const questions = pages.reduce((n, pg) => n + pg.length - 1, 0);
+    // each question once (the bank sometimes lists one twice), and never the WhatsApp copy of the phone,
+    // which the question flow does not ask: the same count the flow's "Question n of N" starts from
+    const questions = new Set(pages.flatMap((pg) => pg.slice(1)).filter((n) => n && n !== 'alternate-phone-whatsapp')).size;
     return {
       slug: p.slug,
       name: title(p.name || p.slug),
