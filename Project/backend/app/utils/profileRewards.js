@@ -10,6 +10,10 @@
 // Pure helpers take their data and writers as arguments so they can be unit tested without a database.
 
 export const PROFILE_REWARD = "profile";
+// Each finished profile also adds this much to the member's quality score (issue #40; the member area and Help
+// centre promise "+50 points and +1 quality score" per profile). It is added only together with a NEW reward row,
+// so it is just as idempotent, and never above the segment's quality scale.
+export const QUALITY_PER_PROFILE = 1;
 
 /** Profiles at 100% that have no reward yet. */
 export function profilesToCredit(profiles = [], status = {}, creditedSlugs = []) {
@@ -54,7 +58,29 @@ export async function creditCompletedProfiles({ user, origin }, deps) {
             if (!isDuplicate(e)) throw e;
         }
     }
+    if (out.length && deps.addQuality) {
+        try {
+            await deps.addQuality(out.length * QUALITY_PER_PROFILE);
+            out.forEach((p) => (p.quality = QUALITY_PER_PROFILE));
+        } catch (e) {
+            console.error("profile quality score update failed", e); // the points stay credited
+        }
+    }
     return out;
+}
+
+/**
+ * The atomic updates that add `add` to a member's quality score without passing the segment's scale:
+ * a member without a score starts at the model default (100), then $inc, then anything above the scale is cut back.
+ * Atomic, so two saves finishing different profiles at the same moment both count.
+ */
+export function qualityUpdates(who, add, scale = 200) {
+    const cap = Number(scale) > 0 ? Number(scale) : 200;
+    return [
+        { filter: { ...who, qualityScore: { $exists: false } }, update: { $set: { qualityScore: 100 } } },
+        { filter: { ...who }, update: { $inc: { qualityScore: Number(add) || 0 } } },
+        { filter: { ...who, qualityScore: { $gt: cap } }, update: { $set: { qualityScore: cap } } }
+    ];
 }
 
 /** Sum of credited reward points (profile rewards and any other credited Rewards rows). */

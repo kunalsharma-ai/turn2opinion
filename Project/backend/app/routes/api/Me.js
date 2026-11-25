@@ -13,7 +13,7 @@ import Category from "../../model/Category.js";
 import UserModel from "../../model/User.js";
 import * as Marketing from "../../utils/marketing.js";
 import { Profile as profileModel, Rewards as rewardsModel } from "../../model/index.js";
-import { PROFILE_REWARD, creditCompletedProfiles, sumCredited } from "../../utils/profileRewards.js";
+import { PROFILE_REWARD, creditCompletedProfiles, qualityUpdates, sumCredited } from "../../utils/profileRewards.js";
 import { linkFor, teenMail, teenMailData, guardianLinks, brand } from "../../utils/teen.js";
 
 const TEEN_LINK_MS = 7 * 24 * 60 * 60 * 1000; // guardian links last 7 days, as the email says
@@ -39,7 +39,13 @@ async function creditProfiles(req) {
         profiles: async () => Mutate(await profileModel.find({ category, isActive: true, isDeleted: false }, { slug: 1, name: 1, points: 1 }).lean()),
         status: async () => (await profileController.status()) || {},
         credited: async () => (await rewardsModel.find({ user: req.user._id, origin: req.origin, category: PROFILE_REWARD }, { remarks: 1 }).lean()).map((r) => r.remarks),
-        upsert: (filter, update, options) => rewardsModel.updateOne(filter, update, options)
+        upsert: (filter, update, options) => rewardsModel.updateOne(filter, update, options),
+        // +1 quality score per newly finished profile (issue #40), capped at the segment's scale
+        addQuality: async (n) => {
+            const cat = await Category.findOne({ name: category }).select("qualityScoreScale").lean();
+            const scale = cat?.qualityScoreScale ?? Category.schema.path("qualityScoreScale").defaultValue;
+            for (const op of qualityUpdates({ _id: req.user._id, origin: req.origin }, n, scale)) await UserModel.updateOne(op.filter, op.update);
+        }
     });
 }
 Date.prototype.resetTime = function (type = "start") {

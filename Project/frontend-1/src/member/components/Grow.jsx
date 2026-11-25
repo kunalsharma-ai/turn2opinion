@@ -126,7 +126,7 @@ export function SavingsGoal() {
   const target = goal?.pts || options[0].pts;
   const pct = Math.min(1, p.total / target);
   const remaining = Math.max(0, target - p.total);
-  const earnedSurveys = (d.activity || []).filter((a) => a.points > 0).slice(0, 20);
+  const earnedSurveys = (d.activity || []).filter((a) => a.points > 0 && (a.kind || 'survey') === 'survey').slice(0, 20);
   const avg = earnedSurveys.length ? earnedSurveys.reduce((n, a) => n + a.points, 0) / earnedSurveys.length : 0;
   const surveysLeft = avg ? Math.ceil(remaining / avg) : null;
   const weekly = d.weeks.reduce((n, v) => n + v, 0) / (d.weeks.length || 8);

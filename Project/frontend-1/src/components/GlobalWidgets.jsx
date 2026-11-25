@@ -457,7 +457,9 @@ export default function GlobalWidgets() {
       {!member && <VideoFab quiet={formPage} />}
       <FloatingActions chatOpen={chatOpen} onChat={() => setChatOpen((o) => !o)} />
       <LiveChat open={chatOpen} onClose={() => setChatOpen(false)} />
-      {!member && <ReviewWidget ready={consentDone && !formPage} />}
+      {/* Always mounted: the Rate us button above opens it on every page, the member area included (issue #45).
+          The timed "20-second favour" ask stays off in the member area. */}
+      <ReviewWidget ready={consentDone && !formPage && !member} />
       {/* Right-hand side: live member reviews. Bottom-left: reward tickets. They never collide. */}
       {!member && <ReviewToasts blocked={!consentDone || chatOpen || formPage} />}
       {!member && <ActivityToasts blocked={!consentDone || chatOpen || formPage} />}

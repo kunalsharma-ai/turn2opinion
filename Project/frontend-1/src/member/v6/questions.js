@@ -9,6 +9,7 @@ import { actions, CHOICE } from '../data/source.js';
 import { t, tn } from '../i18n/t.js';
 import { t as t6 } from './i18n/index.js';
 import { fieldSpec } from './lib/validate/fields.js';
+import { CURRENCY } from './currency.js';
 
 export { CHOICE };
 export const filled = (v) => !(v == null || v === '' || (Array.isArray(v) && !v.length));
@@ -75,19 +76,54 @@ export function safeHtml(html) {
   return doc.body.innerHTML;
 }
 
-const CURRENCY = { IN: 'INR', US: 'USD', GB: 'GBP', CA: 'CAD', AU: 'AUD', SG: 'SGD', AE: 'AED', DE: 'EUR', FR: 'EUR', ES: 'EUR', IT: 'EUR', NL: 'EUR', IE: 'EUR' };
-export function moneyLabel(label, country) {
-  const cur = CURRENCY[String(country || '').toUpperCase()];
-  const m = String(label).match(/^\s*(\d+)\s*(?:-\s*(\d+)|\+)\s*$/);
-  if (!cur || !m) return label;
-  const f = (n) => {
-    try {
-      return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur, maximumFractionDigits: 0 }).format(Number(n));
-    } catch {
-      return n;
-    }
-  };
-  return m[2] ? `${f(m[1])} – ${f(m[2])}` : `${f(m[1])}+`;
+const NUM = '(\\d[\\d,]*(?:\\.\\d+)?)';
+// Money option labels the bank uses ("up to 30000", "30000 - 49999", "250000 and above", "Less than 500", "25000 or more").
+// Anything else (hours, minutes, percentages, labels that already carry a symbol) does not match and is shown as sent.
+const MONEY = [
+  [new RegExp(`^up to\\s*${NUM}$`, 'i'), (f, a) => `Up to ${f(a)}`, () => 0],
+  [new RegExp(`^(?:less than|under|below)\\s*${NUM}$`, 'i'), (f, a) => `Less than ${f(a)}`, () => 0],
+  [new RegExp(`^${NUM}\\s*(?:-|–|—|to)\\s*${NUM}$`, 'i'), (f, a, b) => `${f(a)} – ${f(b)}`, (a) => a],
+  [new RegExp(`^${NUM}\\s*(?:and above|and over|\\+)$`, 'i'), (f, a) => `${f(a)} and above`, (a) => a],
+  [new RegExp(`^${NUM}\\s*or more$`, 'i'), (f, a) => `${f(a)} or more`, (a) => a],
+  [new RegExp(`^(?:more than|over|above)\\s*${NUM}$`, 'i'), (f, a) => `More than ${f(a)}`, (a) => a],
+  [new RegExp(`^${NUM}$`), (f, a) => f(a), (a) => a],
+];
+const num = (x) => Number(String(x).replace(/,/g, ''));
+function parseMoney(label) {
+  const l = String(label ?? '').trim();
+  for (const [re, fmt, rank] of MONEY) {
+    const m = l.match(re);
+    if (m) return { fmt, rank: rank(num(m[1])), a: num(m[1]), b: m[2] !== undefined ? num(m[2]) : undefined };
+  }
+  return null;
+}
+
+/** The currency of a member's country (ISO alpha-2), or undefined. */
+export const currencyOf = (country) => CURRENCY[String(country || '').toUpperCase()];
+
+/**
+ * A money range option shown in the member's local currency (issue #43, same rules as the old site's toMoneyRange):
+ * "30000 - 49999" -> "₹30,000 – ₹49,999", "up to 30000" -> "Up to ₹30,000", "250000 and above" -> "₹2,50,000 and above".
+ */
+export function moneyLabel(label, country, locale) {
+  const cur = currencyOf(country);
+  const p = cur && parseMoney(label);
+  if (!p) return label;
+  let nf;
+  try {
+    nf = new Intl.NumberFormat(locale, { style: 'currency', currency: cur, maximumFractionDigits: 0 });
+  } catch {
+    return label;
+  }
+  return p.fmt((n) => nf.format(n), p.a, p.b);
+}
+
+/** Money options in ascending order (lowest range first), like the old site's sortRange. Left as sent unless every option is a money range. */
+export function sortMoney(list) {
+  const l = Array.isArray(list) ? list : [];
+  const ranks = l.map((o) => parseMoney(o?.label));
+  if (!l.length || ranks.some((r) => !r)) return l;
+  return l.map((o, i) => [o, ranks[i].rank, i]).sort((x, y) => x[1] - y[1] || x[2] - y[2]).map((x) => x[0]);
 }
 
 /** The options a member can pick, with the question's Others / Prefer not to say / None of the above added. */

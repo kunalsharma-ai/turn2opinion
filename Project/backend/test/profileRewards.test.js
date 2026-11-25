@@ -2,7 +2,7 @@
 // Run: npm test
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { profilesToCredit, rewardUpsert, creditCompletedProfiles, sumCredited, isDuplicate, PROFILE_REWARD } from "../app/utils/profileRewards.js";
+import { profilesToCredit, rewardUpsert, creditCompletedProfiles, sumCredited, isDuplicate, qualityUpdates, PROFILE_REWARD } from "../app/utils/profileRewards.js";
 
 const profiles = [
     { slug: "basic", name: "Basic", points: 50 },
@@ -90,4 +90,30 @@ test("credits are per member", async () => {
 test("balance sums only credited rows", () => {
     assert.equal(sumCredited([{ points: 50 }, { points: 70, status: "credited" }, { points: 500, status: "reversed" }, null]), 120);
     assert.equal(sumCredited([]), 0);
+});
+
+test("issue #40: each newly finished profile adds 1 to the quality score, once", async () => {
+    const db = store();
+    let quality = 0;
+    const deps = { profiles: async () => profiles, status: async () => ({ basic: 100, travel: 100 }), credited: db.credited, upsert: db.upsert, addQuality: async (n) => { quality += n; } };
+    const first = await creditCompletedProfiles({ user: "u1", origin: "t2o" }, deps);
+    assert.equal(quality, 2);
+    assert.deepEqual(first.map((p) => p.quality), [1, 1]);
+    await creditCompletedProfiles({ user: "u1", origin: "t2o" }, deps);
+    assert.equal(quality, 2, "saving again adds nothing");
+});
+
+test("issue #40: a failed quality update keeps the points credited", async () => {
+    const db = store();
+    const deps = { profiles: async () => profiles, status: async () => ({ basic: 100 }), credited: db.credited, upsert: db.upsert, addQuality: async () => { throw new Error("down"); } };
+    const out = await creditCompletedProfiles({ user: "u1", origin: "t2o" }, deps);
+    assert.equal(out.length, 1);
+    assert.equal(db.rows.size, 1);
+});
+
+test("issue #40: quality updates are atomic, start missing scores at 100 and stop at the scale", () => {
+    const ops = qualityUpdates({ _id: "u1", origin: "t2o" }, 2, 200);
+    assert.deepEqual(ops.map((o) => o.update), [{ $set: { qualityScore: 100 } }, { $inc: { qualityScore: 2 } }, { $set: { qualityScore: 200 } }]);
+    assert.deepEqual(ops[0].filter, { _id: "u1", origin: "t2o", qualityScore: { $exists: false } });
+    assert.deepEqual(ops[2].filter, { _id: "u1", origin: "t2o", qualityScore: { $gt: 200 } });
 });

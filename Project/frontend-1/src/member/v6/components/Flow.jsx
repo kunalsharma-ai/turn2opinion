@@ -23,7 +23,7 @@ import ComboBox from './fields/ComboBox.jsx';
 import MultiCombo from './fields/MultiCombo.jsx';
 import TextField from './fields/TextField.jsx';
 import { t, nf } from '../i18n/index.js';
-import { CHOICE, dateOnly, filled, loadOptions, loadQuestion, matchOption, maxHint, moneyLabel, normalise6, safeHtml, specFor, specifyLabel, validate6, withExtras } from '../questions.js';
+import { CHOICE, dateOnly, filled, loadOptions, loadQuestion, matchOption, maxHint, moneyLabel, normalise6, sortMoney, safeHtml, specFor, specifyLabel, validate6, withExtras } from '../questions.js';
 
 // Question types that can't be answered on this screen (a file upload): never shown, never saved as answered.
 const NEVER_BLANK = ['document', 'file'];
@@ -545,7 +545,7 @@ export default function Flow({ kind, source, wasDone, onHome, onDone }) {
     );
   } else {
     const o = opts[optKey(q)];
-    const list = CHOICE.includes(q.type) ? withExtras(q, o).map((x) => (q.isMoney ? { ...x, base: x.label, label: moneyLabel(x.label, values.country || me.address?.country) } : x)) : [];
+    const list = CHOICE.includes(q.type) ? withExtras(q, q.isMoney ? sortMoney(o) : o).map((x) => (q.isMoney ? { ...x, base: x.label, label: moneyLabel(x.label, values.country || me.address?.country) } : x)) : [];
     const spec = specifyLabel(q, values[q.name], list);
     const ok = !err && !notice && filled(values[q.name]) && !validate6(q, values, CHOICE.includes(q.type) ? list : o, ctxFor(q), raw.current[q.name]);
     const lockedPhone = q.name === 'phone' && filled(saved.phone);
