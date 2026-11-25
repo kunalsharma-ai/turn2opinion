@@ -19,7 +19,7 @@ export const meta = {
   subjects: ['Your consent is needed for {{ user.name.first }}’s Turn2Opinion account', 'Parent or guardian approval required — Turn2Opinion', 'Please review your child’s Turn2Opinion registration'],
   subjectsSample: ['Your consent is needed for Aarav’s Turn2Opinion account', 'Parent or guardian approval required — Turn2Opinion', 'Please review your child’s Turn2Opinion registration'],
   preheader: 'The account stays inactive until a parent or guardian approves it. Declining is a perfectly ordinary answer.',
-  cta: { label: 'Review and approve', dest: 'auth/parent-consent?user=…&code=…' },
+  cta: { label: 'Review and approve', dest: 'parent-consent/?user=…&code=…' },
   reason: 'You are receiving this because your email address was given as the parent or guardian contact during a registration.',
 };
 

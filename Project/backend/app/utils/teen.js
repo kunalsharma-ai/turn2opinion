@@ -35,6 +35,26 @@ export function sigOk(user, channel, code, sig) {
 export const linkFor = (user, channel, otp) =>
     otp && otp.code ? { code: otp.code, sig: linkSig(String(user), channel, otp.code), expiresAt: otp.expiresAt } : null;
 
+// ---------- guardian email links ----------
+/** The panel's site address for links in Teen emails. */
+export const teenSite = (req, user) => `https://${user?.origin || req?.origin}`;
+/** Links in the guardian's emails: /parent-consent/?user&code&s (+ &d=yes|no on the two decision buttons). */
+export function guardianLinks(req, user, link) {
+    if (!link) return null;
+    const base = `${teenSite(req, user)}/parent-consent/?user=${user._id}&code=${link.code}&s=${link.sig}`;
+    return { open: base, yes: `${base}&d=yes`, no: `${base}&d=no`, expiresAt: link.expiresAt };
+}
+/** What every Teen email template reads. */
+export const teenMailData = (req, user, extra = {}) => ({
+    user,
+    ref: registrationRef(user),
+    site: teenSite(req, user),
+    parentMasked: maskEmail(user?.parent?.email),
+    teenMasked: maskEmail(user?.mail),
+    relation: user?.parent?.relation === "guardian" ? "legal guardian" : user?.parent?.relation || "parent or guardian",
+    ...extra
+});
+
 // ---------- masking ----------
 export function maskEmail(v) {
     const [u, d] = String(v || "").split("@");

@@ -45,7 +45,8 @@ import UserModel from "../../model/User.js";
 import { Answers as answerModel, Response as responseModel, Tombstone as tombstoneModel } from "../../model/index.js";
 import {
     TEEN_REG_CONSENT_VERSION, GUARDIAN_TERMS_VERSION, TEEN_STATEMENTS, GUARDIAN_REQUIRED, GUARDIAN_OPTIONAL, DECLINE_REASONS,
-    linkFor, sigOk, maskEmail, registrationRef, cleanOnboarding, onboardingErrors, teenMail, brand
+    linkFor, sigOk, maskEmail, registrationRef, cleanOnboarding, onboardingErrors, teenMail, brand,
+    teenSite, guardianLinks, teenMailData
 } from "../../utils/teen.js";
 import { familyRecord } from "../../utils/teenFamily.js";
 import { guardianAnswers } from "../../utils/parentProfile.js";
@@ -93,22 +94,8 @@ function checkParent(parent, teenMail) {
     if (parent.dob && (pAge === null || pAge < 18)) throw new Error("A parent or guardian must be 18 or older.");
 }
 
-// Links in the guardian's emails: /parent-consent/?user&code&s (+ &d=yes|no on the two decision buttons).
-const siteOf = (req, user) => `https://${user?.origin || req.origin}`;
-function guardianLinks(req, user, link) {
-    if (!link) return null;
-    const base = `${siteOf(req, user)}/parent-consent/?user=${user._id}&code=${link.code}&s=${link.sig}`;
-    return { open: base, yes: `${base}&d=yes`, no: `${base}&d=no`, expiresAt: link.expiresAt };
-}
-const teenMailData = (req, user, extra = {}) => ({
-    user,
-    ref: registrationRef(user),
-    site: siteOf(req, user),
-    parentMasked: maskEmail(user?.parent?.email),
-    teenMasked: maskEmail(user?.mail),
-    relation: user?.parent?.relation === "guardian" ? "legal guardian" : user?.parent?.relation || "parent or guardian",
-    ...extra
-});
+// Links in the guardian's emails and the data every Teen email gets: see utils/teen.js (shared with /me/parent-details).
+const siteOf = teenSite;
 
 async function sendParentOnboarding(req, user, template = "minor", subject) {
     const otp = await otpController.generate(user._id, "parent-consent", user.origin || req.origin, TEEN_LINK_MS);

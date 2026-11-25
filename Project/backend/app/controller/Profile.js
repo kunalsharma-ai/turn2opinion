@@ -10,12 +10,20 @@ class ProfileController extends CrudController {
   }
   async status() {
     const userID = this?.request?.user?._id?.toString();
+    // Only the member's own segment (b2c = Consumer, minor = Teen). Profiles of different segments share slugs
+    // (basic, educational, lifestyle-food...) and were grouped together by slug, so a Teen's Basic also counted
+    // the Consumer-only questions (email, phone, income...) that Teens are never asked, and could never reach 100%.
+    // Same for the panel: the other brands keep their own profiles under the same slugs.
+    const category = this?.request?.user?.category;
+    const origin = this?.request?.origin;
     let temp = await profileModel.aggregate([
 
       {
         $match: {
           isActive: true,
-          isDeleted: false
+          isDeleted: false,
+          ...(category ? { category } : {}),
+          ...(origin ? { origin } : {})
         }
       },
 

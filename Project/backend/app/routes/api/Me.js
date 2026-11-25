@@ -14,6 +14,9 @@ import UserModel from "../../model/User.js";
 import * as Marketing from "../../utils/marketing.js";
 import { Profile as profileModel, Rewards as rewardsModel } from "../../model/index.js";
 import { PROFILE_REWARD, creditCompletedProfiles, sumCredited } from "../../utils/profileRewards.js";
+import { linkFor, teenMail, teenMailData, guardianLinks, brand } from "../../utils/teen.js";
+
+const TEEN_LINK_MS = 7 * 24 * 60 * 60 * 1000; // guardian links last 7 days, as the email says
 import {
     Mutate,
     expressRoute,
@@ -279,27 +282,13 @@ router
                     body.parent = { ...body.parent, consent: null, consentStatus: "pending", submittedAt: new Date() };
                 await userController.update(req.user._id, body);
                 let user = Mutate(await userController.read(req.user._id))
-                let otp=await otpController.generate(
-                    user._id,
-                    "parent-consent",
-                    user.origin,
-                    1 * 24 * 60 * 60 * 1000
-                )
-                let mailer = await getMailer(
-                    "register",
-                    "minor",
-                    {
-                        user,
-                        otp
-                    }
-                )
-                const emailStatus = await sendMail(
-                    { origin: req.origin, "content-type": "application/json" },
-                    user?.parent?.email,
-                    `${process.env.PROJECT_NAME}: Child Registration`,
-                    mailer.data
-                )
-                console.log(emailStatus)
+                // The guardian's YES / NO email with the current signed /parent-consent/ links (issue #36). Before,
+                // this sent the "minor" template with only the code, so its buttons had no working link.
+                const otp = await otpController.generate(user._id, "parent-consent", user.origin || req.origin, TEEN_LINK_MS);
+                const link = linkFor(user._id, "parent-consent", otp);
+                await teenMail(req, user?.parent?.email, "minor",
+                    `${user?.name?.first || "Your teen"} would like to join the ${brand()} Teen panel: your decision`,
+                    teenMailData(req, user, { otp: link, links: guardianLinks(req, user, link) }));
                 return {
                     status: "success",
                     message: "",

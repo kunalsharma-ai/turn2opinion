@@ -54,13 +54,12 @@ export const DECLINE_REASONS = [
   ['other', 'Other', '✏️']
 ];
 
-/** Teen gender options. The API stores Male / Female / Other; the exact answer is also saved as profile answer D06. */
+/** Teen gender options: the same three as Consumer and Professional (issue #35). The API stores Male / Female / Other,
+ *  and the answer is also saved as profile answer D06. */
 export const TEEN_GENDERS = [
   ['Female', 'Female', '♀'],
   ['Male', 'Male', '♂'],
-  ['Non-binary', 'Non-binary', '⚧'],
-  ['Prefer not to say', 'Prefer not to say', '🤐'],
-  ['self', 'Let me describe', '✏️']
+  ['Other', 'Other', '⚧']
 ];
 export const apiGender = (g) => (g === 'Female' || g === 'Male' ? g : 'Other');
 
