@@ -47,11 +47,15 @@ export const UI = `${ASSETS}/ui`;
 export const SOC = `${ASSETS}/social`;
 export const LOGO = `${ASSETS}/brand`;
 
-/** Manrope for headings and numbers, Inter for body, buttons and labels (site pairing). */
+/**
+ * One font everywhere (issue #49): Times New Roman for headings, body, buttons, labels and footers, with serif
+ * fallbacks for clients and systems without it. Codes (OTP, ticket numbers) use it too, so every email is consistent.
+ */
+const TIMES = "'Times New Roman',Times,Georgia,serif";
 export const FONT = {
-  display: "'Manrope','Segoe UI',Roboto,Helvetica,Arial,sans-serif",
-  body: "'Inter','Segoe UI',Roboto,Helvetica,Arial,sans-serif",
-  mono: "'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace",
+  display: TIMES,
+  body: TIMES,
+  mono: TIMES,
 };
 
 /** Website tokens (base.css :root). */

@@ -245,7 +245,7 @@ export function Button({ href, label, width = 300, ghost = false }) {
   const bg = ghost ? '#FFFFFF' : BTN.base;
   const ink = ghost ? C.blue : '#FFFFFF';
   const border = ghost ? `2px solid ${C.lBlue}` : '0';
-  const html = `<!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${esc(href)}" style="height:${h}px;v-text-anchor:middle;width:${width}px;" arcsize="50%" ${ghost ? `strokecolor="${C.lBlue}" strokeweight="2px"` : 'stroke="f"'} fillcolor="${bg}"><w:anchorlock/><center style="color:${ink};font-family:'Segoe UI',Arial,sans-serif;font-size:16px;font-weight:bold;">${esc(label)} &rarr;</center></v:roundrect><![endif]--><!--[if !mso]><!-- --><a href="${esc(href)}" class="${ghost ? 'btn-ghost' : 'btn'}" style="display:inline-block;box-sizing:border-box;min-width:${width}px;max-width:100%;background-color:${bg};${ghost ? '' : `background-image:${BTN.grad};`}border:${border};border-radius:999px;color:${ink};font-family:${FONT.body.replace(/'/g, '&#39;')};font-size:16px;font-weight:600;line-height:${h}px;text-align:center;text-decoration:none;padding:0 30px;mso-hide:all;">${esc(label)}&nbsp;&nbsp;&rarr;</a><!--<![endif]-->`;
+  const html = `<!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${esc(href)}" style="height:${h}px;v-text-anchor:middle;width:${width}px;" arcsize="50%" ${ghost ? `strokecolor="${C.lBlue}" strokeweight="2px"` : 'stroke="f"'} fillcolor="${bg}"><w:anchorlock/><center style="color:${ink};font-family:'Times New Roman',Times,serif;font-size:16px;font-weight:bold;">${esc(label)} &rarr;</center></v:roundrect><![endif]--><!--[if !mso]><!-- --><a href="${esc(href)}" class="${ghost ? 'btn-ghost' : 'btn'}" style="display:inline-block;box-sizing:border-box;min-width:${width}px;max-width:100%;background-color:${bg};${ghost ? '' : `background-image:${BTN.grad};`}border:${border};border-radius:999px;color:${ink};font-family:${FONT.body.replace(/'/g, '&#39;')};font-size:16px;font-weight:600;line-height:${h}px;text-align:center;text-decoration:none;padding:0 30px;mso-hide:all;">${esc(label)}&nbsp;&nbsp;&rarr;</a><!--<![endif]-->`;
   return <Raw html={html} />;
 }
 
@@ -683,7 +683,7 @@ const css = `
   table,td{mso-table-lspace:0pt;mso-table-rspace:0pt}
   img{-ms-interpolation-mode:bicubic;border:0;outline:none;text-decoration:none}
   table{border-collapse:separate}
-  body{margin:0!important;padding:0!important;width:100%!important;background:#FFFFFF}
+  body{margin:0!important;padding:0!important;width:100%!important;background:#FFFFFF;font-family:'Times New Roman',Times,Georgia,serif}
   a[x-apple-data-detectors]{color:inherit!important;text-decoration:none!important;font-size:inherit!important;font-family:inherit!important;font-weight:inherit!important;line-height:inherit!important}
   u+#body a{color:inherit;text-decoration:none}
   .btn:hover{background-color:#1544C9!important}
@@ -811,7 +811,7 @@ function Footer({ reason, recipient, prefs, unsub, internal }) {
  * footer carries preferences/unsubscribe (marketing only).
  */
 export function Frame({ title, preheader, kind, reason, recipient, prefs, unsub, internal = false, children }) {
-  const head = `<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="x-apple-disable-message-reformatting"><meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no"><meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light only"><title>${esc(title)}</title><!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><style>td,th,p,a,span,h1,h2{font-family:'Segoe UI',Arial,sans-serif!important}</style><![endif]--><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet"><style>${css}</style>`;
+  const head = `<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="x-apple-disable-message-reformatting"><meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no"><meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light only"><title>${esc(title)}</title><!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><style>td,th,p,a,span,h1,h2,h3,li,div{font-family:'Times New Roman',Times,serif!important}</style><![endif]--><style>${css}</style>`;
   const dot = KIND_DOT[kind] || C.blue;
   ASK_N = 0; // question numbering restarts in every email
   return (

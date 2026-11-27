@@ -6,6 +6,7 @@ import { Frame, Stage, Hello, Lead, Journey, Cta, Ask, Cards, Checks, Note, Sign
 import { link, mem, CONDUCT_NOTE } from '../lib/data.js';
 import { subject } from '../lib/liquid.js';
 import { textFoot } from '../lib/text.js';
+import { FONT } from '../lib/theme.js';
 
 const CMP = 'case2-terms';
 const HL = { color: '#FFD872' };
@@ -105,7 +106,7 @@ export default function Case2() {
           'You can close your account whenever you like.',
           'You keep your data rights: access, correction and deletion.',
         ]} />
-        <p style={{ margin: '4px 0 0', fontFamily: "'Inter',Arial,sans-serif", fontSize: '14px', color: '#56618C' }}>
+        <p style={{ margin: '4px 0 0', fontFamily: FONT.body, fontSize: '14px', color: '#56618C' }}>
           Read them in full: <A href={link.terms_page()}>Terms &amp; Conditions</A> &middot; <A href={link.privacy()}>Privacy Policy</A>
         </p>
       </Ask>
