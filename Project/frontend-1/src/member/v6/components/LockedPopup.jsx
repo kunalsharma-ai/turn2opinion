@@ -46,7 +46,7 @@ export default function LockedPopup({ i, onClose, onGo }) {
             <span className="lp-orb">{profileEmoji(x.slug)[0]}</span>
             {Array.from({ length: 8 }, (_, k) => <i key={k} className="lp-spark" style={{ '--k': k }} />)}
           </div>
-          <p className="lp-eyebrow">{x.kind === 'survey' ? t('v6_lp_survey') : t('v6_lp_profile')} · {pnameT(x.p)}</p>
+          <p className="lp-eyebrow">{t('v6_lp_profile')} · {pnameT(x.p)}</p>
           <h2 id="lp-h" className="lp-h">{why && why.type === 'prev' ? t('v6_lp_h_prev') : t('v6_lp_h_about')}</h2>
           <p id="lp-p" className="lp-p">{why && why.type === 'prev' ? t('v6_lp_p_prev', { name: pnameT(need.p) }) : x.kind === 'profile' ? t('v6_lp_p_profile', { name: need ? pnameT(need.p) : '' }) : t('v6_lp_p_about')}</p>
           {(!why || why.type === 'about') && (

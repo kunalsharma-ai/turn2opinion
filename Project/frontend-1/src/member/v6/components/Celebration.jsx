@@ -96,7 +96,7 @@ export default function Celebration({ i, points = 0, next, onClose, onNext }) {
           </svg>
           <span className="cb-badge">{m.e[0]}</span>
         </div>
-        <p className="cb-eyebrow">{x.kind === 'survey' ? t('v6_c_survey_done') : t('v6_c_profile_done')}</p>
+        <p className="cb-eyebrow">{t('v6_c_profile_done')}</p>
         <h2 id="cb-h" className="cb-h">{t(head, { name: pnameT(x.p) })}</h2>
         <p className="cb-p">{world().id === 'kingdom' ? t('v6_c_built', { b: tr(m.name) }) : t(world().added)}</p>
         {points > 0 && (

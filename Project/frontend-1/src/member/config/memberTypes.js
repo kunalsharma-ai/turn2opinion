@@ -55,9 +55,17 @@ export const LAYOUT = {
   }
 };
 
-// The About-you profiles that unlock surveys (v6 Profiles & Surveys design: Basic, then Educational).
-// Every other profile is shown as a survey that opens one at a time once these are complete.
-export const ABOUT_YOU = ['basic', 'educational'];
+// The four About-you profiles (Basic, Educational, Finance, Health), in this order (issue #47).
+// Each entry lists the slugs a panel may use for it; the first one the panel has is used.
+// Until all of them are complete, every other profile and every survey stays locked.
+export const ABOUT_YOU_GROUPS = [
+  ['basic'],
+  ['educational', 'education', 'teen-education'],
+  ['financial', 'finance', 'banking-financial-services'],
+  ['health', 'health-wellness', 'healthcare']
+];
+// Every slug that counts as an About-you profile (for simple `.includes(slug)` checks).
+export const ABOUT_YOU = ABOUT_YOU_GROUPS.flat();
 
 // Points per payout and milestones for the referral progress bar (display only).
 export const REFERRAL_STEPS = [1, 3, 5, 10, 25];
