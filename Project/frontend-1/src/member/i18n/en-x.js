@@ -177,6 +177,11 @@ export default {
   'ql.hist': 'Score history',
   'ql.hist.empty.t': 'Your score history isn’t recorded yet.',
   'ql.hist.empty.p': 'Today we show your current score. A month-by-month view will appear here once history is stored.',
+  'ql.hist.up': 'Up {n} in the last {months} months.',
+  'ql.hist.flat': 'Steady over the last {months} months.',
+  'ql.hist.new': 'You joined this month. Each month will add a bar here.',
+  'ql.hist.gain': '+{n}',
+  'ql.hist.note': 'Your score at the end of each month. Each finished profile adds +1, up to your panel’s scale.',
 
   // referrals
   'rj.eyebrow': 'Your network',
