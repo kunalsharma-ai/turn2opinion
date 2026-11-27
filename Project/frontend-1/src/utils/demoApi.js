@@ -77,7 +77,7 @@ export async function demoRespond(method, endpoint, body = {}) {
     return ok({ registrationStatus: body.decision === 'no' ? 'registration-rejected' : 'onboarding-pending' });
   }
   if (path.startsWith('/api/v1/user/parent-onboarding/')) {
-    save({ ...st, onboarded: true });
+    save({ ...st, onboarded: true, onboarding: body.answers || {} });
     return ok({ registrationStatus: 'consent-pending' });
   }
   if (path.startsWith('/api/v1/user/parent-link-renew/')) return ok([], 'If this request is still open, we’ve emailed a new link to the parent or guardian’s address on file.');
@@ -87,7 +87,7 @@ export async function demoRespond(method, endpoint, body = {}) {
     const saved = st.user && st.user._id === verify[1] ? { ...st.user, teen: st.user.parent ? { mail: st.user.mail, dob: st.user.dob, gender: st.user.gender, address: (st.user.address || [])[0], answers: st.user.welcome || {} } : undefined } : null;
     const u = saved ? saved : (verify[1] === 'demo-teen' ? SAMPLE_TEEN : { _id: 'demo-adult', category: 'b2c', name: { first: 'Asha' }, mail: 'asha@example.com', dob: '1994-05-10', gender: 'Female' });
     const approved = st.consent === 'approved' || new URLSearchParams(window.location.search).get('activate') === '1';
-    const parent = u.parent ? { ...u.parent, consent: approved ? true : null, consentStatus: approved ? 'approved' : 'pending', decision: st.decision, onboardingAt: st.onboarded ? new Date().toISOString() : undefined } : undefined;
+    const parent = u.parent ? { ...u.parent, consent: approved ? true : null, consentStatus: approved ? 'approved' : 'pending', decision: st.decision, onboardingAt: st.onboarded ? new Date().toISOString() : undefined, onboarding: st.onboarded ? st.onboarding : undefined } : undefined;
     if (u.teen && u.teen.mail) u.teen = { ...u.teen, mail: u.teen.mail.replace(/^(.).*?(.)@/, '$1••••$2@') };
     return ok({ ...u, parent, ref: 'T2O-TN-4F2A9C', expiresAt: new Date(Date.now() + 6 * 864e5).toISOString(), teenConsent: { version: 'T2O-TEEN-REG-2026.11' }, isMinor: u.category === 'minor' });
   }

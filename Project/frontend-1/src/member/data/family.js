@@ -129,7 +129,12 @@ export const DEMO_FAMILY = {
       'parent-first-name': 'Meera', 'parent-last-name': 'Shah', 'parent-gender': 'Female', 'parent-dob': '1984-05-02', P05: '35-44',
       P01: 'IN', P02: 'IN-MH', P03: 'mother', 'parent-marital': 'Married', P04: 'yes', P11: '2',
       P06: 'en', P07: ['email', 'whatsapp'], P08: 'm••••••h@e•••••.com', P09: '••••••678', P12: 'yes',
-      HQ1: ['allergy'], HQ2: 'primary', HQ4: ['medication', 'appointments']
+      HQ1: ['allergy'], HQ2: 'primary', HQ4: ['medication', 'appointments'],
+      // parent profiling (Teen bank questions answered by the guardian)
+      'teen-p008': 'Yes', 'teen-p009': ['Surveys'], 'teen-p010': 'Weekly',
+      'teen-g003': 'Metropolitan', 'teen-g004': 'Since birth', 'teen-g005': ['English', 'Hindi'], 'teen-g006': 'Hindi',
+      'teen-h001': '4', 'teen-h002': '2', 'teen-h003': ['13–15', '18+'], 'teen-h004': 'Yes', 'teen-h005': 'Owned apartment', 'teen-h006': ['Dog'], 'teen-h007': ['Internet', 'Study area', 'Computer'],
+      'teen-s001': 'Full-time', 'teen-s002': 'Master’s', 'household-income': '500000 - 749999', 'teen-s004': '2', 'teen-s005': ['Car', 'Computer', 'Smart TV']
     },
     consent: {
       version: 'MINOR-2026.10', acceptedAt: '2026-11-10T18:14:00.000Z', termsRead: true, declaration: true,

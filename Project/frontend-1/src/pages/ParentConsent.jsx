@@ -21,22 +21,26 @@ import { Flag } from '../components/Brand.jsx';
 import PreviewLinks from '../components/PreviewLinks.jsx';
 import { COUNTRIES } from '../data/countries.js';
 import { formatDate } from '../components/FormFields.jsx';
-import { fullPhone, splitPhone } from '../utils/signup.js';
+import { fullPhone } from '../utils/signup.js';
 import { playSuccess, playSwitch, pop } from '../utils/sound.js';
 import { PARENT_SURVEY } from '../data/teen/parentSurvey.js';
-import QInput, { answerText, isShown, qError, warmRegions } from '../components/survey/QInput.jsx';
+import QInput, { answerText, isRequired, isShown, qError, warmRegions } from '../components/survey/QInput.jsx';
+import { Chip, Cards, Hero, HubStyles, Sheet, Workflow } from '../components/parent/ParentHub.jsx';
+import { RewardGuide } from '../components/parent/ParentViews.jsx';
+import { onboardingProgress, sectionProgress, workflow } from '../components/parent/parentData.js';
 import ConsentKit from '../components/onboarding/ConsentKit.jsx';
 import { SELECTIONS } from '../data/teen/agreement.js';
 import { DECLINE_REASONS, GUARDIAN_TERMS_VERSION, relWord } from '../data/teen/registration.js';
 
-const DRAFT = 't2o_guardian_onboarding_v2';
+const DRAFT = 't2o_guardian_onboarding_v3';
+const DRAFT_DAYS = 7;
 const fullName = (n = {}) => [n.first, n.middle, n.last].filter(Boolean).join(' ');
 
 // ------------------------------------------------------------------ shell
 function GuardianFrame({ stage, children, teenName }) {
-  const order = ['invite', 'verify', 'onboard', 'review', 'consent', 'done'];
-  const at = Math.max(0, order.indexOf(stage));
-  const labels = ['Decision', 'Confirm', 'Onboarding', 'Review', 'Consent', 'Done'];
+  const order = ['invite', 'verify', 'hub', 'done'];
+  const at = Math.max(0, order.indexOf(['onboard', 'review', 'consent'].includes(stage) ? 'hub' : stage));
+  const labels = ['Decision', 'Confirm', 'Parent section', 'Done'];
   return (
     <section className={`gdn gdn--${stage}`}>
       <header className="gdn-bar">
@@ -52,7 +56,7 @@ function GuardianFrame({ stage, children, teenName }) {
             <Icon name="lock" size={14} /> Secure, personal link
           </span>
         </div>
-        {order.includes(stage) && (
+        {(order.includes(stage) || ['onboard', 'review', 'consent'].includes(stage)) && (
           <ol className="wrap gdn-steps" aria-label="Progress">
             {labels.map((l, i) => (
               <li key={l} className={i < at ? 'is-done' : i === at ? 'is-now' : ''}>
@@ -193,7 +197,7 @@ function Verify({ t, busy, err, onBack, onConfirm }) {
             <Icon name="arrowLeft" size={16} /> Back to the decision
           </button>
           <button type="button" className="gdn-btn" disabled={!ok || busy} onClick={onConfirm}>
-            {busy ? 'Saving…' : 'Yes, continue to the onboarding form'} <Icon name="arrow" size={16} />
+            {busy ? 'Saving…' : 'Yes, open the Parent section'} <Icon name="arrow" size={16} />
           </button>
         </div>
       </div>
@@ -202,26 +206,37 @@ function Verify({ t, busy, err, onBack, onConfirm }) {
 }
 
 // ------------------------------------------------------------------ onboarding form
-// What the teen gave already: shown as confirmed answers that can be changed, never asked blank.
-function prefillFrom(t) {
-  const p = t.parent || {};
-  const a = { ...(p.onboarding || {}) };
-  const put = (k, v) => {
-    if (v != null && v !== '' && (a[k] == null || a[k] === '')) a[k] = v;
-  };
-  put('parent-first-name', p.name?.first);
-  put('parent-middle-name', p.name?.middle);
-  put('parent-last-name', p.name?.last);
-  put('parent-gender', p.relation === 'mother' ? 'Female' : p.relation === 'father' ? 'Male' : p.gender);
-  put('parent-dob', p.dob ? String(p.dob).slice(0, 10) : '');
-  put('P01', String(t.teen?.address?.country || '').toUpperCase());
-  put('P02', t.teen?.address?.state);
-  put('P03', p.relation);
-  put('P08', p.email);
-  if (p.phone && !a['P09:parts']) a['P09:parts'] = splitPhone(p.phone);
-  return a;
+// 24 Nov 2026: nothing is filled in for the guardian. The only answers shown are the ones they typed
+// themselves: saved on the server (after they sent the form) or kept on this device until they send it.
+// The email address (P08) is the one the invitation went to; the API always uses that one.
+
+// Answers kept on this device until the form is sent (7 days, like the link), then removed.
+function readDraft(user) {
+  try {
+    const d = JSON.parse(localStorage.getItem(DRAFT));
+    if (!d || d.user !== user || Date.now() - (d.at || 0) > DRAFT_DAYS * 864e5) return null;
+    return d;
+  } catch {
+    return null;
+  }
 }
-const PREFILLED = ['parent-first-name', 'parent-gender', 'parent-dob', 'P01', 'P02', 'P03', 'P08', 'P09'];
+function writeDraft(user, a) {
+  try {
+    localStorage.setItem(DRAFT, JSON.stringify({ user, a, at: Date.now() }));
+    return Date.now();
+  } catch {
+    return 0;
+  }
+}
+function dropDraft() {
+  try {
+    localStorage.removeItem(DRAFT);
+    sessionStorage.removeItem('t2o_guardian_onboarding_v2');
+  } catch {
+    /* ignore */
+  }
+}
+const timeOf = (ms) => (ms ? new Date(ms).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }) : '');
 
 function sectionErrors(sec, a) {
   const e = {};
@@ -231,13 +246,13 @@ function sectionErrors(sec, a) {
   });
   return e;
 }
+const firstErrorSection = (a) => PARENT_SURVEY.sections.findIndex((s) => Object.keys(sectionErrors(s, a)).length > 0);
 
-function Onboarding({ t, a, setA, onDone, start = 0 }) {
+function Onboarding({ t, a, setA, savedAt, onDone, onExit, start = 0 }) {
   const sections = PARENT_SURVEY.sections;
   const [sIdx, setSIdx] = useState(start);
   const [tried, setTried] = useState(false);
-  const [open, setOpen] = useState({});
-  const [healthIntro, setHealthIntro] = useState('ask'); // ask | confirm | answer | skipped
+  const [healthIntro, setHealthIntro] = useState(() => (sectionProgress(sections.find((s) => s.optional), a).done ? 'answer' : 'ask')); // ask | confirm | answer
   const top = useRef(null);
   const sec = sections[sIdx];
   const set = (k, v) => setA((p) => {
@@ -246,6 +261,7 @@ function Onboarding({ t, a, setA, onDone, start = 0 }) {
     return n;
   });
   const errs = sectionErrors(sec, a);
+  const prog = onboardingProgress(a);
   const go = (n) => {
     setTried(false);
     setSIdx(n);
@@ -255,7 +271,6 @@ function Onboarding({ t, a, setA, onDone, start = 0 }) {
     if (Object.keys(errs).length) {
       setTried(true);
       const k = Object.keys(errs)[0];
-      setOpen((o) => ({ ...o, [k]: true }));
       setTimeout(() => document.querySelector(`[data-q="${k}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 30);
       return;
     }
@@ -267,29 +282,41 @@ function Onboarding({ t, a, setA, onDone, start = 0 }) {
   const isHealth = !!sec.optional;
   const total = sections.length;
   return (
-    <div className="wrap gdn-onb" ref={top}>
+    <div className="wrap gdn-onb pgs-onb" ref={top}>
+      <HubStyles />
       <aside className="gdn-rail">
-        <p className="gdn-kicker">Step 2 · Onboarding form</p>
+        <p className="gdn-kicker">Card 1 · Parent onboarding form</p>
         <h2>About you</h2>
-        <p className="gdn-rail-p">So we know who is giving permission. Answers {t.name?.first || 'your teen'} already gave are filled in for you to confirm.</p>
-        <ol className="gdn-rail-list">
-          {sections.map((s, i) => (
-            <li key={s.name} className={i < sIdx ? 'is-done' : i === sIdx ? 'is-now' : ''}>
-              <button type="button" onClick={() => i < sIdx && go(i)} disabled={i > sIdx}>
-                <span aria-hidden="true">{i < sIdx ? '✓' : s.icon}</span> {s.name}
-                {s.optional && <small>optional</small>}
-              </button>
-            </li>
-          ))}
-        </ol>
-        <div className="gdn-rail-meter" style={{ '--p': (sIdx + 1) / total }}>
+        <p className="gdn-rail-p">So we know who is giving permission for {t.name?.first || 'your teen'}. Nothing is filled in for you. Required questions are marked; everything else is optional.</p>
+        <div className="pgs-onb-meter" style={{ '--p': prog.pct / 100 }} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={prog.pct} aria-label="Questions answered">
           <i />
           <span>
-            Section {sIdx + 1} of {total}
+            {prog.pct}% answered · {prog.done} of {prog.total}
           </span>
         </div>
+        <ol className="gdn-rail-list">
+          {sections.map((s, i) => {
+            const sp = sectionProgress(s, a);
+            const ok = sp.errors === 0 && (sp.done > 0 || s.optional);
+            return (
+              <li key={s.name} className={i === sIdx ? 'is-now' : ok ? 'is-done' : ''}>
+                <button type="button" onClick={() => go(i)} aria-current={i === sIdx ? 'step' : undefined}>
+                  <span aria-hidden="true">{ok && i !== sIdx ? '✓' : s.icon}</span>
+                  <span className="pgs-onb-sn">{s.name}</span>
+                  <small>{s.optional ? 'optional' : `${sp.done}/${sp.total}`}</small>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+        <p className="pgs-onb-saved" role="status">
+          <Icon name="check" size={13} strokeWidth={3} /> {savedAt ? `Saved on this device at ${timeOf(savedAt)}` : 'Your answers are kept on this device as you go'}
+        </p>
       </aside>
       <div className="gdn-sheet" key={sIdx}>
+        <p className="pgs-onb-step">
+          Section {sIdx + 1} of {total}
+        </p>
         <h3 className="gdn-sheet-h">
           <span aria-hidden="true">{sec.icon}</span> {sec.name}
         </h3>
@@ -316,48 +343,39 @@ function Onboarding({ t, a, setA, onDone, start = 0 }) {
             <p className="gdn-health-safe">
               <Icon name="lock" size={14} /> {sec.intro.assurance}
             </p>
-            {healthIntro === 'skipped' ? (
-              <p className="gdn-small">{sec.intro.skipNote}</p>
-            ) : (
-              <div className="gdn-actions">
-                <button type="button" className="gdn-btn is-ghost" onClick={() => (healthIntro === 'confirm' ? (setHealthIntro('skipped'), onDone()) : setHealthIntro('confirm'))}>
-                  {healthIntro === 'confirm' ? sec.intro.confirm.leave : sec.intro.skipLabel}
-                </button>
-                <button type="button" className="gdn-btn" onClick={() => setHealthIntro('answer')}>
-                  {healthIntro === 'confirm' ? sec.intro.confirm.stay : sec.intro.startLabel}
-                </button>
-              </div>
-            )}
+            <div className="gdn-actions">
+              <button type="button" className="gdn-btn is-ghost" onClick={() => (healthIntro === 'confirm' ? onDone() : setHealthIntro('confirm'))}>
+                {healthIntro === 'confirm' ? sec.intro.confirm.leave : sec.intro.skipLabel}
+              </button>
+              <button type="button" className="gdn-btn" onClick={() => setHealthIntro('answer')}>
+                {healthIntro === 'confirm' ? sec.intro.confirm.stay : sec.intro.startLabel}
+              </button>
+            </div>
           </div>
         ) : (
           <>
             {sec.qs.filter((q) => isShown(q, a)).map((q, i) => {
-              const pre = PREFILLED.includes(q.n) && answerText(q, a) && !open[q.n] && !errs[q.n];
               const locked = q.n === 'P08';
+              const bad = tried && !!errs[q.n];
               return (
-                <div key={q.n} className={`gdn-q ${pre ? 'is-pre' : ''} ${tried && errs[q.n] ? 'has-error' : ''}`} data-q={q.n} style={{ '--i': i }}>
+                <div key={q.n} className={`gdn-q ${bad ? 'has-error' : ''}`} data-q={q.n} style={{ '--i': i }}>
                   <div className="gdn-q-head">
                     <p className="gdn-q-t">
-                      {q.q} {!q.req && !q.reqWhen && <span className="gdn-opt">optional</span>}
+                      {q.q} {isRequired(q, a) ? <span className="pgs-req">required</span> : <span className="gdn-opt">optional</span>}
                     </p>
-                    {pre && !locked && (
-                      <button type="button" className="link-soft" onClick={() => setOpen((o) => ({ ...o, [q.n]: true }))}>
-                        Change
-                      </button>
-                    )}
                   </div>
-                  {pre || locked ? (
+                  {locked ? (
                     <p className="gdn-q-pre">
-                      <Icon name="check" size={14} strokeWidth={3} /> {answerText(q, a)}
-                      <small>{locked ? 'The address this invitation was sent to. Contact support to change it.' : `From ${t.name?.first || 'your teen'}’s registration`}</small>
+                      <Icon name="lock" size={14} /> {a.P08 || t.parent?.email || '—'}
+                      <small>The address this invitation was sent to. Contact support to change it.</small>
                     </p>
                   ) : (
                     <>
                       {q.help && <p className="gdn-q-help">{q.help}</p>}
-                      <QInput q={q} a={a} set={set} skin="gdq" invalid={tried && !!errs[q.n]} locked={{ P08: true }} />
+                      <QInput q={q} a={a} set={set} skin="gdq" invalid={bad} locked={{ P08: true }} />
                     </>
                   )}
-                  {tried && errs[q.n] && (
+                  {bad && (
                     <p className="field-error" role="alert">
                       {errs[q.n]}
                     </p>
@@ -366,20 +384,26 @@ function Onboarding({ t, a, setA, onDone, start = 0 }) {
                 </div>
               );
             })}
-            {gateNo && sIdx === 1 && (
+            {gateNo && sec.qs.some((q) => q.n === 'P04') && (
               <div className="gdn-stop" role="alert">
                 <b>Only a parent or legally authorised guardian can give this permission.</b>
                 <p>If someone else in the family is the right person, please ask {t.name?.first || 'your teen'} to register again with their details, or choose No on the invitation.</p>
               </div>
             )}
-            <div className="gdn-actions">
-              {sIdx > 0 && (
-                <button type="button" className="gdn-btn is-ghost" onClick={() => go(sIdx - 1)}>
-                  <Icon name="arrowLeft" size={16} /> Back
-                </button>
-              )}
-              <button type="button" className="gdn-btn" onClick={next} disabled={gateNo && sIdx === 1}>
-                {sIdx === sections.length - 1 ? 'Review my answers' : 'Continue'} <Icon name="arrow" size={16} />
+            {tried && Object.keys(errs).length > 0 && (
+              <p className="form-alert" role="alert">
+                {Object.keys(errs).length === 1 ? 'One question in this section needs an answer.' : `${Object.keys(errs).length} questions in this section need an answer.`}
+              </p>
+            )}
+            <div className="gdn-actions pgs-onb-actions">
+              <button type="button" className="gdn-btn is-ghost" onClick={() => (sIdx > 0 ? go(sIdx - 1) : onExit())}>
+                <Icon name="arrowLeft" size={16} /> {sIdx > 0 ? 'Back' : 'Parent section'}
+              </button>
+              <button type="button" className="gdn-btn is-ghost pgs-onb-later" onClick={onExit}>
+                Save and finish later
+              </button>
+              <button type="button" className="gdn-btn" onClick={next} disabled={gateNo && sec.qs.some((q) => q.n === 'P04')}>
+                {sIdx === sections.length - 1 ? 'Review my answers' : 'Save and continue'} <Icon name="arrow" size={16} />
               </button>
             </div>
           </>
@@ -390,12 +414,24 @@ function Onboarding({ t, a, setA, onDone, start = 0 }) {
 }
 
 // ------------------------------------------------------------------ review
-function Review({ t, a, onEdit, onBack, onSubmit, busy, err }) {
+function Review({ t, a, onEdit, onBack, onSubmit, busy, err, again }) {
+  const bad = firstErrorSection(a);
+  const prog = onboardingProgress(a);
   return (
     <div className="wrap gdn-review">
-      <p className="gdn-kicker">Step 3 · Check your answers</p>
+      <p className="gdn-kicker">Card 1 · Check your answers</p>
       <h1>Is everything right?</h1>
-      <p className="gdn-lead">Edit anything before you continue to the consent form.</p>
+      <p className="gdn-lead">
+        {prog.done} of {prog.total} questions answered. Edit any section before you send the form{again ? '. Sending again replaces your earlier answers; nothing is added twice.' : '.'}
+      </p>
+      {bad >= 0 && (
+        <p className="form-alert" role="alert">
+          A required question in “{PARENT_SURVEY.sections[bad].name}” still needs an answer.{' '}
+          <button type="button" className="link-soft" onClick={() => onEdit(bad)}>
+            Go to it
+          </button>
+        </p>
+      )}
       <div className="gdn-review-grid">
         {PARENT_SURVEY.sections.map((s, si) => (
           <section key={s.name} className="gdn-review-card" style={{ '--i': si }}>
@@ -409,7 +445,7 @@ function Review({ t, a, onEdit, onBack, onSubmit, busy, err }) {
               {s.qs.filter((q) => isShown(q, a)).map((q) => (
                 <div key={q.n}>
                   <dt>{q.q}</dt>
-                  <dd>{answerText(q, a) || <i>Not answered</i>}</dd>
+                  <dd>{answerText(q, a) || <i>{s.optional ? 'Skipped (optional)' : 'Not answered'}</i>}</dd>
                 </div>
               ))}
             </dl>
@@ -423,12 +459,65 @@ function Review({ t, a, onEdit, onBack, onSubmit, busy, err }) {
       )}
       <div className="gdn-actions">
         <button type="button" className="gdn-btn is-ghost" onClick={onBack}>
-          <Icon name="arrowLeft" size={16} /> Back
+          <Icon name="arrowLeft" size={16} /> Back to the form
         </button>
-        <button type="button" className="gdn-btn" onClick={onSubmit} disabled={busy}>
-          {busy ? 'Saving…' : 'Save and open the consent form'} <Icon name="arrow" size={16} />
+        <button type="button" className="gdn-btn" onClick={onSubmit} disabled={busy || bad >= 0} aria-busy={busy}>
+          {busy ? (
+            <>
+              <span className="btn-spin" aria-hidden="true" /> Sending…
+            </>
+          ) : (
+            <>
+              {again ? 'Save my changes' : 'Submit the onboarding form'} <Icon name="arrow" size={16} />
+            </>
+          )}
         </button>
       </div>
+    </div>
+  );
+}
+
+// ------------------------------------------------------------------ the Parent & guardian section (hub)
+// Hero, the four steps and the three cards. Card 1 opens the form, card 2 the reward guide, card 3 the
+// consent form once the onboarding form is sent.
+function Hub({ t, a, onbSaved, consented, notice, onOpen, rewards, onCloseRewards }) {
+  const teenName = t.name?.first || 'your teen';
+  const draft = onboardingProgress(a);
+  const onb = onbSaved ? 'completed' : draft.done > (a.P08 ? 1 : 0) ? 'in-progress' : 'not-started';
+  const con = consented ? 'submitted' : onbSaved ? 'pending' : 'not-started';
+  const status = { onboarding: onb, consent: con, profile: null, surveys: { open: false } };
+  const steps = workflow(status);
+  const who = { teenName: t.name?.first, guardianName: fullName(t.parent?.name), relation: t.parent?.relation ? relWord(t.parent.relation) : '', ref: t.ref };
+  const cards = {
+    onboarding: {
+      status: onb,
+      pct: draft.pct,
+      meta: onb === 'completed' ? 'Sent. You can still edit it until you give consent.' : onb === 'in-progress' ? `${draft.done} of ${draft.total} answered · saved on this device` : 'About 6 minutes',
+      cta: onb === 'completed' ? 'Review or edit answers' : onb === 'in-progress' ? 'Continue the form' : 'Start the form'
+    },
+    rewards: { status: 'off', label: 'Information', meta: 'Read before you give consent', cta: 'See how rewards work' },
+    consent: {
+      status: con,
+      locked: !onbSaved,
+      meta: consented ? 'Submitted' : onbSaved ? 'Ready for you to read and sign' : 'Opens after the onboarding form is sent',
+      cta: consented ? 'Submitted' : onbSaved ? 'Review and give consent' : 'Send the onboarding form first'
+    }
+  };
+  return (
+    <div className="wrap pgs pgs--guardian">
+      <HubStyles />
+      <Hero mode="guardian" who={who} steps={steps}>
+        {notice && (
+          <p className={`pgs-notice ${notice.warn ? 'is-warn' : ''}`} role="status">
+            <Icon name={notice.warn ? 'help' : 'check'} size={16} /> {notice.text}
+          </p>
+        )}
+      </Hero>
+      <Workflow mode="guardian" status={status} teenName={teenName} />
+      <Cards cards={cards} onOpen={onOpen} />
+      <Sheet open={rewards} onClose={onCloseRewards} tone="rw" kicker="Card 2 · for parents and guardians" title="Parent reward system" status={<Chip status="off">Information</Chip>}>
+        <RewardGuide live={null} teenName={teenName} />
+      </Sheet>
     </div>
   );
 }
@@ -470,7 +559,7 @@ function Consent({ t, onSave, onFinish, onBack }) {
             decline_h: 'Leave without finishing?',
             decline_p: 'Nothing is saved yet. You can come back to this page with the link in your email while it is valid.',
             decline_back: 'Back to the agreement',
-            decline_out: 'Back to my answers'
+            decline_out: 'Back to the Parent section'
           },
           save: onSave,
           onContinue: onFinish,
@@ -485,6 +574,7 @@ function Consent({ t, onSave, onFinish, onBack }) {
 function Done({ t, res }) {
   return (
     <div className="wrap gdn-done">
+      <HubStyles />
       <div className="gdn-cert">
         <span className="gdn-seal" aria-hidden="true">
           <svg viewBox="0 0 120 120">
@@ -513,6 +603,12 @@ function Done({ t, res }) {
         </dl>
         <p className="gdn-small">You can withdraw consent, change the optional permissions or ask us to delete the account at any time: support@turn2opinion.com.</p>
         <PreviewLinks links={[['Open the teen’s password email link', '?user=demo-teen&code=000000&s=demo&activate=1', '/join/teen/']]} />
+      </div>
+      <div className="pgs pgs--done">
+        <Workflow mode="guardian" status={{ onboarding: 'completed', consent: 'submitted', profile: null, surveys: { open: false } }} teenName={t.name?.first || 'your teen'} />
+        <p className="pgs-note">
+          <Icon name="help" size={14} /> Your two steps are done. {t.name?.first || 'Your teen'} now creates a password, then completes their own About you profiles; surveys open after that. You can look through your answers, the reward rules and this consent with them any time in the Parent &amp; guardian section of their profile.
+        </p>
       </div>
     </div>
   );
@@ -596,6 +692,10 @@ export default function ParentConsent() {
   const [res, setRes] = useState(null);
   const [renew, setRenew] = useState('');
   const [onbStart, setOnbStart] = useState(0);
+  const [onbSaved, setOnbSaved] = useState(false); // the onboarding form is on the server
+  const [savedAt, setSavedAt] = useState(0); // last save of the answers on this device
+  const [notice, setNotice] = useState(null);
+  const [rewards, setRewards] = useState(false);
   const auth = { code, s: sig };
 
   const show = (s) => {
@@ -613,15 +713,15 @@ export default function ParentConsent() {
         if (r?.status !== 'success' || !r.data) return setStage(/closed/i.test(r?.message || '') ? 'closed' : 'expired');
         const d = r.data;
         setT(d);
-        let saved = null;
-        try {
-          saved = JSON.parse(sessionStorage.getItem(DRAFT));
-        } catch {
-          saved = null;
-        }
-        setA({ ...prefillFrom(d), ...(saved && saved.user === user ? saved.a : {}) });
+        // Only the guardian's own answers: the form they already sent, or their unsent answers on this device.
+        const draft = readDraft(user);
+        const mine = { ...(d.parent?.onboarding || {}), ...(draft?.a || {}) };
+        if (d.parent?.email) mine.P08 = d.parent.email;
+        setA(mine);
+        if (draft) setSavedAt(draft.at);
+        setOnbSaved(!!d.parent?.onboardingAt);
         if (d.parent?.consentStatus === 'approved' || d.parent?.consent === true) return setStage('already');
-        if (d.parent?.decision === 'yes') return setStage(d.parent?.onboardingAt ? 'consent' : 'onboard');
+        if (d.parent?.decision === 'yes') return setStage('hub');
         const dd = q.get('d');
         setStage(dd === 'yes' ? 'verify' : dd === 'no' ? 'decline' : 'invite');
       } catch {
@@ -630,14 +730,14 @@ export default function ParentConsent() {
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // keep the onboarding answers on this device until they are saved
+  // keep the guardian's unsent answers on this device as they type (removed once the form is sent)
   useEffect(() => {
     if (!user || !['onboard', 'review'].includes(stage)) return;
-    try {
-      sessionStorage.setItem(DRAFT, JSON.stringify({ user, a }));
-    } catch {
-      /* ignore */
-    }
+    const tm = setTimeout(() => {
+      const at = writeDraft(user, a);
+      if (at) setSavedAt(at);
+    }, 400);
+    return () => clearTimeout(tm);
   }, [a, stage, user]);
 
   const call = async (fn, onOk) => {
@@ -651,23 +751,32 @@ export default function ParentConsent() {
       if (/expired/i.test(m)) return setStage('expired');
       setErr(m && m.length < 180 && !/error|exception|mongo/i.test(m) ? m : 'Something went wrong. Please try again.');
     } catch {
-      setErr('We couldn’t reach Turn2Opinion. Check your connection and try again.');
+      setErr('We couldn’t reach Turn2Opinion. Check your connection and try again. Your answers are still here.');
     } finally {
       setBusy(false);
     }
   };
 
-  const sayYes = () => call(() => api.post(`/api/v1/user/parent-decision/${user}`, { ...auth, decision: 'yes' }), () => show('onboard'));
+  const sayYes = () =>
+    call(() => api.post(`/api/v1/user/parent-decision/${user}`, { ...auth, decision: 'yes' }), () => {
+      setNotice({ text: `Thank you. Start with card 1, the onboarding form. Card 3, the consent form, opens once it is sent.` });
+      show('hub');
+    });
   const sayNo = (reasons, note) => call(() => api.post(`/api/v1/user/parent-decision/${user}`, { ...auth, decision: 'no', reasons, note }), () => show('declined'));
   const saveOnboarding = () => {
     const answers = Object.fromEntries(Object.entries(a).filter(([k]) => !k.includes(':')));
-    return call(() => api.put(`/api/v1/user/parent-onboarding/${user}`, { ...auth, answers }), () => {
-      try {
-        sessionStorage.removeItem(DRAFT);
-      } catch {
-        /* ignore */
-      }
-      show('consent');
+    const again = onbSaved;
+    return call(() => api.put(`/api/v1/user/parent-onboarding/${user}`, { ...auth, answers }), (data) => {
+      dropDraft();
+      setSavedAt(0);
+      setOnbSaved(true);
+      playSuccess();
+      setNotice(
+        data.needsReview
+          ? { warn: true, text: 'Onboarding form saved. Because you weren’t sure you are legally authorised, our team checks the permission before any survey is sent. You can continue to the consent form.' }
+          : { text: again ? 'Your changes are saved. Next: card 3, the consent form.' : 'Onboarding form submitted. Next: card 3, the consent form.' }
+      );
+      show('hub');
     });
   };
   // Called by the consent page; throwing shows its "couldn't send" message with a retry.
@@ -691,6 +800,23 @@ export default function ParentConsent() {
       setRenew(r?.message || 'If the request is still open, a new link is on its way.');
     } catch {
       setRenew('We couldn’t send it right now. Please try again later.');
+    }
+  };
+  const openCard = (k) => {
+    if (k === 'rewards') return setRewards(true);
+    if (k === 'onboarding') {
+      setNotice(null);
+      if (onbSaved && firstErrorSection(a) < 0) return show('review');
+      setOnbStart(Math.max(0, firstErrorSection(a)));
+      return show('onboard');
+    }
+    if (k === 'consent') {
+      if (!onbSaved) {
+        setNotice({ warn: true, text: 'Please send the onboarding form (card 1) first. The consent form opens straight after.' });
+        return window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      setNotice(null);
+      show('consent');
     }
   };
 
@@ -734,7 +860,7 @@ export default function ParentConsent() {
     return (
       <GuardianFrame stage="done" teenName={teenName}>
         <Closed title="You’ve already given consent" icon="check">
-          <p>Thank you. {teenName || 'Your teen'} has been sent their password link. Nothing more is needed.</p>
+          <p>Thank you. {teenName || 'Your teen'} has been sent their password link. Nothing more is needed. Once they sign in, you can look through your answers, the reward rules and your consent together in the Parent &amp; guardian section of their profile.</p>
         </Closed>
       </GuardianFrame>
     );
@@ -755,10 +881,28 @@ export default function ParentConsent() {
       {stage === 'invite' && <Invite t={t} onYes={() => show('verify')} onNo={() => show('decline')} />}
       {stage === 'verify' && <Verify t={t} busy={busy} err={err} onBack={() => show('invite')} onConfirm={sayYes} />}
       {stage === 'decline' && <Decline t={t} busy={busy} err={err} onBack={() => show('invite')} onConfirm={sayNo} />}
-      {stage === 'onboard' && <Onboarding t={t} a={a} setA={setA} start={onbStart} onDone={() => show('review')} />}
-      {stage === 'review' && <Review t={t} a={a} busy={busy} err={err} onBack={() => { setOnbStart(PARENT_SURVEY.sections.length - 1); show('onboard'); }} onEdit={(si) => { setOnbStart(si); show('onboard'); }} onSubmit={saveOnboarding} />}
-      {stage === 'consent' && <Consent t={t} onSave={giveConsent} onFinish={() => show('done')} onBack={() => show('review')} />}
-      {stage === 'done' && <Done t={t} res={res} />}
+      {stage === 'hub' && <Hub t={t} a={a} onbSaved={onbSaved} consented={false} notice={notice} onOpen={openCard} rewards={rewards} onCloseRewards={() => setRewards(false)} />}
+      {stage === 'onboard' && <Onboarding t={t} a={a} setA={setA} savedAt={savedAt} start={onbStart} onDone={() => show('review')} onExit={() => show('hub')} />}
+      {stage === 'review' && (
+        <Review
+          t={t}
+          a={a}
+          busy={busy}
+          err={err}
+          again={onbSaved}
+          onBack={() => {
+            setOnbStart(PARENT_SURVEY.sections.length - 1);
+            show('onboard');
+          }}
+          onEdit={(si) => {
+            setOnbStart(si);
+            show('onboard');
+          }}
+          onSubmit={saveOnboarding}
+        />
+      )}
+      {stage === 'consent' && <Consent t={t} onSave={giveConsent} onFinish={() => show('done')} onBack={() => show('hub')} />}
+      {stage === 'done' && <Done t={t} res={res} a={a} />}
     </GuardianFrame>
   );
 }
