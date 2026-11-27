@@ -27,6 +27,7 @@ import meRouter from "./api/Me.js";
 import changeEmail from "./api/changeEmail.js"
 import contentRouter from "./api/Content.js";
 import changesRouter from "./api/Changes.js";
+import contractRouter from "./api/Contract.js";
 import { requireAdmin } from "../utils/access.js";
 import { bindRequest } from "../utils/requestContext.js";
 import { securityHeaders, sanitizeInput } from "../utils/security.js";
@@ -75,6 +76,8 @@ router
     .use("/api/v1/batch", requireAdmin, batchRouter)
     .use("/api/v1/integration", requireAdmin, integrationRoutes)
     .use("/api/v1/changes", changesRouter)
+    // MADP Panel API Contract discovery: which contract version and capabilities this backend serves
+    .use("/api/v1/contract", contractRouter)
     .use("/api/v1/socials", socialsRouter)
     .use("/api/v1/follow-social", isAuthenticated, followSocialRouter)
 // router
