@@ -2,7 +2,8 @@
 //   - "About you" profiles (config ABOUT_YOU, or the panel's first two) are PROFILES; every other
 //     profile on GET /api/v1/profile is shown as a SURVEY, in the order the API returns them.
 //   - Only the first unfinished About-you profile is open; the next opens when it is complete.
-//   - Surveys stay locked until every About-you profile is complete, then open ONE AT A TIME.
+//   - Every other profile stays locked until every About-you profile is complete, then they all
+//     open together (issue #47). Real surveys are gated the same way on the Surveys page.
 //   - Completed items are always open (to update answers).
 // Completion is the API's status (100 = complete). Started = some answers saved.
 // The page calls setModel() with the current list on every render; the popups read it back.
@@ -44,8 +45,9 @@ export function stateOf() {
     const s = statusOf(x);
     if (s.st === 'done') { out.set(x.i, s); continue; }
     if (!aboutDone) { out.set(x.i, { st: 'locked', pct: 0, why: { type: 'about', need: firstOpenAbout } }); continue; }
-    if (!prevOpen) { prevOpen = x; out.set(x.i, { st: s.st === 'prog' ? 'prog' : 'open', pct: s.pct }); }
-    else out.set(x.i, { st: 'locked', pct: 0, why: { type: 'prev', need: prevOpen } });
+    // all open at once; prevOpen is the first unfinished one (the "next step" suggestion)
+    if (!prevOpen) prevOpen = x;
+    out.set(x.i, { st: s.st === 'prog' ? 'prog' : 'open', pct: s.pct });
   }
   return { map: out, aboutDone, nextAbout: firstOpenAbout, nextSurvey: prevOpen };
 }

@@ -2,7 +2,7 @@
 // UI state (open drawers, tabs, filters) stays inside the components that own it.
 // Sections load in parallel once the member is known, so one slow or failing endpoint never blanks
 // the whole dashboard: its card shows its own skeleton or error with "Try again".
-import { ABOUT_YOU } from '../config/memberTypes.js';
+import { ABOUT_YOU_GROUPS } from '../config/memberTypes.js';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { loadSection } from './source.js';
 
@@ -78,11 +78,12 @@ export function useSection(name) {
 }
 
 // ---------- derived values shared by several cards (computed from existing data only) ----------
-/** The About-you profiles that unlock surveys, in ABOUT_YOU order. Panels without those slugs (Teen) use their first two. */
+/** The About-you profiles (Basic, Educational, Finance, Health) the panel has, in that order.
+ *  A panel that has fewer than two of them falls back to its first two profiles. */
 export function aboutYou(profiles) {
   const list = Array.isArray(profiles) ? profiles : [];
-  const hit = ABOUT_YOU.map((s) => list.find((p) => p.slug === s)).filter(Boolean);
-  return hit.length === ABOUT_YOU.length ? hit : list.slice(0, ABOUT_YOU.length);
+  const hit = ABOUT_YOU_GROUPS.map((g) => g.map((s) => list.find((p) => p.slug === s)).find(Boolean)).filter(Boolean);
+  return hit.length >= 2 ? hit : list.slice(0, 2);
 }
 /** Every other profile: the topic surveys that unlock once About-you is complete. */
 export function topicProfiles(profiles) {

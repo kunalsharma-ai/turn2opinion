@@ -1,7 +1,8 @@
 // /member/surveys/ in the v6 "Profiles & Surveys" design, on the member's real data:
 //   header with earned points -> All new / High reward / Short + search -> card grid
-//   (paid survey invitations first, then the topic surveys, which open one at a time once the
-//   About-you profiles are complete) with "Cards per page" and paging -> Survey Participation History.
+//   (survey invitations only; profiles live on /member/profiles/) with "Cards per page" and paging
+//   -> Survey Participation History. Every survey stays locked until the About-you profiles (Basic,
+//   Educational, Finance, Health) are complete (issue #47); a locked card opens the next one of them.
 // Starting a survey: PUT /api/v1/me/survey { slug }; partner surveys redirect to their link with $uid
 // replaced by the response id; Turn2Opinion-hosted surveys run in the v6 question flow and save once at the end.
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -14,7 +15,6 @@ import { Button, Counter, Modal, cx, useToast } from '../components/ui.jsx';
 import { useDash, XEmpty, XError } from '../components/Sections.jsx';
 import { useStage, Stage } from '../v6/Stage.jsx';
 import Flow from '../v6/components/Flow.jsx';
-import ItemCard from '../v6/components/ItemCard.jsx';
 import { Icon } from '../v6/components/Icon.jsx';
 import { profileEmoji } from '../v6/lib/emoji.js';
 import { TW } from '../v6/lib/themes.js';
@@ -33,23 +33,24 @@ const isNew = (s) => Date.now() - new Date(s.createdAt || 0) < 2 * 864e5;
 const FILTERS = [
   ['all', () => true],
   ['high', (x) => x.kind === 'paid' && x.points > 500],
-  ['short', (x) => (x.kind === 'paid' ? x.loi > 0 && x.loi <= 5 : (x.src.minutes || 1) <= 5)]
+  ['short', (x) => x.loi > 0 && x.loi <= 5]
 ];
 const slugify = (s) => String(s || '').toLowerCase().replace(/&/g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
 /** A paid survey invitation drawn as a v6 survey card (open, with its reward). */
-function PaidCard({ s, num, onStart, busy }) {
+function PaidCard({ s, num, onStart, busy, locked }) {
   const cat = slugify(s.category);
   const w = themeOf({ s: cat }) || TW.rewards;
   const [e1, e2, e3] = profileEmoji(cat);
   return (
     <button
       type="button"
-      className={`icard k-survey k-paid s-open${w.dark ? ' wdark' : ''}`}
+      className={`icard k-survey k-paid ${locked ? 's-locked' : 's-open'}${w.dark ? ' wdark' : ''}`}
       style={{ '--ca': w.a, '--cb': w.a2, '--cc': w.a3 }}
       onClick={() => onStart(s)}
       disabled={busy}
-      aria-label={`${s.name}. ${mt('svp.paid')}. ${t('v6_cta_survey')}`}
+      data-snd={locked ? 'lock' : 'open'}
+      aria-label={`${s.name}. ${locked ? t('v6_st_locked') : mt('svp.paid')}. ${locked ? t('v6_cta_locked') : t('v6_cta_survey')}`}
     >
       <span className="ic-bg" aria-hidden="true">
         <i className="o1" />
@@ -67,6 +68,15 @@ function PaidCard({ s, num, onStart, busy }) {
         <span className="ic-e1">{e1}</span>
         <span className="ic-e2">{e2}</span>
         <span className="ic-e3">{e3}</span>
+        {locked && (
+          <span className="ic-lock">
+            <svg viewBox="0 0 24 24">
+              <path className="shackle" d="M7 11V8a5 5 0 0 1 10 0v3" />
+              <rect x="4.5" y="11" width="15" height="10" rx="2.5" />
+              <circle cx="12" cy="16" r="1.6" />
+            </svg>
+          </span>
+        )}
       </span>
       <span className="ic-body">
         <span className="ic-name">{s.name}</span>
@@ -87,11 +97,11 @@ function PaidCard({ s, num, onStart, busy }) {
         </span>
       </span>
       <span className="ic-foot">
-        <span className="ic-st st-open">{mt('svp.paid')}</span>
+        <span className={`ic-st ${locked ? 'st-locked' : 'st-open'}`}>{locked ? t('v6_st_locked') : mt('svp.paid')}</span>
         <span className="ic-cta">
           {busy ? <span className="spin6" /> : null}
-          {t('v6_cta_survey')}
-          <Icon n="arrow-r" />
+          {locked ? t('v6_cta_locked') : t('v6_cta_survey')}
+          <Icon n={locked ? 'lock' : 'arrow-r'} />
         </span>
       </span>
       <span className="ic-shine" aria-hidden="true" />
@@ -102,11 +112,12 @@ function PaidCard({ s, num, onStart, busy }) {
 export function SurveysPage() {
   const d = useDash();
   const s = useStage(d.allProfiles);
-  const { me, items, state } = s;
+  const { me, state } = s;
   const toast = useToast();
   const { reload, refreshMe } = useMemberData();
   const teen = me.type === 'teen';
-  const topics = items.filter((x) => x.kind === 'survey');
+  // surveys stay locked until every About-you profile is complete (and while that is unknown)
+  const locked = !d.allProfiles || !state.aboutDone;
   const [filter, setFilter] = useState('all');
   const [q, setQ] = useState('');
   const [per, setPer] = useState(12);
@@ -118,18 +129,25 @@ export function SurveysPage() {
 
   const list = useMemo(() => {
     const paid = (d.surveys || []).map((x) => ({ ...x, kind: 'paid', key: `s-${x.id}` }));
-    const tp = topics.map((x) => ({ ...x, name: x.p.n, kind: 'topic', key: `p-${x.slug}` }));
     const f = FILTERS.find(([id]) => id === filter)[1];
     const needle = q.trim().toLowerCase();
-    return [...paid, ...tp].filter(f).filter((x) => !needle || `${x.name} ${x.category || ''}`.toLowerCase().includes(needle));
-  }, [d.surveys, topics, filter, q]);
+    return paid.filter(f).filter((x) => !needle || `${x.name} ${x.category || ''}`.toLowerCase().includes(needle));
+  }, [d.surveys, filter, q]);
   const pages = Math.max(1, Math.ceil(list.length / per));
   const page = Math.min(pg, pages - 1);
   const shown = list.slice(page * per, page * per + per);
   useEffect(() => setPg(0), [filter, q, per]);
 
+  // a locked survey sends the member to the next About-you profile to complete
+  const unlock = useCallback(() => {
+    const n = s.about.filter((x) => (x.completion || 0) < 100).length;
+    toast(t('v6_surveys_banner', { n }), 'info');
+    if (state.nextAbout) s.open(state.nextAbout.i);
+  }, [s, state.nextAbout, toast]);
+
   const start = useCallback(
     async (x) => {
+      if (locked) return unlock();
       // the existing survey page sends members without accepted terms to the terms page first
       if (!teen && !me.terms?.length) return setTerms(true);
       setStarting(x.slug);
@@ -151,7 +169,7 @@ export function SurveysPage() {
         setStarting(null);
       }
     },
-    [me.terms, teen, toast, s]
+    [me.terms, teen, toast, s, locked, unlock]
   );
   const surveyDone = useCallback(() => {
     reload('surveys');
@@ -163,18 +181,17 @@ export function SurveysPage() {
 
   // deep link from the dashboards: /member/surveys/#start-<slug>
   useEffect(() => {
-    if (!d.surveys) return;
+    if (!d.surveys || !d.allProfiles) return;
     const a = readAnchor();
     if (!a.startsWith('start-')) return;
     clearAnchor();
     const hit = d.surveys.find((x) => x.slug === a.slice(6)) || { slug: a.slice(6), name: '' };
     start(hit);
-  }, [d.surveys]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [d.surveys, d.allProfiles]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const p = d.points;
   const loading = !d.surveys && d.sStatus !== 'error';
   const aboutLeft = s.about.filter((x) => (x.completion || 0) < 100).length;
-  const st = (x) => state.map.get(x.i) || { st: 'locked', pct: 0 };
 
   return (
     <Stage
@@ -228,11 +245,11 @@ export function SurveysPage() {
         <section className="sec6 sv6-list" aria-labelledby="svp-list-h">
           <header className="sec6-h">
             <span className="sec6-ic" aria-hidden="true">
-              {d.surveys?.length ? '📋' : state.aboutDone ? '🗝️' : '🔒'}
+              {locked ? '🔒' : '📋'}
             </span>
             <div>
               <h2 id="svp-list-h">{t('v6_surveys_title')}</h2>
-              <p>{state.aboutDone ? t('v6_surveys_sub_open') : d.surveys?.length ? mt('svp.sub.mixed') : t('v6_surveys_sub_locked')}</p>
+              <p>{locked ? t('v6_surveys_sub_locked') : t('v6_surveys_sub_open')}</p>
             </div>
             <span className="sec6-count">{nf(list.length)}</span>
           </header>
@@ -252,16 +269,16 @@ export function SurveysPage() {
             </label>
           </div>
 
-          {!state.aboutDone && topics.length > 0 && d.allProfiles && (
+          {locked && d.allProfiles && (
             <div className="seal-banner" role="note">
               <span className="sb-lock" aria-hidden="true">
                 🔐
               </span>
               <span>{t('v6_surveys_banner', { n: aboutLeft })}</span>
               {state.nextAbout && (
-                <button type="button" className="sb-go" onClick={() => s.setLocked(topics[0]?.i ?? state.nextAbout.i)}>
-                  {t('v6_cta_locked')}
-                  <Icon n="lock" />
+                <button type="button" className="sb-go" onClick={() => s.open(state.nextAbout.i)}>
+                  {t('v6_surveys_go', { name: state.nextAbout.p.n })}
+                  <Icon n="arrow-r" />
                 </button>
               )}
             </div>
@@ -295,13 +312,9 @@ export function SurveysPage() {
             </XEmpty>
           ) : (
             <div className="grid6 g-surveys">
-              {shown.map((x, k) =>
-                x.kind === 'paid' ? (
-                  <PaidCard key={x.key} s={x} num={page * per + k + 1} onStart={start} busy={starting === x.slug} />
-                ) : (
-                  <ItemCard key={x.key} x={x} st={st(x)} num={page * per + k + 1} onOpen={s.open} onLocked={s.setLocked} />
-                )
-              )}
+              {shown.map((x, k) => (
+                <PaidCard key={x.key} s={x} num={page * per + k + 1} onStart={start} busy={starting === x.slug} locked={locked} />
+              ))}
             </div>
           )}
 

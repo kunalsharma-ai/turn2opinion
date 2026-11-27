@@ -2,10 +2,12 @@
 //   1. Hero greeting with the Opinion Galaxy
 //   2. The member's reward world (Consumer Opinion Kingdom, Professional Insight Observatory, Teen Quest
 //      Islands): one building/star/island per profile, treasury (real points + quality), badges
-//   3. About you · Profiles (complete these first)
-//   4. Incomplete (pick up where you left off)
-//   5. Surveys: every other profile, black & white and sealed until About you is complete,
-//      then opened one at a time
+//   3. About you · Profiles: Basic, Educational, Finance, Health (complete these first)
+//   4. Parent & guardian (Teen members only)
+//   5. Incomplete (pick up where you left off)
+//   6. All other profiles: black & white and locked until every About-you profile is complete,
+//      then all unlocked together (issue #47).
+// No surveys are shown here: real surveys live only on /member/surveys/.
 // Questions, answers and saving are the member area's (see v6/questions.js and v6/components/Flow.jsx).
 import { useEffect, useState } from 'react';
 import { useDash, XError } from '../components/Sections.jsx';
@@ -56,11 +58,13 @@ function Hub({ s, d }) {
   const loading = !d.allProfiles;
   const name = me.firstName || '';
   const profiles = items.filter((x) => x.kind === 'profile');
-  const surveys = items.filter((x) => x.kind === 'survey');
+  const topics = items.filter((x) => x.kind === 'survey');
   const st = (x) => state.map.get(x.i) || { st: 'locked', pct: 0 };
   const aboutDone = profiles.filter((x) => st(x).st === 'done').length;
   const incomplete = items.filter((x) => st(x).st === 'prog');
-  const surveysDone = surveys.filter((x) => st(x).st === 'done').length;
+  // "All other profiles" lists the rest; ones already shown under Incomplete are not repeated
+  const others = topics.filter((x) => st(x).st !== 'prog');
+  const othersDone = topics.filter((x) => st(x).st === 'done').length;
   const nx = state.nextAbout || state.nextSurvey;
   const next = nx ? { ...nx, started: st(nx).st === 'prog' } : null;
   const pts = d.points?.total ?? 0;
@@ -69,7 +73,7 @@ function Hub({ s, d }) {
 
   return (
     <div className="dash">
-      <Hero name={name} aboutDone={aboutDone} aboutTotal={profiles.length || 2} pts={pts} qs={qs} next={next} onStart={s.open} onKingdom={toKingdom} />
+      <Hero name={name} aboutDone={aboutDone} aboutTotal={profiles.length || 4} pts={pts} qs={qs} next={next} onStart={s.open} onKingdom={toKingdom} />
       {loading ? (
         <div className="kd kd-skel" aria-hidden="true" />
       ) : (
@@ -92,7 +96,7 @@ function Hub({ s, d }) {
           </span>
         </header>
         <div className="grid6 g-about">
-          {loading ? [0, 1].map((k) => <span key={k} className="icard big skel6" aria-hidden="true" />) : profiles.map((x) => <ItemCard key={x.slug} x={x} st={st(x)} onOpen={s.open} onLocked={s.setLocked} big />)}
+          {loading ? [0, 1, 2, 3].map((k) => <span key={k} className="icard big skel6" aria-hidden="true" />) : profiles.map((x) => <ItemCard key={x.slug} x={x} st={st(x)} onOpen={s.open} onLocked={s.setLocked} big />)}
         </div>
       </section>
 
@@ -110,7 +114,7 @@ function Hub({ s, d }) {
         {incomplete.length ? (
           <div className="grid6 g-inc">
             {incomplete.map((x) => (
-              <ItemCard key={x.slug} x={x} st={st(x)} num={surveys.indexOf(x) + 1} onOpen={s.open} onLocked={s.setLocked} />
+              <ItemCard key={x.slug} x={x} st={st(x)} onOpen={s.open} onLocked={s.setLocked} />
             ))}
           </div>
         ) : !loading ? (
@@ -127,32 +131,32 @@ function Hub({ s, d }) {
         ) : null}
       </section>
 
-      {(loading || surveys.length > 0) && (
-        <section className={'sec6 sec-surveys' + (state.aboutDone ? ' unlocked' : ' sealed')} aria-labelledby="h-surveys">
+      {(loading || topics.length > 0) && (
+        <section className={'sec6 sec-surveys sec-others' + (state.aboutDone ? ' unlocked' : ' sealed')} aria-labelledby="h-others">
           <header className="sec6-h">
-            <span className="sec6-ic" aria-hidden="true">{state.aboutDone ? '🗝️' : '🔒'}</span>
+            <span className="sec6-ic" aria-hidden="true">{state.aboutDone ? '🗂️' : '🔒'}</span>
             <div>
-              <h2 id="h-surveys">{t('v6_surveys_title')}</h2>
-              <p>{state.aboutDone ? t('v6_surveys_sub_open') : t('v6_surveys_sub_locked')}</p>
+              <h2 id="h-others">{t('v6_others_title')}</h2>
+              <p>{state.aboutDone ? t('v6_others_sub_open') : t('v6_others_sub_locked')}</p>
             </div>
             <span className="sec6-count">
-              {nf(surveysDone)}/{nf(surveys.length)}
+              {nf(othersDone)}/{nf(topics.length)}
             </span>
           </header>
           {!loading && !state.aboutDone && (
             <div className="seal-banner" role="note">
               <span className="sb-lock" aria-hidden="true">🔐</span>
-              <span>{t('v6_surveys_banner', { n: profiles.length - aboutDone })}</span>
+              <span>{t('v6_others_banner', { n: profiles.length - aboutDone })}</span>
             </div>
           )}
           <div className="grid6 g-surveys">
             {loading
               ? [0, 1, 2, 3].map((k) => <span key={k} className="icard skel6 dk" aria-hidden="true" />)
-              : surveys.map((x, k) => ((all || k < 8 || st(x).st !== 'locked') ? <ItemCard key={x.slug} x={x} st={st(x)} num={k + 1} onOpen={s.open} onLocked={s.setLocked} /> : null))}
+              : others.map((x, k) => (all || k < 8 ? <ItemCard key={x.slug} x={x} st={st(x)} onOpen={s.open} onLocked={s.setLocked} /> : null))}
           </div>
-          {surveys.length > 8 && (
+          {others.length > 8 && (
             <button type="button" className="btn6 ghost more6" onClick={() => setAll((v) => !v)} aria-expanded={all}>
-              {all ? t('v6_show_less') : t('v6_show_all', { n: surveys.length })}
+              {all ? t('v6_show_less') : t('v6_show_all', { n: others.length })}
               <Icon n="chev" />
             </button>
           )}
