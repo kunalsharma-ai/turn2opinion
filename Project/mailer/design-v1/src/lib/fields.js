@@ -83,7 +83,7 @@ export const url = {
   forgot:      () => `${http()}/reset-password/?user=${u.idRaw()}&code=${tok.otpRaw()}`,
   /** reset-password.liquid */
   reset:       () => `${http()}/auth/password?user=${u.idRaw()}&code=${tok.otpRaw()}`,
-  parent:      () => `${https()}/auth/parent-consent?user=${u.idRaw()}&code=${tok.otpRaw()}`,
+  parent:      () => `${https()}/parent-consent/?user=${u.idRaw()}&code=${tok.otpRaw()}`,
   changeConf:  () => `${https()}/auth/change-email?confcode=${tok.tokenRaw()}`,
   changeUpd:   () => `${https()}/auth/change-email?updatecode=${tok.tokenRaw()}`,
   /** welcome.liquid */

@@ -10,6 +10,8 @@ import { useI18n } from './i18n/I18n.jsx';
 import { isSoundEnabled, setSoundEnabled } from './i18n/soundPrefs.js';
 import { play } from './sound.js';
 import { asset } from './assets.js';
+import EN from './i18n/strings/en.js';
+import { Doc, MUTED, savePdf, when } from '../../shared/pdf-doc.js';
 
 const THEME_KEY = 't2o.consent.theme'; // the member's own light/dark choice (wins over everything)
 const ls = {
@@ -190,27 +192,28 @@ export default function App({ cfg }) {
     }
   };
 
+  // The accepted terms as a PDF (issue #37: this used to save an .html file). The legal text is the binding English.
   const download = () => {
     if (!record) return;
-    const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    const secs = Array.from({ length: 22 }, (_, i) => i + 1)
-      .map((n) => `<h2>${n}. ${esc(SECTIONS[n].title)}</h2>${bodyTexts(n, cfg).map((p) => `<p>${esc(p)}</p>`).join('')}`)
-      .join('');
-    const rows = CONSENTS.map((c) => `<tr><td>${record.consents[c.id] ? 'Yes' : 'No'}</td><td>${esc(t(`c_${c.id}`))}${c.required ? ' (required)' : ' (optional)'}</td></tr>`).join('');
-    const html = `<!doctype html><html lang="en"><meta charset="utf-8"><title>Turn2Opinion consent ${esc(record.consentId)}</title>
-<style>body{font:15px/1.6 system-ui,sans-serif;max-width:760px;margin:40px auto;padding:0 20px;color:#0b1238}h1{font-size:24px}h2{font-size:17px;margin-top:28px}table{border-collapse:collapse;width:100%}td{border:1px solid #dde;padding:6px 10px;vertical-align:top}.box{background:#f5f6fb;border-radius:12px;padding:14px 18px}</style>
-<h1>Consumer Panel Terms, Conditions, Privacy Notice and Consent</h1>
-<div class="box"><b>Consent receipt</b><br>Reference: ${esc(record.consentId)}<br>Date: ${esc(record.acceptedAt)}<br>Member: ${esc(cfg.member.id || '—')}<br>Terms version: ${esc(record.termsVersion)} · Effective ${esc(cfg.effectiveDate)}<br>Language of the page: ${esc(record.language)}</div>
-<h2>Your choices</h2><table>${rows}</table>
-<p>Operator: ${esc(cfg.operator)} · ${esc(cfg.website)} · ${esc(cfg.supportEmail)} · ${esc(cfg.address)}</p>${secs}</html>`;
-    const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Turn2Opinion-consent-${record.consentId}.html`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    const d = new Doc('Consumer Panel Terms, Conditions, Privacy Notice and Consent');
+    d.masthead('Consumer Panel terms, privacy notice and consent', `Version ${record.termsVersion}`);
+    d.h1('Consumer Panel Terms, Conditions, Privacy Notice and Consent');
+    d.text(`${cfg.operator} - ${cfg.website} - ${cfg.supportEmail}`, { size: 9.6, color: MUTED, after: 2 });
+    d.text(cfg.address, { size: 9, color: MUTED, after: 4 });
+    d.panel([
+      ['Reference', record.consentId],
+      ['Accepted', when(record.acceptedAt)],
+      ['Member', cfg.member.id || '-'],
+      ['Terms version', `${record.termsVersion} (effective ${cfg.effectiveDate})`],
+      ['Page language', record.language]
+    ], { title: 'Consent receipt' });
+    d.h3('Your choices');
+    for (const c of CONSENTS) d.bullet(`${record.consents[c.id] ? 'YES' : 'NO'} (${c.required ? 'required' : 'optional'}): ${EN[`c_${c.id}`] || t(`c_${c.id}`)}`, { size: 9.2 });
+    for (let n = 1; n <= 22; n++) {
+      d.h2(`${n}. ${SECTIONS[n].title}`);
+      bodyTexts(n, cfg).forEach((p) => d.text(p, { after: 4 }));
+    }
+    savePdf(d.bytes(`Turn2Opinion consent ${record.consentId}`), `Turn2Opinion-consent-${record.consentId}.pdf`);
   };
 
   const goto = (id) => {

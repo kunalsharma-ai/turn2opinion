@@ -23,13 +23,7 @@ export default async function isAuthenticated(req, res, next) {
         if (!user || !user._id || !req.origin) {
             return res.status(401).json({
                 status: "error",
-                message: "Unauthorized--[Token Mismatched]",
-                info: [
-                    !user,
-                    !user._id,
-                    !req.origin
-                ],
-                user
+                message: "Unauthorized--[Token Mismatched]"
             })
         }
 

@@ -11,6 +11,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { DIST, renderAll, loadEmails } from './render.mjs';
+import { titleCaseNames } from './names.mjs';
 
 const arg = (k) => (process.argv.find((a) => a.startsWith(`--${k}=`)) || '').split('=')[1];
 const only = arg('only');
@@ -67,7 +68,7 @@ async function main() {
   if (only !== 'html' && only !== 'text') {
     for (const { meta, body } of await renderAll({ mode: 'liquid', assetBase })) {
       await fs.writeFile(path.join(DIST, 'liquid', `${meta.id}.liquid`),
-        banner(meta) + body, 'utf8');
+        titleCaseNames(banner(meta) + body), 'utf8');
     }
   }
 
@@ -78,7 +79,7 @@ async function main() {
     for (const { meta, text } of EMAILS) {
       if (typeof text !== 'function') continue;
       await fs.writeFile(path.join(DIST, 'text', `${meta.id}.txt`),
-        `${text().trim()}\n`, 'utf8');
+        titleCaseNames(`${text().trim()}\n`), 'utf8');
     }
     setMode('html');
     await fs.unlink(_bundlePath).catch(() => {});

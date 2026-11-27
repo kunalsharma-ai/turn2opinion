@@ -1,4 +1,5 @@
 import express from "express";
+import { requireAdmin } from "../../utils/access.js";
 import { teenCategory } from "../../utils/goLiveSetup.js";
 import {
     Survey as surveyController,
@@ -9,8 +10,13 @@ import {
     Profile as profileController
 } from "../../controller/index.js";
 import Category from "../../model/Category.js";
+import UserModel from "../../model/User.js";
+import * as Marketing from "../../utils/marketing.js";
 import { Profile as profileModel, Rewards as rewardsModel } from "../../model/index.js";
-import { PROFILE_REWARD, creditCompletedProfiles, sumCredited } from "../../utils/profileRewards.js";
+import { PROFILE_REWARD, creditCompletedProfiles, qualityUpdates, sumCredited } from "../../utils/profileRewards.js";
+import { linkFor, teenMail, teenMailData, guardianLinks, brand } from "../../utils/teen.js";
+
+const TEEN_LINK_MS = 7 * 24 * 60 * 60 * 1000; // guardian links last 7 days, as the email says
 import {
     Mutate,
     expressRoute,
@@ -33,7 +39,13 @@ async function creditProfiles(req) {
         profiles: async () => Mutate(await profileModel.find({ category, isActive: true, isDeleted: false }, { slug: 1, name: 1, points: 1 }).lean()),
         status: async () => (await profileController.status()) || {},
         credited: async () => (await rewardsModel.find({ user: req.user._id, origin: req.origin, category: PROFILE_REWARD }, { remarks: 1 }).lean()).map((r) => r.remarks),
-        upsert: (filter, update, options) => rewardsModel.updateOne(filter, update, options)
+        upsert: (filter, update, options) => rewardsModel.updateOne(filter, update, options),
+        // +1 quality score per newly finished profile (issue #40), capped at the segment's scale
+        addQuality: async (n) => {
+            const cat = await Category.findOne({ name: category }).select("qualityScoreScale").lean();
+            const scale = cat?.qualityScoreScale ?? Category.schema.path("qualityScoreScale").defaultValue;
+            for (const op of qualityUpdates({ _id: req.user._id, origin: req.origin }, n, scale)) await UserModel.updateOne(op.filter, op.update);
+        }
     });
 }
 Date.prototype.resetTime = function (type = "start") {
@@ -123,7 +135,17 @@ router
     .put(expressRoute(
         async req => {
             const [message, data] = ["Updated successfully", []];
-            await userController.update(req.user._id, req.body);
+            const body = { ...(req.body || {}) };
+            for (const k of Marketing.PROTECTED) delete body[k]; // only through PUT /me/marketing or the terms below
+            // the consent kit's "marketing" id is the marketing e-mail opt-in: keep User.marketingOptIn in step
+            let termsBefore = null;
+            if (Array.isArray(body.terms)) {
+                const cur = await UserModel.findOne({ _id: req.user._id, origin: req.origin }).select("terms category").lean();
+                termsBefore = cur?.terms || [];
+                body.terms = Marketing.stripForTeen(cur, body.terms);
+            }
+            await userController.update(req.user._id, body);
+            if (termsBefore) await Marketing.syncFromTerms(req.user._id, req.origin, termsBefore, body.terms);
             return { message, data };
         },
         userController
@@ -134,6 +156,28 @@ router
         })
         return res.json({})
     })
+// "News and offers": the member's marketing e-mail consent (utils/marketing.js)
+router
+    .route("/marketing")
+    .get(expressRoute(
+        async req => {
+            const u = await UserModel.findOne({ _id: req.user._id, origin: req.origin }).select("marketingOptIn category").lean();
+            return { message: "", data: { ...Marketing.view(u), teen: Marketing.isTeen(u) } };
+        },
+        userController
+    ))
+    .put(expressRoute(
+        async req => {
+            const data = await Marketing.setOptIn(req.user._id, req.origin, req.body?.optIn, "profile", "member");
+            // keep the consent kit's "marketing" id in step, so Settings shows the same choice
+            const cur = await UserModel.findOne({ _id: req.user._id, origin: req.origin }).select("terms").lean();
+            const terms = (cur?.terms || []).filter((t) => t !== "marketing");
+            if (data.granted) terms.push("marketing");
+            await UserModel.updateOne({ _id: req.user._id, origin: req.origin }, { $set: { terms } });
+            return { message: "Saved", data };
+        },
+        userController
+    ));
 router
     .get("/points",
         expressRoute(
@@ -210,7 +254,8 @@ router
             answerController
         )
     )
-    .patch("/change-category",
+    // members can't change their own segment (Consumer, Professional, Teen): admins only
+    .patch("/change-category", requireAdmin,
         expressRoute(
             async req => {
                 const [message, data] = [
@@ -243,27 +288,13 @@ router
                     body.parent = { ...body.parent, consent: null, consentStatus: "pending", submittedAt: new Date() };
                 await userController.update(req.user._id, body);
                 let user = Mutate(await userController.read(req.user._id))
-                let otp=await otpController.generate(
-                    user._id,
-                    "parent-consent",
-                    user.origin,
-                    1 * 24 * 60 * 60 * 1000
-                )
-                let mailer = await getMailer(
-                    "register",
-                    "minor",
-                    {
-                        user,
-                        otp
-                    }
-                )
-                const emailStatus = await sendMail(
-                    { origin: req.origin, "content-type": "application/json" },
-                    user?.parent?.email,
-                    `${process.env.PROJECT_NAME}: Child Registration`,
-                    mailer.data
-                )
-                console.log(emailStatus)
+                // The guardian's YES / NO email with the current signed /parent-consent/ links (issue #36). Before,
+                // this sent the "minor" template with only the code, so its buttons had no working link.
+                const otp = await otpController.generate(user._id, "parent-consent", user.origin || req.origin, TEEN_LINK_MS);
+                const link = linkFor(user._id, "parent-consent", otp);
+                await teenMail(req, user?.parent?.email, "minor",
+                    `${user?.name?.first || "Your teen"} would like to join the ${brand()} Teen panel: your decision`,
+                    teenMailData(req, user, { otp: link, links: guardianLinks(req, user, link) }));
                 return {
                     status: "success",
                     message: "",

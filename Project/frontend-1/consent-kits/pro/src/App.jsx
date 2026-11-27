@@ -11,6 +11,8 @@ import { useI18n } from './i18n/I18n.jsx';
 import { isSoundEnabled, setSoundEnabled } from './i18n/soundPrefs.js';
 import { play } from './sound.js';
 import { asset } from './assets.js';
+import EN from './i18n/strings/en.js';
+import { Doc, MUTED, savePdf, when } from '../../shared/pdf-doc.js';
 
 const THEME_KEY = 't2o.pro.theme';
 const ls = {
@@ -182,23 +184,28 @@ export default function App({ cfg }) {
     }
   };
 
+  // The accepted terms as a PDF (issue #37: this used to save an .html file). The legal text is the binding English.
   const download = () => {
     if (!record) return;
-    const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    const clauses = Array.from({ length: TOTAL }, (_, i) => i + 1).map((n) => `<h2>${n}. ${esc(SECTIONS[n].title)}</h2>${bodyTexts(n, cfg).map((p) => `<p>${esc(p)}</p>`).join('')}`).join('');
-    const rows = CONSENTS.map((c) => `<tr><td>${record.consents[c.id] ? 'Yes' : 'No'}</td><td>${esc(t(`c_${c.id}`))} ${c.required ? '(required)' : '(optional)'}</td></tr>`).join('');
-    const html = `<!doctype html><html lang="en"><meta charset="utf-8"><title>Turn2Opinion — business consent ${esc(record.consentId)}</title><style>body{font:15px/1.6 system-ui,sans-serif;max-width:780px;margin:40px auto;padding:0 20px;color:#0b1238}h1{font-size:24px}h2{font-size:16px;margin-top:26px}table{border-collapse:collapse;width:100%}td{border:1px solid #dde;padding:6px 10px;vertical-align:top}.box{border:2px solid #c9a227;border-radius:12px;padding:14px 18px}</style>
-<h1>Business Professionals Panel: Terms and Conditions, Privacy Notice and Consent</h1>
-<div class="box"><b>Certificate of consent</b><br>Reference: ${esc(record.consentId)}<br>Signed: ${esc(record.acceptedAt)}<br>Member: ${esc(cfg.member.id || '—')}${cfg.member.firstName ? ` (${esc(cfg.member.firstName)})` : ''}<br>Terms version: ${esc(record.termsVersion)} · Effective ${esc(cfg.effectiveDate)}<br>Page language: ${esc(record.language)}</div>
-<h2>Approvals</h2><table>${rows}</table><p>${esc(cfg.operator)} · ${esc(cfg.website)} · ${esc(cfg.supportEmail)} · ${esc(cfg.address)}</p>${clauses}</html>`;
-    const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Turn2Opinion-business-consent-${record.consentId}.html`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    const d = new Doc('Business Professionals Panel: Terms and Conditions, Privacy Notice and Consent');
+    d.masthead('Business Professionals Panel terms, privacy notice and consent', `Version ${record.termsVersion}`);
+    d.h1('Business Professionals Panel: Terms and Conditions, Privacy Notice and Consent');
+    d.text(`${cfg.operator} - ${cfg.website} - ${cfg.supportEmail}`, { size: 9.6, color: MUTED, after: 2 });
+    d.text(cfg.address, { size: 9, color: MUTED, after: 4 });
+    d.panel([
+      ['Reference', record.consentId],
+      ['Signed', when(record.acceptedAt)],
+      ['Member', `${cfg.member.id || '-'}${cfg.member.firstName ? ` (${cfg.member.firstName})` : ''}`],
+      ['Terms version', `${record.termsVersion} (effective ${cfg.effectiveDate})`],
+      ['Page language', record.language]
+    ], { title: 'Certificate of consent' });
+    d.h3('Approvals');
+    for (const c of CONSENTS) d.bullet(`${record.consents[c.id] ? 'YES' : 'NO'} (${c.required ? 'required' : 'optional'}): ${EN[`c_${c.id}`] || t(`c_${c.id}`)}`, { size: 9.2 });
+    for (let n = 1; n <= TOTAL; n++) {
+      d.h2(`${n}. ${SECTIONS[n].title}`);
+      bodyTexts(n, cfg).forEach((p) => d.text(p, { after: 4 }));
+    }
+    savePdf(d.bytes(`Turn2Opinion business consent ${record.consentId}`), `Turn2Opinion-business-consent-${record.consentId}.pdf`);
   };
 
   const name = mounted ? [cfg.member.firstName, cfg.member.jobTitle].filter(Boolean).join(' · ') : '';

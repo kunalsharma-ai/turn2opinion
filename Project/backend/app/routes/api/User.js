@@ -37,11 +37,16 @@ import { createCaptcha, requireCaptcha } from "../../utils/captcha.js";
 import { requireAdmin, requireMember, selfOrAdmin } from "../../utils/access.js";
 import { checkQuery, isAdminRole, memberListQuery, omit, safeFilter, userUpdate } from "../../utils/memberAccess.js";
 import { captchaLimit, loginLimit, registerLimit, linkLimit } from "../../utils/limits.js";
+import { lockedFor, fail, clear, norm } from "../../utils/throttle.js";
+import { withRequest } from "../../utils/requestContext.js";
 import { ageInYears } from "../../model/User.js";
+import * as Marketing from "../../utils/marketing.js";
+import UserModel from "../../model/User.js";
 import { Answers as answerModel, Response as responseModel, Tombstone as tombstoneModel } from "../../model/index.js";
 import {
     TEEN_REG_CONSENT_VERSION, GUARDIAN_TERMS_VERSION, TEEN_STATEMENTS, GUARDIAN_REQUIRED, GUARDIAN_OPTIONAL, DECLINE_REASONS,
-    linkFor, sigOk, maskEmail, registrationRef, cleanOnboarding, onboardingErrors, teenMail, brand
+    linkFor, sigOk, maskEmail, registrationRef, cleanOnboarding, onboardingErrors, teenMail, brand,
+    teenSite, guardianLinks, teenMailData
 } from "../../utils/teen.js";
 import { familyRecord } from "../../utils/teenFamily.js";
 import { guardianAnswers } from "../../utils/parentProfile.js";
@@ -89,22 +94,8 @@ function checkParent(parent, teenMail) {
     if (parent.dob && (pAge === null || pAge < 18)) throw new Error("A parent or guardian must be 18 or older.");
 }
 
-// Links in the guardian's emails: /parent-consent/?user&code&s (+ &d=yes|no on the two decision buttons).
-const siteOf = (req, user) => `https://${user?.origin || req.origin}`;
-function guardianLinks(req, user, link) {
-    if (!link) return null;
-    const base = `${siteOf(req, user)}/parent-consent/?user=${user._id}&code=${link.code}&s=${link.sig}`;
-    return { open: base, yes: `${base}&d=yes`, no: `${base}&d=no`, expiresAt: link.expiresAt };
-}
-const teenMailData = (req, user, extra = {}) => ({
-    user,
-    ref: registrationRef(user),
-    site: siteOf(req, user),
-    parentMasked: maskEmail(user?.parent?.email),
-    teenMasked: maskEmail(user?.mail),
-    relation: user?.parent?.relation === "guardian" ? "legal guardian" : user?.parent?.relation || "parent or guardian",
-    ...extra
-});
+// Links in the guardian's emails and the data every Teen email gets: see utils/teen.js (shared with /me/parent-details).
+const siteOf = teenSite;
 
 async function sendParentOnboarding(req, user, template = "minor", subject) {
     const otp = await otpController.generate(user._id, "parent-consent", user.origin || req.origin, TEEN_LINK_MS);
@@ -296,9 +287,14 @@ router
                     if (userInfo.category === "minor") userInfo.category = "b2c";
                     if (userInfo.category === "minor patient") userInfo.category = "patient";
                 }
-                if (Array.isArray(userInfo.terms)) userInfo.terms = userInfo.terms.filter((t) => typeof t === "string").slice(0, 20);
+                if (Array.isArray(userInfo.terms)) userInfo.terms = Marketing.stripForTeen(userInfo, userInfo.terms.filter((t) => typeof t === "string").slice(0, 20));
+                // marketing consent is written only through utils/marketing.js, never straight from the form
+                const marketingOptIn = typeof userInfo.marketingOptIn === "boolean" ? userInfo.marketingOptIn : Array.isArray(userInfo.terms) && userInfo.terms.includes("marketing") ? true : null;
+                for (const k of Marketing.PROTECTED) delete userInfo[k];
                 let message = "";
                 let data = await userController.create(userInfo);
+                // "News and offers": recorded only for an explicit choice (unticked by default); a teen never opts in
+                if (marketingOptIn !== null && !(marketingOptIn && Marketing.isTeen(data))) await Marketing.setOptIn(data._id, req.origin, marketingOptIn, "signup", "member");
                 // Only contact/location answers here; every member answers the welcome questions after login.
                 try { await saveWelcome(req, Mutate(data), welcome, false); } catch { /* saved again after login */ }
 
@@ -462,10 +458,20 @@ router
             const message = "Login successful";
             let data = [];
             await requireCaptcha(req);
+            // strings only (an object here would be a database filter), and a per-account lock after 10 wrong
+            // passwords in 15 minutes, so a bot that keeps changing its address gets no further
+            const { mail, phone, password } = req.body || {};
+            if (typeof password !== "string" || !password || (typeof mail !== "string" && typeof phone !== "string"))
+                throw new Error("E-Mail id or Password is invalid");
+            const who = `login:${req.origin}:${norm(typeof mail === "string" && mail ? mail : phone)}`;
+            const wait = await lockedFor(who);
+            if (wait) throw new Error(`Too many wrong attempts. Please wait ${wait} minute${wait === 1 ? "" : "s"} or reset your password.`);
             let user;
             try {
-                user = await userController.login(req.body);
+                user = await userController.login(typeof mail === "string" && mail ? { mail, password } : { phone, password });
+                await clear(who);
             } catch (err) {
+                if (/invalid/i.test(err.message)) await fail(who, { max: 10, windowMin: 15, lockMin: 15 });
                 // A Teen awaiting consent has no password yet, so login stops at "Account is inactive".
                 // Say why instead (that message already shows the account exists, so nothing new leaks).
                 if (/inactive/i.test(err.message) && req.body.mail) {
@@ -903,8 +909,7 @@ router
             if (!user || !isTeenUser(user)) throw new Error("This page is for Teen panel members.");
             let answers = {};
             try {
-                answerController.request = { ...req, user: { _id: user._id }, origin: user.origin || req.origin };
-                answers = Mutate(await answerController.getAnswers({ user: String(user._id) })) || {};
+                answers = Mutate(await withRequest({ ...req, user: { _id: user._id }, origin: user.origin || req.origin }, () => answerController.getAnswers({ user: String(user._id) }))) || {};
             } catch { answers = {}; }
             const home = Array.isArray(user.address) && user.address[0] ? user.address[0] : {};
             const p = user.parent || {};
@@ -1046,8 +1051,7 @@ router
                     // What the teen submitted, for the parent to review (no password, no internal fields).
                     let answers = {};
                     try {
-                        answerController.request = { ...req, user: { _id: user._id }, origin: user.origin || req.origin };
-                        answers = Mutate(await answerController.getAnswers({ user: String(user._id) })) || {};
+                        answers = Mutate(await withRequest({ ...req, user: { _id: user._id }, origin: user.origin || req.origin }, () => answerController.getAnswers({ user: String(user._id) }))) || {};
                     } catch { answers = {}; }
                     const home = Array.isArray(user.address) && user.address[0] ? user.address[0] : {};
                     return {
@@ -1093,7 +1097,18 @@ router
                 let message = "";
                 const update = userUpdate(req.body, { isAdmin: req.isAdmin });
                 if (!Object.keys(update).length) throw new Error("Nothing to update");
+                // terms carry the consent kit's "marketing" id: keep User.marketingOptIn in step (teens never keep it)
+                let termsBefore = null;
+                if (Array.isArray(update.terms)) {
+                    const cur = await UserModel.findOne({ _id: req.params.id, origin: req.origin }).select("terms category").lean();
+                    termsBefore = cur?.terms || [];
+                    update.terms = Marketing.stripForTeen(cur, update.terms);
+                }
                 let data = await userController.update(req.params.id, update)
+                if (termsBefore) {
+                    const next = Marketing.termsChange(termsBefore, update.terms);
+                    if (next !== null) await Marketing.setOptIn(req.params.id, req.origin, next, req.isAdmin ? "admin" : "profile", req.isAdmin ? `admin:${req.user?._id || ""}` : "member");
+                }
                 return { message, data };
             },
             userController

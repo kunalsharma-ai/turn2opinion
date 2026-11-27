@@ -73,13 +73,10 @@ const emailCheck = {
 
 // The API decides the final panel from the date of birth; under-18s always become "minor".
 const category = { consumer: 'b2c', pro: 'b2b', minor: 'minor' };
+// The same three choices for every segment (Consumer, Professional and Teen): what the account stores
+// (User.gender is Male / Female / Other) and the options of the Basic profile's Gender question (issue #35).
 const GENDERS = ['Female', 'Male', 'Other'];
-// Teen panel: two more choices and a free description (stored exactly as profile answer D06).
-const TEEN_GENDER_OPTS = ['Female', 'Male', 'Non-binary', 'Prefer not to say', 'Let me describe'];
 const GENDER_META = {
-  'Non-binary': { c: '#8B5CF6', d: ['M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z', 'M12 3v5', 'M9.5 5.5h5', 'M12 16v5'] },
-  'Prefer not to say': { c: '#64748B', d: ['M12 4a8 8 0 1 1 0 16 8 8 0 0 1 0-16z', 'M8 12h8'] },
-  'Let me describe': { c: '#0EA5A4', d: ['M4 20l4-1 10-10-3-3L5 16z', 'M13.5 7.5l3 3'] },
   Female: { c: '#FF4F8B', d: ['M12 4.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9z', 'M12 13.5V21', 'M8.8 17.6h6.4'] },
   Male: { c: '#2F7BFF', d: ['M10 9.5a5 5 0 1 1 0 10 5 5 0 0 1 0-10z', 'M13.6 10.9 20 4.5', 'M15 4.5h5v5'] },
   Other: { c: '#8B5CF6', d: ['M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z', 'M12 3v3', 'M12 18v3', 'M3 12h3', 'M18 12h3'] }
@@ -288,7 +285,6 @@ const initial = {
   email: '',
   dob: '',
   gender: '',
-  genderSelf: '',
   dial: '',
   phone: '',
   country: '',
@@ -329,8 +325,8 @@ function validate(step, f) {
     if (!EMAIL_RE.test(f.email.trim())) e.email = 'Enter a valid email address, like name@example.com.';
     const de = dobError(f.dob, f.type);
     if (de) e.dob = de;
-    if (!f.gender) e.gender = teen ? 'Choose an option (or “Prefer not to say”).' : 'Select your gender.';
-    if (teen && f.gender === 'Let me describe' && f.genderSelf.trim() && !/^[\p{L} '’-]{2,40}$/u.test(f.genderSelf.trim())) e.genderSelf = 'Use letters only.';
+    // a saved draft may still hold an older Teen choice (Non-binary, Prefer not to say): ask again
+    if (!GENDERS.includes(f.gender)) e.gender = 'Select your gender.';
     if (!teen || f.phone.trim()) {
       const pe = phoneError(f.dial, f.phone);
       if (pe) e.phone = pe;
@@ -415,7 +411,7 @@ function ReviewCard({ f, journey, onEdit }) {
           <dt>Born</dt>
           <dd>{formatDate(f.dob)}</dd>
           <dt>Gender</dt>
-          <dd>{f.gender === 'Let me describe' ? f.genderSelf.trim() || 'Self-described' : f.gender}</dd>
+          <dd>{f.gender}</dd>
           <dt>Lives in</dt>
           <dd>
             {c && <Flag code={c.c} size={14} />} {[f.city, f.zipcode, c?.n].filter(Boolean).join(', ')}
@@ -615,7 +611,7 @@ export default function Join() {
       playAudience(v);
       setAnswers({});
     }
-    setF((p) => ({ ...p, type: v, dob: v === 'minor' && a !== null && a >= SITE.adultAge ? '' : p.dob, gender: v !== 'minor' && !GENDERS.includes(p.gender) ? '' : p.gender }));
+    setF((p) => ({ ...p, type: v, dob: v === 'minor' && a !== null && a >= SITE.adultAge ? '' : p.dob, gender: !GENDERS.includes(p.gender) ? '' : p.gender }));
   };
   const onDob = (v) => {
     const a = ageOn(v);
@@ -806,8 +802,7 @@ export default function Join() {
             D01: String(age),
             D02: f.country,
             ...(f.state ? { D03: f.state } : {}),
-            D06: f.gender === 'Let me describe' ? 'Other' : f.gender,
-            ...(f.gender === 'Let me describe' && f.genderSelf.trim() ? { 'D06-other': f.genderSelf.trim().slice(0, 40) } : {})
+            D06: f.gender
           }
         : {}),
       'communication-methods': Object.keys(f.channels)
@@ -1333,20 +1328,12 @@ export default function Join() {
                         id="j-gender"
                         value={f.gender}
                         error={errOf('gender')}
-                        options={TEEN_GENDER_OPTS}
                         onPick={(g) => {
                           set('gender', g);
                           setTouched((t) => ({ ...t, gender: true }));
                         }}
                       />
                     </div>
-                    {f.gender === 'Let me describe' && (
-                      <div data-k="genderSelf">
-                        <Field id="j-gself" label="How do you describe yourself?" hint="Optional. You can leave this empty." error={errOf('genderSelf')}>
-                          <input id="j-gself" className="input" value={f.genderSelf} onChange={(e) => set('genderSelf', e.target.value)} maxLength={40} />
-                        </Field>
-                      </div>
-                    )}
                   </fieldset>
                   <fieldset className="jf-group">
                     <legend>

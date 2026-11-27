@@ -2764,3 +2764,76 @@ html[data-mb-motion='reduce'] .mb-root .xwrap__bg i,
 html[data-mb-motion='reduce'] .mb-root .xtrust__seal i {
   animation: none !important;
 }
+
+/* ---------- quality score history (issue #48) ---------- */
+.xhist {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  align-items: end;
+  gap: var(--s3);
+  margin: 0;
+  padding: var(--s4) 0 0;
+  list-style: none;
+  min-height: 170px;
+}
+.xhist__m {
+  display: grid;
+  grid-template-rows: auto 120px auto auto;
+  justify-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.xhist__val {
+  font: 800 15px/1 var(--x-num, 'Inter', sans-serif);
+  color: var(--mb-text);
+}
+.xhist__bar {
+  position: relative;
+  align-self: end;
+  width: min(44px, 100%);
+  height: 120px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--sx, var(--mb-primary)) 9%, transparent);
+  overflow: hidden;
+}
+.xhist__bar i {
+  position: absolute;
+  inset: auto 0 0;
+  height: calc(var(--h, 0) * 100%);
+  border-radius: 10px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--sx, var(--mb-primary)) 70%, #fff), var(--sx, var(--mb-primary)));
+  transform-origin: bottom;
+  animation: xhist-grow 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+.xhist__m.is-now .xhist__bar i {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--mb-success) 65%, #fff), var(--mb-success));
+}
+.xhist__lbl {
+  font: 650 12px/1.2 'Inter', sans-serif;
+  color: var(--mb-muted);
+  white-space: nowrap;
+}
+.xhist__gain {
+  font: 700 11px/1 'Inter', sans-serif;
+  color: var(--mb-success);
+}
+.xhist__note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: var(--s4) 0 0;
+  font: 500 13px/1.4 'Inter', sans-serif;
+  color: var(--mb-muted);
+}
+@keyframes xhist-grow {
+  from {
+    transform: scaleY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .xhist__bar i {
+    animation: none;
+  }
+}

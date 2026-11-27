@@ -349,14 +349,75 @@ export function QualityPage() {
       {engageOn('report') ? (
         <QualityReport />
       ) : (
-        <section className="xs xs--history" aria-labelledby="xs-hist">
-          <XHead id="xs-hist" icon="calendar" eyebrow={t('ql.hist.eyebrow')} title={t('ql.hist')} />
-          <XEmpty compact kind="history" title={t('ql.hist.empty.t')}>
-            {t('ql.hist.empty.p')}
-          </XEmpty>
-        </section>
+        <ScoreHistory score={score} scale={scale} />
       )}
     </div>
+  );
+}
+
+/**
+ * Score history (issue #48: the section was always an empty card). The quality score only moves by +1 for each
+ * finished profile (backend utils/profileRewards.js), and every one of those is a dated credit in GET /me/rewards,
+ * which the activity section already loads. So each month's score is the current score minus the credits after that
+ * month. Months before joining are left out. Real data only: nothing is invented when there is nothing to show.
+ */
+const HIST_MONTHS = 6;
+export function monthlyScores(score, events, joinedAt, now = new Date()) {
+  const joined = joinedAt ? new Date(joinedAt) : null;
+  const dates = (events || []).map((e) => new Date(e.date)).filter((d) => !Number.isNaN(d.getTime()));
+  const out = [];
+  for (let i = HIST_MONTHS - 1; i >= 0; i--) {
+    const start = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const end = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
+    if (joined && end <= new Date(joined.getFullYear(), joined.getMonth(), 1)) continue;
+    const after = i === 0 ? 0 : dates.filter((d) => d >= end).length;
+    const gained = dates.filter((d) => d >= start && d < end).length;
+    out.push({ key: `${start.getFullYear()}-${start.getMonth()}`, month: start, value: Math.max(0, score - after), gained });
+  }
+  return out;
+}
+
+function ScoreHistory({ score, scale }) {
+  const me = useMe();
+  const [activity, status, retry] = useSection('activity');
+  const events = useMemo(() => (Array.isArray(activity) ? activity.filter((a) => a.kind === 'profile' && a.date) : []), [activity]);
+  const months = useMemo(() => monthlyScores(score, events, me.joinedAt), [score, events, me.joinedAt]);
+  const top = Math.max(1, Number(scale) || 200);
+  const first = months[0]?.value ?? score;
+  const diff = score - first;
+  return (
+    <section className="xs xs--history" aria-labelledby="xs-hist">
+      <XHead
+        id="xs-hist"
+        icon="calendar"
+        eyebrow={t('ql.hist.eyebrow')}
+        title={t('ql.hist')}
+        sub={months.length > 1 ? (diff > 0 ? t('ql.hist.up', { n: diff, months: months.length }) : t('ql.hist.flat', { months: months.length })) : t('ql.hist.new')}
+      />
+      {status === 'loading' && !activity ? (
+        <XSkel rows={1} h={140} />
+      ) : status === 'error' && !activity ? (
+        <XError onRetry={retry} />
+      ) : (
+        <>
+          <ol className="xhist" aria-label={t('ql.hist')}>
+            {months.map((m, i) => (
+              <li key={m.key} className={cx('xhist__m', i === months.length - 1 && 'is-now')} style={{ '--i': i, '--h': Math.min(1, m.value / top) }}>
+                <span className="xhist__val">{m.value}</span>
+                <span className="xhist__bar" aria-hidden="true">
+                  <i />
+                </span>
+                <span className="xhist__lbl">{m.month.toLocaleDateString(undefined, { month: 'short' })}</span>
+                {m.gained > 0 && <span className="xhist__gain">{t('ql.hist.gain', { n: m.gained })}</span>}
+              </li>
+            ))}
+          </ol>
+          <p className="xhist__note">
+            <Icon name="spark" size={14} /> {t('ql.hist.note')}
+          </p>
+        </>
+      )}
+    </section>
   );
 }
 
@@ -632,7 +693,7 @@ function SocialFollow() {
 
 /* ================= activity ================= */
 const RANGES = { 30: 30, 90: 90, 365: 365, all: null };
-const ACT_ICON = { complete: 'check', terminate: 'close', dropout: 'clock', overquota: 'lock' };
+const ACT_ICON = { complete: 'check', terminate: 'close', dropout: 'clock', overquota: 'lock', profile: 'user', reward: 'gift', referral: 'users' };
 export function ActivityPage() {
   const [list, status, retry] = useSection('activity');
   const [stats] = useSection('stats');
@@ -702,7 +763,7 @@ export function ActivityPage() {
         <XHead id="xs-river" icon="pulse" title={t('ac.title')} sub={items.length ? t('av2.summary', { n: items.length, p: fmt(earnedPts) }) : undefined} />
         <div className="xriver__tools">
           <div className="xs-filters" role="group" aria-label={t('ac.title')}>
-            {['all', 'complete', 'terminate', 'dropout'].map((v) => (
+            {['all', 'complete', 'terminate', 'dropout', 'profile', 'referral'].map((v) => (
               <button key={v} type="button" className={cx('xs-chip', filter === v && 'is-on')} aria-pressed={filter === v} onClick={() => setFilter(v)}>
                 {t(`ac.filter.${v}`)}
               </button>

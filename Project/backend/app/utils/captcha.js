@@ -8,6 +8,7 @@
 //
 // The picture is drawn as SVG paths from a small stroke font, never as <text>, so the answer is
 // not readable from the markup.
+import crypto from "node:crypto";
 import mongoose from "mongoose";
 import { OTP as otpModel } from "../model/index.js";
 
@@ -48,6 +49,8 @@ const GLYPHS = {
     8: [[[1, 3], [0, 2], [0, 1], [1, 0], [3, 0], [4, 1], [4, 2], [3, 3], [1, 3], [0, 4], [0, 5], [1, 6], [3, 6], [4, 5], [4, 4], [3, 3]]]
 };
 
+// the answer comes from crypto (never Math.random, whose output can be predicted); the drawing noise doesn't matter
+const pick = (n) => crypto.randomInt(n);
 const rnd = (n) => Math.floor(Math.random() * n);
 const jitter = (n) => (Math.random() - 0.5) * n;
 
@@ -97,12 +100,12 @@ export async function createCaptcha(origin, mode = "image") {
     let answer;
     let payload;
     if (mode === "text") {
-        const a = 2 + rnd(8);
-        const b = 1 + rnd(9);
+        const a = 2 + pick(8);
+        const b = 1 + pick(9);
         answer = String(a + b);
         payload = { mode: "text", question: `What is ${a} plus ${b}?` };
     } else {
-        answer = Array.from({ length: 5 }, () => CHARS[rnd(CHARS.length)]).join("");
+        answer = Array.from({ length: 5 }, () => CHARS[pick(CHARS.length)]).join("");
         payload = { mode: "image", image: drawSvg(answer) };
     }
     await otpModel.create({
@@ -118,7 +121,7 @@ export async function createCaptcha(origin, mode = "image") {
 
 /** One-time check. Returns true only for an unexpired, unused challenge with the right answer. */
 export async function verifyCaptcha(origin, id, answer) {
-    if (!id || !mongoose.isValidObjectId(id) || !answer) return false;
+    if (!id || !/^[a-f0-9]{24}$/i.test(String(id)) || !answer || typeof answer !== "string") return false;
     const doc = await otpModel.findOneAndDelete({ user: id, channel: "captcha", origin });
     if (!doc) return false;
     if (new Date(doc.expiresAt).getTime() < Date.now()) return false;
@@ -131,12 +134,14 @@ export async function verifyCaptcha(origin, id, answer) {
  * so switching it on is a deploy setting, not a code change.
  */
 export async function requireCaptcha(req) {
-    const c = req.body?.captcha;
-    if (req.body && "captcha" in req.body) delete req.body.captcha;
+    const b = req.body || {};
+    // { captcha: { id, answer } } from code, or flat captchaId / captchaAnswer fields from a plain form
+    const c = b.captcha || (b.captchaId ? { id: b.captchaId, answer: b.captchaAnswer } : null);
+    for (const k of ["captcha", "captchaId", "captchaAnswer"]) if (k in b) delete b[k];
     if (!c) {
         if (process.env.CAPTCHA_REQUIRED === "true") throw new Error("Complete the human check.");
         return;
     }
-    const ok = await verifyCaptcha(req.origin, c.id, c.answer);
+    const ok = await verifyCaptcha(req.origin, String(c.id || ""), typeof c.answer === "string" ? c.answer : "");
     if (!ok) throw new Error("The human check didn’t match or has expired. Please try the new code.");
 }

@@ -618,7 +618,7 @@ export function ReferralTile() {
 }
 
 /* ------------------------------------------------------------------ activity ribbon */
-const ACT_ICON = { complete: 'check', terminate: 'close', dropout: 'clock', overquota: 'lock' };
+const ACT_ICON = { complete: 'check', terminate: 'close', dropout: 'clock', overquota: 'lock', profile: 'user', reward: 'gift', referral: 'users' };
 export function ActivityRibbon({ limit = 8, title }) {
   const d = useDash();
   const list = (d.activity || []).slice(0, limit);
