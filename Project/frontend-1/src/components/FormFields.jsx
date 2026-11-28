@@ -221,9 +221,14 @@ export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920
     return { y: base.getFullYear(), m: base.getMonth() };
   });
   const [focusDay, setFocusDay] = useState(sel ? sel.getDate() : 1);
+  // 'day' shows the calendar; 'month' and 'year' swap it for a picker drawn inside the popup. These
+  // used to be native <select> menus, whose long year list opened over the calendar and the form (#55).
+  const [pick, setPick] = useState('day');
   const root = useRef(null);
   const pop = useRef(null);
   const grid = useRef(null);
+  const yearList = useRef(null);
+  const monthList = useRef(null);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -239,16 +244,71 @@ export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920
   }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (!open || !grid.current) return;
+    if (open) setPick('day');
+  }, [open]);
+
+  useEffect(() => {
+    if (!open || pick !== 'day' || !grid.current) return;
     const b = grid.current.querySelector(`[data-day="${focusDay}"]`);
     b && b.focus({ preventScroll: true });
-  }, [open, focusDay, view]);
+  }, [open, focusDay, view, pick]);
+
+  useEffect(() => {
+    // open the year list on the year being viewed, scrolled to sit in the middle of the list
+    if (!open || pick !== 'year' || !yearList.current) return;
+    const list = yearList.current;
+    const b = list.querySelector(`[data-year="${view.y}"]`) || list.querySelector('button:not(:disabled)');
+    if (!b) return;
+    list.scrollTop = b.offsetTop - list.clientHeight / 2 + b.offsetHeight / 2;
+    b.focus({ preventScroll: true });
+  }, [open, pick]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (!open || pick !== 'month' || !monthList.current) return;
+    const b = monthList.current.querySelector(`[data-month="${view.m}"]`);
+    b && !b.disabled && b.focus({ preventScroll: true });
+  }, [open, pick]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const daysIn = new Date(view.y, view.m + 1, 0).getDate();
   const lead = (new Date(view.y, view.m, 1).getDay() + 6) % 7;
   const years = [];
   for (let y = maxDate.getFullYear() + lockedYears; y >= loY - lockedYears; y--) years.push(y);
   const yearOff = (y) => y > maxDate.getFullYear() || y < loY;
+
+  const monthOff = (m) => new Date(view.y, m, 1) > maxDate || (minDate && new Date(view.y, m + 1, 0) < minDate);
+  const pickYear = (y) => {
+    if (yearOff(y)) return;
+    // keep the month in range for the new year (e.g. a Teen picking the earliest allowed year)
+    let m = view.m;
+    if (new Date(y, m, 1) > maxDate) m = maxDate.getMonth();
+    if (minDate && new Date(y, m + 1, 0) < minDate) m = minDate.getMonth();
+    setView({ y, m });
+    setFocusDay((f) => Math.min(f, new Date(y, m + 1, 0).getDate()));
+    setPick('day');
+  };
+  const pickMonth = (m) => {
+    if (monthOff(m)) return;
+    setView((v) => ({ ...v, m }));
+    setFocusDay((f) => Math.min(f, new Date(view.y, m + 1, 0).getDate()));
+    setPick('day');
+  };
+  const onPickKey = (e) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();
+      setPick('day');
+      return;
+    }
+    const cols = pick === 'year' ? 4 : 3;
+    const map = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -cols, ArrowDown: cols };
+    if (!map[e.key]) return;
+    e.preventDefault();
+    const all = Array.from(e.currentTarget.querySelectorAll('button'));
+    let i = all.indexOf(document.activeElement) + map[e.key];
+    // skip over greyed-out (not eligible) options in the direction of travel
+    while (all[i] && all[i].disabled) i += Math.sign(map[e.key]);
+    if (all[i]) all[i].focus();
+  };
 
   const disabled = (d) => {
     const t = new Date(view.y, view.m, d);
@@ -304,25 +364,70 @@ export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920
             <button type="button" className="date-nav" onClick={() => shiftMonth(-1)} aria-label="Previous month">
               <Icon name="chevronLeft" size={18} />
             </button>
-            <select aria-label="Month" value={view.m} onChange={(e) => setView((v) => ({ ...v, m: Number(e.target.value) }))}>
-              {MONTHS.map((m, i) => (
-                <option key={m} value={i}>
-                  {m}
-                </option>
-              ))}
-            </select>
-            <select aria-label="Year" value={view.y} onChange={(e) => setView((v) => ({ ...v, y: Number(e.target.value) }))}>
-              {years.map((y) => (
-                <option key={y} value={y} disabled={yearOff(y)}>
-                  {y}
-                  {yearOff(y) ? ' (not eligible)' : ''}
-                </option>
-              ))}
-            </select>
+            <button
+              type="button"
+              className={`date-sel ${pick === 'month' ? 'is-on' : ''}`}
+              aria-expanded={pick === 'month'}
+              aria-label={`Month: ${MONTHS[view.m]}. Choose month`}
+              onClick={() => setPick((p) => (p === 'month' ? 'day' : 'month'))}
+            >
+              <span>{MONTHS[view.m]}</span>
+              <Icon name="chevron" size={14} />
+            </button>
+            <button
+              type="button"
+              className={`date-sel ${pick === 'year' ? 'is-on' : ''}`}
+              aria-expanded={pick === 'year'}
+              aria-label={`Year: ${view.y}. Choose year`}
+              onClick={() => setPick((p) => (p === 'year' ? 'day' : 'year'))}
+            >
+              <span>{view.y}</span>
+              <Icon name="chevron" size={14} />
+            </button>
             <button type="button" className="date-nav" onClick={() => shiftMonth(1)} aria-label="Next month">
               <Icon name="chevronRight" size={18} />
             </button>
           </div>
+          {pick === 'year' && (
+            <div className="date-years" ref={yearList} role="listbox" aria-label="Year" onKeyDown={onPickKey}>
+              {years.map((y) => (
+                <button
+                  type="button"
+                  key={y}
+                  data-year={y}
+                  role="option"
+                  aria-selected={y === view.y}
+                  className={`date-opt ${y === view.y ? 'is-sel' : ''}`}
+                  disabled={yearOff(y)}
+                  title={yearOff(y) ? 'Not eligible' : undefined}
+                  aria-label={yearOff(y) ? `${y}, not eligible` : String(y)}
+                  onClick={() => pickYear(y)}
+                >
+                  {y}
+                </button>
+              ))}
+            </div>
+          )}
+          {pick === 'month' && (
+            <div className="date-months" ref={monthList} role="listbox" aria-label="Month" onKeyDown={onPickKey}>
+              {MONTHS.map((m, i) => (
+                <button
+                  type="button"
+                  key={m}
+                  role="option"
+                  aria-selected={i === view.m}
+                  className={`date-opt ${i === view.m ? 'is-sel' : ''}`}
+                  disabled={monthOff(i)}
+                  data-month={i}
+                  onClick={() => pickMonth(i)}
+                >
+                  {m.slice(0, 3)}
+                </button>
+              ))}
+            </div>
+          )}
+          {pick === 'day' && (
+          <>
           <div className="date-dow" aria-hidden="true">
             {DOW.map((d) => (
               <span key={d}>{d}</span>
@@ -352,7 +457,9 @@ export function DateField({ id, value, onChange, onBlur, invalid, minYear = 1920
               );
             })}
           </div>
-          <p className="date-foot">{foot || 'Use the month and year menus to jump quickly.'}</p>
+          </>
+          )}
+          <p className="date-foot">{foot || 'Tap the month or year to jump quickly.'}</p>
         </Floating>
       )}
     </div>
