@@ -181,9 +181,17 @@
 :where(html[data-mode='dark']) .cp-empty {
     color: #b7bed8
 }
-:where(html[data-mode='dark']) .date-head select {
+:where(html[data-mode='dark']) .date-sel {
     border: 1.5px solid #2b3456;
-    background-color: #0b122a
+    background-color: #0b122a;
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .date-opt {
+    background-color: #0b142d;
+    color: #d9deef
+}
+:where(html[data-mode='dark']) .date-opt:hover:not(:disabled) {
+    background-color: #101830
 }
 :where(html[data-mode='dark']) .date-nav {
     background-color: #0b142d
